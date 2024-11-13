@@ -1,37 +1,24 @@
 // src/app.module.ts
 
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PrismaService } from './infrastructure/database/prisma/prisma.service';
+import { CqrsModule } from '@nestjs/cqrs';
+import { EmailModule } from './infrastructure/adapters/email/email.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Cho phép sử dụng ConfigService ở mọi nơi
-      envFilePath: '.env', // Đường dẫn tới tệp .env
-    }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        type: configService.get<string>('DATABASE_TYPE') as any, // 'postgres'
-        host: 'localhost',
-        // host: configService.get<string>('DATABASE_HOST'),
-        port: parseInt(configService.get<string>('DATABASE_PORT'), 10),
-        username: configService.get<string>('DATABASE_USERNAME'),
-        password: configService.get<string>('DATABASE_PASSWORD'),
-        database: configService.get<string>('DATABASE_NAME'),
-        entities: [__dirname + '/**/*.orm-entity{.ts,.js}'],
-        synchronize: false, // Không nên dùng synchronize trong môi trường production
-        migrations: [__dirname + '/infrastructure/database/migrations/*{.ts,.js}'],
-        cli: {
-          migrationsDir: 'src/infrastructure/database/migrations',
-        },
-      }),
-      inject: [ConfigService],
+      isGlobal: true, // Makes ConfigService globally available
+      envFilePath: '.env', // Path to .env file
     }),
     UserModule,
-    // Thêm các module khác nếu có
+    CqrsModule,
+    EmailModule,
+    // Add any other modules here if needed
   ],
+  providers: [PrismaService],
+  exports: [PrismaService],
 })
 export class AppModule {}

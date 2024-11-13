@@ -23,8 +23,10 @@ const Register = () => {
       password: Yup.string().min(6, 'Mật khẩu tối thiểu 6 ký tự').required('Yêu cầu nhập mật khẩu'),
     }),
     onSubmit: async (values) => {
+      console.log('{process.env.NEXT_PUBLIC_API_URL', process.env.NEXT_PUBLIC_API_URL);
       try {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, values);
+        // await axios.post(`http://172.18.0.3/auth/signup`, values);
         alert('Đăng ký thành công!');
         router.push('/login');
       } catch (err) {
