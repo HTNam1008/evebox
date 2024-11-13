@@ -4,16 +4,22 @@ FROM node:18-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy package.json và package-lock.json
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
+# Install all dependencies including dev dependencies (for Prisma)
 RUN npm install
 
-# Copy toàn bộ mã nguồn vào thư mục làm việc
+# Copy Prisma schema and .env file
+COPY src/infrastructure/database/prisma ./src/infrastructure/database/prisma
+
+# Generate Prisma Client with the correct schema path
+RUN npx prisma generate --schema=./src/infrastructure/database/prisma/schema.prisma
+
+# Copy the entire source code to the container
 COPY . .
 
-# Build ứng dụng (nếu sử dụng TypeScript)
+# Build the application
 RUN npm run build
 
 # Stage 2: Production
@@ -22,17 +28,17 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
-# Copy package.json và package-lock.json
+# Copy only production dependencies
 COPY package*.json ./
-
-# Install chỉ production dependencies
 RUN npm install --production
 
-# Copy ứng dụng đã build từ stage trước
+# Copy built application and Prisma client
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
-# Expose port backend sử dụng
+# Expose port the backend uses
 EXPOSE 3001
 
-# Define lệnh để chạy ứng dụng
+# Define the command to run the app
 CMD ["npm", "run", "start:prod"]

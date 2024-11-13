@@ -6,6 +6,7 @@ import { Email } from '../value-objects/email.vo';
 import { Password } from '../value-objects/password.vo';
 import { UserRole } from '../enums/user-role.enum';
 import { Role } from '../value-objects/role.vo';
+import { UserRegisteredDomainEvent } from '../events/user-registered.domain-event';
 
 interface UserProps {
   email: Email;
@@ -32,6 +33,7 @@ export class User extends AggregateRoot<UserId, UserProps> {
       role: roleVo,
     });
     // Có thể phát sinh domain event tại đây
+    user.addDomainEvent(new UserRegisteredDomainEvent(user));
     return user;
   }
 

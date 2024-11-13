@@ -4,50 +4,57 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../domain/entities/user.entity';
 import { Email } from '../domain/value-objects/email.vo';
 import { UserId } from '../domain/value-objects/user-id.vo';
-import { UserOrmEntity } from 'src/infrastructure/database/orm/user.orm-entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
 import { Password } from '../domain/value-objects/password.vo';
 import { Role } from '../domain/value-objects/role.vo';
+import { EventBus } from '@nestjs/cqrs';
 
 @Injectable()
 export class UserRepository {
   constructor(
-    @InjectRepository(UserOrmEntity)
-    private readonly ormRepository: Repository<UserOrmEntity>,
+    private readonly prisma: PrismaService,
+    private readonly eventBus: EventBus,
   ) {}
 
   async findByEmail(email: Email): Promise<User | null> {
-    const userOrmEntity = await this.ormRepository.findOne({
+    const userRecord = await this.prisma.users.findUnique({
       where: { email: email.value },
     });
-    if (!userOrmEntity) {
+    if (!userRecord) {
       return null;
     }
-    return this.mapToDomain(userOrmEntity);
+    return this.mapToDomain(userRecord);
   }
 
   async save(user: User): Promise<void> {
-    const userOrmEntity = this.mapToOrmEntity(user);
-    await this.ormRepository.save(userOrmEntity);
+    const userOrmData = this.mapToOrmData(user);
+    await this.prisma.users.upsert({
+      where: { id: userOrmData.id },
+      update: userOrmData,
+      create: userOrmData,
+    });
+    
+    // Phát hành các domain events
+    const domainEvents = user.getDomainEvents();
+    domainEvents.forEach(event => this.eventBus.publish(event));
+    user.clearDomainEvents();
   }
 
-  private mapToDomain(userOrmEntity: UserOrmEntity): User {
-    const userId = UserId.create(userOrmEntity.id);
-    const email = Email.create(userOrmEntity.email).unwrap();
-    const password = Password.createHashed(userOrmEntity.password);
-    const role = Role.create(userOrmEntity.role);
+  private mapToDomain(userRecord: any): User {
+    const userId = UserId.create(userRecord.id);
+    const email = Email.create(userRecord.email).unwrap();
+    const password = Password.createHashed(userRecord.password);
+    const role = Role.create(userRecord.role);
 
     return User.createExisting(userId, email, password, role);
   }
 
-  private mapToOrmEntity(user: User): UserOrmEntity {
-    const userOrmEntity = new UserOrmEntity();
-    userOrmEntity.id = user.id.value;
-    userOrmEntity.email = user.email.value;
-    userOrmEntity.password = user.password.getHashedValue();
-    userOrmEntity.role = user.role.getValue();
-
-    return userOrmEntity;
+  private mapToOrmData(user: User): any {
+    return {
+      id: user.id.value,
+      email: user.email.value,
+      password: user.password.getHashedValue(),
+      role: user.role.getValue(),
+    };
   }
 }
