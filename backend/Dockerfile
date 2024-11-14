@@ -37,8 +37,10 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
+
 # Expose port the backend uses
 EXPOSE 3001
+
 
 # Define the command to run the app
 CMD ["npm", "run", "start:prod"]

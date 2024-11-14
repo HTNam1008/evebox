@@ -7,6 +7,7 @@ import { PrismaService } from './infrastructure/database/prisma/prisma.service';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EmailModule } from './infrastructure/adapters/email/email.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({
