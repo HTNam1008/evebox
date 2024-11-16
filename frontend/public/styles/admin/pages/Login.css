@@ -1,22 +1,119 @@
-.login-container {
+/* Phần bên phải: Form đăng nhập */
+.backdground {
+  position: relative;
+  background-image: url(../../../images/background_login.png);
+  background-size: cover; /* Phủ toàn bộ diện tích */
+  background-position: center; /* Căn giữa hình ảnh */
+  height: 100vh; /* Chiều cao của phần tử là 100% chiều cao cửa sổ */
+  width: 100%; /* Chiều rộng 100% */
+}
+
+/* Lớp overlay */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(12, 71, 98, 0.3); /* Màu overlay #0C4762 với độ mờ 30% */
+  z-index: 1; /* Lớp nằm trên hình ảnh */
+}
+
+/* Phần bên trái: Form đăng nhập */
+.logo {
+  width: 80px;
+  height: 80px;
+}
+
+.right-pane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(180deg, #9EF5CF 0%, #2F9098 68%, #176B87 100%);
+}
+
+.register-form {
+  width: 100%;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 8px;
+  top: 51%;
+  transform: translateY(-50%);
+}
+
+.register-container {
   text-align: center;
-  margin-top: 50px;
+  margin-bottom: 30px;
 }
 
-.links {
-  margin-top: 20px;
-}
-
-.link {
-  display: inline-block;
-  margin: 0 10px;
-  padding: 10px 20px;
-  background-color: #0070f3;
-  color: #fff;
+.form-control {
+  margin-bottom: 15px;
+  padding: 10px;
   border-radius: 5px;
-  text-decoration: none;
+  border: 1px solid #ccc;
 }
 
-.link:hover {
-  background-color: #005bb5;
+.form-control:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 5px rgba(0, 112, 243, 0.5);
+}
+
+.form-check {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.btn-primary {
+  width: 80% !important;
+  background-color: #0C4762 !important;
+  color: #fff !important;
+  padding: 10px 20px !important;
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  height: 46px;
+}
+
+.btn-primary:hover {
+  background-color: #082b3b !important;
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: #000;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+  cursor: pointer;
+  text-decoration: none;
+  height: 46px;
+}
+
+.google-button:hover {
+  background-color: #f0f0f0;
+}
+
+.google-button svg {
+  height: 20px;
+  margin-right: 10px;
+}
+
+.font-style {
+  font-weight: bold; 
+  font-size: 16px;   
+  text-transform: uppercase;
+}
+
+::placeholder {
+  color: #687C94;          /* Màu chữ mờ */
+  font-size: 12px;       /* Kích thước chữ nhỏ hơn */
+  font-weight: 400;      /* Độ đậm nhẹ */
+  opacity: 1;          /* Độ mờ */
 }
