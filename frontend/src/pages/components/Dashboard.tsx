@@ -4,19 +4,19 @@ import withAuth from '@/components/Auth/WithAuth';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import Link from 'next/link';
-import styles from '@/styles/Dashboard.module.css';
+import '../../../public/styles/admin/pages/Dashboard.css';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <h1>Chào mừng, {user?.email}</h1>
-      <button onClick={logout} className={styles.button}>
+      <button onClick={logout} className="">
         Đăng xuất
       </button>
-      <div className={styles.links}>
-        <Link href="/" className={styles.link}>
+      <div className="links">
+        <Link href="/" className="link">
           Trang Chủ
         </Link>
       </div>

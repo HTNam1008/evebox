@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import { useRouter } from 'next/router';
 import { ErrorResponse } from '@/types/errorResponse';
 import Link from 'next/link';
+import '../../../public/styles/admin/pages/Register.css'
 
 const Register = () => {
   const [error, setError] = useState('');
@@ -41,7 +42,7 @@ const Register = () => {
   });
 
   return (
-    <div style={styles.container}>
+    <div className='register-container'>
       <h1>Đăng ký</h1>
       <form onSubmit={formik.handleSubmit}>
         <div>
@@ -64,8 +65,8 @@ const Register = () => {
         {error && <div style={{ color: 'red' }}>{error}</div>}
         <button type="submit">Đăng ký</button>
       </form>
-      <div style={styles.links}>
-        <Link href="/login" style={styles.link}>
+      <div className='links'>
+        <Link href="/login" className='link'>
           Đăng nhập
         </Link>
       </div>
@@ -73,23 +74,23 @@ const Register = () => {
   );
 };
 
-const styles = {
-  container: {
-    textAlign: 'center' as const,
-    marginTop: '50px',
-  },
-  links: {
-    marginTop: '20px',
-  },
-  link: {
-    display: 'inline-block',
-    margin: '0 10px',
-    padding: '10px 20px',
-    backgroundColor: '#0070f3',
-    color: '#fff',
-    borderRadius: '5px',
-    textDecoration: 'none',
-  },
-};
+// const styles = {
+//   container: {
+//     textAlign: 'center' as const,
+//     marginTop: '50px',
+//   },
+//   links: {
+//     marginTop: '20px',
+//   },
+//   link: {
+//     display: 'inline-block',
+//     margin: '0 10px',
+//     padding: '10px 20px',
+//     backgroundColor: '#0070f3',
+//     color: '#fff',
+//     borderRadius: '5px',
+//     textDecoration: 'none',
+//   },
+// };
 
 export default Register;

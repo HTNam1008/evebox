@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import { useRouter } from 'next/router';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ErrorResponse } from '@/types/errorResponse';
-import styles from '@/styles/Login.module.css'; // Sử dụng CSS Modules nếu cần
+import '../../../public/styles/admin/pages/Login.css';
 import Link from 'next/link';
 
 const Login = () => {
@@ -46,30 +46,30 @@ const Login = () => {
   });
 
   return (
-    <div className={styles.container}>
+    <div className='login-container'>
       <h1>Đăng nhập</h1>
       <form onSubmit={formik.handleSubmit}>
-        <div className={styles.field}>
+        <div className="">
           <label>Email:</label>
           <input type="email" {...formik.getFieldProps('email')} />
           {formik.touched.email && formik.errors.email ? (
-            <div className={styles.error}>{formik.errors.email}</div>
+            <div className="">{formik.errors.email}</div>
           ) : null}
         </div>
-        <div className={styles.field}>
+        <div className="">
           <label>Mật khẩu:</label>
           <input type="password" {...formik.getFieldProps('password')} />
           {formik.touched.password && formik.errors.password ? (
-            <div className={styles.error}>{formik.errors.password}</div>
+            <div className="">{formik.errors.password}</div>
           ) : null}
         </div>
-        {error && <div className={styles.error}>{error}</div>}
-        <button type="submit" className={styles.button}>
+        {error && <div className="">{error}</div>}
+        <button type="submit" className="">
           Đăng nhập
         </button>
       </form>
-      <div className={styles.links}>
-        <Link href="/register" className={styles.link}>
+      <div className='links'>
+        <Link href="/register" className='link'>
           Đăng ký
         </Link>
       </div>
