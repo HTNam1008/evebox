@@ -1,10 +1,12 @@
-// src/pages/index.tsx
-
+/* Package application */
 import React, { useContext } from 'react';
 import Link from 'next/link';
-import { AuthContext } from '../contexts/AuthContext';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import axios from 'axios';
+
+/* Package system */
+import { AuthContext } from '../contexts/AuthContext';
 import styles from '@/styles/HomePage.module.css';
 
 const fetcher = (url: string) => axios.get(url).then(res => res.data);
