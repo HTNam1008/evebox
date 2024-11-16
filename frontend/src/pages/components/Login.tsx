@@ -46,7 +46,7 @@ const Login = () => {
   });
 
   return (
-    <div className='login-container'>
+    <div>
       <h1>Đăng nhập</h1>
       <form onSubmit={formik.handleSubmit}>
         <div className="">
@@ -71,6 +71,9 @@ const Login = () => {
       <div className='links'>
         <Link href="/register" className='link'>
           Đăng ký
+        </Link>
+        <Link href="/forgot-password" className='link'>
+          Quên mật khẩu
         </Link>
       </div>
     </div>
