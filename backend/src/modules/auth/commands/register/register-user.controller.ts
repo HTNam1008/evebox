@@ -2,23 +2,25 @@
 import { Controller, Post, Body, Res } from '@nestjs/common';
 import { RegisterUserDto } from './register-user.dto';
 import { RegisterUserService } from './register-user.service';
-import { CommandBus } from '@nestjs/cqrs';
 import { RegisterUserCommand } from './register-user.command';
 import { Response } from 'express';
 
-@Controller('auth')
+@Controller('/api/user')
 export class RegisterUserController {
   constructor(private readonly registerUserService: RegisterUserService) {}
 
-  @Post('signup')
+  @Post('register')
   async register(
     @Body() registerUserDto: RegisterUserDto,
     @Res() res: Response,
   ) {
     const command = new RegisterUserCommand(
+      registerUserDto.name,
       registerUserDto.email,
       registerUserDto.password,
-      registerUserDto.role,
+      registerUserDto.phone,
+      registerUserDto.role_id,
+      registerUserDto.province_id,
     );
 
     const result = await this.registerUserService.execute(command);

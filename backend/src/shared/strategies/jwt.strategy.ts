@@ -1,24 +1,36 @@
 // src/shared/strategies/jwt.strategy.ts
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, ExtractJwt } from 'passport-jwt';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-
+import { PrismaService } from '../../infrastructure/database/prisma/prisma.service';
+import { Request } from 'express';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    configService: ConfigService,
+    private readonly prisma: PrismaService,
+  ) {
     super({
-      // Lấy JWT từ header Authorization: Bearer <token>
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false, // Không bỏ qua thời hạn JWT
-      secretOrKey: configService.get<string>('JWT_SECRET'), // Lấy secret từ ConfigService
+      ignoreExpiration: false, // Kiểm tra expiration
+      secretOrKey: configService.get<string>('JWT_SECRET'),
+      passReqToCallback: true, // Cho phép truy cập request trong validate
     });
   }
 
-  async validate(payload: any) {
-    // Trả về đối tượng user sẽ được gán vào request.user
-    return { userId: payload.sub, role: payload.role };
+  async validate(req: Request, payload: any) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedException('Authorization header missing');
+    }
+    const [type, token] = authHeader.split(' ');
+    if (type !== 'Bearer' || !token) {
+      throw new UnauthorizedException('Invalid authorization header format');
+    }
+
+    return {email: payload.email, role: payload.role };
   }
 }

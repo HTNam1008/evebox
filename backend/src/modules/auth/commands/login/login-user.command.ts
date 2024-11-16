@@ -1,5 +1,5 @@
-// authenticate-user.command.ts
-export class AuthenticateUserCommand {
+// login-user.command.ts
+export class LoginUserCommand {
     constructor(
       public readonly email: string,
       public readonly password: string,
