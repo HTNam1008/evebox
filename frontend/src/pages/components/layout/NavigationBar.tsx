@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { Menu, ChevronDown } from 'lucide-react';
+import Sidebar from '../../components/layout/SideBar';
 
 const NavigationBar = () => {
     const [isLangOpen, setIsLangOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     return(
+      <>  
        <nav className="bg-sky-900 shadow-lg">
        <div className="mx-auto px-4 sm:px-6 lg:px-4 h-16 flex justify-between items-center">      
          <div className="flex items-center gap-2">
-         <button className="text-white p-2 hover:bg-teal-700 rounded-md mr-4">
+         <button className="text-white p-2 hover:bg-teal-700 rounded-md mr-4" onClick={() => setIsSidebarOpen(true)}>
            <Menu size={24} />
          </button>
            <div className="w-18 h-9 rounded flex items-center justify-center">
@@ -55,7 +58,13 @@ const NavigationBar = () => {
            </button>
          </div>
        </div>
-     </nav>
+       </nav>
+
+       <Sidebar 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)} 
+        />
+     </>
     );
 };
 

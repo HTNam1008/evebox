@@ -5,7 +5,6 @@ import React from 'react';
 import 'tailwindcss/tailwind.css';
 import NavigationBar from '../../pages/components/layout/NavigationBar';
 import Footer from '../../pages/components/layout/Footer';
-import Sidebar from '../../pages/components/layout/SideBar';
 import { ChevronDown, ChevronLeft, ChevronRight ,Search } from 'lucide-react';
 const Dashboard = () => {
   //const { user, logout } = useContext(AuthContext);
