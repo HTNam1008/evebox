@@ -28,6 +28,19 @@ const Login = () => {
       email: Yup.string().email('Email không hợp lệ').required('Yêu cầu nhập email'),
       password: Yup.string().required('Yêu cầu nhập mật khẩu'),
     }),
+    validate: values => {
+      const errors: { email?: string; password?: string } = {};
+
+      if (!values.email) {
+        errors.email = 'Bạn chưa nhập email';
+      }
+
+      if (!values.password) {
+        errors.password = 'Bạn chưa nhập mật khẩu';
+      }
+      
+      return errors;
+    },
     onSubmit: async (values) => {
       try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, values);
@@ -52,7 +65,7 @@ const Login = () => {
   return (
     <div>
       <div className="row">
-        <div className="col-md-7 d-flex align-items-center justify-content-center right-pane">
+        <div className="col-md-7 d-flex align-items-center justify-content-center left-pane">
           <div className="w-75">
             <div className="register-form">
               <div className="register-container">
@@ -60,25 +73,39 @@ const Login = () => {
                 <h3 className='mt-3'><strong>Đăng nhập EveBox</strong></h3>
               </div>
               <form onSubmit={formik.handleSubmit}>
-                <div className="mb-3">
+                <div className="mb-3 short-input">
                   <label htmlFor="email" className="form-label font-style">Email</label>
                   <input
                     type="email"
                     id="email"
+                    name='email'
                     className={`form-control ${formik.touched.email && formik.errors.email ? 'is-invalid' : ''}`}
                     placeholder="Nhập email của bạn"
-                    style={{height: '46px'}}
+                    style={{ height: '46px' }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.email}
                   />
+                  {/* Hiển thị thông báo lỗi */}
+                  {formik.touched.email && formik.errors.email && (
+                    <div className="text-danger" style={{ fontSize: '12px' }}>
+                      {formik.errors.email}
+                    </div>
+                  )}
                 </div>
-                <div className="mb-3">
+                <div className="mb-3 short-input">
                   <label htmlFor="password" className="form-label font-style">Mật khẩu</label>
                   <div className='position-relative'>
                     <input
                       type={showPassword ? 'text' : 'password'}
                       id="password"
+                      name='password'
                       className={`form-control pr-10 ${formik.touched.password && formik.errors.password ? 'is-invalid' : ''}`}
                       placeholder="Nhập mật khẩu"
-                      style={{height: '46px'}}
+                      style={{ height: '46px' }}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.password}
                     />
                     <IconButton
                       className='position-absolute eye-btn'
@@ -88,8 +115,14 @@ const Login = () => {
                       <Icon icon={showPassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                     </IconButton>
                   </div>
+                  {/* Hiển thị thông báo lỗi  */}
+                  {formik.touched.password && formik.errors.password && (
+                    <div className="text-danger" style={{ fontSize: '12px' }}>
+                      {formik.errors.password}
+                    </div>
+                  )}
                 </div>
-                <div className="d-flex justify-content-between align-items-center mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-3 short-input">
                   <div className="form-check">
                     <input
                       type="checkbox"
@@ -102,15 +135,17 @@ const Login = () => {
                     </label>
                   </div>
                   <div>
-                    <a href="/ForgotPassword" className="text-decoration-none" style={{ color: 'white'}}>
+                    <a href="/ForgotPassword" className="text-decoration-none font-forget">
                       Quên mật khẩu?
                     </a>
                   </div>
                 </div>
-                <button type="submit" className="btn btn-primary w-100 mb-3">Đăng nhập</button>
-                <div className="text-center">
+                <div className="short-input">
+                  <button type="submit" className="btn btn-primary w-100 mb-3 mt-3">Đăng nhập</button>
+                </div>
+                <div className="text-center short-input mb-3">
                   <p style={{ color: 'white' }}>Hoặc</p>
-                  <Link style={{textDecoration:'none'}} href="#">
+                  <Link style={{ textDecoration: 'none' }} href="#">
                     <button className="google-button">
                       <Icon icon="flat-color-icons:google" width="20px" color="#fff" />
                       Đăng nhập với Google
