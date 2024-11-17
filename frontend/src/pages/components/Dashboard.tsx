@@ -3,10 +3,12 @@ import {useState, useEffect } from 'react';
 import '../../../public/styles/admin/pages/Dashboard.css';
 import React from 'react';
 import 'tailwindcss/tailwind.css';
-import { Menu, ChevronDown, ChevronLeft, ChevronRight, Linkedin, Instagram, Facebook ,Search } from 'lucide-react';
+import NavigationBar from '../../pages/components/layout/NavigationBar';
+import Footer from '../../pages/components/layout/Footer';
+import Sidebar from '../../pages/components/layout/SideBar';
+import { ChevronDown, ChevronLeft, ChevronRight ,Search } from 'lucide-react';
 const Dashboard = () => {
   //const { user, logout } = useContext(AuthContext);
-  const [isLangOpen, setIsLangOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
@@ -42,60 +44,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-       {/* Navigation Bar */}
-       <nav className="bg-sky-900 shadow-lg">
-        <div className="mx-auto px-4 sm:px-6 lg:px-4 h-16 flex justify-between items-center">      
-          <div className="flex items-center gap-2">
-          <button className="text-white p-2 hover:bg-teal-700 rounded-md mr-4">
-            <Menu size={24} />
-          </button>
-            <div className="w-18 h-9 rounded flex items-center justify-center">
-              <img src="/images/dashboard/logo-icon.png" alt="flag" className="w-18 h-9" />
-            </div>
-            <span className="text-white font-bold text-xl">EveBox</span>
-          </div>
-          
-          <div className="flex items-center gap-4">
-             {/* Language Selector */}
-             <div className="relative">
-              <button 
-                className="flex items-center gap-2 text-white p-2 hover:bg-teal-700 rounded-md"
-                onClick={() => setIsLangOpen(!isLangOpen)}
-              >
-                <img src="/images/dashboard/vietnam-icon.png" alt="flag" className="w-12 h-7 mr-2" />
-                <span>VI</span>
-                <ChevronDown size={16} />
-              </button>
-              
-              {isLangOpen && (
-                <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32">
-                  <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                    <img 
-                      src="/images/dashboard/vietnam-icon.png" 
-                      alt="English flag" 
-                      className="w-8 h-6 rounded"
-                    />
-                    <span className="text-gray-700">EN</span>
-                  </button>
-                  <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                    <img 
-                      src="/images/dashboard/vietnam-icon.png" 
-                      alt="Vietnamese flag" 
-                      className="w-8 h-6 rounded"
-                    />
-                    <span className="text-gray-700">VI</span>
-                  </button>
-                </div>
-              )}
-            </div>
-            <button className="text-white hover:text-teal-100">Đăng nhập</button>
-            <button className="bg-teal-200 text-teal-950 px-4 py-2 rounded-md hover:bg-teal-50">
-              Đăng ký
-            </button>
-          </div>
-        </div>
-      </nav>
-
+       <NavigationBar />
       <div className="flex justify-center mt-8">
         <div className="relative w-5/6  overflow-hidden rounded-lg">
           {/* Slides */}
@@ -182,7 +131,7 @@ const Dashboard = () => {
 
                 <div className='flex items-end'>
                 <label className=" text-white text-sm block mb-2">&nbsp;</label>
-                <button className="h-10 w-10 bg-teal-400 hover:bg-teal-300 rounded flex items-center justify-center">
+                <button className="h-10 w-14 bg-teal-400 hover:bg-teal-300 rounded flex items-center justify-center">
                   <Search size={20} className="text-white" />
                 </button>
               </div>
@@ -251,58 +200,7 @@ const Dashboard = () => {
       </div>
       </div>
 
-      
-
-       {/* Footer */}
-       <footer className="bg-sky-900 text-white mt-20 py-12">
-        <div className="container mx-auto px-4">
-          {/* Newsletter Section */}
-          <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold mb-8">EveBox</h2>
-            <div className="flex max-w-md mx-auto gap-2">
-              <input 
-                type="email" 
-                placeholder="Nhập email của bạn" 
-                className="flex-1 px-4 py-2 rounded-md text-gray-800"
-              />
-              <button className="bg-teal-200 text-teal-950 px-6 py-2 rounded-md hover:bg-teal-100">
-                Nhận tin mới
-              </button>
-            </div>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="flex justify-center gap-8 mb-8">
-            <a href="#" className="hover:text-teal-200">Trang chủ</a>
-            <a href="#" className="hover:text-teal-200">Giới thiệu</a>
-            <a href="#" className="hover:text-teal-200">Dịch vụ</a>
-            <a href="#" className="hover:text-teal-200">Liên hệ</a>
-            <a href="#" className="hover:text-teal-200">Hỏi đáp</a>
-          </div>
-
-          {/* Language and Social Links */}
-          <div className="flex justify-between items-center border-t-2 border-slate-400	 pt-8">
-            <div className="flex gap-4">
-              <button className="bg-teal-200 text-teal-950 px-6 py-2 rounded-md">Tiếng Việt</button>
-              <button className="hover:text-teal-200">English</button>
-            </div>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-teal-200">
-                <Linkedin size={24} />
-              </a>
-              <a href="#" className="hover:text-teal-200">
-                <Instagram size={24} />
-              </a>
-              <a href="#" className="hover:text-teal-200">
-                <Facebook size={24} />
-              </a>
-            </div>
-            <div className="text-sm">
-              Non Copyrighted © 2023 Upload by EveBox
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
