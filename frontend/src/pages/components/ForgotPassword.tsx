@@ -16,7 +16,7 @@ const ForgotPassword = () => {
       email: '',
     },
     validationSchema: Yup.object({
-      email: Yup.string().email('Email không hợp lệ').required('Yêu cầu nhập email'),
+      email: Yup.string().email('Email không hợp lệ').required('Bạn chưa nhập email!'),
     }),
     onSubmit: async (values) => {
       try {
@@ -64,7 +64,7 @@ const ForgotPassword = () => {
                 style={{ marginTop: '50px' }}
                 type="submit"
                 className="btn btn-primary w-100 mb-3"
-                disabled={!formik.isValid || !formik.dirty} // Disable button nếu email không hợp lệ hoặc chưa thay đổi
+                disabled={!formik.dirty} // Disable button nếu email không hợp lệ hoặc chưa thay đổi
               >
                 Tiếp tục
               </button>
