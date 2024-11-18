@@ -43,7 +43,7 @@ const ForgotPassword = () => {
   
   return (
     <div className="row">
-      <div className="col-md-7 d-flex align-items-center justify-content-center right-pane">
+      <div className="col-md-7 d-flex align-items-center justify-content-center left-pane">
         <a href="/login" className="back-link">
           &lt; Quay lại Đăng nhập
         </a>
@@ -86,7 +86,7 @@ const ForgotPassword = () => {
           </div>
         </div>
       </div>
-      <div className="col-md-5 backdground">
+      <div className="col-md-5 background">
         <div className="overlay"></div>
       </div>
     </div>
