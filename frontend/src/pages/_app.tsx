@@ -2,6 +2,7 @@
 
 import { AppProps } from 'next/app';
 import { AuthProvider } from '../contexts/AuthContext';
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
