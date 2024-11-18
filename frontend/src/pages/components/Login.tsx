@@ -65,10 +65,10 @@ const Login = () => {
   return (
     <div>
       <div className="row">
-        <div className="col-md-7 d-flex align-items-center justify-content-center left-pane">
+        <div className="col-lg-7 col-md-12 d-flex align-items-center justify-content-center left-pane">
           <div className="w-75">
-            <div className="register-form">
-              <div className="register-container">
+            <div className="login-form">
+              <div className="login-container">
                 <img src="../../../images/logo.png" alt="EveBox Logo" className="logo" />
                 <h3 className='mt-3'><strong>Đăng nhập EveBox</strong></h3>
               </div>
@@ -141,12 +141,14 @@ const Login = () => {
                   </div>
                 </div>
                 <div className="short-input">
-                  <button type="submit" className="btn btn-primary w-100 mb-3 mt-3">Đăng nhập</button>
+                  <button type="submit" className="btn btn-primary w-100"  style={{ marginBottom: '15px', marginTop: '10px' }} >
+                    Đăng nhập
+                  </button>
                 </div>
-                <div className="text-center short-input mb-3">
-                  <p style={{ color: 'white' }}>Hoặc</p>
+                <div className="text-center short-input">
+                  <p style={{ color: 'white', marginBottom: '10px'}}>Hoặc</p>
                   <Link style={{ textDecoration: 'none' }} href="#">
-                    <button className="google-button">
+                    <button className="google-button" style={{ marginBottom: '20px', marginTop: '15px' }}>
                       <Icon icon="flat-color-icons:google" width="20px" color="#fff" />
                       Đăng nhập với Google
                     </button>
@@ -156,7 +158,7 @@ const Login = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-5 backdground">
+        <div className="col-lg-5 col-md-12 backdground">
           <div className="overlay"></div>
         </div>
       </div>
