@@ -53,16 +53,16 @@ const Register = () => {
   return (
     <div className='container-fluid vh-100 p-0'>
       <div className='row h-100 m-0'>
-        <div className={`col-md-5 d-flex align-items-center justify-content-center left-pane`}>
+        <div className={`col-md-5 d-flex align-items-center justify-content-center left-register-pane`}>
           <div className="text-center">
             <h2>Chào mừng bạn quay lại!</h2>
             <p>Để không bỏ lỡ sự kiện nào, hãy cho chúng tôi biết thông tin của bạn</p>
             <Link href="/login">
-              <button className="btn btn-light">Đăng nhập</button>
+              <button className="btn btn-light login-btn">Đăng nhập</button>
             </Link>
           </div>
         </div>
-        <div className="col-md-7 d-flex align-items-center justify-content-center right-pane">
+        <div className="col-md-7 d-flex align-items-center justify-content-center right-register-pane">
           <div className="w-75">
             <div className="register-form">
               <div className="register-container">

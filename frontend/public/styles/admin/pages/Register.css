@@ -10,7 +10,7 @@ html, body {
 }
 
 /* Phần bên trái: nền hình ảnh và nội dung chào mừng */
-.left-pane {
+.left-register-pane {
   flex-direction: column;
   text-align: center;
   padding: 20px;
@@ -30,7 +30,7 @@ html, body {
     color: #fff;
   }
 
-  button {
+  .login-btn {
     background-color: rgba(255, 255, 255, 0.4);
     color: #ffffff;
     padding: 10px 20px;
@@ -40,6 +40,7 @@ html, body {
 
     &:hover {
       background-color: #e6e6e6;
+      color: #000;
     }
   }
 }
@@ -49,7 +50,7 @@ input {
 }
 
 /* Phần bên phải: Form đăng ký */
-.right-pane {
+.right-register-pane {
   display: flex;
   align-items: center;
   justify-content: center;
