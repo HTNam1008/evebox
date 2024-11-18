@@ -7,64 +7,55 @@ const NavigationBar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     return(
       <>  
-       <nav className="bg-sky-900 shadow-lg">
-       <div className="mx-auto px-4 sm:px-6 lg:px-4 h-16 flex justify-between items-center">      
-         <div className="flex items-center gap-2">
-         <button className="text-white p-2 hover:bg-teal-700 rounded-md mr-4" onClick={() => setIsSidebarOpen(true)}>
-           <Menu size={24} />
-         </button>
-           <div className="w-18 h-9 rounded flex items-center justify-center">
-             <img src="/images/dashboard/logo-icon.png" alt="flag" className="w-18 h-9" />
-           </div>
-           <span className="text-white font-bold text-xl">EveBox</span>
-         </div>
+      <nav className="bg-sky-900 shadow-lg">
+        <div className="mx-auto px-4 h-16 flex justify-between items-center">      
+          <div className="flex items-center gap-2">
+            <button 
+              className="text-white p-2 hover:bg-teal-700 rounded-md" 
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+            <div className="w-18 h-9 rounded flex items-center">
+              <img src="/images/dashboard/logo-icon.png" alt="logo" className="w-18 h-9" />
+            </div>
+            <span className="text-white font-bold text-xl hidden sm:inline">EveBox</span>
+          </div>
          
-         <div className="flex items-center gap-4">
-            {/* Language Selector */}
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="relative">
-             <button 
-               className="flex items-center gap-2 text-white p-2 hover:bg-teal-700 rounded-md"
-               onClick={() => setIsLangOpen(!isLangOpen)}
-             >
-               <img src="/images/dashboard/vietnam-icon.png" alt="flag" className="w-12 h-7 mr-2" />
-               <span>VI</span>
-               <ChevronDown size={16} />
-             </button>
+              <button 
+                className="flex items-center gap-1 sm:gap-2 text-white p-2 hover:bg-teal-700 rounded-md"
+                onClick={() => setIsLangOpen(!isLangOpen)}
+              >
+                <img src="/images/dashboard/vietnam-icon.png" alt="flag" className="w-8 sm:w-12 h-7" />
+                <span className="hidden sm:inline">VI</span>
+                <ChevronDown size={16} className="hidden sm:block" />
+              </button>
              
-             {isLangOpen && (
-               <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32">
-                 <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                   <img 
-                     src="/images/dashboard/vietnam-icon.png" 
-                     alt="English flag" 
-                     className="w-8 h-6 rounded"
-                   />
-                   <span className="text-gray-700">EN</span>
-                 </button>
-                 <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                   <img 
-                     src="/images/dashboard/vietnam-icon.png" 
-                     alt="Vietnamese flag" 
-                     className="w-8 h-6 rounded"
-                   />
-                   <span className="text-gray-700">VI</span>
-                 </button>
-               </div>
-             )}
-           </div>
-           <button className="text-white hover:text-teal-100">Đăng nhập</button>
-           <button className="bg-teal-200 text-teal-950 px-4 py-2 rounded-md hover:bg-teal-50">
-             Đăng ký
-           </button>
-         </div>
-       </div>
-       </nav>
+              {isLangOpen && (
+                <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32">
+                  <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
+                    <img src="/images/dashboard/vietnam-icon.png" alt="English" className="w-8 h-6 rounded" />
+                    <span className="text-gray-700">EN</span>
+                  </button>
+                  <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
+                    <img src="/images/dashboard/vietnam-icon.png" alt="Vietnamese" className="w-8 h-6 rounded" />
+                    <span className="text-gray-700">VI</span>
+                  </button>
+                </div>
+              )}
+            </div>
+            <button className="text-white hover:text-teal-100 text-sm sm:text-base">Đăng nhập</button>
+            <button className="bg-teal-200 text-teal-950 px-3 sm:px-4 py-2 rounded-md hover:bg-teal-50 text-sm sm:text-base">
+              Đăng ký
+            </button>
+          </div>
+        </div>
+      </nav>
 
-       <Sidebar 
-        isOpen={isSidebarOpen} 
-        onClose={() => setIsSidebarOpen(false)} 
-        />
-     </>
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+    </>
     );
 };
 
