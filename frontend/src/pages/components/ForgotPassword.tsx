@@ -16,12 +16,20 @@ const ForgotPassword = () => {
       email: '',
     },
     validationSchema: Yup.object({
-      email: Yup.string().email('Email không hợp lệ').required('Bạn chưa nhập email!'),
+      email: Yup.string()
+        .required('Bạn chưa nhập email!')
+        .matches(
+          /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          'Email không hợp lệ!'
+        ), // Kiểm tra định dạng email
     }),
+    validateOnChange: true,
+    validateOnBlur: true,
+    validateOnMount: true,
     onSubmit: async (values) => {
       try {
         alert('Email đã được gửi, vui lòng kiểm tra hộp thư của bạn!');
-        router.push('/Login'); // Chuyển hướng về trang đăng nhập
+        router.push('/login');
       } catch (err) {
         if (axios.isAxiosError(err)) {
           const error = err as AxiosError<ErrorResponse>;
@@ -32,10 +40,13 @@ const ForgotPassword = () => {
       }
     },
   });
-
+  
   return (
     <div className="row">
       <div className="col-md-7 d-flex align-items-center justify-content-center right-pane">
+        <a href="/login" className="back-link">
+          &lt; Quay lại Đăng nhập
+        </a>
         <div className="w-75">
           <div className="form">
             <div className="container">
@@ -51,20 +62,23 @@ const ForgotPassword = () => {
                   id="email"
                   className={`form-control ${formik.touched.email && formik.errors.email ? 'is-invalid' : ''}`}
                   placeholder="Nhập email của bạn"
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    formik.setFieldValue('email', e.target.value);
+                    formik.setFieldTouched('email', true, false);
+                  }}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
                 />
-                {formik.touched.email && formik.errors.email ? (
+                {formik.touched.email && formik.errors.email && (
                   <div className="invalid-feedback">{formik.errors.email}</div>
-                ) : null}
+                )}
               </div>
               {error && <div className="alert alert-danger">{error}</div>}
               <button
                 style={{ marginTop: '50px' }}
                 type="submit"
                 className="btn btn-primary w-100 mb-3"
-                disabled={!formik.dirty} // Disable button nếu email không hợp lệ hoặc chưa thay đổi
+                disabled={!formik.isValid || !formik.dirty}
               >
                 Tiếp tục
               </button>
