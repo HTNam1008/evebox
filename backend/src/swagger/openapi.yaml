@@ -207,6 +207,46 @@ paths:
       security:
       - bearerAuth: []
       x-swagger-router-controller: User
+  /api/user/refresh-token:
+    post:
+      tags:
+      - user
+      summary: Create new token
+      parameters:
+      - name: refresh_token
+        in: query
+        description: "Refresh token"
+        required: true
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user_refreshtoken_body'
+        "400":
+          description: Bad request. Missing or invalid token
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: User    
 components:
   schemas:
     User:
@@ -315,11 +355,15 @@ components:
     inline_response_200_1:
       type: object
       properties:
-        token:
+        access_token:
           type: string
           format: varchar(255)
+        refresh_token:
+          type: string
+          format: varchar(255)  
       example:
-        token: token
+        access_token: token
+        refresh_token: token
     user_forgotpassword_body:
       required:
       - email
@@ -338,6 +382,14 @@ components:
           type: string
           format: varchar(255)
         password:
+          type: string
+          format: varchar(255)
+    user_refreshtoken_body:
+      required:
+      - access_token
+      type: object
+      properties:
+        access_token:
           type: string
           format: varchar(255)
   securitySchemes:
