@@ -4,7 +4,7 @@
   background-image: url(../../../images/background_login.png);
   background-size: cover; /* Phủ toàn bộ diện tích */
   background-position: center; /* Căn giữa hình ảnh */
-  height: 100vh;
+  min-height: 100vh;  /* Điều chỉnh responsive chiều cao */
 }
 
 /* Lớp overlay */
@@ -32,7 +32,7 @@
   justify-content: center;
   padding: 20px;
   background: linear-gradient(180deg, #9EF5CF 0%, #2F9098 68%, #176B87 100%);
-  height: 100vh;
+  min-height: 100%;
 }
 
 .login-form {
@@ -69,18 +69,20 @@
   margin-bottom: 15px;
 }
 
-.btn-primary {
+.btn-login {
   background-color: #0C4762 !important;
   color: #fff !important;
-  padding: 10px 20px !important;
+  padding: 0; /* loại bỏ padding cũ */
+  padding: 10px !important;
   border: none !important;
   border-radius: 5px !important;
   cursor: pointer !important;
   height: 46px;
   width: 100%; /* Đảm bảo nút sử dụng toàn bộ chiều rộng của container */
+  text-align: center;
 }
 
-.btn-primary:hover {
+.btn-login:hover {
   background-color: #082b3b !important;
 }
 
@@ -123,7 +125,7 @@
 
 /* Điều chỉnh chiều ngang của các trường input và button */
 .short-input {
-  width: 90% !important; /* Giảm xuống 80% */
+  width: 90% !important; 
   margin: 0 auto; /* Căn giữa */
 }
 
