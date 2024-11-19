@@ -38,7 +38,7 @@ const Login = () => {
       if (!values.password) {
         errors.password = 'Bạn chưa nhập mật khẩu';
       }
-      
+
       return errors;
     },
     onSubmit: async (values) => {
@@ -123,32 +123,35 @@ const Login = () => {
                   )}
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-3 short-input">
-                  <div className="form-check">
+                  <div className="d-flex align-items-center">
                     <input
                       type="checkbox"
                       id="agree"
-                      className="form-check-input"
+                      className="form-check-input me-2"
                       {...formik.getFieldProps('agree')}
                     />
-                    <label htmlFor="agree" className="form-check-label">
+                    <label htmlFor="agree" className="form-check-label m-0">
                       Ghi nhớ đăng nhập
                     </label>
                   </div>
-                  <div>
-                    <a href="/ForgotPassword" className="text-decoration-none font-forget">
-                      Quên mật khẩu?
-                    </a>
-                  </div>
+                  <a href="/forgot-password" className="text-decoration-none font-forget">
+                    Quên mật khẩu?
+                  </a>
                 </div>
+
                 <div className="short-input">
-                  <button type="submit" className="btn btn-primary w-100"  style={{ marginBottom: '15px', marginTop: '10px' }} >
+                  <button type="submit" className="btn btn-login w-100" style={{ marginBottom: '20px', marginTop: '10px' }} >
                     Đăng nhập
                   </button>
                 </div>
                 <div className="text-center short-input">
-                  <p style={{ color: 'white', marginBottom: '10px'}}>Hoặc</p>
+                  <span style={{ color: 'white' }}>Bạn chưa có tài khoản? </span>
+                  <Link href="/register" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold' }}>
+                    Đăng ký ngay
+                  </Link>
+                  <p style={{ color: 'white', marginBottom: '20px', marginTop: '5px' }}>Hoặc</p>
                   <Link style={{ textDecoration: 'none' }} href="#">
-                    <button className="google-button" style={{ marginBottom: '20px', marginTop: '15px' }}>
+                    <button className="google-button" style={{ marginBottom: '20px' }}>
                       <Icon icon="flat-color-icons:google" width="20px" color="#fff" />
                       Đăng nhập với Google
                     </button>
