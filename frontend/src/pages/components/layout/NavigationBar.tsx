@@ -5,10 +5,11 @@ import Sidebar from '../../components/layout/SideBar';
 const NavigationBar = () => {
     const [isLangOpen, setIsLangOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    
     return(
       <>  
-      <nav className="bg-sky-900 shadow-lg">
-        <div className="mx-auto px-4 h-16 flex justify-between items-center">      
+      <nav className="fixed top-0 left-0 right-0 bg-sky-900 shadow-lg">
+        <div className="w-full px-4 h-16 flex justify-between items-center">      
           <div className="flex items-center gap-2">
             <button 
               className="text-white p-2 hover:bg-teal-700 rounded-md" 
@@ -34,7 +35,7 @@ const NavigationBar = () => {
               </button>
              
               {isLangOpen && (
-                <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32">
+                <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32 z-50">
                   <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
                     <img src="/images/dashboard/vietnam-icon.png" alt="English" className="w-8 h-6 rounded" />
                     <span className="text-gray-700">EN</span>
@@ -53,6 +54,9 @@ const NavigationBar = () => {
           </div>
         </div>
       </nav>
+
+      {/* Add a spacer to prevent content from hiding behind the fixed navbar */}
+      <div className="h-16"></div>
 
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
     </>

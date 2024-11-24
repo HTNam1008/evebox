@@ -42,16 +42,18 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col items-center">
       <NavigationBar />
       
       {/* Hero Section */}
-      <div className="flex justify-center mt-4 md:mt-8 px-4">
-        <div className="relative w-full md:w-5/6 overflow-hidden rounded-lg">
-          <div 
-            className="flex transition-transform duration-500 ease-in-out h-full"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
+      <div className="w-full flex justify-center flex-col items-center px-4 md:mt-8">
+        <div className="w-full md:w-5/6  relative">
+          {/* Slideshow Container */}
+          <div className="relative rounded-lg overflow-hidden">
+            <div 
+              className="flex transition-transform duration-500 ease-in-out h-[500px]"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
             {slides.map((slide, index) => (
               <div key={index} className="w-full h-full flex-shrink-0 relative">
                 <img
@@ -60,8 +62,8 @@ const Dashboard = () => {
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white">
-                  <h2 className="text-3xl md:text-6xl font-bold mb-2 md:mb-4">{slide.title}</h2>
-                  <p className="text-2xl md:text-4xl">{slide.subtitle}</p>
+                  <h2 className="text-3xl md:text-6xl font-bold mb-2 md:mb-4  text-center">{slide.title}</h2>
+                  <p className="text-2xl md:text-4xl  text-center">{slide.subtitle}</p>
                 </div>
               </div>
             ))}
@@ -80,10 +82,10 @@ const Dashboard = () => {
           >
             <ChevronRight size={20} className="text-white" />
           </button>
-
+          </div>
           {/* Search Controls */}
-          <div className="absolute bottom-0 left-0 right-0 mx-auto w-full px-4 md:w-11/12 md:px-10">
-            <div className="bg-sky-900 text-white p-4 md:p-6 rounded-lg shadow-lg">
+          <div className="absolute left-0 right-0 -bottom-20 mx-auto w-full md:w-11/12 px-4">
+          <div className="bg-sky-900 text-white p-4 md:p-6 rounded-lg shadow-lg">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 text-left">
                   <label className="text-sm font-medium mb-2">Loại sự kiện</label>
@@ -129,8 +131,10 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        
         </div>
       </div>
+      <div className="mt-36"></div>
 
       {/* Events Section */}
       <div className="flex justify-center mt-8 px-4">
