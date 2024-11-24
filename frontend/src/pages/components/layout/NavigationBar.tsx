@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Menu, ChevronDown } from 'lucide-react';
 import Sidebar from '../../components/layout/SideBar';
+import Link from 'next/link';
 
 const NavigationBar = () => {
     const [isLangOpen, setIsLangOpen] = useState(false);
@@ -8,7 +9,7 @@ const NavigationBar = () => {
     
     return(
       <>  
-      <nav className="fixed top-0 left-0 right-0 bg-sky-900 shadow-lg">
+       <nav className="fixed top-0 left-0 right-0 bg-sky-900 shadow-lg z-50">
         <div className="w-full px-4 h-16 flex justify-between items-center">      
           <div className="flex items-center gap-2">
             <button 
@@ -24,7 +25,7 @@ const NavigationBar = () => {
           </div>
          
           <div className="flex items-center gap-2 sm:gap-4">
-            <div className="relative">
+           <div className="relative z-50">
               <button 
                 className="flex items-center gap-1 sm:gap-2 text-white p-2 hover:bg-teal-700 rounded-md"
                 onClick={() => setIsLangOpen(!isLangOpen)}
@@ -35,7 +36,8 @@ const NavigationBar = () => {
               </button>
              
               {isLangOpen && (
-                <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32 z-50">
+                 <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32">
+                  <div className="relative bg-white rounded-md overflow-hidden">
                   <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
                     <img src="/images/dashboard/vietnam-icon.png" alt="English" className="w-8 h-6 rounded" />
                     <span className="text-gray-700">EN</span>
@@ -45,12 +47,19 @@ const NavigationBar = () => {
                     <span className="text-gray-700">VI</span>
                   </button>
                 </div>
+                </div>
+
               )}
             </div>
-            <button className="text-white hover:text-teal-100 text-sm sm:text-base">Đăng nhập</button>
+            <Link style={{ textDecoration: 'none' }} href="/login">
+               <button className="text-white hover:text-teal-100 text-sm sm:text-base">Đăng nhập</button>
+            </Link>
+            
+            <Link style={{ textDecoration: 'none' }} href="/login">
             <button className="bg-teal-200 text-teal-950 px-3 sm:px-4 py-2 rounded-md hover:bg-teal-50 text-sm sm:text-base">
               Đăng ký
             </button>
+            </Link>
           </div>
         </div>
       </nav>

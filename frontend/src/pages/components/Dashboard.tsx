@@ -12,17 +12,17 @@ const Dashboard = () => {
 
   const slides = [
     {
-      image: "/images/dashboard/presentation_pic.png",
+      image: "../../../images/dashboard/presentation_pic.png",
       title: "MADE FOR THOSE",
       subtitle: "WHO DO"
     },
     {
-      image: "/images/dashboard/presentation_pic.png",
+      image: "../../../images/dashboard/presentation_pic.png",
       title: "DISCOVER EVENTS",
       subtitle: "NEAR YOU"
     },
     {
-      image: "/images/dashboard/presentation_pic.png",
+      image: "../../../images/dashboard/presentation_pic.png",
       title: "JOIN THE",
       subtitle: "COMMUNITY"
     }
@@ -42,9 +42,9 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center">
+    <div className="min-h-screen flex flex-col">
       <NavigationBar />
-      
+      <main className="flex-1">
       {/* Hero Section */}
       <div className="w-full flex justify-center flex-col items-center px-4 md:mt-8">
         <div className="w-full md:w-5/6  relative">
@@ -56,8 +56,7 @@ const Dashboard = () => {
             >
             {slides.map((slide, index) => (
               <div key={index} className="w-full h-full flex-shrink-0 relative">
-                <img
-                  src={slide.image}
+                <img src={slide.image}
                   alt={`Slide ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
@@ -72,13 +71,13 @@ const Dashboard = () => {
           {/* Navigation Buttons */}
           <button
             onClick={prevSlide}
-            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-30 p-1 md:p-2 rounded-full hover:bg-opacity-50 transition-all"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-opacity-30 p-1 md:p-2 rounded-full hover:bg-opacity-50 transition-all"
           >
             <ChevronLeft size={20} className="text-white" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-30 p-1 md:p-2 rounded-full hover:bg-opacity-50 transition-all"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2  bg-opacity-30 p-1 md:p-2 rounded-full hover:bg-opacity-50 transition-all"
           >
             <ChevronRight size={20} className="text-white" />
           </button>
@@ -175,7 +174,7 @@ const Dashboard = () => {
                   <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-sm">
                     <time className="text-left text-teal-500">20:00 - 23:00, 25 tháng 10, 2024</time>
                     <span className={`rounded-lg bg-emerald-200 px-4 font-medium text-sky-950 text-center md:text-left`}>
-                      {index % 2 === 0 ? 'Miễn phí' : 'Từ 950.000đ'}
+                      {index % 2 === 0 ? 'Miễn phí' : '950.000đ'}
                     </span>
                   </div>
                   <p className="mt-3 text-left text-xs text-gray-400">
@@ -194,6 +193,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      </main>
 
       <Footer />
     </div>

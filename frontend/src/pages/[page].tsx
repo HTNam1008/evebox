@@ -2,6 +2,7 @@ import React from 'react';
 import Dashboard from './components/Dashboard';
 import Register from './components/Register';
 import Login from './components/Login';
+import ForgotPassword from './components/ForgotPassword';
 const DynamicPage = ({ page }: { page: string }) => {
   if (page === 'dashboard') {
     return <Dashboard />;
@@ -11,6 +12,9 @@ const DynamicPage = ({ page }: { page: string }) => {
   }
   if (page === 'login') {
     return <Login />;
+  }
+  if (page === 'forgot-password') {
+    return <ForgotPassword />;
   }
   return <div>Trang không tồn tại</div>;
 };
