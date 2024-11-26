@@ -45,6 +45,19 @@ html, body {
   }
 }
 
+.font-style {
+  font-weight: bold; 
+  font-size: 16px;   
+  text-transform: uppercase;
+}
+
+::placeholder {
+  color: #687C94;      
+  font-size: 12px;   
+  font-weight: 400;    
+  opacity: 1;       
+}
+
 input {
   height: 46px;
 }
