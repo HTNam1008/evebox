@@ -68,7 +68,7 @@ const Login = () => {
         <div className="col-lg-7 col-md-12 d-flex align-items-center justify-content-center left-pane">
           <div className="w-75">
             <div className="login-form">
-              <div className="login-container">
+              <div className="login-container d-flex flex-column align-items-center">
                 <img src="../../../images/logo.png" alt="EveBox Logo" className="logo" />
                 <h3 className='mt-3'><strong>Đăng nhập EveBox</strong></h3>
               </div>
