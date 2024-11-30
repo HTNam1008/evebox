@@ -17,6 +17,18 @@ import { LogoutUserController } from './commands/logout/logout-user.controller';
 import { LogoutUserService } from './commands/logout/logout-user.service';
 import { RefreshTokenService } from './commands/refesh-token/refresh-token.service';
 import { RefreshTokenController } from './commands/refesh-token/refresh-token.controller';
+import { SendEmailOtpHandler } from './domain/events/handler/send-email-otp.handler';
+import { ForgotPasswordController } from './commands/forgot-password/forgot-password.controller';
+import { ForgotPasswordUserService } from './commands/forgot-password/forgot-password.service';
+import { VerifyOTPController } from './commands/otps/verify-otp/verify-otp.controller';
+import { VerifyOTPService } from './commands/otps/verify-otp/verify-otp.service';
+import { ResetPasswordService } from './commands/reset-password/reset-password.service';
+import { UserPasswordResetHandler } from './domain/events/handler/user-reset-password.handler';
+import { ResetPasswordController } from './commands/reset-password/reset-password.controller';
+import { LocalStorageModule } from 'src/infrastructure/local-storage/local-storage.module';
+import { OtpUtilsModule } from 'src/shared/utils/otp/otp.module';
+import { ResendOTPController } from './commands/otps/resend-otp/resend-otp.controller';
+import { ResendOTPService } from './commands/otps/resend-otp/resend-otp.service';
 
 @Module({
   imports: [
@@ -31,8 +43,19 @@ import { RefreshTokenController } from './commands/refesh-token/refresh-token.co
       inject: [ConfigService],
     }),
     EmailModule,
+    LocalStorageModule,
+    OtpUtilsModule,
   ],
-  controllers: [RegisterUserController, LoginUserController, LogoutUserController, RefreshTokenController],
+  controllers: [
+    ResendOTPController,
+    ResetPasswordController,
+    VerifyOTPController,
+    RegisterUserController,
+    LoginUserController,
+    LogoutUserController,
+    RefreshTokenController,
+    ForgotPasswordController,
+  ],
   providers: [
     PrismaService,
     RegisterUserService,
@@ -41,7 +64,13 @@ import { RefreshTokenController } from './commands/refesh-token/refresh-token.co
     SendWelcomeEmailHandler,
     AuthRepositoryImpl,
     JwtStrategy,
-    RefreshTokenService
+    RefreshTokenService,
+    SendEmailOtpHandler,
+    ForgotPasswordUserService,
+    VerifyOTPService,
+    ResetPasswordService,
+    UserPasswordResetHandler,
+    ResendOTPService,
   ],
   exports: [AuthRepositoryImpl],
 })

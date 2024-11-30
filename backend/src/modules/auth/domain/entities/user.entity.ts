@@ -1,16 +1,15 @@
-// src/modules/auth/domain/entities/user.entity.ts
-
 import { AggregateRoot } from 'src/libs/ddd/aggregate-root.base';
-import { UserId } from '../value-objects/user-id.vo';
-import { Email } from '../value-objects/email.vo';
-import { Password } from '../value-objects/password.vo';
+import { UserId } from '../value-objects/user/user-id.vo';
+import { Email } from '../value-objects/user/email.vo';
+import { Password } from '../value-objects/user/password.vo';
 import { UserRole } from '../enums/user-role.enum';
-import { Role } from '../value-objects/role.vo';
-import { UserRegisteredDomainEvent } from '../events/user-registered.domain-event';
-import { Name } from '../value-objects/name.vo';
-import { Phone } from '../value-objects/phone.vo';
-import { ProvinceId } from '../value-objects/province-id.vo';
+import { Role } from '../value-objects/user/role.vo';
+import { UserRegisteredDomainEvent } from '../events/user/user-registered.domain-event';
+import { Name } from '../value-objects/user/name.vo';
+import { Phone } from '../value-objects/user/phone.vo';
+import { ProvinceId } from '../value-objects/user/province-id.vo';
 import { Result, Ok, Err } from 'oxide.ts';
+import { UserPasswordResetDomainEvent } from '../events/user/user-reset-password.domain-event';
 
 interface UserProps {
   id: UserId;
@@ -57,7 +56,6 @@ export class User extends AggregateRoot<UserId, UserProps> {
         provinceIds, // Gán danh sách ProvinceIds
       });
 
-      // Phát sinh domain event
       user.addDomainEvent(new UserRegisteredDomainEvent(user));
 
       return Ok(user);
@@ -87,6 +85,15 @@ export class User extends AggregateRoot<UserId, UserProps> {
       role,
       provinceIds, // Gán danh sách ProvinceIds
     }));
+  }
+  
+  public updatePassword(newPassword: Password): void {
+    this.props.password = newPassword;
+    
+    // Add domain event
+    this.addDomainEvent(
+      new UserPasswordResetDomainEvent(this)
+    );
   }
 
   // Các getter

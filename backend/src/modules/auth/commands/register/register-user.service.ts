@@ -1,21 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { RegisterUserCommand } from './register-user.command';
-import { User } from '../../domain/entities/user.entity';
-import { Email } from '../../domain/value-objects/email.vo';
-import { Password } from '../../domain/value-objects/password.vo';
-import { Name } from '../../domain/value-objects/name.vo';
-import { Phone } from '../../domain/value-objects/phone.vo';
-import { ProvinceId } from '../../domain/value-objects/province-id.vo';
+import { Email } from '../../domain/value-objects/user/email.vo';
+import { Password } from '../../domain/value-objects/user/password.vo';
+import { Name } from '../../domain/value-objects/user/name.vo';
+import { Phone } from '../../domain/value-objects/user/phone.vo';
+import { ProvinceId } from '../../domain/value-objects/user/province-id.vo';
 import { UserRole } from '../../domain/enums/user-role.enum';
-import { Role } from '../../domain/value-objects/role.vo';
+import { Role } from '../../domain/value-objects/user/role.vo';
 import { Result, Ok, Err } from 'oxide.ts';
 import { AuthRepositoryImpl } from '../../repositories/auth.repository.impl';
+import { TempUserStore } from 'src/infrastructure/local-storage/local-storage.service';
+import { OTPType } from '../../domain/enums/otp-type.enum';
+import { OtpUtils } from 'src/shared/utils/otp/otp.util';
+import { OTP } from '../../domain/entities/otp.entity';
 
 @Injectable()
 export class RegisterUserService {
-  constructor(private readonly authRepository: AuthRepositoryImpl) {}
+  constructor(
+    private readonly authRepository: AuthRepositoryImpl,
+    private readonly temUserRepository: TempUserStore,
+    private readonly otpUtils: OtpUtils,
+  ) {}
 
-  async execute(command: RegisterUserCommand): Promise<Result<string, Error>> {
+  async execute(
+    command: RegisterUserCommand,
+  ): Promise<
+    Result<
+      {
+        request_token: string;
+        remaining_attempts: number;
+        resend_allowed_in: number;
+      },
+      Error
+    >
+  > {
     try {
       const emailOrError = Email.create(command.email);
       if (emailOrError.isErr()) {
@@ -45,41 +63,58 @@ export class RegisterUserService {
         return Err(provinceIdsOrError.unwrapErr());
       }
       const provinceIds = provinceIdsOrError.unwrap();
-      console.log("provinceIds: ", provinceIds);
 
-      const roleOrError = Role.create(command.role_id ? command.role_id : UserRole.CUSTOMER);
+      const roleOrError = Role.create(
+        command.role_id ? command.role_id : UserRole.CUSTOMER,
+      );
       if (roleOrError.isErr()) {
         return Err(roleOrError.unwrapErr());
       }
       const role = roleOrError.unwrap();
 
+      if (command.re_password !== command.password) {
+        return Err(new Error('Passwords do not match'));
+      }
+
       const passwordOrError = await Password.create(command.password);
       if (passwordOrError.isErr()) {
-        return Err(passwordOrError.unwrapErr()); 
+        return Err(passwordOrError.unwrapErr());
       }
       const password = passwordOrError.unwrap();
 
-      const userOrError = await User.createNew(
-        name,
-        email,
-        password,
-        phone,
-        provinceIds,
-        role.getValue(), 
-      );
+      const otpResult = OTP.create(email, OTPType.REGISTER);
 
-      if (userOrError.isErr()) {
-        return Err(userOrError.unwrapErr());
+      if (otpResult.isErr()) {
+        return Err(otpResult.unwrapErr());
       }
 
-      const user = userOrError.unwrap(); 
+      const otp = otpResult.unwrap();
 
-      await this.authRepository.save(user);
+      const requestToken = this.otpUtils.generateRequestToken(
+        otp.email.value,
+        OTPType[otp.type],
+      );
 
-      return Ok(user.id.value);
+      // Save OTP to database
+      await this.authRepository.saveOTP(otp, requestToken);
+
+      await this.temUserRepository.save(
+        requestToken,
+        { name, email, password, phone, provinceIds, role },
+        900,
+      );
+      // await this.authRepository.save(user);
+      // return Ok(user.id.value);
+      return Ok({
+        request_token: requestToken,
+        remaining_attempts: otp.getRemainingAttempts(),
+        resend_allowed_in: otp.resendCooldown,
+      });
     } catch (error) {
       console.error('Error during registration:', error);
-      return Err(new Error('An unexpected error occurred during registration.'));
+      return Err(
+        new Error('An unexpected error occurred during registration.'),
+      );
     }
   }
 }

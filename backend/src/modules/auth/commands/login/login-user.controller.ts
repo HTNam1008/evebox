@@ -1,17 +1,31 @@
-// authenticate-user.controller.ts
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpStatus, HttpException } from '@nestjs/common';
 import { LoginUserDto } from './login-user.dto';
 import { LoginUserService } from './login-user.service';
 import { Response } from 'express';
 import { LoginUserCommand } from './login-user.command';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('api/user')
+@ApiTags('Authentication')
 export class LoginUserController {
   constructor(
     private readonly loginUserService: LoginUserService,
   ) {}
 
   @Post('login')
+  @ApiOperation({ summary: 'User login' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User logged in successfully',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Invalid credentials',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid input',
+  })
   async login(
     @Body() loginUserDto: LoginUserDto,
     @Res() res: Response,
@@ -24,9 +38,16 @@ export class LoginUserController {
     const result = await this.loginUserService.execute(command);
 
     if (result.isErr()) {
-      return res.status(401).json({ error: result.unwrapErr().message });
+      throw new HttpException(result.unwrapErr().message, HttpStatus.UNAUTHORIZED);
     }
 
-    return res.status(200).json(result.unwrap());
+    const data = result.unwrap();
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Login successful',
+      data: {
+        ...data
+      },
+    };
   }
 }

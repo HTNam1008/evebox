@@ -1,4 +1,3 @@
-// login-user.command.ts
 export class LoginUserCommand {
     constructor(
       public readonly email: string,

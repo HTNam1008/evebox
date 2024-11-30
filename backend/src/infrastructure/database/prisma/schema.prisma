@@ -68,3 +68,25 @@ model RefreshToken {
 
   @@map("refresh_tokens")
 }
+
+enum OTPType {
+  FORGOT_PASSWORD
+  REGISTER
+}
+
+model Otp {
+  id        String   @id
+  email     String
+  otp       String
+  type      OTPType
+  requestToken String 
+  expiresAt DateTime
+  attempts Int
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@unique([requestToken])
+  @@index([email])
+  @@index([otp])
+  @@map("otps")
+}

@@ -1,5 +1,3 @@
-// src/modules/user/domain/enums/user-role.enum.ts
-
 export enum UserRole {
     SYSTEM_ADMIN = 0,
     ADMIN = 1,

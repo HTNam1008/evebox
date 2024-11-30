@@ -1,5 +1,3 @@
-// src/modules/auth/commands/refresh-token/refresh-token.service.ts
-
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRepositoryImpl } from '../../repositories/auth.repository.impl';
@@ -15,14 +13,15 @@ export class RefreshTokenService {
     private readonly configService: ConfigService,
   ) {}
 
-  async execute(command: RefreshTokenCommand): Promise<Result<{accessToken: string}, Error>> {
+  async execute(
+    command: RefreshTokenCommand,
+  ): Promise<Result<{ access_token: string; refresh_token: string }, Error>> {
     try {
       const payload = this.jwtService.verify(command.refreshToken, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
 
       // Optionally, check if the refresh token is revoked or blacklisted
-
       const existingToken = await this.authRepository.findRefreshToken(
         command.refreshToken,
       );
@@ -31,16 +30,16 @@ export class RefreshTokenService {
       }
 
       // Generate new Access Token
-    const newAccessToken = this.jwtService.sign(
+      const newAccessToken = this.jwtService.sign(
         { email: payload.email, role: payload.role },
         {
-            expiresIn: this.configService.get<string>('JWT_EXPIRES_IN'), // Access token expires in 1 minute
+          expiresIn: this.configService.get<string>('JWT_EXPIRES_IN'), // Access token expires in 1 minute
         },
-    );
+      );
 
-    await this.authRepository.revokeRefreshToken(command.refreshToken);
+      await this.authRepository.revokeRefreshToken(command.refreshToken);
 
-    const newRefreshToken = this.jwtService.sign(
+      const newRefreshToken = this.jwtService.sign(
         { email: payload.email, role: payload.rol },
         {
           expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'), // Refresh token expires in 7 days
@@ -55,10 +54,11 @@ export class RefreshTokenService {
         payload.email,
         expiresAt,
       );
+
       // Optionally, generate a new Refresh Token and invalidate the old one
       return Ok({
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken
+        access_token: newAccessToken,
+        refresh_token: newRefreshToken,
       });
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');

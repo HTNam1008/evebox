@@ -1,6 +1,6 @@
 // src/modules/auth/repositories/auth.repository.ts
 import { User } from '../domain/entities/user.entity';
-import { Email } from '../domain/value-objects/email.vo';
+import { Email } from '../domain/value-objects/user/email.vo';
 
 export interface AuthRepository {
   findByEmail(email: Email): Promise<User | null>;

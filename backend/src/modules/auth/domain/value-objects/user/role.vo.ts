@@ -1,7 +1,5 @@
-// src/modules/user/domain/value-objects/role.vo.ts
-
 import { ValueObject } from 'src/libs/ddd/value-object.base';
-import { UserRole } from '../enums/user-role.enum';
+import { UserRole } from '../../enums/user-role.enum';
 import { Result, Ok, Err } from 'oxide.ts';
 
 interface RoleProps {

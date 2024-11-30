@@ -1,4 +1,4 @@
-// register-user.dto.ts
+import { ApiProperty } from '@nestjs/swagger';
 import { ArrayNotEmpty, ArrayUnique, IsArray, IsEmail, isInt, IsInt, IsNotEmpty, IsOptional, IsString, Length, MinLength } from 'class-validator';
 
 export class RegisterUserDto {
@@ -11,6 +11,10 @@ export class RegisterUserDto {
   @IsNotEmpty()
   @MinLength(6)
   password: string;
+
+  @IsNotEmpty()
+  @MinLength(6)
+  re_password: string;
 
   @IsNotEmpty()
   @IsString()
@@ -26,4 +30,8 @@ export class RegisterUserDto {
   @ArrayUnique()
   @IsInt({ each: true })
   province_id?: number[];
+
+  @ApiProperty()
+  @IsString()
+  otp: string; 
 }

@@ -1,5 +1,3 @@
-// src/modules/auth/services/logout-user.service.ts
-
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';

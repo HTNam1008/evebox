@@ -1,10 +1,8 @@
-// login-user.service.ts
-
 import { Injectable } from '@nestjs/common';
 import { LoginUserCommand } from './login-user.command';
 import { JwtService } from '@nestjs/jwt';
 import { Result, Ok, Err } from 'oxide.ts';
-import { Email } from '../../domain/value-objects/email.vo';
+import { Email } from '../../domain/value-objects/user/email.vo';
 import { AuthRepositoryImpl } from '../../repositories/auth.repository.impl';
 import { ConfigService } from '@nestjs/config';
 
@@ -18,7 +16,7 @@ export class LoginUserService {
 
   async execute(
     command: LoginUserCommand,
-  ): Promise<Result<{ accessToken: string, refreshToken: string }, Error>> {
+  ): Promise<Result<{ access_token: string, refresh_token: string }, Error>> {
     const emailOrError = Email.create(command.email);
     if (emailOrError.isErr()) {
       return Err(emailOrError.unwrapErr());
@@ -46,13 +44,15 @@ export class LoginUserService {
       expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'), // Refresh token expires in 7 days
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
     });
-    
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
     await this.userRepository.saveRefreshToken(
       refreshToken,
       user.email.value,
-      new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // expiresAt
+      expiresAt, // expiresAt
     );
 
-    return Ok({ accessToken, refreshToken });
+    return Ok({ access_token: accessToken, refresh_token: refreshToken });
   }
 }

@@ -1,7 +1,5 @@
-// src/modules/user/domain/value-objects/user-id.vo.ts
-
 import { Result, Ok, Err } from 'oxide.ts';
-import { Identifier } from '../../../../libs/ddd/identifier.base';
+import { Identifier } from '../../../../../libs/ddd/identifier.base';
 import { v4 as uuidv4 } from 'uuid';
 
 export class UserId extends Identifier<string> {

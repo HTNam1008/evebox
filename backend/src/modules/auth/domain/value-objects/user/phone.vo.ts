@@ -1,6 +1,4 @@
-// src/modules/user/domain/value-objects/phone.vo.ts
-
-import { ValueObject } from '../../../../libs/ddd/value-object.base';
+import { ValueObject } from '../../../../../libs/ddd/value-object.base';
 import { Result, Ok, Err } from 'oxide.ts';
 
 interface PhoneProps {

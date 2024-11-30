@@ -1,5 +1,3 @@
-// src/modules/user/domain/value-objects/password.vo.ts
-
 import { ValueObject } from "src/libs/ddd/value-object.base";
 import { hash, compare } from 'bcryptjs';
 import { Result, Ok, Err } from 'oxide.ts';
