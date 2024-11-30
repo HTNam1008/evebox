@@ -9,6 +9,12 @@ servers:
 tags:
 - name: user
   description: Operations about user
+- name: event
+  description: Operations about event
+- name: ticket
+  description: Operations about ticket 
+- name: discovery
+  description: Operations for homepage
 paths:
   /api/users/{userId}:
     get:
@@ -247,6 +253,611 @@ paths:
       security:
       - bearerAuth: []
       x-swagger-router-controller: User    
+  /api/events:
+    get:
+      tags:
+      - event
+      summary: Get all events
+      parameters:
+      - name: key
+        in: query
+        description: search by keyword
+        required: false
+        schema:
+          type: string
+      - name: category
+        in: query
+        description: type of event
+        required: false
+        schema:
+          type: string
+      - name: location
+        in: query
+        description: filter by location
+        required: false
+        schema:
+          type: string    
+      - name: startDate
+        in: query
+        description: filtert by date
+        required: false
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        description: filter by date
+        required: false
+        schema:
+          type: string 
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total number of records
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for the event
+                        title:
+                          type: string
+                          format: varchar(255)
+                        image_url:
+                          type: string
+                          format: varchar(255)  
+                        description:
+                          type: string
+                          format: varchar(255)
+                        start_date:
+                          type: string
+                          format: date-time
+                        end_date:
+                          type: string
+                          format: date-time
+                        min_price:
+                          type: integer
+                          description: Unique identifier for the event  
+                        status:
+                          type: string
+                          format: varchar(255)
+                        venue:
+                          type: string
+                          format: string
+                        location:
+                          type: string
+                          format: string
+                      required:
+                        - id
+                        - title
+                        - description
+                        - start_date
+                        - end_date
+                        - location
+                required:
+                  - total
+      x-swagger-router-controller: User    
+  /api/events/{eventId}:
+    get:
+      tags:
+      - event
+      summary: Get specific event
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Unique identifier for the event
+                  title:
+                    type: string
+                    format: varchar
+                  banner_img:
+                    type: string
+                    format: varchar(255)
+                  slug:
+                    type: string
+                    format: varchar(255)  
+                  description:
+                    type: string
+                    format: varchar(255)
+                  category:
+                    type: string
+                    format: varchar(255)  
+                  start_date:
+                    type: string
+                    format: date-time
+                  end_date:
+                    type: integer
+                    format: date-time
+                  min_price:
+                    type: integer
+                    format: int32
+                  status:
+                    type: string
+                    format: varchar(255)
+                  venue:
+                    type: string
+                    format: varchar(255)
+                  location_id:
+                    type: string
+                    format: varchar(255)
+                  is_free:
+                    type: boolean
+                  ticket_type:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for the event
+                        name:
+                          type: string
+                          format: varchar(255)
+                        description:
+                          type: string
+                          format: varchar(255)  
+                        is_free:
+                          type: boolean
+                        price:
+                          type: integer
+                          format: int32
+                        total_tickets:
+                          type: integer
+                          format: int32
+                        available_tickets:
+                          type: integer
+                          format: int32
+                        status:
+                          type: string
+                          format: varchar(255)   
+      x-swagger-router-controller: User        
+  /api/ticket/:
+    post:
+      tags:
+      - ticket
+      summary: Create ticket
+      description: This can only be done by the logged in user.
+      parameters:
+      - name: Authorization
+        in: header
+        description: "Bearer token for authorization (e.g., `Bearer <token>`)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Create ticket
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_id:
+                 type: string
+                 format: varchar(255)
+                ticket_type_id:
+                 type: integer
+                ticket_price:
+                 type: integer 
+                promotion_id:
+                 type: integer  
+                status:
+                 type: string
+                 format: varchar(10)
+              required:
+                - event_id
+                - ticket_type_id
+                - ticket_price
+                - status
+        required: true
+      responses:
+        "201":
+          description: User created successfully
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized 
+  /api/tickets:
+    get:
+      tags:
+      - ticket
+      summary: Get all ticket of current customer
+      parameters:
+      - name: Authorization
+        in: header
+        description: "Bearer token for authorization (e.g., `Bearer <token>`)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total number of records
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for the ticket
+                        event:
+                          type: object
+                          properties:
+                            title: 
+                              type: string
+                              format: varchar(255)
+                            description:
+                              type: string
+                              format: varchar(255)  
+                            start_date:
+                              type: string
+                              format: date-time
+                            end_date:
+                              type: string
+                              format: date-time 
+                            location:
+                              type: string
+                              format: string
+                        ticket_type:
+                          type: string
+                          format: varchar(255)
+                        ticket_price:
+                          type: integer
+                        status:
+                          type: string
+                          format: varchar(10)
+                required:
+                  - total
+        "401":
+          description: Unauthorized       
+  /api/events/categories:
+    get:
+      tags:
+      - event
+      summary: Get list of categories 
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for category
+                        name:
+                          type: object
+                          properties:
+                            vn: 
+                              type: string
+                              format: varchar(255)
+                            en:
+                              type: string
+                              format: varchar(255) 
+                        code:
+                          type: string
+                          format: varchar(255)  
+                required:
+                  - data
+  /api/events/locations:
+    get:
+      tags:
+      - event
+      summary: Get list of location 
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for location
+                        name:
+                          type: string
+                          format: varchar(255)
+                required:
+                  - data
+  /api/discovery/banners:
+    get:
+      tags:
+      - discovery
+      summary: Get list of banners 
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        imageUrl:
+                          type: string
+                          description: varchar(255)
+                        videoUrl:
+                          type: string
+                          description: varchar(255)  
+                        id:
+                          type: integer
+                          format: int32
+                        category:
+                          type: string
+                          format: varchar(255)  
+                        price:
+                          type: string
+                          format: varchar(255)
+                        start_date:
+                          type: string
+                          format: date-time
+                        end_date:
+                          type: string
+                          format: date-time
+                        isFree:
+                          type: boolean
+                required:
+                  - data                
+  /api/discovery/categories:
+    get:
+      tags:
+      - discovery
+      summary: Get list of homepage section 
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      specialEvents:
+                        type: object
+                        properties:
+                          title:
+                            type: object
+                            properties:
+                              vn:
+                                type: string
+                                format: varchar(255)
+                              en:
+                                type: string
+                                format: varchar(255)
+                          events:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  format: int32
+                                image_url:
+                                  type: string
+                                  format: varchar(255)  
+                      trendingEvents:
+                        type: object
+                        properties:
+                          title:
+                            type: object
+                            properties:
+                              vn:
+                                type: string
+                                format: varchar(255)
+                              en:
+                                type: string
+                                format: varchar(255)
+                          events:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  format: int32
+                                image_url:
+                                  type: string
+                                  format: varchar(255)              
+                      topPickEVents:
+                        type: object
+                        properties:
+                          title:
+                            type: object
+                            properties:
+                              vn:
+                                type: string
+                                format: varchar(255)
+                              en:
+                                type: string
+                                format: varchar(255)
+                          events:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  format: int32
+                                image_url:
+                                  type: string
+                                  format: varchar(255)      
+                required:
+                  - data                                
 components:
   schemas:
     User:
@@ -275,6 +886,7 @@ components:
         created_at:
           type: string
           format: date-time
+
     inline_response_200:
       type: object
       properties:
