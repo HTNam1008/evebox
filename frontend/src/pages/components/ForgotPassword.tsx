@@ -49,7 +49,7 @@ const ForgotPassword = () => {
         </a>
         <div className="w-75">
           <div className="form">
-            <div className="container">
+            <div className="container d-flex flex-column align-items-center">
               <img src="../../../images/logo.png" alt="EveBox Logo" className="logo" />
               <h3 ><strong>Quên mật khẩu?</strong></h3>
               <p className="subheading">Đừng lo, điều này xảy ra với tất cả chúng ta. Nhập email của bạn dưới đây để khôi phục mật khẩu.</p>

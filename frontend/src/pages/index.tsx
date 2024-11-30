@@ -5,14 +5,11 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import axios from 'axios';
 import Dashboard from './components/Dashboard';
-
-
 /* Package system */
 import { AuthContext } from '../contexts/AuthContext';
 import '../../public/styles/admin/pages/HomePage.css';
 
 const fetcher = (url: string) => axios.get(url).then(res => res.data);
-
 const HomePage = () => {
   const { isAuthenticated, user } = useContext(AuthContext);
 
@@ -22,21 +19,9 @@ const HomePage = () => {
   return (
     <div className="container">
       {!isAuthenticated ? (
-        // <>
-        //   <h1>Chào mừng trở lại, {user?.email}!</h1>
-        //   <p>Khám phá dashboard của bạn.</p>
-        //   <Link href="/dashboard" className="link">
-        //     Vào Dashboard
-        //   </Link>
-        //   {data ? (
-        //     <p>Số lượng người dùng hiện tại: {data.count}</p>
-        //   ) : error ? (
-        //     <p>Không thể lấy thông tin người dùng.</p>
-        //   ) : (
-        //     <p>Đang tải số lượng người dùng...</p>
-        //   )}
-        // </>
+        <div className="container">
         <Dashboard />
+        </div>
       ) : (
         <>
           <h1>Chào mừng đến với EveBox!</h1>

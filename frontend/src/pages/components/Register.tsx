@@ -65,13 +65,13 @@ const Register = () => {
         <div className="col-md-7 d-flex align-items-center justify-content-center right-register-pane">
           <div className="w-75">
             <div className="register-form">
-              <div className="register-container">
+              <div className="register-container d-flex flex-column align-items-center">
                 <img src="../../../images/logo.png" alt="EveBox Logo" className="mb-3 img-fluid logo" />
                 <h3><strong>Đăng ký ngay với EveBox</strong></h3>
               </div>
               <form onSubmit={formik.handleSubmit}>
                 <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
+                  <label htmlFor="email" className="form-label font-style">Email</label>
                   <input
                     type="email"
                     id="email"
@@ -84,7 +84,7 @@ const Register = () => {
                   )} */}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="password" className="form-label">Mật khẩu</label>
+                  <label htmlFor="password" className="form-label font-style">Mật khẩu</label>
                   <div className='position-relative'>
                     <input
                       type={showPassword ? 'text' : 'password'}
@@ -106,7 +106,7 @@ const Register = () => {
                   )} */}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="confirmPassword" className="form-label">Nhập lại mật khẩu</label>
+                  <label htmlFor="confirmPassword" className="form-label font-style">Nhập lại mật khẩu</label>
                   <div className="position-relative">
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}

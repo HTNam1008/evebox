@@ -2,9 +2,10 @@ import React from 'react';
 import Dashboard from './components/Dashboard';
 import Register from './components/Register';
 import Login from './components/Login';
-import ForgotPassword from './components/ForgotPassword';
+import ForgotPassword from './components/ForgotPassword'
+
 const DynamicPage = ({ page }: { page: string }) => {
-  if (page === 'dashboard') {
+  if (page === '/') {
     return <Dashboard />;
   }
   if (page === 'register') {
