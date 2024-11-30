@@ -11,13 +11,19 @@ export class Email extends ValueObject<EmailProps> {
   }
   
   public static create(email: string): Result<Email, Error> {
-    // Simple email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!email || email.trim().length === 0) {
+      return Err(new Error('Email cannot be empty'));
+    }
+    
+    // RFC 5322 compliant email regex
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+    if (!emailRegex.test(email.trim())) {
       return Err(new Error('Invalid email address'));
     }
-    return Ok(new Email({ value: email }));
-  }
+
+    return Ok(new Email({ value: email.trim() }));
+}
 
   get value(): string {
     return this.props.value;
