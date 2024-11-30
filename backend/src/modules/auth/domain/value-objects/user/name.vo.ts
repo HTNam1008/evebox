@@ -14,7 +14,7 @@ export class Name extends ValueObject<NameProps> {
     if (!name || name.trim().length === 0) {
       return Err(new Error('Name cannot be empty'));
     }
-    const nameRegex = /^[A-Za-z\s]+$/; // Only letters and spaces allowed
+    const nameRegex = /^[A-Za-zÀ-ỹ\s]+$/;
     if (!nameRegex.test(name)) {
       return Err(new Error('Name contains invalid characters'));
     }
