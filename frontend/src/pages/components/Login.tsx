@@ -107,6 +107,7 @@ const Login = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.password}
                     />
+                    {!formik.errors.password && (
                     <IconButton
                       className='position-absolute eye-btn'
                       aria-label="Toggle password visibility"
@@ -114,6 +115,7 @@ const Login = () => {
                     >
                       <Icon icon={showPassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                     </IconButton>
+                    )}
                   </div>
                   {/* Hiển thị thông báo lỗi  */}
                   {formik.touched.password && formik.errors.password && (
