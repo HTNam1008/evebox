@@ -29,6 +29,9 @@ import { LocalStorageModule } from 'src/infrastructure/local-storage/local-stora
 import { OtpUtilsModule } from 'src/shared/utils/otp/otp.module';
 import { ResendOTPController } from './commands/otps/resend-otp/resend-otp.controller';
 import { ResendOTPService } from './commands/otps/resend-otp/resend-otp.service';
+import { GoogleLoginController } from './commands/google-login/google-login.controller';
+import { GoogleStrategy } from 'src/shared/strategies/google.strategy';
+import { GoogleLoginService } from './commands/google-login/google-login.service';
 
 @Module({
   imports: [
@@ -55,6 +58,7 @@ import { ResendOTPService } from './commands/otps/resend-otp/resend-otp.service'
     LogoutUserController,
     RefreshTokenController,
     ForgotPasswordController,
+    GoogleLoginController,
   ],
   providers: [
     PrismaService,
@@ -64,6 +68,7 @@ import { ResendOTPService } from './commands/otps/resend-otp/resend-otp.service'
     SendWelcomeEmailHandler,
     AuthRepositoryImpl,
     JwtStrategy,
+    GoogleStrategy,
     RefreshTokenService,
     SendEmailOtpHandler,
     ForgotPasswordUserService,
@@ -71,6 +76,7 @@ import { ResendOTPService } from './commands/otps/resend-otp/resend-otp.service'
     ResetPasswordService,
     UserPasswordResetHandler,
     ResendOTPService,
+    GoogleLoginService,
   ],
   exports: [AuthRepositoryImpl],
 })

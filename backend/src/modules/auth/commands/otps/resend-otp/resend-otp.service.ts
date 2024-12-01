@@ -4,8 +4,8 @@ import { ResendOTPCommand } from './resend-otp.command';
 import { TempUserStore } from 'src/infrastructure/local-storage/local-storage.service';
 import { OTPType } from 'src/modules/auth/domain/enums/otp-type.enum';
 import { AuthRepositoryImpl } from 'src/modules/auth/repositories/auth.repository.impl';
-import { Email } from 'src/modules/user/domain/value-objects/email.vo';
 import { OTP } from 'src/modules/auth/domain/entities/otp.entity';
+import { Email } from 'src/modules/auth/domain/value-objects/user/email.vo';
 
 @Injectable()
 export class ResendOTPService {
