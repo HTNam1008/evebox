@@ -71,17 +71,39 @@ input {
   background: linear-gradient(180deg, #9EF5CF 0%, #2F9098 68%, #176B87 100%);
 }
 
-.register-form {
+.register-form, .verify-form {
   width: 100%;
 
-  
-  .register-container {
+  .register-container, .verify-container {
     text-align: center;
     margin-bottom: 30px;
+
+    .verify-msg-1, .verify-msg-2 {
+      color: #fff;
+    }
 
     .logo {
       width: 80px;
       height: 80px;
+    }
+  }
+
+  .otp-nums {
+    justify-content: center;
+    margin: 20px auto;
+    display: flex;
+    gap: 10px;
+
+    .otp-input {
+      width: 50px;
+      padding: 10px;
+      outline: none;
+      text-align: center;
+      border-radius: 10.8px;
+
+      &:focus {
+        border: 2px solid #000;
+      }
     }
   }
 

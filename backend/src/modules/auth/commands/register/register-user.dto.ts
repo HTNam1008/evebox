@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ArrayNotEmpty, ArrayUnique, IsArray, IsEmail, isInt, IsInt, IsNotEmpty, IsOptional, IsString, Length, MinLength } from 'class-validator';
 
 export class RegisterUserDto {
-  @IsNotEmpty()
+  // @IsNotEmpty()
   name: string;
 
   @IsEmail()
