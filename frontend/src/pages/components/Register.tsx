@@ -1,5 +1,5 @@
 /* Package Application */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -13,16 +13,39 @@ import { Icon } from '@iconify/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../public/styles/admin/pages/Register.css'
 
+const TIMELEFT = 3600;
+const ATTEMPTS = 5;
+
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
   const [error, setError] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
   const [requestToken, setRequestToken] = useState('');
+  const [timeLeft, setTimeLeft] = useState(TIMELEFT);
+  const [isResendAllowed, setIsResendAllowed] = useState(false);
+  const [attempts, setAttempts] = useState(0);
 
   const [otp, setOtp] = useState(new Array(6).fill(''));
-  const [cntOTP, setCntOTP] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      setIsResendAllowed(true);
+    } else {
+      const timer = setInterval(() => {
+        setTimeLeft(prevTime => prevTime - 1);
+      }, 1000);
+      return () => clearInterval(timer); 
+    }
+  }, [timeLeft]);
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
+
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  };
 
   const registerFormik = useFormik({
     initialValues: {
@@ -93,16 +116,15 @@ const Register = () => {
         if (result.status === 200) {
           alert('Email đã được gửi, vui lòng kiểm tra hộp thư của bạn!');
           setIsRegistered(true);
-          setRequestToken(result.data.data.request_token);
+          setRequestToken(result.data.data.request_token ?? '');
+          setTimeLeft(result.data.data.resend_allowed_in ?? TIMELEFT);
+          setAttempts(result.data.data.remaining_attempts ?? ATTEMPTS);
+          setIsResendAllowed(false);
         }
         else {
           setError(`Đăng ký thất bại: ${result.data.message}`);
           alert(result.data.message);
         }
-        // alert('Email has been sent!');
-        // setTimeout(() => {
-        //   router.push('/login');
-        // }, 3000);
       } catch (err) {
         if (axios.isAxiosError(err)) {
           const error = err as AxiosError<ErrorResponse>;
@@ -166,21 +188,23 @@ const Register = () => {
   function handleChangeOTP(e: any, index: number) {
     if (isNaN(e.target.value)) return false;
 
-    // Tạo một mảng mới dựa trên giá trị hiện tại của `otp`
     const newOtp = [...otp];
-    newOtp[index] = e.target.value; // Cập nhật giá trị tại vị trí index
+    newOtp[index] = e.target.value;
 
-    // Cập nhật state otp
     setOtp(newOtp);
 
-    // Cập nhật giá trị trong Formik ngay lập tức
-    otpFormik.setFieldValue('otp', newOtp.join('')); // Gộp thành chuỗi
+    otpFormik.setFieldValue('otp', newOtp.join(''));
 
-    // Chuyển focus sang ô tiếp theo nếu có
     if (e.target.value && e.target.nextSibling) {
       e.target.nextSibling.focus();
     }
   }
+
+  const handleResendOtp = () => {
+    setError('');
+
+    registerFormik.handleSubmit();
+  };
 
   return (
     <div className='container-fluid vh-100 p-0'>
@@ -202,13 +226,12 @@ const Register = () => {
                   <img src="../../../images/logo.png" alt="EveBox Logo" className="mb-3 img-fluid logo" />
                   <h3><strong>Xác thực OTP</strong></h3>
                   <br></br>
-                  <br></br>
                   <h4><strong>Nhập mã OTP gồm 6 chữ số</strong></h4>
                   <span className='verify-msg-1'>Chúng tôi đã gửi mã OTP đến email:</span>
                   <span className='verify-msg-2'>{registerFormik.values.email !== '' ? registerFormik.values.email : 'dattruong01082@gmail.com'}</span>
                 </div>
                 <form onSubmit={otpFormik.handleSubmit}>
-                  <div className="otp-area d-flex flex-column align-items-center mb-3">
+                  <div className="otp-area d-flex flex-column align-items-center">
                     <label htmlFor="otp" className="form-label font-style text-center">Mã OTP</label>
                     <div className='otp-nums align-items-center'>
                       {otp.map((data, index) => (
@@ -229,12 +252,16 @@ const Register = () => {
                     )}
                   </div>
                   {error && <div className="alert alert-danger error-msg text-center">{error}</div>}
+                  <div className="text-center">
+                    <span style={{fontSize:'12px',color:'white'}}>Lưu ý: Bạn vui lòng kiểm tra tất cả các thư mục của email<br></br>(Hộp thư đến, Quảng cáo, Thư rác,...)</span>
+                    <br></br>
+                    <p style={{ color: 'white' }}>Bạn không nhận được mã OTP? <strong onClick={handleResendOtp} className={`resend-btn ${isResendAllowed ? '' : 'disabled'}`}>Gửi lại mã</strong></p>
+                  </div>
+                  <div className="otp-timer d-flex align-items-center justify-content-center">
+                    <span>{formatTime(timeLeft)}</span>
+                  </div>
                   <button type="submit" className="btn w-100 mb-3">Xác minh OTP</button>
                 </form>
-                <div className="text-center">
-                  <p style={{ color: 'white' }}>Chưa nhận được mã?</p>
-                  <button className="btn btn-link text-white">Gửi lại mã</button>
-                </div>
               </div>
               :
               <div className="register-form">

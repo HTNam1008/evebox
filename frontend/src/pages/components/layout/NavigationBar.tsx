@@ -55,7 +55,7 @@ const NavigationBar = () => {
                <button className="text-white hover:text-teal-100 text-sm sm:text-base">Đăng nhập</button>
             </Link>
             
-            <Link style={{ textDecoration: 'none' }} href="/login">
+            <Link style={{ textDecoration: 'none' }} href="/register">
             <button className="bg-teal-200 text-teal-950 px-3 sm:px-4 py-2 rounded-md hover:bg-teal-50 text-sm sm:text-base">
               Đăng ký
             </button>
