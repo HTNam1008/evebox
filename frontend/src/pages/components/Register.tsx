@@ -8,7 +8,7 @@ import { ErrorResponse } from '@/types/errorResponse';
 import Link from 'next/link';
 
 /* Package System */
-import { TextField, Button, IconButton } from '@mui/material';
+import { TextField, Button, IconButton, DialogTitle, Dialog, DialogContent, DialogActions } from '@mui/material';
 import { Icon } from '@iconify/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../public/styles/admin/pages/Register.css'
@@ -25,6 +25,8 @@ const Register = () => {
   const [timeLeft, setTimeLeft] = useState(TIMELEFT);
   const [isResendAllowed, setIsResendAllowed] = useState(false);
   const [attempts, setAttempts] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
 
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const router = useRouter();
@@ -36,7 +38,7 @@ const Register = () => {
       const timer = setInterval(() => {
         setTimeLeft(prevTime => prevTime - 1);
       }, 1000);
-      return () => clearInterval(timer); 
+      return () => clearInterval(timer);
     }
   }, [timeLeft]);
 
@@ -165,12 +167,12 @@ const Register = () => {
           type: 'REGISTER'
         });
         if (result.status === 200 || result.status === 201) {
-          alert('Đăng ký thành công!');
-          setTimeout(() => {
-            router.push('/login');
-          }, 3000);
+          setIsOpen(true);
+          setIsVerified(true);
         }
         else {
+          setIsOpen(true);
+          setIsVerified(false);
           setError(`Xác thực thất bại: ${result.data.message}`);
           alert(result.data.message);
         }
@@ -205,6 +207,11 @@ const Register = () => {
 
     registerFormik.handleSubmit();
   };
+
+  const handleCloseDialog = () => {
+    setIsOpen(false);
+    router.push('/login');
+  }
 
   return (
     <div className='container-fluid vh-100 p-0'>
@@ -253,7 +260,7 @@ const Register = () => {
                   </div>
                   {error && <div className="alert alert-danger error-msg text-center">{error}</div>}
                   <div className="text-center">
-                    <span style={{fontSize:'12px',color:'white'}}>Lưu ý: Bạn vui lòng kiểm tra tất cả các thư mục của email<br></br>(Hộp thư đến, Quảng cáo, Thư rác,...)</span>
+                    <span style={{ fontSize: '12px', color: 'white' }}>Lưu ý: Bạn vui lòng kiểm tra tất cả các thư mục của email<br></br>(Hộp thư đến, Quảng cáo, Thư rác,...)</span>
                     <br></br>
                     <p style={{ color: 'white' }}>Bạn không nhận được mã OTP? <strong onClick={handleResendOtp} className={`resend-btn ${isResendAllowed ? '' : 'disabled'}`}>Gửi lại mã</strong></p>
                   </div>
@@ -399,7 +406,7 @@ const Register = () => {
                       <div className="text-danger">{registerFormik.errors.agree}</div>
                     )}
                   </div>
-                  {error && <div className="alert alert-danger error-msg text-center">{error}</div>}
+                  {error && error !== '' && <div className="alert alert-danger error-msg text-center">{error}</div>}
                   <button type="submit" className="btn w-100 mb-3">Đăng ký</button>
                   <div className="text-center">
                     <p style={{ color: 'white' }}>Hoặc</p>
@@ -416,6 +423,36 @@ const Register = () => {
           </div>
         </div>
       </div>
+      <Dialog open={!isOpen} className="custom-dialog">
+        <DialogTitle>
+          <div className="dialog-title">
+            {isVerified ? 'Đăng ký thành công' : 'Đăng ký thất bại'}
+            <IconButton
+              className="close-button"
+              onClick={handleCloseDialog}
+              aria-label="Close"
+            >
+              <Icon icon="ph:x" width="24px" />
+            </IconButton>
+          </div>
+        </DialogTitle>
+        <DialogContent>
+          <div className="dialog-content">
+            <Icon icon={isVerified ? 'ph:check-circle-fill' : 'fluent-color:error-circle-24'} width="48px" color="#22C55E" />
+            <h3>{isVerified ? 'Thành công' : 'Thất bại'}</h3>
+            <br />
+            <p className="subtext">Kích hoạt tài khoản {isVerified ? 'thành công' : 'thất bại'}!</p>
+          </div>
+        </DialogContent>
+        <DialogActions style={{marginBottom:'30px'}} className='d-flex flex-column justify-content-center'>
+          <Button
+            onClick={handleCloseDialog}
+            className="action-button"
+          >
+            Về trang Đăng nhập
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

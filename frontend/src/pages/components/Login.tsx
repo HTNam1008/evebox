@@ -102,7 +102,7 @@ const Login = () => {
                       name='password'
                       className={`form-control pr-10 ${formik.touched.password && formik.errors.password ? 'is-invalid' : ''}`}
                       placeholder="Nhập mật khẩu"
-                      style={{ height: '46px' }}
+                      style={{ height: '46px', paddingRight: '50px' }}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.password}
