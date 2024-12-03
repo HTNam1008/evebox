@@ -423,7 +423,7 @@ const Register = () => {
           </div>
         </div>
       </div>
-      <Dialog open={!isOpen} className="custom-dialog">
+      <Dialog open={isOpen} className="custom-dialog">
         <DialogTitle>
           <div className="dialog-title">
             {isVerified ? 'Đăng ký thành công' : 'Đăng ký thất bại'}
