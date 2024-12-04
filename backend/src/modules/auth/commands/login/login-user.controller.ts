@@ -28,7 +28,6 @@ export class LoginUserController {
   })
   async login(
     @Body() loginUserDto: LoginUserDto,
-    @Res() res: Response,
   ) {
     const command = new LoginUserCommand(
       loginUserDto.email,
@@ -42,6 +41,7 @@ export class LoginUserController {
     }
 
     const data = result.unwrap();
+
     return {
       statusCode: HttpStatus.OK,
       message: 'Login successful',
