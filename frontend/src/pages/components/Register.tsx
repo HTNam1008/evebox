@@ -13,13 +13,14 @@ import { Icon } from '@iconify/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../public/styles/admin/pages/Register.css'
 
-const TIMELEFT = 3600;
+const TIMELEFT = 60;
 const ATTEMPTS = 5;
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
-  const [error, setError] = useState('');
+  const [registrationError, setRegistrationError] = useState('');
+  const [verifyError, setVerifyError] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
   const [requestToken, setRequestToken] = useState('');
   const [timeLeft, setTimeLeft] = useState(TIMELEFT);
@@ -114,25 +115,24 @@ const Register = () => {
     onSubmit: async (values) => {
       try {
         const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/register`, values);
-        console.log('result', result);
         if (result.status === 200) {
-          alert('Email đã được gửi, vui lòng kiểm tra hộp thư của bạn!');
           setIsRegistered(true);
           setRequestToken(result.data.data.request_token ?? '');
           setTimeLeft(result.data.data.resend_allowed_in ?? TIMELEFT);
           setAttempts(result.data.data.remaining_attempts ?? ATTEMPTS);
           setIsResendAllowed(false);
+          setRegistrationError('');
         }
         else {
-          setError(`Đăng ký thất bại: ${result.data.message}`);
+          setRegistrationError(`Đăng ký thất bại: ${result.data.message}`);
           alert(result.data.message);
         }
       } catch (err) {
         if (axios.isAxiosError(err)) {
           const error = err as AxiosError<ErrorResponse>;
-          setError(error.response?.data?.message || 'Đăng ký thất bại');
+          setRegistrationError(error.response?.data?.message || 'Đăng ký thất bại');
         } else {
-          setError('Đăng ký thất bại');
+          setRegistrationError('Đăng ký thất bại');
         }
       }
     },
@@ -169,19 +169,20 @@ const Register = () => {
         if (result.status === 200 || result.status === 201) {
           setIsOpen(true);
           setIsVerified(true);
+          setVerifyError('');
         }
         else {
           setIsOpen(true);
           setIsVerified(false);
-          setError(`Xác thực thất bại: ${result.data.message}`);
+          setVerifyError(`Xác thực thất bại: ${result.data.message}`);
           alert(result.data.message);
         }
       } catch (err) {
         if (axios.isAxiosError(err)) {
           const error = err as AxiosError<ErrorResponse>;
-          setError(error.response?.data?.message || 'Xác thực thất bại');
+          setVerifyError(error.response?.data?.message || 'Xác thực thất bại');
         } else {
-          setError('Xác thực thất bại');
+          setVerifyError('Xác thực thất bại');
         }
       }
     },
@@ -203,7 +204,8 @@ const Register = () => {
   }
 
   const handleResendOtp = () => {
-    setError('');
+    setRegistrationError('');
+    setVerifyError('');
 
     registerFormik.handleSubmit();
   };
@@ -235,7 +237,7 @@ const Register = () => {
                   <br></br>
                   <h4><strong>Nhập mã OTP gồm 6 chữ số</strong></h4>
                   <span className='verify-msg-1'>Chúng tôi đã gửi mã OTP đến email:</span>
-                  <span className='verify-msg-2'>{registerFormik.values.email !== '' ? registerFormik.values.email : 'dattruong01082@gmail.com'}</span>
+                  <span className='verify-msg-2'>{registerFormik.values.email !== '' ? registerFormik.values.email : ''}</span>
                 </div>
                 <form onSubmit={otpFormik.handleSubmit}>
                   <div className="otp-area d-flex flex-column align-items-center">
@@ -258,7 +260,7 @@ const Register = () => {
                       </div>
                     )}
                   </div>
-                  {error && <div className="alert alert-danger error-msg text-center">{error}</div>}
+                  {verifyError && verifyError !== '' && <div className="alert alert-danger error-msg text-center">{verifyError}</div>}
                   <div className="text-center">
                     <span style={{ fontSize: '12px', color: 'white' }}>Lưu ý: Bạn vui lòng kiểm tra tất cả các thư mục của email<br></br>(Hộp thư đến, Quảng cáo, Thư rác,...)</span>
                     <br></br>
@@ -406,7 +408,7 @@ const Register = () => {
                       <div className="text-danger">{registerFormik.errors.agree}</div>
                     )}
                   </div>
-                  {error && error !== '' && <div className="alert alert-danger error-msg text-center">{error}</div>}
+                  {registrationError && registrationError !== '' && <div className="alert alert-danger error-msg text-center">{registrationError}</div>}
                   <button type="submit" className="btn w-100 mb-3">Đăng ký</button>
                   <div className="text-center">
                     <p style={{ color: 'white' }}>Hoặc</p>
