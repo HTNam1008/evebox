@@ -1,6 +1,4 @@
-// src/pages/login/index.tsx
-
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -18,6 +16,85 @@ const Login = () => {
   const [error, setError] = useState('');
   const router = useRouter();
   const { login } = useContext(AuthContext); // Sử dụng login từ AuthContext
+
+  // Hàm xử lý khi click vào nút Đăng nhập với Google
+  const handleGoogleLogin = async () => {
+    try {
+      // Điều hướng người dùng đến Google OAuth
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/user/google`;
+    } catch (err) {
+      setError("Đã xảy ra lỗi khi đăng nhập với Google.");
+      console.error("Error during Google login:", err);
+    }
+  };
+
+  // Xử lý callback từ Google khi người dùng đã đăng nhập thành công
+  useEffect(() => {
+    console.log("router.query: ", router.query); // Kiểm tra router.query
+    //const { code } = router.query;
+    const queryString = router.asPath.split("?")[1];
+    const urlParams = new URLSearchParams(queryString);
+    const code = urlParams.get("code");
+  
+    if (code) {
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/user/google/callback`, {
+          params: { code },
+          withCredentials: true, // Đảm bảo gửi cookie nếu cần thiết
+        })
+        .then((response) => {
+          console.log("Full response:", response);
+          const { access_token, refresh_token } = response.data.data;
+          console.log("Access token: ", access_token);
+          console.log("Refresh token: ", refresh_token);
+  
+          if (access_token) {
+            login(access_token);
+            localStorage.setItem("refresh_token", refresh_token);
+            console.log("Redirecting to home...");
+            router.push("/"); // Chuyển hướng về trang chính
+          } else {
+            setError("Không nhận được access token từ Google.");
+          }
+        })
+        .catch((err) => {
+          console.error("Error during Google login callback:", err);
+          setError('Đăng nhập Google thất bại');
+        });
+    }
+  }, [router.query, login]);  
+  // useEffect(() => {
+  //   const currentUrl = window.location.href; // Lấy toàn bộ URL hiện tại
+  //   console.log("Current URL:", currentUrl);
+  
+  //   const urlParams = new URLSearchParams(currentUrl.split("?")[1]); // Lấy các tham số sau dấu ?
+  //   const code = urlParams.get("code");
+  //   console.log("Google OAuth code:", code);
+  
+  //   if (code) {
+  //     axios
+  //       .get(`${process.env.NEXT_PUBLIC_API_URL}/api/user/google/callback`, {
+  //         params: { code },
+  //         withCredentials: true,
+  //       })
+  //       .then((response) => {
+  //         console.log("Full response:", response);
+  //         const { access_token, refresh_token } = response.data.data;
+  
+  //         if (access_token) {
+  //           login(access_token);
+  //           localStorage.setItem("refresh_token", refresh_token);
+  //           router.push("/"); // Chuyển hướng về trang chính
+  //         } else {
+  //           setError("Không nhận được access token từ Google.");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.error("Error during Google login callback:", err);
+  //         setError("Đăng nhập Google thất bại");
+  //       });
+  //   }
+  // }, []);  
 
   const formik = useFormik({
     initialValues: {
@@ -43,14 +120,15 @@ const Login = () => {
     },
     onSubmit: async (values) => {
       try {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, values);
-        const { accessToken } = response.data;
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, values);
+        const { access_token, refresh_token } = response.data.data;
 
-        // Gọi phương thức login để cập nhật AuthContext
-        login(accessToken);
-
-        alert('Đăng nhập thành công!');
-        router.push('/dashboard');
+        if (access_token) {
+          login(access_token);
+          router.push('/'); // Chuyển hướng về trang chính
+        } else {
+          throw new Error("Access token not found in response.");
+        }
       } catch (err) {
         if (axios.isAxiosError(err)) {
           const error = err as AxiosError<ErrorResponse>;
@@ -153,7 +231,7 @@ const Login = () => {
                   </Link>
                   <p style={{ color: 'white', marginBottom: '20px', marginTop: '5px' }}>Hoặc</p>
                   <Link style={{ textDecoration: 'none' }} href="#">
-                    <button className="google-button" style={{ marginBottom: '20px' }}>
+                    <button className="google-button" style={{ marginBottom: '20px' }} onClick={handleGoogleLogin}>
                       <Icon icon="flat-color-icons:google" width="20px" color="#fff" />
                       Đăng nhập với Google
                     </button>
