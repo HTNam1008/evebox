@@ -8,7 +8,7 @@ import { ErrorResponse } from '@/types/errorResponse';
 import '../../../public/styles/admin/pages/ForgotPassword.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const TIMELEFT = 3600;
+const TIMELEFT = 60;
 const ATTEMPTS = 5;
 
 const ForgotPassword = () => {
@@ -58,7 +58,6 @@ const ForgotPassword = () => {
     onSubmit: async (values) => {
       try {
         const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/forgot-password`, values);
-        console.log('result', result);
         if (result.data.statusCode === 200) {
           alert('Email đã được gửi, vui lòng kiểm tra hộp thư của bạn!');
           setIsContinued(true);
@@ -117,7 +116,6 @@ const ForgotPassword = () => {
           const resetToken = result.data.data.token;
 
           sessionStorage.setItem('reset_token', resetToken);
-          console.log('resetToken in ForgotPassword:', resetToken);
 
           setTimeout(() => {
             router.push({

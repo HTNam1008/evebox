@@ -8,7 +8,7 @@ import { ErrorResponse } from '@/types/errorResponse';
 import '../../../public/styles/admin/pages/ForgotPassword.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Icon } from '@iconify/react';
-import { TextField, Button, IconButton, colors } from '@mui/material';
+import { TextField, Button, IconButton, } from '@mui/material';
 
 
 const ResetPassword = () => {
