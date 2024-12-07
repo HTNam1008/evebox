@@ -52,19 +52,56 @@ export class GoogleLoginController {
     }
 
     const tokens = result.unwrap();
-    return res.status(HttpStatus.OK).json({
-        statusCode: HttpStatus.OK,
-        message: 'Login successful',
-        data: {
-          ...tokens
-        },
-      });
+
+    // Return HTML that sends tokens via postMessage
+    return res.send(`
+      <html>
+        <body>
+          <script>
+            if (window.opener) {
+              window.opener.postMessage(
+                {
+                  type: 'GOOGLE_LOGIN_SUCCESS',
+                  data: ${JSON.stringify(tokens)}
+                }, 
+                'http://localhost:3000/'
+              );
+              window.close();
+            }
+          </script>
+        </body>
+      </html>
+    `);
     } catch (error) {
-        console.error('Google callback error:', error);
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: 'Internal server error'
-        });
-      }
+      return res.send(`
+      <script>
+        if (window.opener) {
+          window.opener.postMessage(
+            {
+              type: 'GOOGLE_LOGIN_ERROR',
+              error: 'Authentication failed'
+            }, 
+            'http://localhost:3000/'
+          );
+          window.close();
+        }
+      </script>
+    `);
+    }
+
+    // return res.status(HttpStatus.OK).json({
+    //     statusCode: HttpStatus.OK,
+    //     message: 'Login successful',
+    //     data: {
+    //       ...tokens
+    //     },
+    //   });
+    // } catch (error) {
+    //     console.error('Google callback error:', error);
+    //     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+    //       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+    //       message: 'Internal server error'
+    //     });
+    //   }
   }
 }
