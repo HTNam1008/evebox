@@ -271,3 +271,8 @@ input {
     background-color: #133646;
   }
 }
+
+.is-invalid{
+  border-color: #FF0000 !important;
+  background-image: none !important;
+}

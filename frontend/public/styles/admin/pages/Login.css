@@ -146,4 +146,8 @@ body, html {
   min-height: 100vh;
 }
 
+.is-invalid {
+  background-image: none !important;
+}
+
 
