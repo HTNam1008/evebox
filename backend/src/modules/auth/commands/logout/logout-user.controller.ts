@@ -2,13 +2,13 @@ import { Controller, Post, Req, Res, UseGuards, UnauthorizedException, HttpStatu
 import { LogoutUserService } from './logout-user.service';
 import { Request, Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 
 @Controller('api/user')
 @ApiTags('Authentication')
 export class LogoutUserController {
   constructor(private readonly logoutService: LogoutUserService) {}
 
-//   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
   @ApiOperation({ summary: 'User logout' })
   @ApiResponse({
@@ -19,10 +19,10 @@ export class LogoutUserController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Invalid or missing token',
   })
-  async logout(@Req() request: Request) {
+
+  async logout(@Req() request: Request, @Res() res: Response) {
     try {
       const refreshToken = this.extractTokenFromHeader(request);
-      console.log("token: ", refreshToken);
       // Call the service to handle logout
       await this.logoutService.logout(refreshToken);
 
@@ -33,16 +33,20 @@ export class LogoutUserController {
       //   sameSite: 'strict',
       // });
 
-      return {
+      return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: 'Successfully logged out',
         data: null
-      };
+      });
     } catch (error) {
       if (error instanceof UnauthorizedException) {
-        throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ErrorHandler.unauthorized(error.message));
       }
-      throw new HttpException('Unable to logout', HttpStatus.INTERNAL_SERVER_ERROR);
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ErrorHandler.internalServerError('Unable to logout'));
     }
   }
 

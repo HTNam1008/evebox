@@ -67,7 +67,7 @@ const Register = () => {
         errors.password = 'Bạn chưa nhập mật khẩu';
       }
 
-      if (values.password.length < 6) {
+      if (values.password.length > 0 && values.password.length < 6) {
         errors.password = 'Mật khẩu tối thiểu 6 ký tự';
       }
 

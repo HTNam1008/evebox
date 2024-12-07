@@ -103,15 +103,13 @@ export class RegisterUserService {
         { name, email, password, phone, provinceIds, role },
         900,
       );
-      // await this.authRepository.save(user);
-      // return Ok(user.id.value);
+      
       return Ok({
         request_token: requestToken,
         remaining_attempts: otp.getRemainingAttempts(),
         resend_allowed_in: otp.resendCooldown,
       });
     } catch (error) {
-      console.error('Error during registration:', error);
       return Err(
         new Error('An unexpected error occurred during registration.'),
       );

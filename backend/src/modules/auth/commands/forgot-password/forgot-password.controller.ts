@@ -1,8 +1,10 @@
-import { Controller, Post, Body, HttpStatus, HttpException } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiOperation, ApiProperty } from '@nestjs/swagger';
+import { Controller, Post, Body, HttpStatus, Res } from '@nestjs/common';
+import { Response } from 'express';
+import { ApiTags, ApiResponse, ApiOperation} from '@nestjs/swagger';
 import { ForgotPasswordUserCommand } from './forgot-password.command';
 import { ForgotPasswordUserService } from './forgot-password.service';
 import { ForgotPasswordUserDto } from './forgot-password.dto';
+import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 
 @Controller('api/user')
 @ApiTags('Authentication')
@@ -25,7 +27,7 @@ export class ForgotPasswordController {
     status: HttpStatus.NOT_FOUND,
     description: 'User not found',
   })
-  async forgotPassword(@Body() forgotPasswordUserDto: ForgotPasswordUserDto) {
+  async forgotPassword(@Res() res: Response, @Body() forgotPasswordUserDto: ForgotPasswordUserDto) : Promise<Response> {
     const command = new ForgotPasswordUserCommand(forgotPasswordUserDto.email);
     const result = await this.forgotPasswordService.execute(command);
 
@@ -33,18 +35,22 @@ export class ForgotPasswordController {
       const error = result.unwrapErr();
       
       if (error.message === 'Invalid credentials') {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        return res
+          .status(HttpStatus.OK)
+          .json(ErrorHandler.notFound('User not found'));
       }
       
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      return res
+        .status(HttpStatus.OK)
+        .json(ErrorHandler.badRequest(error.message));
     }
 
-    return {
+    return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       message: 'OTP has been sent to your email',
       data: {
         ...result.unwrap(),
       }
-    };
+    });
   }
 }

@@ -198,4 +198,8 @@ input {
     height: 20px;
     margin-right: 10px;
   }
+  
+.is-invalid{
+  border-color: #FF0000 !important;
+  background-image: none !important;
 }

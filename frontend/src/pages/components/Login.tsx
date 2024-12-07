@@ -1,6 +1,4 @@
-// src/pages/login/index.tsx
-
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -12,12 +10,87 @@ import Link from 'next/link';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TextField, Button, IconButton, colors } from '@mui/material';
 import { Icon } from '@iconify/react';
+import { CircularProgress } from '@mui/material';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { login } = useContext(AuthContext); // Sử dụng login từ AuthContext
+  const { login } = useContext(AuthContext);
+
+  // Hàm xử lý khi click vào nút Đăng nhập với Google
+  const handleGoogleLogin = () => {
+    try {
+      setIsLoading(true);
+      const width = 500;
+      const height = 600;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+  
+      const popup = window.open(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/google`,
+        'Google Login',
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+  
+      window.addEventListener('message', (event) => {
+        if (event.origin === process.env.NEXT_PUBLIC_API_URL) {
+          const { type, data, error } = event.data;
+  
+          if (type === 'GOOGLE_LOGIN_SUCCESS') {
+            const { access_token, refresh_token } = data;
+            login(access_token);
+            router.push('/');
+            popup?.close();
+          } else if (type === 'GOOGLE_LOGIN_ERROR') {
+            setError(error || 'Login failed');
+            popup?.close();
+          }
+        }
+      });
+  
+    } catch (err) {
+      setError("Đã xảy ra lỗi khi đăng nhập với Google.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Xử lý callback từ Google khi người dùng đã đăng nhập thành công
+  useEffect(() => {
+    const queryString = router.asPath.split("?")[1];
+    const urlParams = new URLSearchParams(queryString);
+    const code = urlParams.get("code");
+  
+    if (code) {
+      setIsLoading(true);
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/user/google/callback`, {
+          params: { code },
+          withCredentials: true, // Đảm bảo gửi cookie nếu cần thiết
+        })
+        .then((response) => {
+          const { access_token, refresh_token } = response.data.data;
+  
+          if (access_token) {
+            login(access_token);
+            localStorage.setItem("refresh_token", refresh_token);
+            console.log("Redirecting to home...");
+            router.push("/"); // Chuyển hướng về trang chính
+          } else {
+            setError("Không nhận được access token từ Google.");
+          }
+        })
+        .catch((err) => {
+          console.error("Error during Google login callback:", err);
+          setError('Đăng nhập Google thất bại');
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [router.asPath]);  
 
   const formik = useFormik({
     initialValues: {
@@ -39,18 +112,23 @@ const Login = () => {
         errors.password = 'Bạn chưa nhập mật khẩu';
       }
 
+      if (values.password.length > 0 && values.password.length < 6) {
+        errors.password = 'Mật khẩu tối thiểu 6 ký tự';
+      }
+
       return errors;
     },
     onSubmit: async (values) => {
       try {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, values);
-        const { accessToken } = response.data;
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, values);
+        const { access_token, refresh_token } = response.data.data;
 
-        // Gọi phương thức login để cập nhật AuthContext
-        login(accessToken);
-
-        alert('Đăng nhập thành công!');
-        router.push('/dashboard');
+        if (access_token) {
+          login(access_token);
+          router.push('/'); // Chuyển hướng về trang chính
+        } else {
+          throw new Error("Access token not found in response.");
+        }
       } catch (err) {
         if (axios.isAxiosError(err)) {
           const error = err as AxiosError<ErrorResponse>;
@@ -107,7 +185,6 @@ const Login = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.password}
                     />
-                    {!formik.errors.password && (
                     <IconButton
                       className='position-absolute eye-btn'
                       aria-label="Toggle password visibility"
@@ -115,7 +192,6 @@ const Login = () => {
                     >
                       <Icon icon={showPassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                     </IconButton>
-                    )}
                   </div>
                   {/* Hiển thị thông báo lỗi  */}
                   {formik.touched.password && formik.errors.password && (
@@ -153,9 +229,14 @@ const Login = () => {
                   </Link>
                   <p style={{ color: 'white', marginBottom: '20px', marginTop: '5px' }}>Hoặc</p>
                   <Link style={{ textDecoration: 'none' }} href="#">
-                    <button className="google-button" style={{ marginBottom: '20px' }}>
+                    <button className="google-button" style={{ marginBottom: '20px' }} onClick={handleGoogleLogin} disabled={isLoading}>
                       <Icon icon="flat-color-icons:google" width="20px" color="#fff" />
-                      Đăng nhập với Google
+                      {/* Đăng nhập với Google */}
+                      {isLoading ? (
+                        <CircularProgress size={24} />
+                      ) : (
+                        "Đăng nhập với Google"
+                      )}
                     </button>
                   </Link>
                 </div>
