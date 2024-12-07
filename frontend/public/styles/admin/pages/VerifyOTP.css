@@ -71,11 +71,9 @@ input {
   background: linear-gradient(180deg, #9EF5CF 0%, #2F9098 68%, #176B87 100%);
 }
 
-.register-form,
 .verify-form {
   width: 100%;
 
-  .register-container,
   .verify-container {
     text-align: center;
     margin-bottom: 15px;
@@ -108,14 +106,6 @@ input {
         border: 2px solid #000;
       }
     }
-  }
-
-  .eye-btn {
-    position: absolute;
-    right: 8px;
-    top: 51%;
-    z-index: 1;
-    transform: translateY(-50%);
   }
 
   .resend-btn {
@@ -176,30 +166,76 @@ input {
       color: #fff;
     }
   }
+}
 
-  .google-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    color: #000;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+.custom-dialog {
+  .MuiDialog-paper {
+    border-radius: 12px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.25);
+    /* padding: 20px; */
     width: 100%;
-    cursor: pointer;
-  }
+    max-width: 400px;
+    text-align: center;
 
-  .google-button:hover {
-    background-color: #f0f0f0;
+    h2 {
+      padding: 0;
+    }
   }
+}
 
-  .google-button svg {
-    height: 20px;
-    margin-right: 10px;
+.dialog-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0C4762; /* Màu xanh header */
+  color: #FFFFFF;
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.close-button {
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+
+  &:hover {
+    background-color: #ffffff !important;
+    color: #0C4762 !important;
   }
-  
-.is-invalid{
-  border-color: #FF0000 !important;
-  background-image: none !important;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.dialog-content h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #000000;
+}
+
+.subtext {
+  font-size: 14px;
+  color: #6B7280; /* Màu xám cho subtext */
+}
+
+.action-button {
+  background-color: #0C4762 !important;
+  color: #FFFFFF !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  text-transform: none !important;
+  width: 60%;
+  border-radius: 8px !important;
+  padding: 10px !important;
+
+  &:hover {
+    background-color: #133646 !important;
+  }
 }

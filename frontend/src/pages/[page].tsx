@@ -4,6 +4,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword'
+import VerifyOTP from './components/VerifyOTP';
 
 
 const DynamicPage = ({ page }: { page: string }) => {
@@ -21,6 +22,9 @@ const DynamicPage = ({ page }: { page: string }) => {
   }
   if (page === 'reset-password') {
     return <ResetPassword />;
+  }
+  if (page === 'verify-otp') {
+    return <VerifyOTP />;
   }
   return <div>Trang không tồn tại</div>;
 };
