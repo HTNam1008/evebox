@@ -4,6 +4,7 @@ import { LoginUserService } from './login-user.service';
 import { Response } from 'express';
 import { LoginUserCommand } from './login-user.command';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 
 @Controller('api/user')
 @ApiTags('Authentication')
@@ -28,7 +29,8 @@ export class LoginUserController {
   })
   async login(
     @Body() loginUserDto: LoginUserDto,
-  ) {
+    @Res() res: Response,
+  ) { 
     const command = new LoginUserCommand(
       loginUserDto.email,
       loginUserDto.password,
@@ -37,17 +39,19 @@ export class LoginUserController {
     const result = await this.loginUserService.execute(command);
 
     if (result.isErr()) {
-      throw new HttpException(result.unwrapErr().message, HttpStatus.UNAUTHORIZED);
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json(ErrorHandler.badRequest(result.unwrapErr().message));
     }
 
     const data = result.unwrap();
 
-    return {
+    return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       message: 'Login successful',
       data: {
         ...data
       },
-    };
+    });
   }
 }

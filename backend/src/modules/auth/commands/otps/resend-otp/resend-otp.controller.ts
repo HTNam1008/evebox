@@ -1,8 +1,10 @@
-import { Controller, Post, Body, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, HttpException, Res } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ResendOTPDto } from './resend-otp.dto';
 import { ResendOTPService } from './resend-otp.service';
 import { ResendOTPCommand } from './resend-otp.command';
+import { Response } from 'express';
+import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 
 @Controller('api/user/otps')
 @ApiTags('Authentication')
@@ -19,7 +21,7 @@ export class ResendOTPController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Invalid email or cooldown period not elapsed',
   })
-  async resendOTP(@Body() dto: ResendOTPDto) {
+  async resendOTP(@Body() dto: ResendOTPDto, @Res() res: Response) {
     const command = new ResendOTPCommand(
       dto.email, 
       dto.type,
@@ -29,7 +31,9 @@ export class ResendOTPController {
     const result = await this.resendOTPService.execute(command);
 
     if (result.isErr()) {
-      throw new HttpException(result.unwrapErr().message, HttpStatus.BAD_REQUEST);
+      return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(ErrorHandler.badRequest(result.unwrapErr().message));
     }
 
     const data = result.unwrap();
