@@ -17,22 +17,9 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { login } = useContext(AuthContext); // Sử dụng login từ AuthContext
+  const { login } = useContext(AuthContext);
 
   // Hàm xử lý khi click vào nút Đăng nhập với Google
-  // const handleGoogleLogin = async () => {
-  //   try {
-  //     // Điều hướng người dùng đến Google OAuth
-  //     setIsLoading(true);
-  //     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/user/google`;
-  //   } catch (err) {
-  //     setError("Đã xảy ra lỗi khi đăng nhập với Google.");
-  //     console.error("Error during Google login:", err);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const handleGoogleLogin = () => {
     try {
       setIsLoading(true);
@@ -70,11 +57,8 @@ const Login = () => {
     }
   };
 
-
   // Xử lý callback từ Google khi người dùng đã đăng nhập thành công
   useEffect(() => {
-    console.log("router.query: ", router.query); // Kiểm tra router.query
-    //const { code } = router.query;
     const queryString = router.asPath.split("?")[1];
     const urlParams = new URLSearchParams(queryString);
     const code = urlParams.get("code");
@@ -87,10 +71,7 @@ const Login = () => {
           withCredentials: true, // Đảm bảo gửi cookie nếu cần thiết
         })
         .then((response) => {
-          console.log("Full response:", response);
           const { access_token, refresh_token } = response.data.data;
-          console.log("Access token: ", access_token);
-          console.log("Refresh token: ", refresh_token);
   
           if (access_token) {
             login(access_token);
@@ -109,41 +90,7 @@ const Login = () => {
           setIsLoading(false);
         });
     }
-  // }, [router.query, login]);  
   }, [router.asPath]);  
-
-  // useEffect(() => {
-  //   const currentUrl = window.location.href; // Lấy toàn bộ URL hiện tại
-  //   console.log("Current URL:", currentUrl);
-  
-  //   const urlParams = new URLSearchParams(currentUrl.split("?")[1]); // Lấy các tham số sau dấu ?
-  //   const code = urlParams.get("code");
-  //   console.log("Google OAuth code:", code);
-  
-  //   if (code) {
-  //     axios
-  //       .get(`${process.env.NEXT_PUBLIC_API_URL}/api/user/google/callback`, {
-  //         params: { code },
-  //         withCredentials: true,
-  //       })
-  //       .then((response) => {
-  //         console.log("Full response:", response);
-  //         const { access_token, refresh_token } = response.data.data;
-  
-  //         if (access_token) {
-  //           login(access_token);
-  //           localStorage.setItem("refresh_token", refresh_token);
-  //           router.push("/"); // Chuyển hướng về trang chính
-  //         } else {
-  //           setError("Không nhận được access token từ Google.");
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         console.error("Error during Google login callback:", err);
-  //         setError("Đăng nhập Google thất bại");
-  //       });
-  //   }
-  // }, []);  
 
   const formik = useFormik({
     initialValues: {
