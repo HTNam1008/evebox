@@ -112,6 +112,10 @@ const Login = () => {
         errors.password = 'Bạn chưa nhập mật khẩu';
       }
 
+      if (values.password.length > 0 && values.password.length < 6) {
+        errors.password = 'Mật khẩu tối thiểu 6 ký tự';
+      }
+
       return errors;
     },
     onSubmit: async (values) => {
@@ -181,7 +185,6 @@ const Login = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.password}
                     />
-                    {!formik.errors.password && (
                     <IconButton
                       className='position-absolute eye-btn'
                       aria-label="Toggle password visibility"
@@ -189,7 +192,6 @@ const Login = () => {
                     >
                       <Icon icon={showPassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                     </IconButton>
-                    )}
                   </div>
                   {/* Hiển thị thông báo lỗi  */}
                   {formik.touched.password && formik.errors.password && (

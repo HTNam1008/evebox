@@ -98,7 +98,7 @@ const Register = () => {
         errors.password = 'Bạn chưa nhập mật khẩu';
       }
 
-      if (values.password.length < 6) {
+      if (values.password.length > 0 && values.password.length < 6) {
         errors.password = 'Mật khẩu tối thiểu 6 ký tự';
       }
 
@@ -347,7 +347,6 @@ const Register = () => {
                           onBlur={registerFormik.handleBlur}
                           value={registerFormik.values.password}
                         />
-                        {!registerFormik.errors.password && (
                           <IconButton
                             className="position-absolute eye-btn"
                             aria-label="Toggle password visibility"
@@ -355,7 +354,6 @@ const Register = () => {
                           >
                             <Icon icon={showPassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                           </IconButton>
-                        )}
                       </div>
                       {registerFormik.touched.password && registerFormik.errors.password && (
                         <div className="text-danger" style={{ fontSize: '12px' }}>
@@ -376,7 +374,6 @@ const Register = () => {
                           onBlur={registerFormik.handleBlur}
                           value={registerFormik.values.re_password}
                         />
-                        {!registerFormik.errors.re_password && (
                           <IconButton
                             className="position-absolute eye-btn"
                             aria-label="Toggle password visibility"
@@ -384,7 +381,6 @@ const Register = () => {
                           >
                             <Icon icon={showRePassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                           </IconButton>
-                        )}
                       </div>
                       {registerFormik.touched.re_password && registerFormik.errors.re_password && (
                         <div className="text-danger" style={{ fontSize: '12px' }}>
