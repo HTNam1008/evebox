@@ -10,23 +10,66 @@ import Link from 'next/link';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TextField, Button, IconButton, colors } from '@mui/material';
 import { Icon } from '@iconify/react';
+import { CircularProgress } from '@mui/material';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { login } = useContext(AuthContext); // Sử dụng login từ AuthContext
 
   // Hàm xử lý khi click vào nút Đăng nhập với Google
-  const handleGoogleLogin = async () => {
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     // Điều hướng người dùng đến Google OAuth
+  //     setIsLoading(true);
+  //     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/user/google`;
+  //   } catch (err) {
+  //     setError("Đã xảy ra lỗi khi đăng nhập với Google.");
+  //     console.error("Error during Google login:", err);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const handleGoogleLogin = () => {
     try {
-      // Điều hướng người dùng đến Google OAuth
-      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/user/google`;
+      setIsLoading(true);
+      const width = 500;
+      const height = 600;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+  
+      const popup = window.open(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/google`,
+        'Google Login',
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+  
+      window.addEventListener('message', (event) => {
+        if (event.origin === process.env.NEXT_PUBLIC_API_URL) {
+          const { type, data, error } = event.data;
+  
+          if (type === 'GOOGLE_LOGIN_SUCCESS') {
+            const { access_token, refresh_token } = data;
+            login(access_token);
+            router.push('/');
+            popup?.close();
+          } else if (type === 'GOOGLE_LOGIN_ERROR') {
+            setError(error || 'Login failed');
+            popup?.close();
+          }
+        }
+      });
+  
     } catch (err) {
       setError("Đã xảy ra lỗi khi đăng nhập với Google.");
-      console.error("Error during Google login:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
+
 
   // Xử lý callback từ Google khi người dùng đã đăng nhập thành công
   useEffect(() => {
@@ -37,6 +80,7 @@ const Login = () => {
     const code = urlParams.get("code");
   
     if (code) {
+      setIsLoading(true);
       axios
         .get(`${process.env.NEXT_PUBLIC_API_URL}/api/user/google/callback`, {
           params: { code },
@@ -60,9 +104,14 @@ const Login = () => {
         .catch((err) => {
           console.error("Error during Google login callback:", err);
           setError('Đăng nhập Google thất bại');
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
-  }, [router.query, login]);  
+  // }, [router.query, login]);  
+  }, [router.asPath]);  
+
   // useEffect(() => {
   //   const currentUrl = window.location.href; // Lấy toàn bộ URL hiện tại
   //   console.log("Current URL:", currentUrl);
@@ -231,9 +280,14 @@ const Login = () => {
                   </Link>
                   <p style={{ color: 'white', marginBottom: '20px', marginTop: '5px' }}>Hoặc</p>
                   <Link style={{ textDecoration: 'none' }} href="#">
-                    <button className="google-button" style={{ marginBottom: '20px' }} onClick={handleGoogleLogin}>
+                    <button className="google-button" style={{ marginBottom: '20px' }} onClick={handleGoogleLogin} disabled={isLoading}>
                       <Icon icon="flat-color-icons:google" width="20px" color="#fff" />
-                      Đăng nhập với Google
+                      {/* Đăng nhập với Google */}
+                      {isLoading ? (
+                        <CircularProgress size={24} />
+                      ) : (
+                        "Đăng nhập với Google"
+                      )}
                     </button>
                   </Link>
                 </div>
