@@ -18,32 +18,32 @@ body {
   background-image: url(../../../images/background_login.png);
   background-size: cover;
   background-position: center;
+}
 
-  h2 {
-    font-size: 40px;
-    margin-bottom: 50px;
-    color: #fff;
-  }
+.left-register-pane h2 {
+  font-size: 40px;
+  margin-bottom: 50px;
+  color: #fff;
+}
 
-  p {
-    font-size: 16px;
-    margin-bottom: 39px;
-    color: #fff;
-  }
+.left-register-pane p {
+  font-size: 16px;
+  margin-bottom: 39px;
+  color: #fff;
+}
 
-  .login-btn {
-    background-color: rgba(255, 255, 255, 0.4);
-    color: #ffffff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.left-register-pane .login-btn {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-    &:hover {
-      background-color: #e6e6e6;
-      color: #000;
-    }
-  }
+.left-register-pane .login-btn:hover {
+  background-color: #e6e6e6;
+  color: #000;
 }
 
 .font-style {
@@ -199,7 +199,8 @@ input {
     margin-right: 10px;
   }
   
-.is-invalid{
-  border-color: #FF0000 !important;
-  background-image: none !important;
+  .is-invalid {
+    border-color: #FF0000 !important;
+    background-image: none !important;
+  }
 }

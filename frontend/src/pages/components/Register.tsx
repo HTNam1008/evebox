@@ -8,7 +8,7 @@ import { ErrorResponse } from '@/types/errorResponse';
 import Link from 'next/link';
 
 /* Package System */
-import { IconButton } from '@mui/material';
+import { IconButton, CircularProgress } from '@mui/material';
 import { Icon } from '@iconify/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../public/styles/admin/pages/Register.css'
@@ -17,6 +17,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
   const [registrationError, setRegistrationError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const registerFormik = useFormik({
@@ -82,10 +83,12 @@ const Register = () => {
       return errors;
     },
     onSubmit: async (values) => {
+      setIsLoading(true);
       try {
         const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/register`, values);
         if (result.status === 200) {
           setRegistrationError('');
+          setIsLoading(false);
           localStorage.setItem('verifyData', JSON.stringify({
             name: values.name,
             phone: values.phone,
@@ -102,10 +105,11 @@ const Register = () => {
           router.push('/verify-otp');
         }
         else {
+          setIsLoading(false);
           setRegistrationError(`Đăng ký thất bại: ${result.data.message}`);
-          alert(result.data.message);
         }
       } catch (err) {
+        setIsLoading(false);
         if (axios.isAxiosError(err)) {
           const error = err as AxiosError<ErrorResponse>;
           setRegistrationError(error.response?.data?.message || 'Đăng ký thất bại');
@@ -266,7 +270,10 @@ const Register = () => {
                   )}
                 </div>
                 {registrationError && registrationError !== '' && <div className="alert alert-danger error-msg text-center">{registrationError}</div>}
-                <button type="submit" className="btn w-100 mb-3">Đăng ký</button>
+                <button type="submit" className="btn w-100 mb-3">
+                  {/* {isLoading ? <div className="spinner-border text-light" role="status"><span className="visually-hidden">Loading...</span></div> : 'Đăng ký'} */}
+                  {!isLoading ? <CircularProgress size={24} color="inherit" /> : 'Đăng ký'}
+                </button>
                 <div className="text-center">
                   <p style={{ color: 'white' }}>Hoặc</p>
                   <Link style={{ textDecoration: 'none' }} href="#">
