@@ -6,7 +6,7 @@ import { PrismaService } from './infrastructure/database/prisma/prisma.service';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EmailModule } from './infrastructure/adapters/email/email.module';
 import { AuthModule } from './modules/auth/auth.module';
-
+import { EventModule } from './modules/event/event.module';
 
 @Module({
   imports: [
@@ -19,6 +19,7 @@ import { AuthModule } from './modules/auth/auth.module';
     CqrsModule,
     EmailModule,
     // Add any other modules here if needed
+    EventModule,
   ],
   providers: [PrismaService],
   exports: [PrismaService],
