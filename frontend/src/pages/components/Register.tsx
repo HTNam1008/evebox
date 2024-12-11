@@ -76,6 +76,10 @@ const Register = () => {
         errors.re_password = 'Bạn chưa nhập lại mật khẩu';
       }
 
+      if (values.re_password.length > 0 && values.re_password.length < 6) {
+        errors.re_password = 'Mật khẩu tối thiểu 6 ký tự';
+      }
+
       if (!values.agree) {
         errors.agree = 'Bạn chưa đồng ý với các điều khoản';
       }

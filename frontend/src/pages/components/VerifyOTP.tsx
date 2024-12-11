@@ -8,7 +8,7 @@ import { ErrorResponse } from '@/types/errorResponse';
 import Link from 'next/link';
 
 /* Package System */
-import { Button, IconButton, DialogTitle, Dialog, DialogContent, DialogActions } from '@mui/material';
+import { Button, IconButton, DialogTitle, Dialog, DialogContent, DialogActions, CircularProgress } from '@mui/material';
 import { Icon } from '@iconify/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../public/styles/admin/pages/VerifyOTP.css'
@@ -27,6 +27,7 @@ const VerifyOTP = () => {
   const [isVerified, setIsVerified] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [requestToken, setRequestToken] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -83,6 +84,7 @@ const VerifyOTP = () => {
       return errors;
     },
     onSubmit: async (values) => {
+      setIsLoading(true);
       try {
         const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/otps/verify-otp`, {
           email: email,
@@ -91,16 +93,19 @@ const VerifyOTP = () => {
           type: 'REGISTER'
         });
         if (result.status === 200 || result.status === 201) {
+          setIsLoading(false);
           setIsOpen(true);
           setIsVerified(true);
           setError('');
         }
         else {
+          setIsLoading(false);
           setIsOpen(true);
           setIsVerified(false);
           setError(`Xác thực thất bại: ${result.data.message}`);
         }
       } catch (err) {
+        setIsLoading(false);
         if (axios.isAxiosError(err)) {
           const error = err as AxiosError<ErrorResponse>;
           setError(error.response?.data?.message || 'Xác thực thất bại');
@@ -232,7 +237,9 @@ const VerifyOTP = () => {
                 <div className="otp-timer d-flex align-items-center justify-content-center">
                   <span>{formatTime(timeLeft)}</span>
                 </div>
-                <button type="submit" className="btn w-100 mb-3">Xác minh OTP</button>
+                <button type="submit" className="btn w-100 mb-3">
+                  {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Xác minh OTP'}
+                </button>
               </form>
             </div>
           </div>
