@@ -38,7 +38,7 @@ export class ForgotPasswordUserService {
     // Check if user exists
     const user = await this.authRepository.findByEmail(email);
     if (!user) {
-      return Err(new Error('Invalid credentials'));
+      return Err(new Error('Email is not registered'));
     }
 
     // Create OTP and trigger domain event

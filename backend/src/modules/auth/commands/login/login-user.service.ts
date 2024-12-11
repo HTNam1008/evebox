@@ -22,15 +22,14 @@ export class LoginUserService {
       return Err(emailOrError.unwrapErr());
     }
     const email = emailOrError.unwrap();
-
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      return Err(new Error('Invalid credentials'));
+      return Err(new Error('Email or password is incorrect'));
     }
 
     const passwordMatches = await user.password.comparePassword(command.password);
     if (!passwordMatches) {
-      return Err(new Error('Invalid credentials'));
+      return Err(new Error('Email or password is incorrect'));
     }
 
     // Generate Access Token
@@ -44,7 +43,6 @@ export class LoginUserService {
       expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'), // Refresh token expires in 7 days
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
     });
-
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
     await this.userRepository.saveRefreshToken(

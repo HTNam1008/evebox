@@ -4,6 +4,7 @@ import { RegisterUserService } from './register-user.service';
 import { RegisterUserCommand } from './register-user.command';
 import { Response } from 'express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 
 @Controller('/api/user')
 @ApiTags('Authentication')
@@ -37,7 +38,7 @@ export class RegisterUserController {
     const result = await this.registerUserService.execute(command);
 
     if (result.isErr()) {
-      return res.status(400).json({ error: result.unwrapErr().message });
+      return res.status(200).json(ErrorHandler.badRequest(result.unwrapErr().message));
     }
 
     return res.status(200).json({ 
