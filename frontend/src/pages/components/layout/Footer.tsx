@@ -20,11 +20,11 @@ const Footer = () => {
 
         {/* Navigation Links */}
         <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-8">
-          <a href="#" className="hover:text-teal-200">Trang chủ</a>
-          <a href="#" className="hover:text-teal-200">Giới thiệu</a>
-          <a href="#" className="hover:text-teal-200">Dịch vụ</a>
-          <a href="#" className="hover:text-teal-200">Liên hệ</a>
-          <a href="#" className="hover:text-teal-200">Hỏi đáp</a>
+          <a href="#" className="no-underline	text-white over:text-teal-200">Trang chủ</a>
+          <a href="#" className="no-underline	text-white hover:text-teal-200">Giới thiệu</a>
+          <a href="#" className="no-underline	text-white hover:text-teal-200">Dịch vụ</a>
+          <a href="#" className="no-underline	text-white hover:text-teal-200">Liên hệ</a>
+          <a href="#" className="no-underline	text-white hover:text-teal-200">Hỏi đáp</a>
         </div>
 
         {/* Divider and Bottom Section */}
@@ -36,18 +36,18 @@ const Footer = () => {
                 <button className="hover:text-teal-200">English</button>
               </div>
               <div className="flex gap-6">
-                <a href="#" className="hover:text-teal-200">
+                <a href="#" className="no-underline	text-white hover:text-teal-200">
                   <Linkedin size={20} />
                 </a>
-                <a href="#" className="hover:text-teal-200">
+                <a href="#" className="no-underline	text-white hover:text-teal-200">
                   <Instagram size={20} />
                 </a>
-                <a href="#" className="hover:text-teal-200">
+                <a href="#" className="no-underline	text-white hover:text-teal-200">
                   <Facebook size={20} />
                 </a>
               </div>
               <div className="text-xs sm:text-sm">
-                Non Copyrighted © 2023 Upload by EveBox
+                Non Copyrighted © 2024 Upload by EveBox
               </div>
             </div>
           </div>

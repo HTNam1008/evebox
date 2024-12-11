@@ -3,7 +3,8 @@ import Dashboard from './components/Dashboard';
 import Register from './components/Register';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/ResetPassword'
+import ResetPassword from './components/ResetPassword';
+import EventDetail from './components/EventDetail';
 
 
 const DynamicPage = ({ page }: { page: string }) => {
@@ -21,6 +22,9 @@ const DynamicPage = ({ page }: { page: string }) => {
   }
   if (page === 'reset-password') {
     return <ResetPassword />;
+  }
+  if (page === 'event-detail') {
+    return <EventDetail />;
   }
   return <div>Trang không tồn tại</div>;
 };
