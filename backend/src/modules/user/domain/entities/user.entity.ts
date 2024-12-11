@@ -8,59 +8,24 @@ import { UserRole } from '../enums/user-role.enum';
 import { Role } from '../value-objects/role.vo';
 import { UserRegisteredDomainEvent } from '../events/user-registered.domain-event';
 
-interface UserProps {
-  email: Email;
-  password: Password;
-  role: Role;
-}
+export class User {
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+    public readonly email: string,
+    public readonly role: string,
+    public readonly phone: string,
+    public readonly created_at: Date
+  ) {}
 
-export class User extends AggregateRoot<UserId, UserProps> {
-  private constructor(id: UserId, props: UserProps) {
-    super(id, props);
-  }
-
-  // Phương thức tạo người dùng mới
-  public static async createNew(
-    email: Email,
-    password: Password,
-    role: UserRole = UserRole.CUSTOMER,
-  ): Promise<User> {
-    const id = UserId.generate();
-    const roleVo = Role.create(role);
-    const user = new User(id, {
-      email,
-      password,
-      role: roleVo,
-    });
-    // Có thể phát sinh domain event tại đây
-    user.addDomainEvent(new UserRegisteredDomainEvent(user));
-    return user;
-  }
-
-  // Phương thức tạo người dùng từ dữ liệu persistence
-  public static createExisting(
-    id: UserId,
-    email: Email,
-    password: Password,
-    role: Role,
-  ): User {
-    return new User(id, {
-      email,
-      password,
-      role,
-    });
-  }
-
-  // Các getter
-  public get email(): Email {
-    return this.props.email;
-  }
-
-  public get password(): Password {
-    return this.props.password;
-  }
-
-  public get role(): Role {
-    return this.props.role;
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      role: this.role,
+      phone: this.phone,
+      created_at: this.created_at
+    };
   }
 }
