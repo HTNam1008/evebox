@@ -272,7 +272,7 @@ const Register = () => {
                 {registrationError && registrationError !== '' && <div className="alert alert-danger error-msg text-center">{registrationError}</div>}
                 <button type="submit" className="btn w-100 mb-3">
                   {/* {isLoading ? <div className="spinner-border text-light" role="status"><span className="visually-hidden">Loading...</span></div> : 'Đăng ký'} */}
-                  {!isLoading ? <CircularProgress size={24} color="inherit" /> : 'Đăng ký'}
+                  {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Đăng ký'}
                 </button>
                 <div className="text-center">
                   <p style={{ color: 'white' }}>Hoặc</p>
