@@ -1,0 +1,188 @@
+/* Event box */
+.eve-image {
+    background-image: url(../../../images/dashboard/presentation_pic.png);
+    background-position: center;
+    background-size: cover;
+    height: 500px;
+    width: 90%;
+    border-radius: 10px;
+    display: flex; /* Sử dụng flexbox */
+    flex-direction: column; /* Các phần tử con xếp theo cột */
+    overflow: hidden; /* Ngăn chặn nội dung vượt ra ngoài */
+    position: relative;
+    z-index: 0;
+    justify-content: center; 
+    align-items: center;
+    padding: 0 10px;
+}
+
+.btn-buy-now {
+    width: 325px;
+    height: 52px;
+    background-color: #51DACF !important;
+    color: #0C4762;
+    border-radius: 5px;
+
+}
+
+.btn-buy-now:hover {
+    color: white;
+    background-color: #0C4762;
+}
+
+.btn-date {
+    border-radius: 5px;
+    padding: 2px 12px;
+}
+
+.txt-name-event-title {
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    white-space: normal;
+    /* Cho phép chữ tự động xuống dòng */
+    word-wrap: break-word;
+    /* Ngắt từ dài nếu cần thiết */
+}
+
+.btn-back {
+    width: 135px;
+    height: 42px;
+    background-color: #51DACF;
+    color: #0C4762;
+    border-radius: 5px;
+}
+
+.btn-back:hover {
+    color: white;
+    background-color: #0C4762;
+}
+
+/*---------------------------------------------------------------------------------------------------*/
+/* Description */
+#more {
+    display: none;
+}
+
+.div-more {
+    background: linear-gradient(to top, #E5E5E8, #ffffff); 
+    border-radius: 0px 0px 10px 10px;
+    height: 35px;
+    text-align: center;
+    align-items: center;
+}
+
+/*---------------------------------------------------------------------------------------------------*/
+/* Ticket details */
+.custom-col-left {
+    padding-right: 0px;
+    margin-right: 0px;
+}
+
+.text-ticket {
+    font-weight: 500;
+}
+
+.li-ticket {
+    background-color: #0C4762;
+    color: white;
+    font-size: 16px;
+}
+
+.li-ticket-item{
+    background-color: #0C4762;
+    color: white;
+    font-size: 16px;
+    padding: 10px 15px;
+    border: none;
+}
+
+.ul-ticket-item{
+    margin-top: 5px;
+    padding-left: 0px;
+}
+
+.btn-buy {
+    width: 156px;
+    height: 34px;
+    background-color: #9EF5CF;
+    color: #0C4762;
+    border-radius: 5px;
+}
+
+.btn-buy:hover {
+    background-color: white;
+}
+
+.btn-sold-out {
+    width: 156px;
+    height: 34px;
+    background-color: #FFC9C9;
+    color: #FF0000;
+    border-radius: 5px;
+}
+
+.btn-disable {
+    width: 156px;
+    height: 34px;
+    background-color: #FFFFFF;
+    color: #999999;
+    border-radius: 5px;
+
+}
+
+.price-sold-out {
+    font-weight: 500;
+}
+
+.price {
+    font-weight: 500;
+    color: #9EF5CF;
+}
+
+/*---------------------------------------------------------------------------------------------------*/
+/* Tags  */
+.txt-tags {
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+}
+
+/*---------------------------------------------------------------------------------------------------*/
+/* Share with friends  */
+.row-app {
+    display: flex;
+    align-items: center;
+}
+
+.img-app {
+    width: 45px;
+    height: 45px;
+}
+
+/*---------------------------------------------------------------------------------------------------*/
+/* Comment  */
+.btn-post {
+    width: 156px;
+    height: 34px;
+    background-color: #0C4762;
+    color: white;
+    border-radius: 5px;
+}
+
+.btn-post:hover {
+    background-color: #10648a;
+}
+
+.btn-cancel {
+    color: #0C4762;
+    background-color: white;
+    border: 2px solid #0C4762;
+    border-radius: 5px;
+    height: 34px;
+    width: 100px;
+}
+
+.btn-cancel:hover {
+    background-color: #f1fafd;
+}
