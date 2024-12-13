@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OTPType } from 'src/modules/auth/domain/enums/otp-type.enum';
+import { OTPType } from 'src/modules/user/domain/enums/otp-type.enum';
 import { v4 } from 'uuid';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';

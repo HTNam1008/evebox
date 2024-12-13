@@ -1,16 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { IUserRepository } from '../../repositories/user.repository';
 import { UserRepositoryImpl } from '../../repositories/user.repository.impl';
-
-import { User } from '../../domain/entities/user.entity';
+import { Email } from '../../domain/value-objects/user/email.vo';
+import { Err, Ok, Result } from 'oxide.ts';
+import { Role } from '../../domain/value-objects/user/role.vo';
 
 @Injectable()
 export class GetUserService {
   constructor(
-    private readonly userRepository: UserRepositoryImpl, // This is the dependency in question
+    private readonly userRepository: UserRepositoryImpl,
   ) {}
 
-  async getCurrentUser(email: string): Promise<User | null> {
-    return this.userRepository.findByEmail(email);
+  async execute(email: string): Promise<Result<{
+    id: string, name: string, email: string, role: number, phone: string,
+  }, Error>> {
+    const emailOrError = Email.create(email);
+    if (emailOrError.isErr()) {
+      return Err(emailOrError.unwrapErr());
+    }
+
+    const user = await this.userRepository.findByEmail(emailOrError.unwrap());
+    
+    if (user != null) {
+      return Ok({
+        id: user.id.value, 
+        name: user.name.value, 
+        email: user.email.value,
+        role: user.role.getValue(), 
+        phone: user.phone.value,
+      });
+    }
   }
 }
