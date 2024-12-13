@@ -1,64 +1,60 @@
 import {
-    Controller,
-    Get,
-    Headers,
-    HttpException,
-    HttpStatus,
-  } from '@nestjs/common';
-  import { GetUserService } from '../get-user/get-user.service';
-  import { ApiTags, ApiOperation, ApiResponse, ApiHeader } from '@nestjs/swagger';
-  import * as jwt from 'jsonwebtoken';
-  
-  @ApiTags('User')
-  @Controller('api/user')
-  export class GetUserController {
-    private readonly jwtSecret = process.env.JWT_SECRET;
-    constructor(private readonly userService: GetUserService) {}
-  
-    @Get('me')
-    @ApiOperation({ summary: 'Get Current User Details' })
-    @ApiHeader({
-      name: 'Authorization',
-      description: 'Bearer token for authorization (`Bearer <token>`)',
-      required: true,
-    })
-    @ApiResponse({ status: 200, description: 'OK' })
-    @ApiResponse({ status: 401, description: 'Unauthorized' })
-    @ApiResponse({ status: 404, description: 'User Not Found' })
-    async getCurrentUser(@Headers('Authorization') authHeader: string) {
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        throw new HttpException('Token missing or malformed', HttpStatus.UNAUTHORIZED);
-      }
-  
-      const token = authHeader.split(' ')[1];
-      const user = this.decodeToken(token); // Mock decoding for simplicity
-      console.log(user)
-      const currenUser = await this.userService.getCurrentUser(user.email);
-  
-      if (!user) {
-        throw new HttpException('Usser Not Found', HttpStatus.NOT_FOUND);
-      }
-  
-      return currenUser.toJSON();
+  Controller,
+  Get,
+  HttpStatus,
+  Request,
+  Res,
+  UseGuards
+} from '@nestjs/common';
+import { GetUserService } from './get-user.service';
+import { ApiTags, ApiOperation, ApiHeader, ApiNotFoundResponse, ApiUnauthorizedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { Response } from 'express';
+import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
+import { ErrorHandler } from 'src/shared/exceptions/error.handler';
+import { UserResponse } from './get-user.dto';
+
+@ApiTags('User')
+@Controller('api/user')
+export class GetUserController {
+  constructor(private readonly userService: GetUserService) { }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  @ApiOperation({
+    summary: 'Get Current User Details',
+    description: 'Retrieves details of the currently authenticated user'
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
+  @ApiOkResponse({
+    description: 'User details fetched successfully',
+    type: UserResponse
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Invalid or missing token'
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found'
+  })
+  async getCurrentUser(
+    @Request() req,
+    @Res() res: Response
+  ) {
+    const currentUser = await this.userService.execute(req.user.email);
+
+    if (currentUser.isErr()) {
+      return res.status(404).json(ErrorHandler.notFound('User not found'));
     }
-  
-    decodeToken(token: string): { email: string; role: number } {
-      try {
-        const decoded = jwt.verify(token, this.jwtSecret) as {
-          email: string;
-          role: number;
-          iat: number;
-          exp: number;
-        };
-  
-        if (!decoded || !decoded.email || !decoded.role) {
-          throw new HttpException('Invalid token structure', HttpStatus.UNAUTHORIZED);
-        }
-  
-        return { email: decoded.email, role: decoded.role };
-      } catch (error) {
-        throw new HttpException('Invalid or expired token', HttpStatus.UNAUTHORIZED);
+
+    return res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      message: 'User details fetched successfully',
+      data: {
+        ...currentUser.unwrap(),
       }
-    }
+    });
   }
-  
+}
