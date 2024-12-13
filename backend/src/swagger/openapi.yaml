@@ -285,6 +285,68 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/EventObject'
+  /api/event/search:
+    get:
+      summary: Tìm kiếm sự kiện theo tên
+      description: Trả về danh sách các sự kiện có tên chứa từ khóa tìm kiếm.
+      parameters:
+        - name: title
+          in: query
+          description: Từ khóa tên của sự kiện
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    description: Danh sách các sự kiện tìm thấy.
+                    items:
+                      $ref: '#/components/schemas/EventObject'
+              example:
+                FoundEvents:
+                  summary: Danh sách sự kiện tìm thấy
+                  value:
+                    events:
+                      - id: 1
+                        title: "Event 1"
+                        description: "Description of event 1"
+                        startDate: "2024-12-12T00:00:00.000Z"
+                        endDate: "2024-12-13T00:00:00.000Z"
+                        organizerId: "user123"
+                        status: "active"
+                        locationId: 1
+                        totalTickets: 100
+                        availableTickets: 100
+                        imgLogoId: 1070
+                        imgPosterId: 1071
+                        createdAt: "2024-12-12T00:00:00.000Z"
+                        isOnlyOnEve: false
+                        isSpecial: false
+                        lastScore: "0.00"
+                        EventCategories:
+                          - Categories:
+                            id: 1
+                            name: "Category 1"
+                        Images_Events_imgLogoIdToImages:
+                          imageUrl: "https://example.com/logo.png"
+                        Images_Events_imgPosterIdToImages:
+                          imageUrl: "https://example.com/poster.png"
+                NoEvents:
+                  summary: Không tìm thấy sự kiện
+                  value:
+                    events: []
+                    message: "No events found"
+        '400':
+          description: Yêu cầu không hợp lệ
+        '500':
+          description: Lỗi hệ thống, vui lòng thử lại sau
 components:
   schemas:
     User:

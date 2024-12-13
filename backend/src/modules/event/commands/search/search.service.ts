@@ -6,17 +6,17 @@ export class SearchService {
   constructor(private readonly eventRepository: EventRepository) {}
 
   async execute(title: string) {
-    const resultSearchEvent = await this.eventRepository.getEventsByTitle(title);
+    const events = await this.eventRepository.getEventsByTitle(title);
 
-    if (!resultSearchEvent.length) {
+    if (!events.length) {
       return {
         message: 'No events found',
-        resultSearchEvent: [],
+        events: [],
       };
     }
 
     return {
-      resultSearchEvent,
+      events,
     };
   }
 }
