@@ -15,76 +15,78 @@ const EventDetail = () => {
     // State cho phần Thông tin vé
     const [isTicketInfoExpanded, setIsTicketInfoExpanded] = useState(false);
 
-    // State cho phần Thông tin vé
+    // State cho phần Chú thích vé
     const [isTicketNoteExpanded, setIsTicketNoteExpanded] = useState(false);
 
     return (
         <div>
             <NavigationBar />
-
             <div className="mt-5 mb-5">
                 {/* Event Box */}
                 <div className="d-flex justify-content-center px-4">
                     <div className="eve-image d-flex justify-content-center align-items-center">
                         {/* Mask phủ lên hình ảnh */}
-                        <div
-                            className="mask"
-                            style={{
-                                backgroundColor: "rgba(0, 0, 0, 0.6)",
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                                zIndex: 1, // Để lớp mask ở dưới phần chữ và card
-                            }}
-                        ></div>
-                        <div className="row w-100 h-100">
-                            <div className="col-lg-7 col-md-12 p-0 d-flex flex-column justify-content-center align-items-center" style={{ zIndex: 2 }}>
-                                <div style={{ width: '80%' }}>
-                                    <button type="button" className="btn-back mb-4">
-                                        <i className="bi bi-chevron-left mr-2" style={{ fontSize: '14px' }}></i>
-                                        Quay lại
-                                    </button>
-                                    <p className="txt-name-event-title">
-                                        Dream world wide in jakatra
-                                    </p>
-                                    <p className="card-text" style={{ color: 'white' }}>
-                                        DesignHub organized a 3D Modeling Workshop using Blender on 16th February at 5 PM. The workshop taught participants the magic of creating stunning 3D models and animations using Blender. It was suitable for both beginners and experienced users. The event was followed by a blender-render competition, which added to the excitement.
-                                    </p>
-                                    <p className="card-text" style={{ color: 'white' }}>
-                                        <i className="bi bi-geo-alt mr-2"></i>
-                                        Xem bản đồ
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="col-lg-5 col-md-12 p-0 d-flex justify-content-center align-items-center" style={{ zIndex: 2 }}>
-                                <div className="card" style={{ width: '385px' }}>
-                                    <div className="card-body px-4 mt-3 mb-3">
-                                        <h5 className="card-title">Ngày & giờ</h5>
-                                        <p className="card-text m-0 text-body-secondary">
-                                            <i className="bi bi-calendar2-event mr-2"></i>
-                                            20:00 - 23:00, 25 tháng 10, 2024
-                                            <button type="button" className="btn btn-outline-dark ml-6 mt-2 mb-2 btn-date">+ 4 ngày khác</button>
+                        <div className="mask mask-img"></div>
+                        {/* Nút "Quay lại" */}
+                        <div className="back-button-wrapper position-absolute mt-4">
+                            <button type="button" className="btn-back">
+                                <i className="bi bi-chevron-left mr-2" style={{ fontSize: '14px' }}></i>
+                                Quay lại
+                            </button>
+                        </div>
+                        <div className="eve-padding">
+                            <div className="row justify-content-between">
+                                <div className="col-lg-7 col-md-12 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>
+                                    <div >
+                                        <p className="txt-name-event-title">
+                                            Dream world wide in jakatra
                                         </p>
-                                        <p className="card-text p-0"><small style={{ color: '#51DACF' }}>Thêm vào lịch</small></p>
-                                        <h5 className="card-title">Địa điểm</h5>
-                                        <p className="card-text text-body-secondary">
+                                        <p className="card-text" style={{ color: 'white' }}>
+                                            DesignHub organized a 3D Modeling Workshop using Blender on 16th February at 5 PM. The workshop taught participants the magic of creating stunning 3D models and animations using Blender. It was suitable for both beginners and experienced users. The event was followed by a blender-render competition, which added to the excitement.
+                                        </p>
+                                        <p className="card-text view-location" onClick={() => document.getElementById('event-location')?.scrollIntoView({ behavior: 'smooth' })}>
                                             <i className="bi bi-geo-alt mr-2"></i>
-                                            Đường Nguyễn Huệ, Quận 1, TP.HCM
+                                            Xem bản đồ
                                         </p>
-                                        <hr></hr>
-                                        <div className="d-flex justify-content-center mb-2">
-                                            <h5 className="card-title">
-                                                Giá từ
-                                                <span className="ml-2 text-teal-400">
-                                                    350.000đ
-                                                    <i className="bi bi-chevron-right ml-1" style={{ fontSize: '16px' }}></i>
-                                                </span>
-                                            </h5>
-                                        </div>
-                                        <div className="d-flex justify-content-center">
-                                            <button type="button" className="btn-buy-now">Mua vé ngay</button>
+                                    </div>
+                                </div>
+                                <div className="col-lg-5 col-md-12 p-0 d-flex justify-content-end align-items-center" style={{ zIndex: 2 }}>
+                                    <div className="card" style={{ width: '385px' }}>
+                                        <div className="card-body px-4 mt-3 mb-3">
+                                            <h5 className="card-title">Ngày & giờ</h5>
+                                            <p className="card-text m-0 text-body-secondary">
+                                                <i className="bi bi-calendar2-event mr-2"></i>
+                                                20:00 - 23:00, 25 tháng 10, 2024
+                                                <button
+                                                    type="button" className="btn btn-outline-dark ml-6 mt-2 mb-2 btn-date"
+                                                    onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}
+                                                >
+                                                    + 4 ngày khác
+                                                </button>
+                                            </p>
+                                            <p className="card-text p-0"><small style={{ color: '#51DACF' }}>Thêm vào lịch</small></p>
+                                            <h5 className="card-title">Địa điểm</h5>
+                                            <p className="card-text text-body-secondary">
+                                                <i className="bi bi-geo-alt mr-2"></i>
+                                                Đường Nguyễn Huệ, Quận 1, TP.HCM
+                                            </p>
+                                            <hr></hr>
+                                            <div className="d-flex justify-content-center mb-2">
+                                                <h5 className="card-title">
+                                                    Giá từ
+                                                    <span className="ml-2 text-teal-400"
+                                                        onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}
+                                                        style={{ cursor: 'pointer' }}>
+                                                        350.000đ
+                                                        <i className="bi bi-chevron-right ml-1" style={{ fontSize: '16px' }}></i>
+                                                    </span>
+                                                </h5>
+                                            </div>
+                                            <div className="d-flex justify-content-center">
+                                                <button type="button" className="btn-buy-now" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
+                                                    Mua vé ngay
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -93,11 +95,11 @@ const EventDetail = () => {
                     </div>
                 </div>
 
-                <div className="px-4">
+                <div>
                     <div className="row align-items-start">
-                        <div className="col-lg-7 col-md-12 custom-col-left ">
+                        <div className="col-lg-8 col-md-12 custom-col-left ">
                             {/* Description */}
-                            <div className="flex justify-center mt-8 px-4">
+                            <div className="flex justify-center mt-8 ml-2">
                                 <div className="w-full md:w-5/6">
                                     <h2 className="text-xl md:text-2xl font-bold">
                                         Mô tả
@@ -129,7 +131,7 @@ const EventDetail = () => {
                             </div>
 
                             {/* Ticket details */}
-                            <div className="flex justify-center mt-8 px-4">
+                            <div className="flex justify-center mt-8 ml-2" id="info-ticket">
                                 <div className="w-full md:w-5/6">
                                     <h2 className="text-xl md:text-2xl font-bold">
                                         Thông tin vé
@@ -229,7 +231,7 @@ const EventDetail = () => {
                             </div>
 
                             {/* Contact */}
-                            <div className="flex justify-center mt-8 px-4">
+                            <div className="flex justify-center mt-8 ml-2">
                                 <div className="w-full md:w-5/6">
                                     <h2 className="text-xl md:text-2xl font-bold">
                                         Liên hệ người tổ chức
@@ -240,9 +242,9 @@ const EventDetail = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-lg-5 col-md-12">
+                        <div className="col-lg-4 col-md-12" id="event-location">
                             {/* Location */}
-                            <div className="flex mt-8 px-4">
+                            <div className="flex mt-8 mr-2">
                                 <div className="w-full md:w-5/6">
                                     <h2 className="text-xl md:text-2xl font-bold">
                                         Địa điểm sự kiện
@@ -259,7 +261,7 @@ const EventDetail = () => {
                             </div>
 
                             {/* Tags */}
-                            <div className="flex mt-8 px-4">
+                            <div className="flex mt-8 mr-2">
                                 <div className="w-full md:w-5/6">
                                     <h2 className="text-xl md:text-2xl font-bold">
                                         Tags
@@ -274,16 +276,16 @@ const EventDetail = () => {
                             </div>
 
                             {/* Share with friends */}
-                            <div className="flex mt-8 px-4">
+                            <div className="flex mt-8 mr-2">
                                 <div className="w-full md:w-5/6">
                                     <h2 className="text-xl md:text-2xl font-bold">
                                         Chia sẻ với bạn bè
                                     </h2>
 
                                     <div className="row-app mt-3">
-                                        <img className="img-app mr-4" src='../../images/detail/Facebook.png' />
-                                        <img className="img-app mr-4 ml-2" src='../../images/detail/WhatsApp.png' />
-                                        <img className="img-app mr-4 ml-2" src='../../images/detail/LinkedIn.png' />
+                                        <img className="img-app mr-2" src='../../images/detail/Facebook.png' />
+                                        <img className="img-app mr-2 ml-2" src='../../images/detail/WhatsApp.png' />
+                                        <img className="img-app mr-2 ml-2" src='../../images/detail/LinkedIn.png' />
                                         <img className="img-app ml-2" src='../../images/detail/Twitter.png' />
                                     </div>
 
@@ -294,8 +296,8 @@ const EventDetail = () => {
                 </div>
 
                 {/* Comment */}
-                <div className="flex mt-8 px-2 justify-content-center">
-                    <div className="w-full md:w-5/6">
+                <div className="flex justify-center mt-8">
+                    <div className="w-full cmt-pad">
                         <h2 className="text-xl md:text-2xl font-bold">
                             Bình luận
                         </h2>
@@ -388,8 +390,8 @@ const EventDetail = () => {
                 </div>
 
                 {/* Events Section */}
-                <div className="flex mt-8 px-2 justify-content-center">
-                    <div className="w-full md:w-5/6">
+                <div className="flex mt-8 justify-content-center">
+                    <div className="w-full cmt-pad">
                         {/* Section Header */}
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                             <h2 className="text-xl md:text-2xl font-bold">
@@ -434,6 +436,7 @@ const EventDetail = () => {
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <Footer />
