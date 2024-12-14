@@ -2,16 +2,21 @@ import { Injectable } from "@nestjs/common";
 import { EventDetailRepository } from "../../repositories/event-detail.repository";
 import { Result, Ok, Err } from "oxide.ts";
 import { EventData, EventFrontDisplay } from "../../domain/entities/event.entity";
-import { prisma } from "src/prisma";
+import e from "express";
 
 @Injectable()
 export class EventDetailService {
   constructor(private readonly eventDetailRepository: EventDetailRepository) {}
 
   async execute(eventId: number): Promise<Result<EventData, Error>> {
+    if (!eventId) {
+      return Err(new Error("Event ID is required."));
+    }
     try {
       const eventDetail = await this.eventDetailRepository.getEventDetail(eventId);
-
+      if (!eventDetail) {
+        return Err(new Error("Event not found."));
+      }
       const formattedResult: EventData = {
         id: eventDetail.id,
         title: eventDetail.title,
@@ -44,6 +49,9 @@ export class EventDetailService {
   }
 
   async getRecommendedEventsInDetail(eventId: number, limit: string): Promise<Result<EventFrontDisplay[], Error>> {
+    if (!eventId) {
+      return Err(new Error("Event ID is required."));
+    }
     try {
       if (!limit) {
         limit = "20";
@@ -53,7 +61,23 @@ export class EventDetailService {
       return Ok(recommendedEvents);
     } catch (error) {
       console.error(error);
-      return Err(new Error("Failed to fetch recommended events."));
+      return Err(new Error("Event not found."));
+    }
+  }
+
+  async postClicks(eventId: number): Promise<Result<String, Error>> {
+    if (!eventId) {
+      return Err(new Error("Event ID is required."));
+    }
+    try {
+      const res = await this.eventDetailRepository.postClicks(eventId);
+      if (res === 1) {
+        return Ok("Success Update");
+      }
+      return Err(new Error("EventId not found"));
+    } catch (error) {
+      console.error(error);
+      return Err(new Error("Failed to update event clicks."));
     }
   }
 }
