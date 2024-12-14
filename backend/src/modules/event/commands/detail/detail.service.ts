@@ -43,9 +43,12 @@ export class EventDetailService {
     }
   }
 
-  async getRecommendedEventsInDetail(eventId: number, locations: number[], numberOfEvents = 20): Promise<Result<EventFrontDisplay[], Error>> {
+  async getRecommendedEventsInDetail(eventId: number, limit: string): Promise<Result<EventFrontDisplay[], Error>> {
     try {
-      const recommendedEvents = await this.eventDetailRepository.getRecommendedEventsInDetail(eventId, locations, numberOfEvents);
+      if (!limit) {
+        limit = "20";
+      }
+      const recommendedEvents = await this.eventDetailRepository.getRecommendedEventsInDetail(eventId, limit);
 
       return Ok(recommendedEvents);
     } catch (error) {

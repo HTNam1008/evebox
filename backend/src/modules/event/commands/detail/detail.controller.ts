@@ -6,7 +6,7 @@ import { EventData, EventFrontDisplay } from "../../domain/entities/event.entity
 export class EventDetailController {
   constructor(private readonly eventDetailService: EventDetailService) {}
 
-  @Get('/')
+  @Get('/detail')
   async getEventDetail(@Query('eventId') eventId: string): Promise<EventData> {
     const result = await this.eventDetailService.execute(parseInt(eventId));
 
@@ -17,9 +17,9 @@ export class EventDetailController {
     throw result.unwrapErr();
   }
 
-  @Get('/recommended/')
-  async getRecommendedEventsInDetail(@Query('eventId') eventId: number, @Query('locations') locations: number[]): Promise<EventFrontDisplay[]> {
-    const result = await this.eventDetailService.getRecommendedEventsInDetail(eventId, locations);
+  @Get('/detail/recommended-events')
+  async getRecommendedEventsInDetail(@Query('eventId') eventId: string, @Query('limit') limit: string): Promise<EventFrontDisplay[]> {
+    const result = await this.eventDetailService.getRecommendedEventsInDetail(parseInt(eventId), limit);
 
     if (result.isOk()) {
       return result.unwrap();

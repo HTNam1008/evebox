@@ -50,33 +50,56 @@ export class EventDetailRepository {
     });
   }
 
-  async getRecommendedEventsInDetail(eventId, locations, numberOfEvents = 20) {
-    return this.prisma.events.findMany({
-      where: {
-        id: {
-          not: eventId,
-        },
-        locationId: {
-          in: locations,
+  async getRecommendedEventsInDetail(eventId: number, limit: string) {
+    const event = await this.prisma.events.findUnique({
+      where: { id: eventId },
+      select: {
+        locations: {
+          select: {
+            districts: {
+              select: {
+                provinceId: true,
+              },
+            },
+          },
         },
       },
+    });
+  
+    if (!event) {
+      throw new Error(`Event with ID ${eventId} not found.`);
+    }
+  
+    const provinceId = event.locations.districts.provinceId;
+    const now = new Date();
+    const events = await this.prisma.events.findMany({
+      where: {
+        locations: {
+          districts: {
+            provinceId: provinceId,
+          },
+        },
+        startDate: limit === 'all' ? undefined : { gte: now }, 
+        id: { not: eventId }, 
+      },
       orderBy: [
-        {
-          startDate: 'asc',
-        },
-        {
-          lastScore: 'desc',
-        },
+        { startDate: 'asc' }, 
+        { lastScore: 'desc' }, 
       ],
+      take: limit === 'all' ? undefined : parseInt(limit, 10),
       select: {
         id: true,
         title: true,
         startDate: true,
+        status: true,
         lastScore: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
+        weekClicks: true,
       },
-      take: numberOfEvents,
     });
+  
+    return events;
   }
+  
 }

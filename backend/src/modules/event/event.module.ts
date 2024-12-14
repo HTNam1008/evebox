@@ -17,7 +17,7 @@ import { ScheduleModule } from '@nestjs/schedule';
   imports: [ScheduleModule.forRoot()],
   controllers: [FrontDisplayController, SearchController, EventDetailController],
   providers: [FrontDisplayService, SearchService, UpdateWeeklyService, EventDetailService,
-    EventRepository, EventFrontDisplayRepository, EventDetailRepository, EventSearchRepository,
+    EventFrontDisplayRepository, EventDetailRepository, EventSearchRepository,
     PrismaService],
 })
 export class EventModule {}
