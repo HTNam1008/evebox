@@ -15,6 +15,7 @@ export class UpdateWeeklyService {
     this.logger.log('Running database update task on Monday...');
     // Gọi logic cập nhật database
     await this.updateDatabase();
+    await this.updateLastScore();
   }
 
   async updateDatabase() {
@@ -159,4 +160,23 @@ export class UpdateWeeklyService {
     }
   }
   
+  async updateLastScore() {
+    try{
+      const events = await this.prisma.events.findMany({});
+      for (const event of events) {
+        const weekClicks = event.weekClicks;
+        const lastScore = Math.round(weekClicks / 7);
+        await this.prisma.events.update({
+          where: { id: event.id },
+          data: {
+            lastScore: lastScore,
+            weekClicks: 0,
+          },
+        });
+      }
+    }
+    catch (error) {
+      this.logger.error("Error updating lastScore:", error.message);
+    }
+  }
 }

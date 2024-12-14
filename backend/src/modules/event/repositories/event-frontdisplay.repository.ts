@@ -89,11 +89,13 @@ export class EventFrontDisplayRepository {
   }
 
   async getTrendingEvents() {
-    return this.prisma.events.findMany({
-      orderBy: {
-        lastScore: 'desc',
-      },
-      take: 20,
+    const now = new Date();
+  
+    // Tính số ngày từ Thứ Hai đến hiện tại
+    const daysSinceMonday = now.getDay() === 0 ? 6 : now.getDay() - 1; // 0 là Chủ Nhật, nên đổi thành 6
+  
+    // Lấy dữ liệu từ Prisma
+    const events = await this.prisma.events.findMany({
       select: {
         id: true,
         title: true,
@@ -102,9 +104,27 @@ export class EventFrontDisplayRepository {
         lastScore: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
+        weekClicks: true,
       },
     });
+  
+    // Tính toán và sắp xếp
+    const trendingEvents = events
+      .map(event => {
+        const calculatedScore = event.weekClicks / (daysSinceMonday + 1); // Tránh chia cho 0
+        const maxScore = Math.max(Number(event.lastScore), calculatedScore); // Lấy điểm lớn hơn giữa lastScore và calculatedScore
+        return {
+          ...event,
+          calculatedScore,
+          maxScore,
+        };
+      })
+      .sort((a, b) => b.maxScore - a.maxScore) // Sắp xếp theo maxScore giảm dần
+      .slice(0, 20); // Lấy 20 sự kiện có điểm cao nhất
+  
+    return trendingEvents;
   }
+  
 
   async getRecommendedEvents(gte: Date, lte: Date) {
     return this.prisma.events.findMany({
