@@ -6,11 +6,14 @@ import { SearchService } from './commands/search/search.service';
 import { EventRepository } from './repositories/event.repository';
 import { EventFrontDisplayRepository } from './repositories/event-frontdisplay.repository';
 import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
+import { UpdateWeeklyService } from './tasks/update-weekly.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 @Module({
+  imports: [ScheduleModule.forRoot()],
   controllers: [FrontDisplayController, SearchController],
-  providers: [FrontDisplayService, SearchService, 
+  providers: [FrontDisplayService, SearchService, UpdateWeeklyService,
     EventRepository, EventFrontDisplayRepository,
     PrismaService],
 })
