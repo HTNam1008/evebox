@@ -2,7 +2,7 @@ import React from 'react';
 import Dashboard from './components/Dashboard';
 import Register from './components/Register';
 import Login from './components/Login';
-import ForgotPassword from './components/ForgotPassword
+import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import EventDetail from './components/EventDetail';
 import VerifyOTP from './components/VerifyOTP';
