@@ -66,7 +66,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = (token: string, refresh_token: string) => {
-    console.log(refresh_token)
     localStorage.setItem('token', token);
     localStorage.setItem('refresh-token', refresh_token);
 
@@ -84,7 +83,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const getUserInfo = async (): Promise<UserInfo | null> => {
     try {
       const response = await apiClient.get('/api/user/me');
-      console.log('User Info:', response.data.data);
       return response.data.data;
     } catch (error) {
       console.error('Error fetching user info:', error);
