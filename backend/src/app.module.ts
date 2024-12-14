@@ -5,7 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from './infrastructure/database/prisma/prisma.service';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EmailModule } from './infrastructure/adapters/email/email.module';
-import { AuthModule } from './modules/auth/auth.module';
 import { EventModule } from './modules/event/event.module';
 import { UserModule } from './modules/user/user.module';
 
