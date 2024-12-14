@@ -114,6 +114,8 @@ model Events {
   isOnlyOnEve                       Boolean           @default(false)
   isSpecial                         Boolean           @default(false)
   lastScore                         Decimal           @db.Decimal(10, 2)
+  totalClicks                       Int               @default(0)
+  weekClicks                        Int               @default(0)
   EventCategories                   EventCategories[]
   Images_Events_imgLogoIdToImages   Images?           @relation("Events_imgLogoIdToImages", fields: [imgLogoId], references: [id])
   Images_Events_imgPosterIdToImages Images?           @relation("Events_imgPosterIdToImages", fields: [imgPosterId], references: [id])
