@@ -24,4 +24,14 @@
   .link:hover {
     background-color: #005bb5;
   }
-  
+
+  .custom-swiper-button-prev,
+  .custom-swiper-button-next {
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .small-text {
+    font-size: 14px;
+  }
