@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 import { Result } from 'oxide.ts';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GoogleLoginDto } from './google-login.dto';
+import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 
 interface GoogleUser {
     fullname: string;
@@ -48,7 +49,9 @@ export class GoogleLoginController {
       await this.googleLoginService.execute(command);
 
     if (result.isErr()) {
-        throw new HttpException(result.unwrapErr().message, HttpStatus.UNAUTHORIZED);
+      return res
+        .status(HttpStatus.OK)
+        .json(ErrorHandler.unauthorized(result.unwrapErr().message));
     }
 
     const tokens = result.unwrap();

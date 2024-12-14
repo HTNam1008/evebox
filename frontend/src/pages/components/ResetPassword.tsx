@@ -58,7 +58,7 @@ const ResetPassword = () => {
             errors.password = 'Bạn chưa nhập mật khẩu';
           }
     
-          if (values.password.length < 6) {
+          if (values.password.length > 0 && values.password.length < 6) {
             errors.password = 'Mật khẩu tối thiểu 6 ký tự';
           }
     
@@ -129,7 +129,6 @@ const ResetPassword = () => {
                                         onBlur={resetPasswordFormik.handleBlur}
                                         value={resetPasswordFormik.values.password}
                                     />
-                                    {!resetPasswordFormik.errors.password && (
                                         <IconButton
                                             className='position-absolute eye-btn'
                                             aria-label="Toggle password visibility"
@@ -137,7 +136,6 @@ const ResetPassword = () => {
                                         >
                                             <Icon icon={showPassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                                         </IconButton>
-                                    )}
                                 </div>
                                 {resetPasswordFormik.touched.password && resetPasswordFormik.errors.password && (
                                     <div className="invalid-feedback">{resetPasswordFormik.errors.password}</div>
@@ -160,7 +158,6 @@ const ResetPassword = () => {
                                         onBlur={resetPasswordFormik.handleBlur}
                                         value={resetPasswordFormik.values.re_password}
                                     />
-                                    {!resetPasswordFormik.errors.re_password && (
                                         <IconButton
                                             className='position-absolute eye-btn'
                                             aria-label="Toggle password visibility"
@@ -168,7 +165,6 @@ const ResetPassword = () => {
                                         >
                                             <Icon icon={showRePassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                                         </IconButton>
-                                    )}
                                 </div>
                                 {resetPasswordFormik.touched.re_password && resetPasswordFormik.errors.re_password && (
                                     <div className="invalid-feedback">{resetPasswordFormik.errors.re_password}</div>
