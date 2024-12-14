@@ -1,18 +1,33 @@
-export class Event {
+import { Decimal } from "@prisma/client/runtime/library";
+
+export interface Image{
+  id: number;
+  imageUrl: string;
+}
+
+export interface Categories{
+  id: number;
+  name: string;
+}
+
+export interface EventFrontDisplay {
   id: number;
   title: string;
   startDate: Date;
-  endDate: Date;
-  organizerId: string | null;
-  status: string;
-  locationId: number;
-  totalTickets: number;
-  availableTickets: number;
-  imgLogoId: number | null;
-  imgPosterId: number | null;
-  createdAt: Date;
-  isOnlyOnEve: boolean;
-  isSpecial: boolean;
-  lastScore: number;
-  categories: string[];
+  lastScore: Decimal;
+  Images_Events_imgLogoIdToImages: Image;
+  Images_Events_imgPosterIdToImages: Image;
+}
+
+export interface EventCategorySpecial {
+  Categories: Categories;
+  Events: EventFrontDisplay;
+}
+
+
+export interface FrontDisplayData {
+  specialEvents: EventFrontDisplay[];
+  trendingEvents: EventFrontDisplay[]; 
+  onlyOnEve: EventFrontDisplay[];
+  categorySpecial: EventCategorySpecial[];
 }

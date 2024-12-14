@@ -1,5 +1,6 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import { FrontDisplayService, FrontDisplayData } from './front-display.service';
+import { Controller, Get, Query } from '@nestjs/common';
+import { FrontDisplayService } from './front-display.service';
+import { FrontDisplayData, EventFrontDisplay } from '../../domain/entities/event.entity';
 
 @Controller('api/event')
 export class FrontDisplayController {
@@ -16,4 +17,14 @@ export class FrontDisplayController {
     throw result.unwrapErr();
   }
 
+  @Get('recommended-events')
+  async getRecommendedEvents(@Query('timeWindow') timeWindow: "week" | "month"): Promise<EventFrontDisplay[]> {
+    const result = await this.frontDisplayService.getRecommendedEvents(timeWindow);
+
+    if (result.isOk()) {
+      return result.unwrap();
+    }
+
+    throw result.unwrapErr();
+  }
 }

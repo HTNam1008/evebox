@@ -14,8 +14,8 @@ export class EventFrontDisplayRepository {
         id: true,
         title: true,
         startDate: true,
-        endDate: true,
-        createdAt: true,
+        status: true,
+        lastScore: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
       },
@@ -31,8 +31,8 @@ export class EventFrontDisplayRepository {
         id: true,
         title: true,
         startDate: true,
-        endDate: true,
-        createdAt: true,
+        status: true,
+        lastScore: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
       },
@@ -67,8 +67,8 @@ export class EventFrontDisplayRepository {
               id: true,
               title: true,
               startDate: true,
-              endDate: true,
-              createdAt: true,
+              status: true,
+              lastScore: true,
               Images_Events_imgLogoIdToImages: true,
               Images_Events_imgPosterIdToImages: true,
             },
@@ -98,8 +98,31 @@ export class EventFrontDisplayRepository {
         id: true,
         title: true,
         startDate: true,
-        endDate: true,
-        createdAt: true,
+        status: true,
+        lastScore: true,
+        Images_Events_imgLogoIdToImages: true,
+        Images_Events_imgPosterIdToImages: true,
+      },
+    });
+  }
+
+  async getRecommendedEvents(gte: Date, lte: Date) {
+    return this.prisma.events.findMany({
+      where:{
+        startDate:{
+          gte:gte,
+          lte:lte
+        }
+      },
+      orderBy: {
+        lastScore: 'desc',
+      },
+      select: {
+        id: true,
+        title: true,
+        startDate: true,
+        status: true,
+        lastScore: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
       },
