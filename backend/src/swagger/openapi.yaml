@@ -246,6 +246,96 @@ paths:
       security:
       - bearerAuth: []
       x-swagger-router-controller: User    
+  /api/event/front-display:
+    get:
+      summary: Lấy thông tin hiển thị trên trang chính
+      description: Trả về các sự kiện đặc biệt, sự kiện thịnh hành, chỉ có trên Eve và các sự kiện đặc biệt theo danh mục.
+      responses:
+        '200':
+          description: Thành công
+          specialEvents:
+                    type: array
+                    description: Danh sách các sự kiện đặc biệt.
+                    items:
+                      $ref: '#/components/schemas/EventObject'
+                  trendingEvents:
+                    type: array
+                    description: Danh sách các sự kiện thịnh hành.
+                    items:
+                      $ref: '#/components/schemas/EventObject'
+                  onlyOnEve:
+                    type: array
+                    description: Danh sách các sự kiện chỉ có trên Eve.
+                    items:
+                      $ref: '#/components/schemas/EventObject'
+                  "{category}Special":
+                    type: object
+                    description: Sự kiện đặc biệt theo danh mục.
+                    properties:
+                      name:
+                        type: string
+                        description: Tên danh mục.
+                      events:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EventObject'
+  /api/event/search:
+    get:
+      summary: Tìm kiếm sự kiện theo tên
+      description: Trả về danh sách các sự kiện có tên chứa từ khóa tìm kiếm.
+      parameters:
+        - name: title
+          in: query
+          description: Từ khóa tên của sự kiện
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Thành công
+          events:
+                    type: array
+                    description: Danh sách các sự kiện tìm thấy.
+                    items:
+                      $ref: '#/components/schemas/EventObject'
+              example:
+                FoundEvents:
+                  summary: Danh sách sự kiện tìm thấy
+                  value:
+                    events:
+                      - id: 1
+                        title: "Event 1"
+                        description: "Description of event 1"
+                        startDate: "2024-12-12T00:00:00.000Z"
+                        endDate: "2024-12-13T00:00:00.000Z"
+                        organizerId: "user123"
+                        status: "active"
+                        locationId: 1
+                        totalTickets: 100
+                        availableTickets: 100
+                        imgLogoId: 1070
+                        imgPosterId: 1071
+                        createdAt: "2024-12-12T00:00:00.000Z"
+                        isOnlyOnEve: false
+                        isSpecial: false
+                        lastScore: "0.00"
+                        EventCategories:
+                          - Categories:
+                            id: 1
+                            name: "Category 1"
+                        Images_Events_imgLogoIdToImages:
+                          imageUrl: "https://example.com/logo.png"
+                        Images_Events_imgPosterIdToImages:
+                          imageUrl: "https://example.com/poster.png"
+                NoEvents:
+                  summary: Không tìm thấy sự kiện
+                  value:
+                    events: []
+                    message: "No events found"
+        '400':
+          description: Yêu cầu không hợp lệ
+        '500':
+          description: Lỗi hệ thống, vui lòng thử lại sau
   /api/events:
     get:
       tags:
@@ -719,6 +809,7 @@ paths:
               schema:
                 type: object
                 properties:
+                  
                   data:
                     type: array
                     items:
@@ -997,6 +1088,113 @@ components:
         access_token:
           type: string
           format: varchar(255)
+    EventObject:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID của sự kiện.
+          example: 1
+        title:
+          type: string
+          description: Tiêu đề của sự kiện.
+          example: "Summer Music Festival"
+        startDate:
+          type: string
+          format: date-time
+          description: Ngày bắt đầu sự kiện.
+          example: "2024-12-15T18:00:00Z"
+        endDate:
+          type: string
+          format: date-time
+          description: Ngày kết thúc sự kiện.
+          example: "2024-12-16T23:00:00Z"
+        organizerId:
+          type: string
+          description: ID của người tổ chức sự kiện.
+          nullable: true
+          example: "user123"
+        status:
+          type: string
+          description: Trạng thái của sự kiện.
+          example: "active"
+        locationId:
+          type: integer
+          description: ID địa điểm tổ chức sự kiện.
+          example: 101
+        totalTickets:
+          type: integer
+          description: Tổng số vé của sự kiện.
+          example: 500
+        availableTickets:
+          type: integer
+          description: Số vé còn lại.
+          example: 120
+        imgLogoId:
+          type: integer
+          description: ID ảnh logo của sự kiện.
+          nullable: true
+          example: 25
+        imgPosterId:
+          type: integer
+          description: ID ảnh poster của sự kiện.
+          nullable: true
+          example: 30
+        createdAt:
+          type: string
+          format: date-time
+          description: Thời gian tạo sự kiện.
+          example: "2024-01-01T12:00:00Z"
+        isOnlyOnEve:
+          type: boolean
+          description: Sự kiện chỉ có trên nền tảng Eve hay không.
+          example: true
+        isSpecial:
+          type: boolean
+          description: Sự kiện đặc biệt hay không.
+          example: false
+        lastScore:
+          type: string
+          format: decimal
+          description: Điểm cuối cùng của sự kiện (liên quan đến xếp hạng hoặc đánh giá).
+          example: "8.75"
+        categories:
+          type: array
+          description: Danh sách các danh mục sự kiện.
+          items:
+            type: string
+          example: ["Music", "Festival"]
+        imgLogo:
+          type: object
+          nullable: true
+          description: Thông tin hình ảnh logo.
+          $ref: '#/components/schemas/ImageObject'
+        imgPoster:
+          type: object
+          nullable: true
+          description: Thông tin hình ảnh poster.
+          $ref: '#/components/schemas/ImageObject'
+    ImageObject:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID của hình ảnh.
+          example: 1
+        imageUrl:
+          type: string
+          description: URL của hình ảnh.
+          example: "https://example.com/images/logo.png"
+        eventsLogo:
+          type: object
+          nullable: true
+          description: Sự kiện liên kết dưới vai trò logo.
+          $ref: '#/components/schemas/EventObject'
+        eventsPoster:
+          type: object
+          nullable: true
+          description: Sự kiện liên kết dưới vai trò poster.
+          $ref: '#/components/schemas/EventObject'
   securitySchemes:
     bearerAuth:
       type: http
