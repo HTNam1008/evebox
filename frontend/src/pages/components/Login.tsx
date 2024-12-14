@@ -40,7 +40,7 @@ const Login = () => {
   
           if (type === 'GOOGLE_LOGIN_SUCCESS') {
             const { access_token, refresh_token } = data;
-            login(access_token);
+            login(access_token, refresh_token);
             router.push('/');
             popup?.close();
           } else if (type === 'GOOGLE_LOGIN_ERROR') {
@@ -74,7 +74,7 @@ const Login = () => {
           const { access_token, refresh_token } = response.data.data;
   
           if (access_token) {
-            login(access_token);
+            login(access_token, refresh_token);
             localStorage.setItem("refresh_token", refresh_token);
             console.log("Redirecting to home...");
             router.push("/"); // Chuyển hướng về trang chính
@@ -123,8 +123,9 @@ const Login = () => {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, values);
         const { access_token, refresh_token } = response.data.data;
 
-        if (access_token) {
-          login(access_token);
+        if (access_token && refresh_token) {
+          localStorage.setItem('refresh-token', refresh_token);
+          login(access_token, refresh_token);
           router.push('/'); // Chuyển hướng về trang chính
         } else {
           throw new Error("Access token not found in response.");
