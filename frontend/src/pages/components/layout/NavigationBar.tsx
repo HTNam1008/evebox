@@ -1,13 +1,36 @@
-import { useState } from 'react';
-import { Menu, ChevronDown } from 'lucide-react';
+import { Menu, ChevronDown, User2Icon } from 'lucide-react';
 import Sidebar from '../../components/layout/SideBar';
 import Link from 'next/link';
+import { AuthContext } from '../../../contexts/AuthContext';
+import React, { useContext, useEffect, useState } from 'react';
 
 const NavigationBar = () => {
     const [isLangOpen, setIsLangOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    
-    return(
+
+    const { isAuthenticated, getUserInfo } = useContext(AuthContext);
+    const [userInfo, setUserInfo] = useState<any>(null); // Replace `any` with a proper type if known
+    const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (isAuthenticated) {
+        setLoading(true);
+        try {
+          const user = await getUserInfo();
+          setUserInfo(user);
+        } catch (error) {
+          console.error('Failed to fetch user info:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [isAuthenticated, getUserInfo]);
+
+  return(
       <>  
        <nav className="fixed top-0 left-0 right-0 bg-sky-900 shadow-lg z-50">
         <div className="w-full px-4 h-16 flex justify-between items-center">      
@@ -51,15 +74,28 @@ const NavigationBar = () => {
 
               )}
             </div>
+            {!isAuthenticated ? (
+            <div>
             <Link style={{ textDecoration: 'none' }} href="/login">
                <button className="text-white hover:text-teal-100 text-sm sm:text-base">Đăng nhập</button>
             </Link>
             
-            <Link style={{ textDecoration: 'none' }} href="/register">
-            <button className="bg-teal-200 text-teal-950 px-3 sm:px-4 py-2 rounded-md hover:bg-teal-50 text-sm sm:text-base">
-              Đăng ký
-            </button>
+             <Link style={{ textDecoration: 'none' }} href="/register">
+              <button className="ml-4 bg-teal-200 text-teal-950 px-3 sm:px-4 py-2 rounded-md hover:bg-teal-50 text-sm sm:text-base">
+                 Đăng ký
+              </button>
             </Link>
+            </div>
+            ) : (
+              <div className="flex items-center">
+  <h3 className="mr-2">
+    <button className="text-white hover:text-teal-100 text-sm sm:text-base">
+      {userInfo?.name}
+    </button>
+  </h3>
+  <User2Icon className='bg-white rounded-full' size={24} />
+</div>
+            )}
           </div>
         </div>
       </nav>
