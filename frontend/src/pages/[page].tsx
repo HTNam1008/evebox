@@ -6,6 +6,7 @@ import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import EventDetail from './components/EventDetail';
 import VerifyOTP from './components/VerifyOTP';
+import Search from './components/Search';
 
 const DynamicPage = ({ page }: { page: string }) => {
   if (page === '/') {
@@ -29,6 +30,9 @@ const DynamicPage = ({ page }: { page: string }) => {
   if (page === 'verify-otp') {
     return <VerifyOTP />;
   }
+  if (page === 'search') {
+    return <Search />;
+  }
   return <div>Trang không tồn tại</div>;
 };
 
@@ -40,3 +44,5 @@ export async function getServerSideProps(context: any) {
 }
 
 export default DynamicPage;
+
+

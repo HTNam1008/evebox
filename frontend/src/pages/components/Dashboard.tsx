@@ -1,5 +1,5 @@
 // src/pages/dashboard.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import '../../../public/styles/admin/pages/Dashboard.css';
 import React from 'react';
 import 'tailwindcss/tailwind.css';
@@ -22,6 +22,8 @@ const Dashboard = () => {
   const options = ["Âm nhạc", "Kịch", "Học thuật", "Thể thao", "Workshop", "Hòa nhạc"];
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const locations = ["Hà Nội", "TP.HCM", "Đà Nẵng"];
+  const dropdownEventRef = useRef(null);
+  const dropdownLocationRef = useRef(null);
 
   const slides = [
     {
@@ -54,7 +56,19 @@ const Dashboard = () => {
     return () => clearInterval(timer);
   }, []);
 
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownEventRef.current &&!dropdownEventRef.current.contains(event.target)) {
+        setIsEventTypeOpen(false);
+      }
+      if (dropdownLocationRef.current &&!dropdownLocationRef.current.contains(event.target)) {
+        setIsLocationOpen(false);
+      }
+    };
+  
+    document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   const toggleOption = (option: string) => {
     if (selectedOptions.includes(option)) {
@@ -120,7 +134,7 @@ const Dashboard = () => {
                   </div>
                   <div className="flex-1 text-left">
                     <label className="text-sm font-medium mb-2">Loại sự kiện</label>
-                    <div className="mt-2 relative">
+                    <div className="mt-2 relative" ref={dropdownEventRef}>
                       <button
                         onClick={() => setIsEventTypeOpen(!isEventTypeOpen)}
                         className="w-full bg-white border border-gray-300 rounded p-2 flex justify-between items-center text-gray-500 small-text"
@@ -156,7 +170,7 @@ const Dashboard = () => {
                   </div>
                   <div className="flex-1 text-left">
                     <label className="text-sm font-medium mb-2">Địa điểm</label>
-                    <div className="mt-2 relative">
+                    <div className="mt-2 relative" ref={dropdownLocationRef}>
                       <button
                         onClick={() => setIsLocationOpen(!isLocationOpen)}
                         className="w-full bg-white border border-gray-300 rounded p-2 flex justify-between items-center text-gray-500 small-text"
@@ -233,7 +247,7 @@ const Dashboard = () => {
                       <img
                         src="/images/dashboard/card_pic.png"
                         alt="Event"
-                        className="w-[90%] h-[90%] object-cover hover:scale-105 transition-transform duration-300 padding-30"
+                        className="object-cover hover:scale-105 transition-transform duration-300 padding-30"
                       />
                     </div>
                     <div className="p-3">
@@ -291,7 +305,7 @@ const Dashboard = () => {
                       <img
                         src="/images/dashboard/card_pic.png"
                         alt="Event"
-                        className="w-[90%] h-[90%] object-cover hover:scale-105 transition-transform duration-300 padding-30"
+                        className="object-cover hover:scale-105 transition-transform duration-300 padding-30"
                       />
                     </div>
                     <div className="p-3">
@@ -305,7 +319,7 @@ const Dashboard = () => {
                           <span>25 tháng 10, 2024</span>
                         </time>
                         <span
-                          className={`rounded-lg bg-emerald-200 px-2 font-medium text-sky-950 text-center md:text-left`}
+                          className={`rounded-lg bg-emerald-200 px-2 text-sky-950 text-center md:text-left`}
                         >
                           {index % 2 === 0 ? "Miễn phí" : "950.000đ"}
                         </span>
@@ -355,7 +369,7 @@ const Dashboard = () => {
                       <img
                         src="/images/dashboard/card_pic.png"
                         alt="Event"
-                        className="w-[90%] h-[90%] object-cover hover:scale-105 transition-transform duration-300 padding-30"
+                        className="object-cover hover:scale-105 transition-transform duration-300 padding-30"
                       />
                     </div>
                     <div className="p-3">
@@ -419,7 +433,7 @@ const Dashboard = () => {
                       <img
                         src="/images/dashboard/card_pic.png"
                         alt="Event"
-                        className="w-[90%] h-[90%] object-cover hover:scale-105 transition-transform duration-300 padding-30"
+                        className="object-cover hover:scale-105 transition-transform duration-300 padding-30"
                       />
                     </div>
                     <div className="p-3">
