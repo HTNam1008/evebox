@@ -31,7 +31,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
-    "@nestjs/schedule": "^4.1.1",
+    "@nestjs/schedule": "^4.1.2",
     "@nestjs/swagger": "^8.0.5",
     "@nestjs/typeorm": "^10.0.2",
     "@prisma/client": "^5.22.0",
@@ -40,6 +40,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2",
     "nestjs-resend": "^1.0.1",
     "nodemailer": "^6.9.16",
     "oxide.ts": "^1.1.0",
@@ -60,6 +61,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
+    "@types/passport-google-oauth20": "^2.0.16",
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
@@ -93,5 +95,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "schema": "src/infrastructure/database/prisma/schema.prisma"
   }
 }
