@@ -12,7 +12,8 @@ export class LogoutUserService {
   async execute(email: string): Promise<Result<void, Error>> {
     try {
       // Revoke token if valid
-      await this.userRepository.revokeRefreshToken(email);
+      await this.userRepository.revokeAllRefreshTokens(email);
+      console.log('Revoke all refresh tokens for user:', email);
       
       return Ok(void 0);
     } catch (error) {
