@@ -115,9 +115,9 @@ export class UserRepositoryImpl implements UserRepository {
     });
   }
 
-  async revokeRefreshToken(token: string): Promise<void> {
-    await this.prisma.refreshToken.update({
-      where: { token },
+  async revokeRefreshToken(email: string): Promise<void> {
+    await this.prisma.refreshToken.updateMany({
+      where: { email },
       data: { revoked: true },
     });
   }
