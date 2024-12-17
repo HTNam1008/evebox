@@ -31,7 +31,6 @@ export class EventDetailController {
     @Res() res: Response,
   ) {
     const result = await this.eventDetailService.execute(parseInt(eventId));
-    console.log(result.unwrapErr());
     if (result.isErr()) {
       const error = result.unwrapErr();
       return res

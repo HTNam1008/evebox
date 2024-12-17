@@ -18,6 +18,8 @@ export class EventFrontDisplayRepository {
         lastScore: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
+        totalClicks: true,
+        weekClicks: true,
       },
     });
   }
@@ -35,6 +37,8 @@ export class EventFrontDisplayRepository {
         lastScore: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
+        totalClicks: true,
+        weekClicks: true,
       },
     });
   }
@@ -71,6 +75,8 @@ export class EventFrontDisplayRepository {
               lastScore: true,
               Images_Events_imgLogoIdToImages: true,
               Images_Events_imgPosterIdToImages: true,
+              totalClicks: true,
+              weekClicks: true,
             },
           },
         },
@@ -105,6 +111,7 @@ export class EventFrontDisplayRepository {
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         weekClicks: true,
+        totalClicks: true,
       },
     });
   
@@ -145,6 +152,8 @@ export class EventFrontDisplayRepository {
         lastScore: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
+        weekClicks: true,
+        totalClicks: true,
       },
     });
   }

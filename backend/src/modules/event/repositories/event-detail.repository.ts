@@ -6,7 +6,7 @@ export class EventDetailRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getEventDetail(eventId: number) {
-    return this.prisma.events.findUnique({
+    const event = await this.prisma.events.findUnique({
       where: {
         id: eventId,
       },
@@ -19,8 +19,6 @@ export class EventDetailRepository {
         organizerId: true,
         status: true,
         locationId: true,
-        totalTickets: true,
-        availableTickets: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         createdAt: true,
@@ -31,6 +29,16 @@ export class EventDetailRepository {
             ward: true,
             districtId: true,
             createdAt: true,
+            districts: {
+              select: {
+                name: true,
+                province: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
           },
         },
         lastScore: true,
@@ -46,10 +54,58 @@ export class EventDetailRepository {
             },
           },
         },
+        Showing:{
+          select:{
+            id: true,
+            eventId: true,
+            status: true,
+            isFree: true,
+            isSalable: true,
+            isPresale: true,
+            seatMapId: true,
+            startTime: true,
+            endTime: true,
+            isEnabledQueueWaiting: true,
+            showAllSeats: true,
+            TicketType:{
+              select:{
+                id: true,
+                name: true,
+                description: true,
+                color: true,
+                isFree: true,
+                price: true,
+                originalPrice: true,
+                maxQtyPerOrder: true,
+                minQtyPerOrder: true,
+                effectiveFrom: true,
+                effectiveTo: true,
+                position: true,
+                status: true,
+                imageUrl: true,
+                isHidden: true,
+              }
+            }
+          }
+        }
       },
     });
-  }
+    if(!event) {
+      return {eventDetail: null, locationsString: ''};
+    }
 
+    if(!event.locations) {
+      return {eventDetail: event, locationsString: ''};
+    }
+    const { street, ward, districts } = event.locations;
+    const districtName = districts?.name || '';
+    const provinceName = districts?.province?.name || '';
+    const locationsString = `${street}, ${ward}, ${districtName}, ${provinceName}`;
+    
+  
+    return {eventDetail: event, locationsString};
+  }
+  
   async getRecommendedEventsInDetail(eventId: number, limit: string) {
     const event = await this.prisma.events.findUnique({
       where: { id: eventId },
@@ -96,6 +152,7 @@ export class EventDetailRepository {
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         weekClicks: true,
+        totalClicks: true,
       },
     });
   

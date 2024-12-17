@@ -13,7 +13,7 @@ export class EventDetailService {
       return Err(new Error("Event ID is required."));
     }
     try {
-      const eventDetail = await this.eventDetailRepository.getEventDetail(eventId);
+      const { eventDetail, locationsString } = await this.eventDetailRepository.getEventDetail(eventId);
       if (!eventDetail) {
         return Err(new Error("Event not found."));
       }
@@ -26,12 +26,10 @@ export class EventDetailService {
         organizerId: eventDetail.organizerId,
         status: eventDetail.status,
         locationId: eventDetail.locationId,
-        totalTickets: eventDetail.totalTickets,
-        availableTickets: eventDetail.availableTickets,
         Images_Events_imgLogoIdToImages: eventDetail.Images_Events_imgLogoIdToImages,
         Images_Events_imgPosterIdToImages: eventDetail.Images_Events_imgPosterIdToImages,
         createdAt: eventDetail.createdAt,
-        locations: eventDetail.locations,
+        locationsString: locationsString,
         lastScore: eventDetail.lastScore,
         isSpecial: eventDetail.isSpecial,
         isOnlyOnEve: eventDetail.isOnlyOnEve,
@@ -39,6 +37,7 @@ export class EventDetailService {
           id: category.Categories.id,
           name: category.Categories.name,
         })),
+        showing: eventDetail.Showing,
       }
 
       return Ok(formattedResult);
@@ -46,6 +45,7 @@ export class EventDetailService {
       console.error(error);
       return Err(new Error("Failed to fetch event detail data."));
     }
+    
   }
 
   async getRecommendedEventsInDetail(eventId: number, limit: string): Promise<Result<EventFrontDisplay[], Error>> {
