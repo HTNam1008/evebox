@@ -116,36 +116,7 @@ async function saveEventData(eventDetails) {
             },
         });
 
-        if (Array.isArray(showings)){
-            const showing = showings[0];
-            const ticketTypes = showing.ticketTypes;
-            for (const ticketType of ticketTypes){
-                await prisma.ticket_Types.upsert({
-                    where: { id: ticketType.id },
-                    update: {
-                        name: ticketType.name || "Default Ticket Name",
-                        description: ticketType.description || "Default Ticket Description",
-                        maxQuantity: ticketType.maxQtyPerOrder || 2,
-                        minQuantity: ticketType.minQtyPerOrder || 1,
-                        basePrice: ticketType.originalPrice || 0,
-                        effectiveFrom: ticketType.startTime ? new Date(ticketType.startTime) : new Date(),
-                        effectiveTo: ticketType.endTime ? new Date(ticketType.endTime) : null,
-                        eventId: id,
-                    },
-                    create: {
-                        id: ticketType.id,
-                        name: ticketType.name || "Default Ticket Name",
-                        description: ticketType.description || "Default Ticket Description",
-                        maxQuantity: ticketType.maxQtyPerOrder || 2,
-                        minQuantity: ticketType.minQtyPerOrder || 1,
-                        basePrice: ticketType.originalPrice || 0,
-                        effectiveFrom: ticketType.startTime ? new Date(ticketType.startTime) : new Date(),
-                        effectiveTo: ticketType.endTime ? new Date(ticketType.endTime) : null,
-                        eventId: id,
-                    },
-                });
-            }
-        }
+        
     } catch (error) {
         console.error(`Error saving event ID: ${id} to database:`, error.message);
     }

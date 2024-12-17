@@ -7,7 +7,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { EmailModule } from './infrastructure/adapters/email/email.module';
 import { EventModule } from './modules/event/event.module';
 import { UserModule } from './modules/user/user.module';
-
+import { ShowingModule } from './modules/showing/showing.module';
 
 @Module({
   imports: [
@@ -20,6 +20,7 @@ import { UserModule } from './modules/user/user.module';
     EmailModule,
     // Add any other modules here if needed
     EventModule,
+    ShowingModule,
   ],
   providers: [PrismaService],
   exports: [PrismaService],

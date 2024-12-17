@@ -1,4 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/library";
+import { ShowingFront } from "src/modules/showing/domain/entities/showing.entity";
 
 export interface Image{
   id: number;
@@ -17,6 +18,8 @@ export interface EventFrontDisplay {
   lastScore: Decimal;
   Images_Events_imgLogoIdToImages: Image;
   Images_Events_imgPosterIdToImages: Image;
+  totalClicks: number;
+  weekClicks: number;
 }
 
 export interface EventSearchData {
@@ -39,22 +42,15 @@ export interface EventData {
   organizerId: string;
   status: string;
   locationId: number;
-  totalTickets: number;
-  availableTickets: number;
   Images_Events_imgLogoIdToImages: Image;
   Images_Events_imgPosterIdToImages: Image;
   createdAt: Date;
-  locations: {
-    id: number;
-    street: string;
-    ward: string;
-    districtId: number;
-    createdAt: Date;
-  };
+  locationsString: string;
   lastScore: Decimal;
   isSpecial: boolean;
   isOnlyOnEve: boolean;
   categories: Categories[];
+  showing: ShowingFront[];
 }
 
 export interface EventCategorySpecial {
