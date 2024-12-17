@@ -106,8 +106,6 @@ model Events {
   organizerId                       String?
   status                            String            @db.VarChar(55)
   locationId                        Int
-  totalTickets                      Int
-  availableTickets                  Int
   imgLogoId                         Int?              @unique
   imgPosterId                       Int?              @unique
   createdAt                         DateTime          @default(now())
@@ -121,7 +119,7 @@ model Events {
   Images_Events_imgPosterIdToImages Images?           @relation("Events_imgPosterIdToImages", fields: [imgPosterId], references: [id])
   locations                         locations         @relation(fields: [locationId], references: [id])
   users                             User?             @relation(fields: [organizerId], references: [id])
-  Ticket_Types                      Ticket_Types[]
+  Showing                           Showing[]
 }
 
 model Images {
@@ -129,21 +127,6 @@ model Images {
   imageUrl                          String  @db.VarChar(255)
   Events_Events_imgLogoIdToImages   Events? @relation("Events_imgLogoIdToImages")
   Events_Events_imgPosterIdToImages Events? @relation("Events_imgPosterIdToImages")
-}
-
-model Ticket_Types {
-  id            Int       @id @default(autoincrement())
-  name          String    @db.VarChar(100)
-  description   String?
-  minQuantity   Int       @default(1)
-  maxQuantity   Int
-  isHidden      Boolean   @default(false)
-  basePrice     Decimal   @db.Decimal(10, 2)
-  effectiveFrom DateTime
-  effectiveTo   DateTime?
-  createdAt     DateTime  @default(now())
-  eventId       Int
-  Events        Events    @relation(fields: [eventId], references: [id])
 }
 
 model districts {
@@ -163,6 +146,112 @@ model locations {
   createdAt  DateTime  @default(now())
   Events     Events[]
   districts  districts @relation(fields: [districtId], references: [id], onDelete: Cascade)
+}
+
+model Row {
+  id        Int      @id @default(autoincrement())
+  name      String
+  sectionId Int
+  createdAt DateTime @default(now())
+  Section   Section  @relation(fields: [sectionId], references: [id])
+  Seat      Seat[]
+}
+
+model Seat {
+  id        Int      @id @default(autoincrement())
+  name      String
+  rowId     Int
+  positionX Float
+  positionY Float
+  createdAt DateTime @default(now())
+  position  Int
+  Row       Row      @relation(fields: [rowId], references: [id])
+  Ticket    Ticket[]
+}
+
+model Seatmap {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  viewBox   String
+  status    Int
+  Section   Section[]
+  Showing   Showing[]
+}
+
+model Section {
+  id           Int      @id @default(autoincrement())
+  name         String
+  seatmapId    Int
+  isStage      Boolean
+  element      Json
+  attribute    Json
+  createdAt    DateTime @default(now())
+  ticketTypeId String
+  Row          Row[]
+  Seatmap      Seatmap  @relation(fields: [seatmapId], references: [id])
+}
+
+model Showing {
+  id                    String       @id
+  eventId               Int
+  status                String
+  isFree                Boolean
+  isSalable             Boolean
+  isPresale             Boolean
+  seatMapId             Int
+  startTime             DateTime
+  endTime               DateTime
+  isEnabledQueueWaiting Boolean
+  showAllSeats          Boolean
+  Events                Events       @relation(fields: [eventId], references: [id])
+  Seatmap               Seatmap      @relation(fields: [seatMapId], references: [id])
+  Ticket                Ticket[]
+  TicketType            TicketType[]
+
+  @@index([eventId])
+}
+
+model Ticket {
+  id           String     @id
+  seatId       Int
+  showingId    String
+  ticketTypeId String
+  status       Int
+  price        Int
+  userId       Int?
+  purchasedAt  DateTime?
+  qrCode       String?
+  Seat         Seat       @relation(fields: [seatId], references: [id])
+  Showing      Showing    @relation(fields: [showingId], references: [id])
+  TicketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+
+  @@index([seatId])
+  @@index([showingId])
+  @@index([ticketTypeId])
+}
+
+model TicketType {
+  id             String    @id
+  showingId      String
+  name           String
+  description    String
+  color          String
+  isFree         Boolean
+  price          Int
+  originalPrice  Int
+  maxQtyPerOrder Int
+  minQtyPerOrder Int
+  effectiveFrom  DateTime
+  effectiveTo    DateTime?
+  position       Int
+  status         String
+  imageUrl       String
+  isHidden       Boolean   @default(false)
+  Ticket         Ticket[]
+  Showing        Showing   @relation(fields: [showingId], references: [id])
+
+  @@index([showingId])
 }
 
 enum OTPType {
