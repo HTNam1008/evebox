@@ -66,4 +66,15 @@ export class ShowingService {
       return Err(new Error('Failed to fetch seat map data.'));
     }
   }
+
+  async getAllShowings(): Promise<Result<String[], Error>> {
+    try {
+      const showings = await this.showingRepository.getAllShowing();
+      const formattedResult = showings.map(showing => showing.id);
+      return Ok(formattedResult);
+    } catch (error) {
+      console.error(error);
+      return Err(new Error('Failed to fetch showings data.'));
+    }
+  }
 }

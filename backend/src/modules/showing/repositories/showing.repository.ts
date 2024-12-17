@@ -127,4 +127,8 @@ export class ShowingRepository {
     });
     return seatmap;
   }
+
+  async getAllShowing(){
+    return await this.prisma.showing.findMany({select: {id: true}});
+  }
 }
