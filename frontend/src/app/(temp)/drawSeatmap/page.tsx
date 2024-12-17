@@ -42,6 +42,7 @@ const TempPage: React.FC = () => {
   if (loading) return <p>Loading...</p>;
 
   return (
+    <>
     <div>
       <h1>Seat Map</h1>
       <select onChange={(e) => setSelectedShowingId(e.target.value)}>
@@ -51,8 +52,10 @@ const TempPage: React.FC = () => {
           </option>
         ))}
       </select>
-      {seatMapData && <SeatMap seatMap={seatMapData} />}
+      
     </div>
+    <div>{seatMapData && <SeatMap seatMap={seatMapData} />}</div>
+    </>
   );
 };
 

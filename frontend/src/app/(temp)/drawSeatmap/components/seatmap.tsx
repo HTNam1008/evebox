@@ -9,8 +9,8 @@ const SeatMap: React.FC<SeatMapProps> = ({ seatMap }) => {
   if (!seatMap) return <p>No seat map available</p>;
   return (
     <svg
-      width="1200"
-      height="1200"
+      width="900"
+      height="600"
       viewBox={seatMap.viewBox}
       xmlns="http://www.w3.org/2000/svg"
     >
