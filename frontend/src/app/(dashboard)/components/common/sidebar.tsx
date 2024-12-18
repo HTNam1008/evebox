@@ -13,7 +13,7 @@ import { SidebarProps } from '../../libs/interface/dashboard.interface';
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const [loading, setLoading] = useState(false);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const handleLogout = async () => {
     if (!session?.user?.accessToken) {
@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
   const menuItems = [
     { icon: <User size={20} />, text: 'Quản lý tài khoản', href: '/account' },
-    { icon: <Ticket size={20} />, text: 'Quản lý vé', href: '/tickets' },
+    { icon: <Ticket size={20} />, text: 'Quản lý vé', href: '/ticket' },
     { icon: <Calendar size={20} />, text: 'Tạo sự kiện', href: '/create-event' },
     { icon: <LogOut size={20} />, text: 'Đăng xuất', onClick: handleLogout },  // Sửa để sử dụng button
   ];

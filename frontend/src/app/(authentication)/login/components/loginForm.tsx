@@ -96,7 +96,11 @@ export const LoginForm = () => {
 
                 <div className="short-input">
                   <button type="submit" className="btn btn-login w-100" style={{ marginBottom: '20px', marginTop: '10px' }} >
-                    Đăng nhập
+                    {isLoading ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      'Đăng nhập'
+                    )}
                   </button>
                 </div>
                 <div className="text-center short-input">
@@ -109,11 +113,7 @@ export const LoginForm = () => {
                     <button className="google-button" style={{ marginBottom: '20px' }} onClick={handleGoogleLogin} disabled={isLoading}>
                       <Icon icon="flat-color-icons:google" width="20px" color="#fff" />
                       {/* Đăng nhập với Google */}
-                      {isLoading ? (
-                        <CircularProgress size={24} />
-                      ) : (
-                        "Đăng nhập với Google"
-                      )}
+                      Đăng nhập với Google
                     </button>
                   </Link>
                 </div>
