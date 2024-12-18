@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import Link from 'next/link';
 
 interface EventSliderProps {
   title: string;
@@ -43,30 +44,34 @@ const EventSlider = ({ title, subtitle, showViewMore = false, events }: EventSli
       >
         {events.map((_, index) => (
           <SwiperSlide key={index}>
-            <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow">
-              <div className="flex items-center justify-center aspect-[13/9] overflow-hidden">
-                <img
-                  src="/images/dashboard/card_pic.png"
-                  alt="Event"
-                  className="object-cover hover:scale-105 transition-transform duration-300 padding-30"
-                />
-              </div>
-              <div className="p-3">
-                <h3 className="font-bold text-left text-base mb-3 line-clamp-2 leading-tight text-white">
-                  Nhớ Trịnh Công Sơn 3 - Quang Dũng - Cẩm Vân - Khắc Triệu - Cece Trường
-                </h3>
-                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
-                  <time className="text-left text-teal-500">
-                    <span>20:00 - 23:00</span>
-                    <br />
-                    <span>25 tháng 10, 2024</span>
-                  </time>
-                  <span className={`rounded-lg bg-emerald-200 px-2 font-medium text-sky-950 text-center md:text-left`}>
-                    {index % 2 === 0 ? "Miễn phí" : "950.000đ"}
-                  </span>
+            <Link href={{
+              pathname: `/event/${index}`
+            }}>
+              <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow">
+                <div className="flex items-center justify-center aspect-[13/9] overflow-hidden">
+                  <img
+                    src="/images/dashboard/card_pic.png"
+                    alt="Event"
+                    className="object-cover hover:scale-105 transition-transform duration-300 padding-30"
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="font-bold text-left text-base mb-3 line-clamp-2 leading-tight text-white">
+                    Nhớ Trịnh Công Sơn 3 - Quang Dũng - Cẩm Vân - Khắc Triệu - Cece Trường
+                  </h3>
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
+                    <time className="text-left text-teal-500">
+                      <span>20:00 - 23:00</span>
+                      <br />
+                      <span>25 tháng 10, 2024</span>
+                    </time>
+                    <span className={`rounded-lg bg-emerald-200 px-2 font-medium text-sky-950 text-center md:text-left`}>
+                      {index % 2 === 0 ? "Miễn phí" : "950.000đ"}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </SwiperSlide>
         ))}
         <button className="custom-swiper-button-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
@@ -76,7 +81,7 @@ const EventSlider = ({ title, subtitle, showViewMore = false, events }: EventSli
           <ChevronRight className="text-3xl text-white hover:text-gray-900 transition-transform" />
         </button>
       </Swiper>
-    </>
+      </>
   );
 };
 

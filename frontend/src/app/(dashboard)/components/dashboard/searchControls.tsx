@@ -3,9 +3,14 @@ console.log('search control - Rendering on client:', typeof window !== 'undefine
 
 import { ChevronDown, Search } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { CalendarDate} from "@internationalized/date";
 import DatePicker from './datePicker';
+import Link from 'next/link';
+import { RangeValue } from "@react-types/shared";
 
 export default function SearchControls() {
+    const [searchText, setSearchText] = useState('');
+    const [dateRange, setDateRange] = useState<RangeValue<CalendarDate> | null>(null);
     const [isEventTypeOpen, setIsEventTypeOpen] = useState(false);
     const [isLocationOpen, setIsLocationOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -31,7 +36,9 @@ export default function SearchControls() {
                         <label className="text-sm font-medium mb-2">Tên sự kiện, diễn giả, ...</label>
                         <div className="mt-2 relative">
                             <input className="w-full bg-white text-gray-800 rounded p-2 appearance-none pr-8 small-text" type="text"
-                                placeholder="Nhập tên sự kiện, diễn giả...">
+                                placeholder="Nhập tên sự kiện, diễn giả..."
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}>
                             </input>
                         </div>
                     </div>
@@ -106,13 +113,24 @@ export default function SearchControls() {
                     <div className="flex-[1.5] text-left">
                         <label className="text-sm font-medium mb-2">Thời gian</label>
                         <div className="mt-2 relative">
-                            <DatePicker />
+                            <DatePicker onDateRangeChange={setDateRange} />
                         </div>
                     </div>
                     <div className="flex md:items-end">
-                        <button className="w-full md:w-14 h-10 bg-teal-400 hover:bg-teal-300 rounded flex items-center justify-center">
-                            <Search size={20} className="text-white" />
-                        </button>
+                        <Link href={{
+                            pathname: "/search",
+                            query: {
+                                q: searchText || undefined,
+                                types: selectedOptions.length > 0 ? selectedOptions.join(',') : undefined,
+                                location: selectedLocation || undefined,
+                                startDate: dateRange?.start?.toString() || undefined,
+                                endDate: dateRange?.end?.toString() || undefined
+                            }
+                        }}>
+                            <button className="w-full md:w-14 h-10 bg-teal-400 hover:bg-teal-300 rounded flex items-center justify-center">
+                                <Search size={20} className="text-white" />
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </div>

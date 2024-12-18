@@ -41,6 +41,7 @@ async function fetchData() {
 const Dashboard = async () => {
     const slides = await fetchData();
     const events = [1, 2, 3, 4, 5, 6, 7, 8];
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
     return (
         <div className="min-h-screen flex flex-col">
