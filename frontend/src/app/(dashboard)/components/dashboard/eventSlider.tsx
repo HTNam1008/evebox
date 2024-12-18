@@ -52,7 +52,7 @@ const EventSlider = ({ title, subtitle, showViewMore = false, events }: EventSli
                   <img
                     src="/images/dashboard/card_pic.png"
                     alt="Event"
-                    className="object-cover hover:scale-105 transition-transform duration-300 padding-30"
+                    className="w-full object-cover hover:scale-105 transition-transform duration-300 padding-30"
                   />
                 </div>
                 <div className="p-3">
