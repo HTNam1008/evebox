@@ -47,16 +47,18 @@ const NavigationBar = () => {
             >
               <Menu size={24} />
             </button>
-            <div className="w-18 h-9 rounded flex items-center">
-              <img
-                src="/images/dashboard/logo-icon.png"
-                alt="logo"
-                className="w-18 h-9"
-              />
-            </div>
-            <span className="text-white font-bold text-xl hidden sm:inline">
-              EveBox
-            </span>
+            <Link href={"/"} className="flex items-center gap-2">
+              <div className="w-18 h-9 rounded">
+                <img
+                  src="/images/dashboard/logo-icon.png"
+                  alt="logo"
+                  className="w-18 h-9"
+                />
+              </div>
+              <span className="text-white font-bold text-xl hidden sm:inline">
+                EveBox
+              </span>
+            </Link>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">

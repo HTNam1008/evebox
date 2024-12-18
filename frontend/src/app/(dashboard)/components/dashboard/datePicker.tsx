@@ -5,14 +5,19 @@ import { DateRangePicker } from "@nextui-org/react";
 import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { RangeValue } from "@react-types/shared";
 
-export default function DatePicker() {
+interface DatePickerProps {
+    onDateRangeChange: (range: RangeValue<CalendarDate> | null) => void;
+}
+
+export default function DatePicker({ onDateRangeChange }: DatePickerProps) {
     const [value, setValue] = React.useState<RangeValue<CalendarDate> | null>({
-        start: today(getLocalTimeZone()).subtract({days: 1}),
+        start: today(getLocalTimeZone()).subtract({ days: 1 }),
         end: today(getLocalTimeZone()),
     });
 
     const handleChange = (newValue: RangeValue<CalendarDate> | null) => {
         setValue(newValue);
+        onDateRangeChange(newValue);
     };
 
     return (
