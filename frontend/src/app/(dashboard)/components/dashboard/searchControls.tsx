@@ -7,6 +7,7 @@ import { CalendarDate} from "@internationalized/date";
 import DatePicker from './datePicker';
 import Link from 'next/link';
 import { RangeValue } from "@react-types/shared";
+import 'tailwindcss/tailwind.css';
 
 export default function SearchControls() {
     const [searchText, setSearchText] = useState('');
@@ -42,14 +43,14 @@ export default function SearchControls() {
                             </input>
                         </div>
                     </div>
-                    <div className="flex-1 text-left">
+                    <div className="md:w-48 sm:flex-1 text-left">
                         <label className="text-sm font-medium mb-2">Loại sự kiện</label>
-                        <div className="mt-2 relative" ref={dropdownEventRef}>
+                        <div className="mt-2 relative w-full" ref={dropdownEventRef}>
                             <button
                                 onClick={() => setIsEventTypeOpen(!isEventTypeOpen)}
                                 className="w-full bg-white border border-gray-300 rounded p-2 flex justify-between items-center text-gray-500 small-text"
                             >
-                                <span>
+                                <span className='truncate'>
                                     {selectedOptions.length > 0
                                         ? selectedOptions.join(", ")
                                         : "Chọn loại sự kiện"}
@@ -78,7 +79,7 @@ export default function SearchControls() {
                             )}
                         </div>
                     </div>
-                    <div className="flex-1 text-left">
+                    <div className="md:w-48 sm:flex-1 text-left">
                         <label className="text-sm font-medium mb-2">Địa điểm</label>
                         <div className="mt-2 relative" ref={dropdownLocationRef}>
                             <button

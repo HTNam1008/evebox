@@ -7,6 +7,7 @@ import 'tailwindcss/tailwind.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import '@/styles/admin/pages/Dashboard.css';
+import EventSlider from '../../components/dashboard/eventSlider';
 
 interface SearchClientProps {
     events: number[];
@@ -135,7 +136,7 @@ export default function SearchClient({ events }: SearchClientProps) {
                         </div>
                     </div>
                     {/* Event Cards Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
+                    {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
                         {events.map((_, index) => (
                             <div key={index} className="bg-[#0C4762] rounded-lg overflow-hidden shadow-lg border-2 hover:shadow-md transition-shadow">
                                 <div className="flex items-center justify-center aspect-[13/9] overflow-hidden">
@@ -164,7 +165,11 @@ export default function SearchClient({ events }: SearchClientProps) {
                                 </div>
                             </div>
                         ))}
-                    </div>
+                    </div> */}
+                    <EventSlider events={events} title={''} />
+                    <EventSlider events={events} title={''} />
+                    <EventSlider events={events} title={''} />
+                    <EventSlider events={events} title={''} />
                     {/* Load More Button */}
                     <div className="flex justify-center mt-8 mb-8">
                         <button className="px-6 py-2 bg-teal-400 text-sky-950 rounded-md hover:bg-teal-300 transition-colors">
