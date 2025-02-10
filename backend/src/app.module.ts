@@ -9,6 +9,7 @@ import { EventModule } from './modules/event/event.module';
 import { UserModule } from './modules/user/user.module';
 import { ShowingModule } from './modules/showing/showing.module';
 import { LocationModule } from './modules/location/location.module';
+import { TicketTypeModule } from './modules/tickettype/tickettype.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LocationModule } from './modules/location/location.module';
     EventModule,
     ShowingModule,
     LocationModule,
+    TicketTypeModule,
   ],
   providers: [PrismaService],
   exports: [PrismaService],
