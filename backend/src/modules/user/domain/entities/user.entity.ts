@@ -1,17 +1,24 @@
-// src/modules/user/domain/entities/user.entity.ts
-
 import { AggregateRoot } from 'src/libs/ddd/aggregate-root.base';
-import { UserId } from '../value-objects/user-id.vo';
-import { Email } from '../value-objects/email.vo';
-import { Password } from '../value-objects/password.vo';
+import { UserId } from '../value-objects/user/user-id.vo';
+import { Email } from '../value-objects/user/email.vo';
+import { Password } from '../value-objects/user/password.vo';
 import { UserRole } from '../enums/user-role.enum';
-import { Role } from '../value-objects/role.vo';
-import { UserRegisteredDomainEvent } from '../events/user-registered.domain-event';
+import { Role } from '../value-objects/user/role.vo';
+import { UserRegisteredDomainEvent } from '../events/user/user-registered.domain-event';
+import { Name } from '../value-objects/user/name.vo';
+import { Phone } from '../value-objects/user/phone.vo';
+import { ProvinceId } from '../value-objects/user/province-id.vo';
+import { Result, Ok, Err } from 'oxide.ts';
+import { UserPasswordResetDomainEvent } from '../events/user/user-reset-password.domain-event';
 
 interface UserProps {
+  id: UserId;
+  name: Name;
   email: Email;
   password: Password;
+  phone: Phone;
   role: Role;
+  provinceIds: ProvinceId[]; // Định nghĩa provinceIds là một mảng ProvinceId
 }
 
 export class User extends AggregateRoot<UserId, UserProps> {
@@ -19,39 +26,81 @@ export class User extends AggregateRoot<UserId, UserProps> {
     super(id, props);
   }
 
-  // Phương thức tạo người dùng mới
+  /**
+   * Phương thức tạo người dùng mới với danh sách ProvinceIds
+   */
   public static async createNew(
+    name: Name,
     email: Email,
     password: Password,
+    phone: Phone,
+    provinceIds: ProvinceId[], // Nhận danh sách ProvinceIds
     role: UserRole = UserRole.CUSTOMER,
-  ): Promise<User> {
-    const id = UserId.generate();
-    const roleVo = Role.create(role);
-    const user = new User(id, {
-      email,
-      password,
-      role: roleVo,
-    });
-    // Có thể phát sinh domain event tại đây
-    user.addDomainEvent(new UserRegisteredDomainEvent(user));
-    return user;
+  ): Promise<Result<User, Error>> {
+    // Kiểm tra Role
+    const roleOrError = Role.create(role);
+    if (roleOrError.isErr()) {
+      return Err(roleOrError.unwrapErr());
+    }
+    const roleVo = roleOrError.unwrap();
+
+    try {
+      const id = UserId.generate();
+      const user = new User(id, {
+        id,
+        name,
+        email,
+        password,
+        phone,
+        role: roleVo,
+        provinceIds, // Gán danh sách ProvinceIds
+      });
+
+      user.addDomainEvent(new UserRegisteredDomainEvent(user));
+
+      return Ok(user);
+    } catch (error) {
+      return Err(new Error('Failed to create user: ' + (error as Error).message));
+    }
   }
 
-  // Phương thức tạo người dùng từ dữ liệu persistence
+  /**
+   * Phương thức tạo người dùng từ dữ liệu persistence (từ database)
+   */
   public static createExisting(
     id: UserId,
+    name: Name,
     email: Email,
     password: Password,
+    phone: Phone,
     role: Role,
-  ): User {
-    return new User(id, {
+    provinceIds: ProvinceId[], // Nhận danh sách ProvinceIds
+  ): Result<User, Error> {
+    return Ok(new User(id, {
+      id,
+      name,
       email,
-      password,
+      password, 
+      phone,
       role,
-    });
+      provinceIds, // Gán danh sách ProvinceIds
+    }));
+  }
+  
+  public updatePassword(newPassword: Password): void {
+    this.props.password = newPassword;
+    
+    // Add domain event
+    this.addDomainEvent(
+      new UserPasswordResetDomainEvent(this)
+    );
   }
 
   // Các getter
+  public get name(): Name {
+    return this.props.name;
+  }
+
   public get email(): Email {
     return this.props.email;
   }
@@ -60,7 +109,31 @@ export class User extends AggregateRoot<UserId, UserProps> {
     return this.props.password;
   }
 
+  public get phone(): Phone {
+    return this.props.phone;
+  }
+
   public get role(): Role {
     return this.props.role;
   }
+
+  public get provinceIds(): ProvinceId[] {
+    return this.props.provinceIds;
+  }
+
+  /**
+   * Ví dụ: Phương thức để thêm một ProvinceId vào user
+   */
+  public addProvince(provinceId: ProvinceId): void {
+    this.props.provinceIds.push(provinceId);
+    // Bạn có thể phát sinh thêm domain event nếu cần
+  }
+
+  /**
+   * Ví dụ: Phương thức để loại bỏ một ProvinceId khỏi user
+   */
+  // public removeProvince(provinceId: ProvinceId): void {
+  //   this.props.provinceIds = this.props.provinceIds.filter(id => id.value !== provinceId.value);
+  //   // Bạn có thể phát sinh thêm domain event nếu cần
+  // }
 }
