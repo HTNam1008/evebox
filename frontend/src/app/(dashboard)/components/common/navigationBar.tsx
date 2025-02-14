@@ -6,11 +6,12 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./sidebar";
 import apiClient from "@/services/apiClient";
 import { useSession } from "next-auth/react";
+import { UserInfo, UserInfoResponse } from "@/types/model/userInfo";
 
 const NavigationBar = () => {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState<any>(null); // Replace `any` with a proper type if known
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null); // Replace `any` with a proper type if known
   const [isLoading, setLoading] = useState(false);
   const { data: session } = useSession();
   
@@ -19,7 +20,7 @@ const NavigationBar = () => {
     const fetchUserInfo = async () => {
       setLoading(true);
       try {
-        const response = await apiClient.get("/api/user/me"); // Assuming your API route is /api/me
+        const response = await apiClient.get<UserInfoResponse>("/api/user/me"); // Assuming your API route is /api/me
         setUserInfo(response.data.data);
       } catch (error) {
         console.error("Error fetching user info:", error);
@@ -139,11 +140,13 @@ const NavigationBar = () => {
 };
 
 export default NavigationBar;
-function useQuery(arg0: {
+
+// no using useQuery
+/* function useQuery(arg0: {
   queryKey: (string | undefined)[]; queryFn: () => Promise<any>; enabled: boolean; // Only run if session exists
   staleTime: number; // Cache for 5 minutes
   cacheTime: number;
 }): { data: any; isLoading: any; } {
   throw new Error("Function not implemented.");
-}
+} */
 

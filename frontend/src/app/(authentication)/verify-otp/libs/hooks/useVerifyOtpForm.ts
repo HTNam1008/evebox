@@ -142,7 +142,7 @@ export const useVerifyOTPForm = () => {
         alert(result.data.message);
       }
     } catch (err) {
-      setError('Gửi mã OTP thất bại, vui lòng thử lại sau.');
+      setError(`Gửi mã OTP thất bại, vui lòng thử lại sau: ${err}.`);
     }
   };
 
