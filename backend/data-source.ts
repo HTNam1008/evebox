@@ -9,7 +9,7 @@ dotenv.config();
 export const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DATABASE_HOST || 'localhost',
-  port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
+  port: process.env.DATABASE_PORT ? parseInt(process.env.DATABASE_PORT, 10) : 5432,
   username: process.env.DATABASE_USERNAME || 'your_db_username',
   password: process.env.DATABASE_PASSWORD || 'your_db_password',
   database: process.env.DATABASE_NAME || 'your_db_name',

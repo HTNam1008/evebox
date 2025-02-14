@@ -8,6 +8,8 @@ import { EmailModule } from './infrastructure/adapters/email/email.module';
 import { EventModule } from './modules/event/event.module';
 import { UserModule } from './modules/user/user.module';
 import { ShowingModule } from './modules/showing/showing.module';
+import { LocationModule } from './modules/location/location.module';
+import { TicketTypeModule } from './modules/tickettype/tickettype.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { ShowingModule } from './modules/showing/showing.module';
     // Add any other modules here if needed
     EventModule,
     ShowingModule,
+    LocationModule,
+    TicketTypeModule,
   ],
   providers: [PrismaService],
   exports: [PrismaService],
