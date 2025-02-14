@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TicketTypeService } from './tickettype.service';
-import { CreateTicketTypeDto } from '../../dto/create-tickettype.dto';
-import { UpdateTicketTypeDto } from '../../dto/update-tickettype.dto';
+import { CreateTicketTypeDto } from '../../domains/entities/create-tickettype.entity';
+import { UpdateTicketTypeDto } from '../../domains/entities/update-tickettype.entity';
 
 @Controller('tickettype')
 export class TicketTypeController {

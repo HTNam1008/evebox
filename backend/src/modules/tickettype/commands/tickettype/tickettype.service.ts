@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TicketTypeRepository } from '../../repositories/tickettype.repository';
-import { CreateTicketTypeDto } from '../../dto/create-tickettype.dto';
-import { UpdateTicketTypeDto } from '../../dto/update-tickettype.dto';
+import { CreateTicketTypeDto } from '../../domains/entities/create-tickettype.entity';
+import { UpdateTicketTypeDto } from '../../domains/entities/update-tickettype.entity';
 
 @Injectable()
 export class TicketTypeService {
