@@ -6,6 +6,16 @@ export class LocationRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: { street: string; ward: string; provinceId: number; districtId: number }) {
+    const location = await this.prisma.locations.findFirst({
+      where: {
+        street: data.street,
+        ward: data.ward,
+        districtId: data.districtId,
+      },
+    });
+    if (location) {
+      return location;
+    }
     return this.prisma.locations.create({
       data: {
         street: data.street,

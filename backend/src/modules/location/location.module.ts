@@ -7,7 +7,7 @@ import { LocationRepository } from './repositories/location.repository';
 
 @Module({
   providers: [LocationService, LocationRepository, PrismaService],
-  exports: [LocationService, PrismaService],
+  exports: [LocationService],
 })
 
 export class LocationModule {}
