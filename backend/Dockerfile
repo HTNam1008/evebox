@@ -1,6 +1,9 @@
 # Stage 1: Build
 FROM node:18-alpine AS builder
 
+# Cài đặt dependencies cần thiết
+RUN apk add --no-cache openssl openssl-dev libc6-compat
+
 # Set working directory
 WORKDIR /app
 
