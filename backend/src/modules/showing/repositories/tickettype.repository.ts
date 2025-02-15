@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../../infrastructure/database/prisma/prisma.service";
-import { CreateTicketTypeDto } from '../domains/entities/create-tickettype.entity';
+import { CreateTicketTypeDto } from '../commands/tickettype/create-tickettype.dto';
 import { Prisma } from "@prisma/client";
 
 @Injectable()

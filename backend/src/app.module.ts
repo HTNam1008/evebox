@@ -9,7 +9,6 @@ import { EventModule } from './modules/event/event.module';
 import { UserModule } from './modules/user/user.module';
 import { ShowingModule } from './modules/showing/showing.module';
 import { LocationModule } from './modules/location/location.module';
-import { TicketTypeModule } from './modules/tickettype/tickettype.module';
 import { CloudinaryModule } from './infrastructure/adapters/cloudinary/cloudinary.module';
 import { ImagesModule } from './modules/images/images.module';
 
@@ -27,7 +26,6 @@ import { ImagesModule } from './modules/images/images.module';
     EventModule,
     ShowingModule,
     LocationModule,
-    TicketTypeModule,
     ImagesModule,
   ],
   providers: [PrismaService],
