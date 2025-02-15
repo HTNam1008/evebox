@@ -11,13 +11,25 @@ import { EventDetailController } from './commands/detail/detail.controller';
 import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
 import { UpdateWeeklyService } from './tasks/update-weekly.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { CategoriesController } from './commands/categories/categories.controller';
+import { CategoriesService } from './commands/categories/categories.service';
+import { CategoriesRepository } from './repositories/categories.repository';
+import { EventCategoriesRepository } from './repositories/event-categories.repository';
+import { EventService } from './commands/event/event.service';
+import { EventRepository } from './repositories/event.repository';
+import { EventController } from './commands/event/event.controller';
+import { ImagesModule } from '../images/images.module';
+import { LocationModule } from '../location/location.module';
 
 
 @Module({
-  imports: [ScheduleModule.forRoot()],
-  controllers: [FrontDisplayController, SearchController, EventDetailController],
-  providers: [FrontDisplayService, SearchService, UpdateWeeklyService, EventDetailService,
-    EventFrontDisplayRepository, EventDetailRepository, EventSearchRepository,
+  imports: [ScheduleModule.forRoot(), ImagesModule, LocationModule],
+  controllers: [EventController, FrontDisplayController, SearchController, EventDetailController, CategoriesController],
+  providers: [FrontDisplayService, SearchService, UpdateWeeklyService, 
+    EventDetailService, CategoriesService, EventService,
+    
+    EventFrontDisplayRepository, EventDetailRepository, EventSearchRepository, 
+    CategoriesRepository, EventCategoriesRepository, EventRepository,
     PrismaService],
 })
 export class EventModule {}
