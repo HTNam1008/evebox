@@ -98,6 +98,17 @@
     background-color: #0C4762;
 }
 
+.title-box {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.text-add {
+    color: #51DACF;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 /*---------------------------------------------------------------------------------------------------*/
 /* Description */
 #more {
@@ -124,17 +135,17 @@
 }
 
 .li-ticket {
-    background-color: #0C4762;
-    color: white;
-    font-size: 16px;
+    background-color: #0C4762 !important;
+    color: white !important;
+    font-size: 16px !important;
 }
 
 .li-ticket-item{
-    background-color: #0C4762;
-    color: white;
-    font-size: 16px;
-    padding: 10px 15px;
-    border: none;
+    background-color: #0C4762 !important;
+    color: white !important;
+    font-size: 16px !important;
+    padding: 10px 15px !important;
+    border: none !important;
 }
 
 .ul-ticket-item{

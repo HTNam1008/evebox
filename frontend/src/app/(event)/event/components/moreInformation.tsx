@@ -13,7 +13,7 @@ export default function MoreInformation({ title, location }: MoreInformationProp
             {/* Location */}
             <div className="flex mt-8 mr-2">
                 <div className="w-full md:w-5/6">
-                    <h2 className="text-xl md:text-2xl font-bold">
+                    <h2 className="text-xl md:text-2xl font-bold mb-2">
                         Địa điểm sự kiện
                     </h2>
                     <div className="ratio ratio-16x9">
@@ -35,7 +35,7 @@ export default function MoreInformation({ title, location }: MoreInformationProp
                     <h2 className="text-xl md:text-2xl font-bold">
                         Tags
                     </h2>
-                    <div>
+                    <div className="mt-2">
                         <a className="txt-tags mr-4" href="#">Indonesia event</a>
                         <a className="txt-tags mr-4" href="#">Seminar</a>
                         <a className="txt-tags mr-4" href="#">Hot</a>
