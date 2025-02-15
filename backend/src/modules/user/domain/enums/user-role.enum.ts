@@ -1,9 +1,7 @@
-// src/modules/user/domain/enums/user-role.enum.ts
-
 export enum UserRole {
-    SYSTEM_ADMIN = 'SYSTEM_ADMIN',
-    ADMIN = 'ADMIN',
-    ORGANIZER = 'ORGANIZER',
-    CUSTOMER = 'CUSTOMER',
+    SYSTEM_ADMIN = 0,
+    ADMIN = 1,
+    ORGANIZER = 2,
+    CUSTOMER = 3,
   }
   
