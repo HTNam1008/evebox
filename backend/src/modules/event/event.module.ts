@@ -8,7 +8,6 @@ import { EventFrontDisplayRepository } from './repositories/event-frontdisplay.r
 import { EventDetailRepository } from './repositories/event-detail.repository';
 import { EventDetailService } from './commands/detail/detail.service';
 import { EventDetailController } from './commands/detail/detail.controller';
-import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
 import { UpdateWeeklyService } from './tasks/update-weekly.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CategoriesController } from './commands/categories/categories.controller';
@@ -30,6 +29,6 @@ import { LocationModule } from '../location/location.module';
     
     EventFrontDisplayRepository, EventDetailRepository, EventSearchRepository, 
     CategoriesRepository, EventCategoriesRepository, EventRepository,
-    PrismaService],
+    ],
 })
 export class EventModule {}

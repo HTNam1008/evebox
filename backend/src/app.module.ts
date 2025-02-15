@@ -11,6 +11,7 @@ import { ShowingModule } from './modules/showing/showing.module';
 import { LocationModule } from './modules/location/location.module';
 import { CloudinaryModule } from './infrastructure/adapters/cloudinary/cloudinary.module';
 import { ImagesModule } from './modules/images/images.module';
+import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -27,8 +28,7 @@ import { ImagesModule } from './modules/images/images.module';
     ShowingModule,
     LocationModule,
     ImagesModule,
+    PrismaModule,
   ],
-  providers: [PrismaService],
-  exports: [PrismaService],
 })
 export class AppModule {}
