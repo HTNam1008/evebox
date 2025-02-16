@@ -44,7 +44,7 @@ export class CreateEventDto {
   @IsString()
   locationString: string;
 
-  @ApiProperty({ example: [1, 2, 3], description: 'Array of category IDs', required: true })
+  @ApiProperty({ example: [1, 2], description: 'Array of category IDs', required: true })
   @IsNumber({}, { each: true })
   categoryIds: number[];
 
@@ -103,7 +103,7 @@ export class UpdateEventDto {
   @IsOptional()
   imgPosterId?: number;
 
-  @ApiProperty({ example: [1, 2, 3], description: 'Array of category IDs', required: true })
+  @ApiProperty({ example: [1, 2], description: 'Array of category IDs', required: true })
   @IsNumber({}, { each: true })
   categoryIds: number[];
 }

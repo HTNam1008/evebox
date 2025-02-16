@@ -2,6 +2,7 @@ import { Controller, Get, Query, Res, HttpStatus } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { Response } from 'express';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { EventSearchResponse } from './search-response.dto';
 
 @Controller('api/event')
 export class SearchController {
@@ -12,6 +13,7 @@ export class SearchController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Events found successfully',
+    type: EventSearchResponse,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
