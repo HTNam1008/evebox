@@ -3,6 +3,8 @@ import { EventDetailService } from "./detail.service";
 import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
+import { EventDetailResponse } from './detail-response.dto';
+import { EventResponse } from "../event/event-response.dto";
 
 @Controller('api/event/detail')
 export class EventDetailController {
@@ -13,6 +15,7 @@ export class EventDetailController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Event details retrieved successfully',
+    type: EventDetailResponse,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -52,6 +55,7 @@ export class EventDetailController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Recommended events retrieved successfully',
+    type: EventResponse,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
