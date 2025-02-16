@@ -5,6 +5,7 @@ import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { TicketTypeService } from './tickettype.service';
 import { CreateTicketTypeDto } from './create-tickettype.dto';
 import { UpdateTicketTypeDto } from './update-tickettype.dto';
+import { TicketTypeResponseDto } from './tickettype-response.dto';
 
 @Controller('api/tickettype')
 export class TicketTypeController {
@@ -25,7 +26,8 @@ export class TicketTypeController {
           status: "active"
         }
       }
-    }
+    },
+    type: TicketTypeResponseDto
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
