@@ -1,0 +1,30 @@
+/* Form */
+.title-page {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.icon-back {
+    color: #0C4762;
+    font-size: 2rem;
+}
+
+.red-star {
+    color: red;
+}
+
+.custom-input {
+    border: 2px solid black;
+}
+
+.bg-alert {
+    background: rgba(81, 218, 207, 0.2) !important; /* 20% độ đậm */
+}
+
+/*---------------------------------------------------------------------------------------------------*/
+/* Information of Ticket */
+.title-event {
+    font-weight: bold;
+    font-size: 24px;
+}
+
