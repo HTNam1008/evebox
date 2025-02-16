@@ -9,7 +9,7 @@ export class CategoriesRepository {
 
   async create(name: string): Promise<Result<Categories, Error>> {
     try {
-      const category = await this.prisma.categories.create({ data: { name } });
+      const category = await this.prisma.categories.create({ data: { name: name, createdAt: new Date(Date.now()) } });
       return Ok(category);
     } catch (error) {
       return Err(new Error('Failed to create category'));
@@ -37,9 +37,10 @@ export class CategoriesRepository {
 
   async remove(id: number): Promise<Result<void, Error>> {
     try {
-      await this.prisma.categories.delete({ where: { id } });
+      await this.prisma.categories.delete({ where: { id: id >> 0 } });
       return Ok(undefined);
     } catch (error) {
+      console.log(error);
       return Err(new Error('Failed to delete category'));
     }
   }

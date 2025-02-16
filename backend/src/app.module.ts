@@ -19,16 +19,17 @@ import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
       isGlobal: true, // Makes ConfigService globally available
       envFilePath: '.env', // Path to .env file
     }),
-    UserModule,
+    PrismaModule,
     CqrsModule,
+
     EmailModule,
     CloudinaryModule,
-    // Add any other modules here if needed
+
+    UserModule,
     EventModule,
     ShowingModule,
     LocationModule,
     ImagesModule,
-    PrismaModule,
   ],
 })
 export class AppModule {}
