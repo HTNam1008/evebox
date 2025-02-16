@@ -32,11 +32,11 @@ export class TicketTypeRepository {
     });
   }
 
-  async findAll() {
+  async getAllTicketType() {
     return this.prisma.ticketType.findMany();
   }
 
-  async findById(id: string) {
+  async findTicketTypeById(id: string) {
     return this.prisma.ticketType.findUnique({ where: { id } });
   }
 
