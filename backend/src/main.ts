@@ -11,6 +11,7 @@ async function bootstrap() {
     .setDescription('The Evebox API description')
     .setVersion('1.0')
     .build();
+    
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
 
