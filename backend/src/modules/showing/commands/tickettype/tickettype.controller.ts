@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Res, HttpStatus, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { TicketTypeService } from './tickettype.service';
 import { CreateTicketTypeDto } from './create-tickettype.dto';
@@ -12,9 +12,20 @@ export class TicketTypeController {
 
   @Post()
   @ApiOperation({ summary: 'Create new ticket type' })
+  @ApiBody({ type: CreateTicketTypeDto })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Ticket type created successfully',
+    content: {
+      'application/json': {
+        example: {
+          id: "tickettype_abc123",
+          name: "VIP Ticket",
+          price: 1500000,
+          status: "active"
+        }
+      }
+    }
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -37,6 +48,36 @@ export class TicketTypeController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'All ticket types retrieved successfully',
+    content: {
+      'application/json': {
+        example: {
+          total: 3,
+          data: [
+            {
+              id: "tickettype_abc123",
+              name: "VIP Ticket",
+              description: "Best seat in the house",
+              price: 1500000,
+              status: "active"
+            },
+            {
+              id: "tickettype_def456",
+              name: "Standard Ticket",
+              description: "Regular seating",
+              price: 500000,
+              status: "active"
+            },
+            {
+              id: "tickettype_xyz789",
+              name: "Student Ticket",
+              description: "Discount for students",
+              price: 200000,
+              status: "inactive"
+            }
+          ]
+        }
+      }
+    }
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -59,6 +100,17 @@ export class TicketTypeController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Showing data retrieved successfully',
+    content: {
+      'application/json': {
+        example: {
+          id: "tickettype_abc123",
+          name: "VIP Ticket",
+          description: "Best seat in the house",
+          price: 1500000,
+          status: "active"
+        }
+      }
+    }
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -73,11 +125,15 @@ export class TicketTypeController {
     description: 'Internal server error',
   })
   async findOne(@Param('id') id: string) {
-    return this.ticketTypeService.getById(id);
+    const result = await this.ticketTypeService.getById(id);
+    if (!result) throw new NotFoundException('Ticket type not found');
+    return result;
   }
 
-  @Patch(':id')
+
+  @Put(':id')
   @ApiOperation({ summary: 'Update ticket type data' })
+  @ApiBody({ type: UpdateTicketTypeDto })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Ticket type data updated successfully',
@@ -95,7 +151,9 @@ export class TicketTypeController {
     description: 'Internal server error',
   })
   async update(@Param('id') id: string, @Body() dto: UpdateTicketTypeDto) {
-    return this.ticketTypeService.update(id, dto);
+    const result = await this.ticketTypeService.update(id, dto);
+    if (!result) throw new NotFoundException('Ticket type not found');
+    return result;
   }
 
   @Delete(':id')
@@ -117,6 +175,8 @@ export class TicketTypeController {
     description: 'Internal server error',
   })
   async remove(@Param('id') id: string) {
-    return this.ticketTypeService.delete(id);
+    const result = await this.ticketTypeService.delete(id);
+    if (!result) throw new NotFoundException('Ticket type not found');
+    return result;
   }
 }
