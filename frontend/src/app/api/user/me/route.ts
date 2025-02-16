@@ -1,52 +1,44 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
 import apiClient from '@/services/apiClient';
+import { UserInfoResponse } from '@/types/model/userInfo';
+import { ErrorResponse } from '@/types/ErrorResponse';
+import { authOptions } from '@/lib/authOptions';
 
-export async function GET() {
+export async function GET(): Promise<NextResponse<UserInfoResponse | ErrorResponse>> {
   try {
-    // Lấy session từ NextAuth
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user?.accessToken) {
+    if (!session?.user?.accessToken) {
       return NextResponse.json(
-        {
-          statusCode: 401,
-          message: 'Unauthorized: No valid session found',
-        },
+        { statusCode: 401, message: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    // Gửi request tới API backend để lấy thông tin người dùng
-    const response = await apiClient.get(`${process.env.NEXT_PUBLIC_API_URL}/api/user/me`);
+    // Type cho response từ backend
+    const response = await apiClient.get<UserInfoResponse>(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/user/me`
+    );
 
-    // Trả về dữ liệu thành công
-    return NextResponse.json({
-      statusCode: 200,
-      message: 'User details fetched successfully',
-      data: response.data.data,
-    });
-  } catch (error: any) {
-    console.error('Error fetching user details:', error);
+    return NextResponse.json(response.data);
+  } catch (error) {
+    console.error('Error:', error);
 
-    // Kiểm tra lỗi từ backend (nếu có)
-    if (error.response && error.response.status === 401) {
-      return NextResponse.json(
-        {
-          statusCode: 401,
-          message: error.response.data.message || 'Unauthorized',
-        },
-        { status: 401 }
-      );
-    }
+    // Xử lý lỗi type-safe
+    // if (error instanceof Error && 'response' in error) {
+    //   const axiosError = error as any; // Chỉ dùng any ở đây nếu cần thiết
+    //   return NextResponse.json(
+    //     {
+    //       statusCode: axiosError.response?.status || 500,
+    //       message: axiosError.response?.data?.message || 'Unknown error',
+    //     },
+    //     { status: axiosError.response?.status || 500 }
+    //   );
+    // }
 
-    // Trả về lỗi khác
     return NextResponse.json(
-      {
-        statusCode: 500,
-        message: 'Internal Server Error',
-      },
+      { statusCode: 500, message: 'Internal Server Error' },
       { status: 500 }
     );
   }

@@ -1,10 +1,9 @@
 import EventDetailClient from '../components/eventDetail';
 
-
 // Fetch dữ liệu trong Server Component
-export default async function EventDetail(props: { params: Promise<{ id: string }> }) {
-    const params = await props.params;
-    const { id } = params;
+export default async function EventDetail(/* props: { params: Promise<{ id: string }> } */) {
+    // const params = await props.params;
+    // const { id } = params;
 
     // let event = null;
     const event = {

@@ -26,11 +26,12 @@ export default function SearchClient({ events }: SearchClientProps) {
     const dropdownWeekDayRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const handleClickOutside = (event: any) => {
-            if (dropdownEventRef.current && !dropdownEventRef.current.contains(event.target)) {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Node;
+            if (dropdownEventRef.current && !dropdownEventRef.current.contains(target)) {
                 setIsEventTypeOpen(false);
             }
-            if (dropdownWeekDayRef.current && !dropdownWeekDayRef.current.contains(event.target)) {
+            if (dropdownWeekDayRef.current && !dropdownWeekDayRef.current.contains(target)) {
                 setIsWeekDayOpen(false);
             }
         };
