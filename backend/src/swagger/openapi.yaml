@@ -1,814 +1,814 @@
-# openapi: 3.0.0
-# info:
-#   title: Evebox Swagger
-#   description: This is a sample server Evebox server.
-#   version: 1.0.0
-# servers:
-# - url: https://localhost:3001/v1/api/
-#   description: Local server
-# tags:
-# - name: user
-#   description: Operations about user
-# - name: event
-#   description: Operations about event
-# - name: ticket
-#   description: Operations about ticket 
-# - name: discovery
-#   description: Operations for homepage
-# paths:
-#   /api/users/me:
-#     get:
-#       tags:
-#       - user
-#       summary: Get Current User Details
-#       operationId: apiUsersUserIdGET
-#       parameters:
-#       - name: Authorization
-#         in: header
-#         description: "Bearer token for authorization (`Bearer <token>`)"
-#         required: true
-#         style: simple
-#         explode: false
-#         schema:
-#           type: string
-#       responses:
-#         "200":
-#           description: OK
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/inline_response_200'
-#         "401":
-#           description: Unauthorized. Token is invalid or missing.
-#         "403":
-#           description: Forbidden
-#         "404":
-#           description: User Not Found
-#       x-swagger-router-controller: User
-#   /api/user/register:
-#     post:
-#       tags:
-#       - user
-#       summary: Create user
-#       description: This can only be done by the logged in user.
-#       operationId: createUser
-#       requestBody:
-#         description: Created user object
-#         content:
-#           application/json:
-#             schema:
-#               $ref: '#/components/schemas/user_register_body'
-#         required: true
-#       responses:
-#         "201":
-#           description: User created successfully
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/inline_response_201'
-#         "400":
-#           description: Bad Request
-#       x-swagger-router-controller: User
-#   /api/user/login:
-#     post:
-#       tags:
-#       - user
-#       summary: Logged user into system
-#       description: Logged user into system
-#       operationId: apiUserLoginPOST
-#       requestBody:
-#         description: Created user object
-#         content:
-#           application/json:
-#             schema:
-#               $ref: '#/components/schemas/user_login_body'
-#         required: true
-#       responses:
-#         "200":
-#           description: OK
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/inline_response_200_1'
-#         "400":
-#           description: Invalid username/password
-#       x-swagger-router-controller: User
-#   /api/user/logout:
-#     post:
-#       tags:
-#       - user
-#       summary: Log out current user session
-#       operationId: apiUserLogoutPOST
-#       parameters:
-#       - name: Authorization
-#         in: header
-#         description: "Bearer token for authorization (e.g., `Bearer <token>`)"
-#         required: true
-#         style: simple
-#         explode: false
-#         schema:
-#           type: string
-#       responses:
-#         "200":
-#           description: User successfully logged out
-#         "401":
-#           description: Unauthorized. Token is invalid or missing.
-#       security:
-#       - bearerAuth: []
-#       x-swagger-router-controller: User
-#   /api/user/forgot-password:
-#     post:
-#       tags:
-#       - user
-#       summary: Send email with link to reset password
-#       operationId: apiUserForgot_passwordPOST
-#       requestBody:
-#         content:
-#           application/json:
-#             schema:
-#               $ref: '#/components/schemas/user_forgotpassword_body'
-#         required: true
-#       responses:
-#         "200":
-#           description: OK. Return link to reset password
-#         "400":
-#           description: Bad request. Missing or invalid data
-#         "404":
-#           description: User not found
-#       security:
-#       - bearerAuth: []
-#       x-swagger-router-controller: User
-#   /api/user/reset-password:
-#     post:
-#       tags:
-#       - user
-#       summary: Allows a user to reset their password by providing their email and
-#         a new password.
-#       operationId: apiUserReset_passwordPOST
-#       requestBody:
-#         content:
-#           application/json:
-#             schema:
-#               $ref: '#/components/schemas/user_resetpassword_body'
-#         required: true
-#       responses:
-#         "200":
-#           description: Password reset successful
-#         "400":
-#           description: Bad request. Missing or invalid data
-#         "404":
-#           description: User not found
-#       security:
-#       - bearerAuth: []
-#       x-swagger-router-controller: User
-#   /api/user/refresh-token:
-#     post:
-#       tags:
-#       - user
-#       summary: Create new token
-#       parameters:
-#       - name: refresh_token
-#         in: query
-#         description: "Refresh token"
-#         required: true
-#         explode: false
-#         schema:
-#           type: string
-#       responses:
-#         "200":
-#           description: OK
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/user_refreshtoken_body'
-#         "400":
-#           description: Bad request. Missing or invalid token
-#       security:
-#       - bearerAuth: []
-#       x-swagger-router-controller: User    
-#   /api/event/front-display:
-#     get:
-#       summary: Lấy thông tin hiển thị trên trang chính
-#       description: Trả về các sự kiện đặc biệt, sự kiện thịnh hành, chỉ có trên Eve và các sự kiện đặc biệt theo danh mục.
-#       responses:
-#         '200':
-#           description: Thành công
-#           specialEvents:
-#                     type: array
-#                     description: Danh sách các sự kiện đặc biệt.
-#                     items:
-#                       $ref: '#/components/schemas/EventObject'
-#                   trendingEvents:
-#                     type: array
-#                     description: Danh sách các sự kiện thịnh hành.
-#                     items:
-#                       $ref: '#/components/schemas/EventObject'
-#                   onlyOnEve:
-#                     type: array
-#                     description: Danh sách các sự kiện chỉ có trên Eve.
-#                     items:
-#                       $ref: '#/components/schemas/EventObject'
-#                   "{category}Special":
-#                     type: object
-#                     description: Sự kiện đặc biệt theo danh mục.
-#                     properties:
-#                       name:
-#                         type: string
-#                         description: Tên danh mục.
-#                       events:
-#                         type: array
-#                         items:
-#                           $ref: '#/components/schemas/EventObject'
-#   /api/event/search:
-#     get:
-#       summary: Tìm kiếm sự kiện theo tên
-#       description: Trả về danh sách các sự kiện có tên chứa từ khóa tìm kiếm.
-#       parameters:
-#         - name: title
-#           in: query
-#           description: Từ khóa tên của sự kiện
-#           required: true
-#           schema:
-#             type: string
-#       responses:
-#         '200':
-#           description: Thành công
-#           events:
-#                     type: array
-#                     description: Danh sách các sự kiện tìm thấy.
-#                     items:
-#                       $ref: '#/components/schemas/EventObject'
-#               example:
-#                 FoundEvents:
-#                   summary: Danh sách sự kiện tìm thấy
-#                   value:
-#                     events:
-#                       - id: 1
-#                         title: "Event 1"
-#                         description: "Description of event 1"
-#                         startDate: "2024-12-12T00:00:00.000Z"
-#                         endDate: "2024-12-13T00:00:00.000Z"
-#                         organizerId: "user123"
-#                         status: "active"
-#                         locationId: 1
-#                         totalTickets: 100
-#                         availableTickets: 100
-#                         imgLogoId: 1070
-#                         imgPosterId: 1071
-#                         createdAt: "2024-12-12T00:00:00.000Z"
-#                         isOnlyOnEve: false
-#                         isSpecial: false
-#                         lastScore: "0.00"
-#                         EventCategories:
-#                           - Categories:
-#                             id: 1
-#                             name: "Category 1"
-#                         Images_Events_imgLogoIdToImages:
-#                           imageUrl: "https://example.com/logo.png"
-#                         Images_Events_imgPosterIdToImages:
-#                           imageUrl: "https://example.com/poster.png"
-#                 NoEvents:
-#                   summary: Không tìm thấy sự kiện
-#                   value:
-#                     events: []
-#                     message: "No events found"
-#         '400':
-#           description: Yêu cầu không hợp lệ
-#         '500':
-#           description: Lỗi hệ thống, vui lòng thử lại sau
-#   /api/events:
-#     get:
-#       tags:
-#       - event
-#       summary: Get all events
-#       parameters:
-#       - name: key
-#         in: query
-#         description: search by keyword
-#         required: false
-#         schema:
-#           type: string
-#       - name: category
-#         in: query
-#         description: type of event
-#         required: false
-#         schema:
-#           type: string
-#       - name: location
-#         in: query
-#         description: filter by location
-#         required: false
-#         schema:
-#           type: string    
-#       - name: startDate
-#         in: query
-#         description: filtert by date
-#         required: false
-#         schema:
-#           type: string
-#       - name: endDate
-#         in: query
-#         description: filter by date
-#         required: false
-#         schema:
-#           type: string 
-#       responses:
-#         "200":
-#           description: OK
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
-#                   total:
-#                     type: integer
-#                     description: Total number of records
-#                   items:
-#                     type: array
-#                     items:
-#                       type: object
-#                       properties:
-#                         id:
-#                           type: integer
-#                           description: Unique identifier for the event
-#                         title:
-#                           type: string
-#                           format: varchar(255)
-#                         image_url:
-#                           type: string
-#                           format: varchar(255)  
-#                         description:
-#                           type: string
-#                           format: varchar(255)
-#                         start_date:
-#                           type: string
-#                           format: date-time
-#                         end_date:
-#                           type: string
-#                           format: date-time
-#                         min_price:
-#                           type: integer
-#                           description: Unique identifier for the event  
-#                         status:
-#                           type: string
-#                           format: varchar(255)
-#                         venue:
-#                           type: string
-#                           format: string
-#                         location:
-#                           type: string
-#                           format: string
-#                       required:
-#                         - id
-#                         - title
-#                         - description
-#                         - start_date
-#                         - end_date
-#                         - location
-#                 required:
-#                   - total
-#       x-swagger-router-controller: User    
-#   /api/events/{eventId}:
-#     get:
-#       tags:
-#       - event
-#       summary: Get specific event
-#       parameters:
-#       - name: eventId
-#         in: path
-#         required: true
-#         style: simple
-#         explode: false
-#         schema:
-#           type: string
-#       responses:
-#         "200":
-#           description: OK
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
-#                   id:
-#                     type: integer
-#                     description: Unique identifier for the event
-#                   title:
-#                     type: string
-#                     format: varchar
-#                   banner_img:
-#                     type: string
-#                     format: varchar(255)
-#                   slug:
-#                     type: string
-#                     format: varchar(255)  
-#                   description:
-#                     type: string
-#                     format: varchar(255)
-#                   category:
-#                     type: string
-#                     format: varchar(255)  
-#                   start_date:
-#                     type: string
-#                     format: date-time
-#                   end_date:
-#                     type: integer
-#                     format: date-time
-#                   min_price:
-#                     type: integer
-#                     format: int32
-#                   status:
-#                     type: string
-#                     format: varchar(255)
-#                   venue:
-#                     type: string
-#                     format: varchar(255)
-#                   location_id:
-#                     type: string
-#                     format: varchar(255)
-#                   is_free:
-#                     type: boolean
-#                   ticket_type:
-#                     type: array
-#                     items:
-#                       type: object
-#                       properties:
-#                         id:
-#                           type: integer
-#                           description: Unique identifier for the event
-#                         name:
-#                           type: string
-#                           format: varchar(255)
-#                         description:
-#                           type: string
-#                           format: varchar(255)  
-#                         is_free:
-#                           type: boolean
-#                         price:
-#                           type: integer
-#                           format: int32
-#                         total_tickets:
-#                           type: integer
-#                           format: int32
-#                         available_tickets:
-#                           type: integer
-#                           format: int32
-#                         status:
-#                           type: string
-#                           format: varchar(255)   
-#       x-swagger-router-controller: User        
-#   /api/ticket/:
-#     post:
-#       tags:
-#       - ticket
-#       summary: Create ticket
-#       description: This can only be done by the logged in user.
-#       parameters:
-#       - name: Authorization
-#         in: header
-#         description: "Bearer token for authorization (e.g., `Bearer <token>`)"
-#         required: true
-#         style: simple
-#         explode: false
-#         schema:
-#           type: string
-#       requestBody:
-#         description: Create ticket
-#         content:
-#           application/json:
-#             schema:
-#               type: object
-#               properties:
-#                 event_id:
-#                  type: string
-#                  format: varchar(255)
-#                 ticket_type_id:
-#                  type: integer
-#                 ticket_price:
-#                  type: integer 
-#                 promotion_id:
-#                  type: integer  
-#                 status:
-#                  type: string
-#                  format: varchar(10)
-#               required:
-#                 - event_id
-#                 - ticket_type_id
-#                 - ticket_price
-#                 - status
-#         required: true
-#       responses:
-#         "201":
-#           description: User created successfully
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/inline_response_201'
-#         "400":
-#           description: Bad Request
-#         "401":
-#           description: Unauthorized 
-#   /api/tickets:
-#     get:
-#       tags:
-#       - ticket
-#       summary: Get all ticket of current customer
-#       parameters:
-#       - name: Authorization
-#         in: header
-#         description: "Bearer token for authorization (e.g., `Bearer <token>`)"
-#         required: true
-#         style: simple
-#         explode: false
-#         schema:
-#           type: string
-#       responses:
-#         "200":
-#           description: OK
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
-#                   total:
-#                     type: integer
-#                     description: Total number of records
-#                   data:
-#                     type: array
-#                     items:
-#                       type: object
-#                       properties:
-#                         id:
-#                           type: integer
-#                           description: Unique identifier for the ticket
-#                         event:
-#                           type: object
-#                           properties:
-#                             title: 
-#                               type: string
-#                               format: varchar(255)
-#                             description:
-#                               type: string
-#                               format: varchar(255)  
-#                             start_date:
-#                               type: string
-#                               format: date-time
-#                             end_date:
-#                               type: string
-#                               format: date-time 
-#                             location:
-#                               type: string
-#                               format: string
-#                         ticket_type:
-#                           type: string
-#                           format: varchar(255)
-#                         ticket_price:
-#                           type: integer
-#                         status:
-#                           type: string
-#                           format: varchar(10)
-#                 required:
-#                   - total
-#         "401":
-#           description: Unauthorized       
-#   /api/events/categories:
-#     get:
-#       tags:
-#       - event
-#       summary: Get list of categories 
-#       responses:
-#         "200":
-#           description: OK
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
-#                   data:
-#                     type: array
-#                     items:
-#                       type: object
-#                       properties:
-#                         id:
-#                           type: integer
-#                           description: Unique identifier for category
-#                         name:
-#                           type: object
-#                           properties:
-#                             vn: 
-#                               type: string
-#                               format: varchar(255)
-#                             en:
-#                               type: string
-#                               format: varchar(255) 
-#                         code:
-#                           type: string
-#                           format: varchar(255)  
-#                 required:
-#                   - data
-#   /api/events/locations:
-#     get:
-#       tags:
-#       - event
-#       summary: Get list of location 
-#       responses:
-#         "200":
-#           description: OK
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
-#                   data:
-#                     type: array
-#                     items:
-#                       type: object
-#                       properties:
-#                         id:
-#                           type: integer
-#                           description: Unique identifier for location
-#                         name:
-#                           type: string
-#                           format: varchar(255)
-#                 required:
-#                   - data
-#   /api/discovery/banners:
-#     get:
-#       tags:
-#       - discovery
-#       summary: Get list of banners 
-#       responses:
-#         "200":
-#           description: OK
-#           headers:
-#             X-Rate-Limit-Limit:
-#               description: The number of allowed requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#             X-Rate-Limit-Remaining:
-#               description: The number of remaining requests in the current period
-#               style: simple
-#               explode: false
-#               schema:
-#                 type: integer
-#                 format: int32
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
+openapi: 3.1.0
+info:
+  title: Evebox Swagger
+  description: This is a sample server Evebox server.
+  version: 1.0.0
+servers:
+- url: https://localhost:3001/v1/api/
+  description: Local server
+tags:
+- name: user
+  description: Operations about user
+- name: event
+  description: Operations about event
+- name: ticket
+  description: Operations about ticket 
+- name: discovery
+  description: Operations for homepage
+paths:
+  /api/users/me:
+    get:
+      tags:
+      - user
+      summary: Get Current User Details
+      operationId: apiUsersUserIdGET
+      parameters:
+      - name: Authorization
+        in: header
+        description: "Bearer token for authorization (`Bearer <token>`)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Unauthorized. Token is invalid or missing.
+        "403":
+          description: Forbidden
+        "404":
+          description: User Not Found
+      x-swagger-router-controller: User
+  /api/user/register:
+    post:
+      tags:
+      - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_register_body'
+        required: true
+      responses:
+        "201":
+          description: User created successfully
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "400":
+          description: Bad Request
+      x-swagger-router-controller: User
+  /api/user/login:
+    post:
+      tags:
+      - user
+      summary: Logged user into system
+      description: Logged user into system
+      operationId: apiUserLoginPOST
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_login_body'
+        required: true
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "400":
+          description: Invalid username/password
+      x-swagger-router-controller: User
+  /api/user/logout:
+    post:
+      tags:
+      - user
+      summary: Log out current user session
+      operationId: apiUserLogoutPOST
+      parameters:
+      - name: Authorization
+        in: header
+        description: "Bearer token for authorization (e.g., `Bearer <token>`)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: User successfully logged out
+        "401":
+          description: Unauthorized. Token is invalid or missing.
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: User
+  /api/user/forgot-password:
+    post:
+      tags:
+      - user
+      summary: Send email with link to reset password
+      operationId: apiUserForgot_passwordPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_forgotpassword_body'
+        required: true
+      responses:
+        "200":
+          description: OK. Return link to reset password
+        "400":
+          description: Bad request. Missing or invalid data
+        "404":
+          description: User not found
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: User
+  /api/user/reset-password:
+    post:
+      tags:
+      - user
+      summary: Allows a user to reset their password by providing their email and
+        a new password.
+      operationId: apiUserReset_passwordPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_resetpassword_body'
+        required: true
+      responses:
+        "200":
+          description: Password reset successful
+        "400":
+          description: Bad request. Missing or invalid data
+        "404":
+          description: User not found
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: User
+  /api/user/refresh-token:
+    post:
+      tags:
+      - user
+      summary: Create new token
+      parameters:
+      - name: refresh_token
+        in: query
+        description: "Refresh token"
+        required: true
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user_refreshtoken_body'
+        "400":
+          description: Bad request. Missing or invalid token
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: User    
+  /api/event/front-display:
+    get:
+      summary: Lấy thông tin hiển thị trên trang chính
+      description: Trả về các sự kiện đặc biệt, sự kiện thịnh hành, chỉ có trên Eve và các sự kiện đặc biệt theo danh mục.
+      responses:
+        '200':
+          description: Thành công
+          specialEvents:
+            type: array
+            description: Danh sách các sự kiện đặc biệt.
+            items:
+              $ref: '#/components/schemas/EventObject'
+          trendingEvents:
+            type: array
+            description: Danh sách các sự kiện thịnh hành.
+            items:
+              $ref: '#/components/schemas/EventObject'
+          onlyOnEve:
+            type: array
+            description: Danh sách các sự kiện chỉ có trên Eve.
+            items:
+              $ref: '#/components/schemas/EventObject'
+          "{category}Special":
+            type: object
+            description: Sự kiện đặc biệt theo danh mục.
+            properties:
+              name:
+                type: string
+                description: Tên danh mục.
+              events:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventObject'
+  /api/event/search:
+    get:
+      summary: Tìm kiếm sự kiện theo tên
+      description: Trả về danh sách các sự kiện có tên chứa từ khóa tìm kiếm.
+      parameters:
+        - name: title
+          in: query
+          description: Từ khóa tên của sự kiện
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Thành công
+          events:
+                    type: array
+                    description: Danh sách các sự kiện tìm thấy.
+                    items:
+                      $ref: '#/components/schemas/EventObject'
+          example:
+                FoundEvents:
+                  summary: Danh sách sự kiện tìm thấy
+                  value:
+                    events:
+                      - id: 1
+                        title: "Event 1"
+                        description: "Description of event 1"
+                        startDate: "2024-12-12T00:00:00.000Z"
+                        endDate: "2024-12-13T00:00:00.000Z"
+                        organizerId: "user123"
+                        status: "active"
+                        locationId: 1
+                        totalTickets: 100
+                        availableTickets: 100
+                        imgLogoId: 1070
+                        imgPosterId: 1071
+                        createdAt: "2024-12-12T00:00:00.000Z"
+                        isOnlyOnEve: false
+                        isSpecial: false
+                        lastScore: "0.00"
+                        EventCategories:
+                          - Categories:
+                            id: 1
+                            name: "Category 1"
+                        Images_Events_imgLogoIdToImages:
+                          imageUrl: "https://example.com/logo.png"
+                        Images_Events_imgPosterIdToImages:
+                          imageUrl: "https://example.com/poster.png"
+                NoEvents:
+                  summary: Không tìm thấy sự kiện
+                  value:
+                    events: []
+                    message: "No events found"
+        '400':
+          description: Yêu cầu không hợp lệ
+        '500':
+          description: Lỗi hệ thống, vui lòng thử lại sau
+  /api/events:
+    get:
+      tags:
+      - event
+      summary: Get all events
+      parameters:
+      - name: key
+        in: query
+        description: search by keyword
+        required: false
+        schema:
+          type: string
+      - name: category
+        in: query
+        description: type of event
+        required: false
+        schema:
+          type: string
+      - name: location
+        in: query
+        description: filter by location
+        required: false
+        schema:
+          type: string    
+      - name: startDate
+        in: query
+        description: filtert by date
+        required: false
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        description: filter by date
+        required: false
+        schema:
+          type: string 
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total number of records
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for the event
+                        title:
+                          type: string
+                          format: varchar(255)
+                        image_url:
+                          type: string
+                          format: varchar(255)  
+                        description:
+                          type: string
+                          format: varchar(255)
+                        start_date:
+                          type: string
+                          format: date-time
+                        end_date:
+                          type: string
+                          format: date-time
+                        min_price:
+                          type: integer
+                          description: Unique identifier for the event  
+                        status:
+                          type: string
+                          format: varchar(255)
+                        venue:
+                          type: string
+                          format: string
+                        location:
+                          type: string
+                          format: string
+                      required:
+                        - id
+                        - title
+                        - description
+                        - start_date
+                        - end_date
+                        - location
+                required:
+                  - total
+      x-swagger-router-controller: User    
+  /api/events/{eventId}:
+    get:
+      tags:
+      - event
+      summary: Get specific event
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Unique identifier for the event
+                  title:
+                    type: string
+                    format: varchar
+                  banner_img:
+                    type: string
+                    format: varchar(255)
+                  slug:
+                    type: string
+                    format: varchar(255)  
+                  description:
+                    type: string
+                    format: varchar(255)
+                  category:
+                    type: string
+                    format: varchar(255)  
+                  start_date:
+                    type: string
+                    format: date-time
+                  end_date:
+                    type: integer
+                    format: date-time
+                  min_price:
+                    type: integer
+                    format: int32
+                  status:
+                    type: string
+                    format: varchar(255)
+                  venue:
+                    type: string
+                    format: varchar(255)
+                  location_id:
+                    type: string
+                    format: varchar(255)
+                  is_free:
+                    type: boolean
+                  ticket_type:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for the event
+                        name:
+                          type: string
+                          format: varchar(255)
+                        description:
+                          type: string
+                          format: varchar(255)  
+                        is_free:
+                          type: boolean
+                        price:
+                          type: integer
+                          format: int32
+                        total_tickets:
+                          type: integer
+                          format: int32
+                        available_tickets:
+                          type: integer
+                          format: int32
+                        status:
+                          type: string
+                          format: varchar(255)   
+      x-swagger-router-controller: User        
+  /api/ticket/:
+    post:
+      tags:
+      - ticket
+      summary: Create ticket
+      description: This can only be done by the logged in user.
+      parameters:
+      - name: Authorization
+        in: header
+        description: "Bearer token for authorization (e.g., `Bearer <token>`)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Create ticket
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_id:
+                 type: string
+                 format: varchar(255)
+                ticket_type_id:
+                 type: integer
+                ticket_price:
+                 type: integer 
+                promotion_id:
+                 type: integer  
+                status:
+                 type: string
+                 format: varchar(10)
+              required:
+                - event_id
+                - ticket_type_id
+                - ticket_price
+                - status
+        required: true
+      responses:
+        "201":
+          description: User created successfully
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized 
+  /api/tickets:
+    get:
+      tags:
+      - ticket
+      summary: Get all ticket of current customer
+      parameters:
+      - name: Authorization
+        in: header
+        description: "Bearer token for authorization (e.g., `Bearer <token>`)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total number of records
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for the ticket
+                        event:
+                          type: object
+                          properties:
+                            title: 
+                              type: string
+                              format: varchar(255)
+                            description:
+                              type: string
+                              format: varchar(255)  
+                            start_date:
+                              type: string
+                              format: date-time
+                            end_date:
+                              type: string
+                              format: date-time 
+                            location:
+                              type: string
+                              format: string
+                        ticket_type:
+                          type: string
+                          format: varchar(255)
+                        ticket_price:
+                          type: integer
+                        status:
+                          type: string
+                          format: varchar(10)
+                required:
+                  - total
+        "401":
+          description: Unauthorized       
+  /api/events/categories:
+    get:
+      tags:
+      - event
+      summary: Get list of categories 
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for category
+                        name:
+                          type: object
+                          properties:
+                            vn: 
+                              type: string
+                              format: varchar(255)
+                            en:
+                              type: string
+                              format: varchar(255) 
+                        code:
+                          type: string
+                          format: varchar(255)  
+                required:
+                  - data
+  /api/events/locations:
+    get:
+      tags:
+      - event
+      summary: Get list of location 
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique identifier for location
+                        name:
+                          type: string
+                          format: varchar(255)
+                required:
+                  - data
+  /api/discovery/banners:
+    get:
+      tags:
+      - discovery
+      summary: Get list of banners 
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Rate-Limit-Limit:
+              description: The number of allowed requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Rate-Limit-Remaining:
+              description: The number of remaining requests in the current period
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
                   
 #                   data:
 #                     type: array
