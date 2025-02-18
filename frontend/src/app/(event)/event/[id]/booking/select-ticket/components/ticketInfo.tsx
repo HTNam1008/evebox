@@ -4,8 +4,10 @@
 import { Calendar, MapPin, Ticket } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
+import { useRouter } from 'next/navigation';
 
 interface EventProps {
+    id: number;
     title: string;
     description: string;
     date: string;
@@ -25,6 +27,18 @@ export default function TicketInfor({
     totalAmount,
     hasSelectedTickets
 }: TicketInforProps) {
+    const router = useRouter();
+
+    const handleContinue = () => {
+        localStorage.setItem('event', JSON.stringify(event)); 
+        localStorage.setItem('totalTickets', totalTickets.toString());
+        localStorage.setItem('totalAmount', totalAmount.toString());
+        localStorage.setItem('hasSelectedTickets', hasSelectedTickets.toString());
+    
+        // Điều hướng đến trang tiếp theo
+        router.push(`/event/${event.id}/booking/question-form`);
+    };
+    
     return (
         <div className="flex flex-col md:flex-row px-32 py-8 items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
             <div className="w-full md:w-1/2">
@@ -55,6 +69,7 @@ export default function TicketInfor({
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                     disabled={!hasSelectedTickets}
+                    onClick={handleContinue} 
                 >
                     {hasSelectedTickets 
                         ? `Tiếp tục - ${totalAmount.toLocaleString()}đ` 

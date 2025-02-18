@@ -7,16 +7,28 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'tailwindcss/tailwind.css';
 import '@/styles/admin/pages/Dashboard.css';
 import '@/styles/admin/pages/BookingQuestionForm.css'
+import { useEffect, useState } from 'react';
 
 
-interface EventProps {
-    title: string;
-    description: string;
-    date: string;
-    location: string;
-}
+export default function QuestionForm() {
+    const [event, setEvent] = useState(null);
+    const [totalTickets, setTotalTickets] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [hasSelectedTickets, setHasSelectedTickets] = useState(false);
 
-export default function QuestionForm({ event }: { event: EventProps }) {
+    useEffect(() => {
+        // Lấy dữ liệu từ localStorage
+        const storedEvent = localStorage.getItem('event');
+        const storedTotalTickets = localStorage.getItem('totalTickets');
+        const storedTotalAmount = localStorage.getItem('totalAmount');
+        const storedHasSelectedTickets = localStorage.getItem('hasSelectedTickets');
+
+        if (storedEvent) setEvent(JSON.parse(storedEvent)); // Chuyển JSON string thành object
+        if (storedTotalTickets) setTotalTickets(Number(storedTotalTickets));
+        if (storedTotalAmount) setTotalAmount(Number(storedTotalAmount));
+        if (storedHasSelectedTickets) setHasSelectedTickets(storedHasSelectedTickets === 'true');
+    }, []);
+
     return (
         <div className="mt-5 mb-5">
             <div className="container">
@@ -96,7 +108,7 @@ export default function QuestionForm({ event }: { event: EventProps }) {
                                         type="radio"
                                         id="checkAgree"
                                         defaultValue=""
-                                        style={{border: '1px solid black'}}
+                                        style={{ border: '1px solid black' }}
                                         required
                                     />
                                     <label className="form-check-label" htmlFor="checkAgree">
@@ -121,17 +133,22 @@ export default function QuestionForm({ event }: { event: EventProps }) {
                                     alt="Image of event"
                                 />
                             </div>
-                            <div className="col-md-8">
-                                <p className='d-flex justify-content-start'>Drive In Senja: Back to the Future</p>
-                                <p className='d-flex justify-content-start'>
-                                    <i className="bi bi-geo-alt mr-2"></i>
-                                    Đường Nguyễn Huệ, Quận 1, TP.HCM
-                                </p>
-                                <p className='d-flex justify-content-start'>
-                                    <i className="bi bi-calendar2-event mr-2"></i>
-                                    20:00 - 23:00, 25 tháng 10, 2024
-                                </p>
-                            </div>
+                            {event ? (
+                                <div className="col-md-8">
+                                    <p className='d-flex justify-content-start'>{event.title}</p>
+                                    <p className='d-flex justify-content-start'>
+                                        <i className="bi bi-geo-alt mr-2"></i>
+                                        {event.location}
+                                    </p>
+                                    <p className='d-flex justify-content-start'>
+                                        <i className="bi bi-calendar2-event mr-2"></i>
+                                        {event.date}
+                                    </p>
+                                </div>
+                            ) : (
+                                <p>Đang tải dữ liệu...</p>
+                            )}
+
                         </div>
                         <hr className="custom-hr" />
                         <div className='row'>

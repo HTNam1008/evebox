@@ -10,6 +10,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'tailwindcss/tailwind.css';
 
 const event = {
+    id: 0,
     title: 'Dream world wide in Jakarta',
     description: "Marty travels back in time using an eccentric scientist's time machine...",
     date: '20:00 - 23:00, 25 tháng 10, 2024',
