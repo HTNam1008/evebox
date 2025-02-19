@@ -4,6 +4,8 @@ console.log('image-slider - Rendering on client:', typeof window !== 'undefined'
 import { useFetchRecommendedEvents } from '@/app/(dashboard)/libs/hooks/useFetchRecommendedEvents';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import Image from "next/image";
+
 
 const ImageSlider = () => {
   const { events, loading, error } = useFetchRecommendedEvents();
@@ -26,12 +28,14 @@ const ImageSlider = () => {
         className="flex transition-transform duration-500 ease-in-out h-[500px]"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
-        {events.map((event, index) => (
+        {events.map((event) => (
           <div key={event.id} className="w-full h-full flex-shrink-0 relative">
-            <img
+            <Image
               src={event.Images_Events_imgPosterIdToImages?.imageUrl || '/images/default-image.jpg'}
               alt={event.title}
               className="w-full h-full object-cover"
+              width={350}
+              height={250}
             />
             <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white">
               <h2 className="text-3xl md:text-5xl font-bold mb-2 md:mb-4 text-center">{event.title}</h2>

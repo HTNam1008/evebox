@@ -7,13 +7,13 @@ import 'tailwindcss/tailwind.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import '@/styles/admin/pages/Dashboard.css';
-import EventSlider from '../../components/dashboard/eventSlider';
+// import EventSlider from '../../components/dashboard/eventSlider';
 
 interface SearchClientProps {
     events: number[];
 }
 
-export default function SearchClient({ events }: SearchClientProps) {
+export default function SearchClient({ }: SearchClientProps) {
     const [isEventTypeOpen, setIsEventTypeOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [isWeekDayOpen, setIsWeekDayOpen] = useState(false);
@@ -167,10 +167,10 @@ export default function SearchClient({ events }: SearchClientProps) {
                             </div>
                         ))}
                     </div> */}
+                    {/* <EventSlider events={events} title={''} />
                     <EventSlider events={events} title={''} />
                     <EventSlider events={events} title={''} />
-                    <EventSlider events={events} title={''} />
-                    <EventSlider events={events} title={''} />
+                    <EventSlider events={events} title={''} /> */}
                     {/* Load More Button */}
                     <div className="flex justify-center mt-8 mb-8">
                         <button className="px-6 py-2 bg-teal-400 text-sky-950 rounded-md hover:bg-teal-300 transition-colors">

@@ -6,6 +6,8 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import Link from 'next/link';
+import Image from "next/image";
+
 
 interface Event {
   id: number;
@@ -22,7 +24,7 @@ interface EventSliderProps {
   events: Event[];
 }
 
-const EventSlider = ({ title, subtitle, showViewMore = false, events }: EventSliderProps) => {
+const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
   return (
     <div className="relative">
       {/* Header Section */}
@@ -54,10 +56,12 @@ const EventSlider = ({ title, subtitle, showViewMore = false, events }: EventSli
             <Link href={`/event/${event.id}`}>
               <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow">
                 <div className="flex items-center justify-center aspect-[13/9] overflow-hidden">
-                  <img
+                  <Image
                     src={event.Images_Events_imgLogoIdToImages?.imageUrl || '/images/dashboard/card_pic.png'}
                     alt={event.title}
                     className="w-full object-cover hover:scale-105 transition-transform duration-300 padding-30"
+                    width={160}
+                    height={120}
                   />
                 </div>
                 <div className="p-3">
