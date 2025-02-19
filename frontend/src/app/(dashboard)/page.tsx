@@ -1,3 +1,4 @@
+'use client';
 console.log('dashboard - Rendering on client:', typeof window !== 'undefined');
 
 import 'tailwindcss/tailwind.css';
@@ -7,9 +8,10 @@ import 'swiper/css/navigation';
 import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
+import { useFetchEvents } from './libs/hooks/useFetchEvents';
 
 // server componet - SSR
-async function fetchData() {
+ function fetchData() {
     try {
         // const resSlides = await fetch('http://localhost:3001/api/discovery/banner');
         // const slides: Slide[] = await resSlides.json();
@@ -38,11 +40,19 @@ async function fetchData() {
     }
 }
 
-const Dashboard = async () => {
-    const slides = await fetchData();
-    const events = [1, 2, 3, 4, 5, 6, 7, 8];
-    await new Promise(resolve => setTimeout(resolve, 1500));
+const Dashboard = () => {
+    const slides = fetchData();
+    const { events, loading, error } = useFetchEvents();
 
+    if (loading) {
+      return <div>Loading events...</div>;
+    }
+  
+    if (error) {
+      return <div>{error}</div>;
+    }
+  
+    const { specialEvents, trendingEvents, onlyOnEve, categorySpecial } = events;
     return (
         <div className="min-h-screen flex flex-col">
             <main className="flex-1">
@@ -58,35 +68,14 @@ const Dashboard = async () => {
                 {/* Events Section */}
                 <div className="flex justify-center mt-8 px-4">
                     <div className="w-full md:w-5/6">
-                        <EventSlider
-                            title="Sự kiện"
-                            subtitle="Đặc biệt"
-                            events={events}
-                        />
-                        
-                        <div className='mt-8'>
-                            <EventSlider
-                                title="Sự kiện"
-                                subtitle="Đặc sắc"
-                                events={events}
-                            />
-                        </div>
-
-                        <div className='mt-8'>
-                            <EventSlider
-                                title="Sân khấu & Nghệ thuật"
-                                events={events}
-                                showViewMore={true}
-                            />
-                        </div>
-
-                        <div className='mt-8'>
-                            <EventSlider
-                                title="Thể loại khác"
-                                events={events}
-                                showViewMore={true}
-                            />
-                        </div>
+                        <EventSlider title="Sự kiện" subtitle="Đặc biệt" events={specialEvents} />
+                        <div className="mt-8">
+          <EventSlider title="Sự kiện" subtitle="Xu hướng" events={trendingEvents} />
+        </div>
+        <div className="mt-8">
+          <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={onlyOnEve} showViewMore />
+        </div>
+       
                     </div>
                 </div>
             </main>
