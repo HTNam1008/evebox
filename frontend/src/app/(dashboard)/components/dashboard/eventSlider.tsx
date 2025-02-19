@@ -30,11 +30,11 @@ const EventSlider = ({ title, subtitle, showViewMore = false, events }: EventSli
         <h2 className="text-xl md:text-2xl font-bold">
           {title} {subtitle && <span className="text-teal-400">{subtitle}</span>}
         </h2>
-        {showViewMore && (
+        {/* {showViewMore && (
           <a href="#" className="text-teal-500 hover:text-teal-700 text-sm md:text-base flex items-center gap-1 transition-colors duration-300">
             Xem thêm <span>&rarr;</span>
           </a>
-        )}
+        )} */}
       </div>
 
       {/* Swiper Slider */}
