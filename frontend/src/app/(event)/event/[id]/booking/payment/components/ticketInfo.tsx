@@ -1,7 +1,11 @@
 'use client'
-import Image from 'next/image';
-import React from "react";
 
+/* Package System */
+import Image from 'next/image';
+import { useState } from 'react';
+
+/* Package Application */
+import QRPaymentDialog from "./dialogs/QRPaymenDialog";
 interface EventProps {
     id: number;
     title: string;
@@ -19,11 +23,18 @@ interface TicketInformationProps {
 
 
 export default function TicketInformation({ event, totalTickets, totalAmount }: TicketInformationProps) {
+    const [promoCode, setPromoCode] = useState('');
+    const [isQRDialogOpen, setIsQRDialogOpen] = useState(false);
+
+    const handleOpenQRDialog = () => {
+        setIsQRDialogOpen(true);
+    };
+
     return (
         <div className="col-5 border-start" style={{ borderLeft: '1px solid #ddd' }}>
             <div className='container'>
                 <p className='title-event'>Chi tiết sự kiện</p>
-                <div className='row mt-3 text-start'>
+                <div className='row mt-3 mb-3 text-start'>
                     <div className="col-md-4">
                         <Image
                             src='/images/dashboard/presentation_pic.png'
@@ -51,7 +62,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
 
                 </div>
                 <hr className="custom-hr" />
-                <div className='row'>
+                <div className='row pt-4 pb-4'>
                     <div className="col-md-8 d-flex justify-content-start">
                         <p className='title-info'>Thông tin đặt vé</p>
                     </div>
@@ -59,7 +70,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                         <p>Chọn lại vé</p>
                     </div>
                 </div>
-                <div className='row' style={{ fontWeight: 'bold' }}>
+                <div className='row fw-bold pt-2 pb-2'>
                     <div className="col-md-8 d-flex justify-content-start">
                         <p>Loại vé</p>
                     </div>
@@ -79,7 +90,23 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                     </div>
                 </div>
                 <hr className="custom-hr" />
-                <div className='row'>
+                <div className='row flex flex-col pt-2 pb-3'>
+                    <div className="col-md-8 d-flex justify-content-start">
+                        <p className='fw-bold'>Mã khuyến mãi</p>
+                    </div>
+                    <div className="col-md-12 flex flex-row">
+                        <input 
+                            value={promoCode} 
+                            onChange={(e) => setPromoCode(e.target.value)}
+                            type="text"
+                            className='form-control mr-4 mt-4 h-12 w-[60%]' 
+                            placeholder='MÃ GIẢM GIÁ' 
+                        />
+                        <button disabled={promoCode === ''} className={`btn mt-4 h-12 w-[40%] ${promoCode !== '' ? 'btn-primary' : 'btn-disabled bg-[#dedede]'}`}>Áp dụng</button>
+                    </div>
+                </div>
+                <hr className="custom-hr" />
+                <div className='row pt-2 pb-3'>
                     <div className="col-md-8 d-flex justify-content-start">
                         <p>Tạm tính</p>
                     </div>
@@ -87,13 +114,24 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                         <p>{totalAmount}</p>
                     </div>
                 </div>
+                <hr className="custom-hr" />
+                <div className='row pt-2 pb-3'>
+                    <div className="col-md-8 d-flex justify-content-start">
+                        <p style={{color: '#0C4762'}} className='fw-bold'>Tổng tiền</p>
+                    </div>
+                    <div className="col-md-4 d-flex justify-content-end">
+                        <p style={{color: '#0C4762'}} className='fw-bold'>{totalAmount}</p>
+                    </div>
+                </div>
                 <div className='row mt-2 mb-4'>
-                    <p>Vui lòng trả lời tất cả câu hỏi để tiếp tục</p>
+                    <p>Bằng việc tiến hành đặt mua</p><br/>
+                    <p>Bạn đã đồng ý với các <a href='#' style={{color: '#0C4762',textDecoration:'underline'}}>Điều Kiện Giao Dịch Chung</a></p>
                 </div>
                 <div className='row'>
-                    <button className='btn-order-disable'>Thanh toán</button>
+                    <button onClick={handleOpenQRDialog} className='h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'>Thanh toán</button>
                 </div>
             </div>
+            <QRPaymentDialog open={isQRDialogOpen} onClose={() => setIsQRDialogOpen(false)} amount={totalAmount} qrImage="/images/sample-qr.png" />
         </div>
     )
 }

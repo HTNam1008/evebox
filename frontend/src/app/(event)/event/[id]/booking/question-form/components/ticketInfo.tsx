@@ -1,6 +1,7 @@
 'use client'
 import Image from 'next/image';
 import React from "react";
+import { useRouter } from "next/navigation";
 
 interface EventProps {
     id: number;
@@ -19,6 +20,10 @@ interface TicketInformationProps {
 
 
 export default function TicketInformation({ event, totalTickets, totalAmount }: TicketInformationProps) {
+    const router = useRouter();
+    const handlePayment = () => {
+        router.push(`/event/${event?.id}/booking/payment`);
+    }
     return (
         <div className="col-5 border-start" style={{ borderLeft: '1px solid #ddd' }}>
             <div className='container'>
@@ -91,7 +96,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                     <p>Vui lòng trả lời tất cả câu hỏi để tiếp tục</p>
                 </div>
                 <div className='row'>
-                    <button className='btn-order-disable'>Thanh toán</button>
+                    <button onClick={handlePayment} className='h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'>Thanh toán</button>
                 </div>
             </div>
         </div>

@@ -15,37 +15,29 @@ export default function QRPaymentDialog({ open, onClose, amount, qrImage }: QRPa
     const [minutes, setMinutes] = useState(15);
     const [seconds, setSeconds] = useState(0);
 
-    const startCountdown = () => {
-        setMinutes(15);
-        setSeconds(0);
-
-        const timer = setInterval(() => {
-            setSeconds((prevSeconds) => {
-                if (prevSeconds === 0) {
-                    setMinutes((prevMinutes) => {
-                        if (prevMinutes === 0) {
-                            clearInterval(timer);
-                            onClose();
-                            return 0;
-                        }
-                        return prevMinutes - 1;
-                    });
-                    return 59;
-                }
-                return prevSeconds - 1;
-            });
-        }, 1000);
-
-        return timer;
-    };
-
     useEffect(() => {
         let timer: NodeJS.Timeout;
         if (open) {
-            timer = startCountdown();
+            setMinutes(15);
+            setSeconds(0);
+            timer = setInterval(() => {
+                setSeconds((prevSeconds) => {
+                    if (prevSeconds === 0) {
+                        return 59;
+                    }
+                    return prevSeconds - 1;
+                });
+            }, 1000);
         }
         return () => clearInterval(timer);
     }, [open]);
+    
+    // 👇 Thêm useEffect riêng để cập nhật phút
+    useEffect(() => {
+        if (seconds === 59 && minutes > 0) {
+            setMinutes((prevMinutes) => prevMinutes - 1);
+        }
+    }, [seconds]); 
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md">

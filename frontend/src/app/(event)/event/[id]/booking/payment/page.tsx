@@ -8,6 +8,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 /* Package Application */
 import PaymentMethod from "./components/paymentMethod";
+import Navigation from "../components/navigation";
+import TicketInformation from "./components/ticketInfo";
 
 const PaymentPage = () => {
   const [event, setEvent] = useState(null);
@@ -15,26 +17,26 @@ const PaymentPage = () => {
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
-      // Lấy dữ liệu từ localStorage
-      const storedEvent = localStorage.getItem('event');
-      const storedTotalTickets = localStorage.getItem('totalTickets');
-      const storedTotalAmount = localStorage.getItem('totalAmount');
-      // const storedHasSelectedTickets = localStorage.getItem('hasSelectedTickets');
-
-      if (storedEvent) setEvent(JSON.parse(storedEvent)); // Chuyển JSON string thành object
-      if (storedTotalTickets) setTotalTickets(Number(storedTotalTickets));
-      if (storedTotalAmount) setTotalAmount(Number(storedTotalAmount));
-      // if (storedHasSelectedTickets) setHasSelectedTickets(storedHasSelectedTickets === 'true');
+    fetchEventInfo();
   }, []);
 
+  const fetchEventInfo = () => {
+    const storedEvent = localStorage.getItem('event');
+    const storedTotalTickets = localStorage.getItem('totalTickets');
+    const storedTotalAmount = localStorage.getItem('totalAmount');
+
+    if (storedEvent) setEvent(JSON.parse(storedEvent));
+    if (storedTotalTickets) setTotalTickets(Number(storedTotalTickets));
+    if (storedTotalAmount) setTotalAmount(Number(storedTotalAmount));
+  }
+
   return (
-    // <div className="payment-page">
-    //   <Payment />
-    // </div>
     <div className="mt-5 mb-5">
+      <Navigation title="Thanh toán" />
       <div className="px-32 py-0">
         <div className="row align-items-start mt-4">
           <PaymentMethod />
+          <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} />
         </div>
       </div>
     </div>
