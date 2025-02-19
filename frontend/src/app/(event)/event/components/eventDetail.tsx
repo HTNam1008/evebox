@@ -28,7 +28,8 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
     const router = useRouter();
 
     const handleBuyTicket = () => {
-        router.push(`/event/${event.id}/booking/payment`);
+        // router.push(`/event/${event.id}/booking/payment`);
+        router.push(`/event/${event.id}/booking/select-ticket`);
     }
 
     return (
