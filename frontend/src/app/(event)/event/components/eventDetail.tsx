@@ -28,7 +28,11 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
     const router = useRouter();
 
     const handleBuyTicket = () => {
-        // router.push(`/event/${event.id}/booking/payment`);
+        router.push(`/event/${event.id}/booking/payment`);
+        // router.push(`/event/${event.id}/booking/select-ticket`);
+    }
+
+    const handleBuyTicket2 = () => {
         router.push(`/event/${event.id}/booking/select-ticket`);
     }
 
@@ -160,7 +164,8 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
                                                     </div>
                                                     20:00 - 23:00, 25 tháng 1, 2024
                                                 </div>
-                                                <button onClick={handleBuyTicket} type="button" className="btn-buy">Mua vé ngay</button>
+                                                <button onClick={handleBuyTicket} type="button" className="btn-buy">payment</button>
+                                                <button onClick={handleBuyTicket2} type="button" className="btn-buy">select ticket</button>
                                             </div>
 
                                             {/* Phần mở rộng "Vé" */}
