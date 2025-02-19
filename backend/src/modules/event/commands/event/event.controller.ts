@@ -44,39 +44,39 @@ export class EventController {
     });
   }
 
-  @Get('/')
-  @ApiOperation({ summary: 'Get all events' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Events retrieved successfully' })
-  async getAllEvents(@Res() res: Response) {
-    const result = await this.eventsService.findAll();
+  // @Get('/')
+  // @ApiOperation({ summary: 'Get all events' })
+  // @ApiResponse({ status: HttpStatus.OK, description: 'Events retrieved successfully' })
+  // async getAllEvents(@Res() res: Response) {
+  //   const result = await this.eventsService.findAll();
 
-    if (result.isErr()) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(ErrorHandler.internalServerError(result.unwrapErr().message));
-    }
+  //   if (result.isErr()) {
+  //     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(ErrorHandler.internalServerError(result.unwrapErr().message));
+  //   }
 
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      message: 'Events retrieved successfully',
-      data: result.unwrap(),
-    });
-  }
+  //   return res.status(HttpStatus.OK).json({
+  //     statusCode: HttpStatus.OK,
+  //     message: 'Events retrieved successfully',
+  //     data: result.unwrap(),
+  //   });
+  // }
 
-  @Get('/:id')
-  @ApiOperation({ summary: 'Get event by ID' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Event retrieved successfully' })
-  async getEvent(@Param('id') id: string, @Res() res: Response) {
-    const result = await this.eventsService.findOne(Number(id));
+  // @Get('/:id')
+  // @ApiOperation({ summary: 'Get event by ID' })
+  // @ApiResponse({ status: HttpStatus.OK, description: 'Event retrieved successfully' })
+  // async getEvent(@Param('id') id: string, @Res() res: Response) {
+  //   const result = await this.eventsService.findOne(Number(id));
 
-    if (result.isErr()) {
-      return res.status(HttpStatus.NOT_FOUND).json(ErrorHandler.notFound(result.unwrapErr().message));
-    }
+  //   if (result.isErr()) {
+  //     return res.status(HttpStatus.NOT_FOUND).json(ErrorHandler.notFound(result.unwrapErr().message));
+  //   }
 
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      message: 'Event retrieved successfully',
-      data: result.unwrap(),
-    });
-  }
+  //   return res.status(HttpStatus.OK).json({
+  //     statusCode: HttpStatus.OK,
+  //     message: 'Event retrieved successfully',
+  //     data: result.unwrap(),
+  //   });
+  // }
 
   @Put('/:id')
   @ApiOperation({ summary: 'Update event by ID' })
