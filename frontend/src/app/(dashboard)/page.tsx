@@ -11,37 +11,37 @@ import SearchControls from './components/dashboard/searchControls';
 import { useFetchEvents } from './libs/hooks/useFetchEvents';
 
 // server componet - SSR
- function fetchData() {
-    try {
-        // const resSlides = await fetch('http://localhost:3001/api/discovery/banner');
-        // const slides: Slide[] = await resSlides.json();
-        const mockData = [
-            {
-                image: "../../../images/dashboard/presentation_pic.png",
-                title: "MADE FOR THOSE",
-                subtitle: "WHO DO"
-            },
-            {
-                image: "../../../images/dashboard/presentation_pic.png",
-                title: "DISCOVER EVENTS",
-                subtitle: "NEAR YOU"
-            },
-            {
-                image: "../../../images/dashboard/presentation_pic.png",
-                title: "JOIN THE",
-                subtitle: "COMMUNITY"
-            }
-        ];
-        // return Array.isArray(slides) ? slides : mockData;
-        return mockData;
-    } catch (err) {
-        console.error('Failed to fetch data:', err);
-        return [];
-    }
-}
+//  function fetchData() {
+//     try {
+//         // const resSlides = await fetch('http://localhost:3001/api/discovery/banner');
+//         // const slides: Slide[] = await resSlides.json();
+//         const mockData = [
+//             {
+//                 image: "../../../images/dashboard/presentation_pic.png",
+//                 title: "MADE FOR THOSE",
+//                 subtitle: "WHO DO"
+//             },
+//             {
+//                 image: "../../../images/dashboard/presentation_pic.png",
+//                 title: "DISCOVER EVENTS",
+//                 subtitle: "NEAR YOU"
+//             },
+//             {
+//                 image: "../../../images/dashboard/presentation_pic.png",
+//                 title: "JOIN THE",
+//                 subtitle: "COMMUNITY"
+//             }
+//         ];
+//         // return Array.isArray(slides) ? slides : mockData;
+//         return mockData;
+//     } catch (err) {
+//         console.error('Failed to fetch data:', err);
+//         return [];
+//     }
+// }
 
 const Dashboard = () => {
-    const slides = fetchData();
+    // const slides = fetchData();
     const { events, loading, error } = useFetchEvents();
 
     if (loading) {
@@ -58,7 +58,7 @@ const Dashboard = () => {
             <main className="flex-1">
                 <div className="w-full flex justify-center flex-col items-center px-4 md:mt-8">
                     <div className="w-full md:w-5/6 relative">
-                        <ImageSlider slides={slides} />
+                        <ImageSlider />
                         <SearchControls />
                     </div>
                 </div>
