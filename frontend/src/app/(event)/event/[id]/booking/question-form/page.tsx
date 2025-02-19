@@ -16,6 +16,7 @@ export default function QuestionForm() {
     const [event, setEvent] = useState(null);
     const [totalTickets, setTotalTickets] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
+    const [isFormValid, setIsFormValid] = useState(false);
     // const [hasSelectedTickets, setHasSelectedTickets] = useState(false);
 
     useEffect(() => {
@@ -55,8 +56,8 @@ export default function QuestionForm() {
                 </div> */}
 
                 <div className="row align-items-start mt-4">
-                    <QuestionList />
-                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} />
+                    <QuestionList onValidationChange={setIsFormValid} />
+                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} isFormValid={isFormValid} />
                 </div>
 
             </div>

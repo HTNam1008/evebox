@@ -1,6 +1,19 @@
 'use client'
+import { useState, useEffect } from "react";
 
-export default function QuestionList() {
+export default function QuestionList({ onValidationChange }: { onValidationChange: (isValid: boolean) => void }) {
+    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
+    const [address, setAddress] = useState("");
+    const [agree, setAgree] = useState(false);
+    const [isValid, setIsValid] = useState(false);
+
+    useEffect(() => {
+        const isFormValid = phone.trim() !== "" && email.trim() !== "" && address.trim() !== "" && agree;
+        setIsValid(isFormValid);
+        onValidationChange(isFormValid); // Truyền trạng thái form lên component cha
+    }, [phone, email, address, agree]);
+
     return (
         <div className="col-7">
             <div className='container'>
@@ -19,6 +32,8 @@ export default function QuestionList() {
                             className="form-control custom-input"
                             id="phone"
                             placeholder="Điền câu trả lời của bạn"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             required
                         />
                         <div className="valid-feedback">Looks good!</div>
@@ -32,6 +47,8 @@ export default function QuestionList() {
                             className="form-control custom-input"
                             id="mail"
                             placeholder="Điền câu trả lời của bạn"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                         <div className="valid-feedback">Looks good!</div>
@@ -45,6 +62,8 @@ export default function QuestionList() {
                             className="form-control custom-input"
                             id="address"
                             placeholder="Điền câu trả lời của bạn"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
                             required
                         />
                         <div className="valid-feedback">Looks good!</div>
@@ -60,6 +79,8 @@ export default function QuestionList() {
                                 id="checkAgree"
                                 defaultValue=""
                                 style={{ border: '1px solid black' }}
+                                checked={agree}
+                                onChange={() => setAgree(!agree)}
                                 required
                             />
                             <label className="form-check-label" htmlFor="checkAgree">
