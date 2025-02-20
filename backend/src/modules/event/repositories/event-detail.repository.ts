@@ -22,6 +22,7 @@ export class EventDetailRepository {
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         createdAt: true,
+        venue: true,
         locations: {
           select: {
             id: true,

@@ -6,6 +6,7 @@ import { Icon } from '@iconify/react';
 import '@/styles/admin/pages/ForgotPassword.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { IconButton } from '@mui/material';
+import Image from 'next/image';
 
 export const ResetPasswordForm = () => {
     const {
@@ -24,7 +25,13 @@ export const ResetPasswordForm = () => {
                 <div className="w-75">
                     <div className="form">
                         <div className="container d-flex flex-column align-items-center">
-                            <img src="../../../images/logo.png" alt="EveBox Logo" className="logo" />
+                            <Image
+                                src="/images/logo.png"
+                                alt="EveBox Logo"
+                                width={50}
+                                height={50}
+                                className="logo"
+                            />
                             <h3 ><strong>Đặt lại mật khẩu</strong></h3>
                             <p className="subheading">Mật khẩu trước của bạn đã được thiết lập lại. Vui lòng đặt mật khẩu mới cho tài khoản của bạn!</p>
                         </div>

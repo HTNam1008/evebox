@@ -17,6 +17,7 @@ import EventSlider from '../../../(dashboard)/components/dashboard/eventSlider';
 import EventBox from './eventBox';
 
 interface EventProps {
+    id: number;
     title: string;
     description: string;
     date: string;
@@ -26,6 +27,12 @@ interface EventProps {
 // Client component
 export default function EventDetailClient({ event }: { event: EventProps }) {
     const events = [1, 2, 3, 4, 5, 6, 7, 8];
+
+    const router = useRouter();
+
+    const handleBuyTicket = () => {
+        router.push(`/event/${event.id}/booking/select-ticket`);
+    }
 
     return (
         <div className="mt-5 mb-5">

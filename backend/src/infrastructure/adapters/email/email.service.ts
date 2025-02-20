@@ -16,7 +16,7 @@ export class EmailService implements OnModuleInit {
       port: this.configService.get<number>('EMAIL_PORT', 587),
       secure: false, // true for 465, false for other ports
       auth: {
-        user: this.configService.get<string>('EMAIL_USER'),
+        user: this.configService.get<string>('EMAIL_USERNAME'),
         pass: this.configService.get<string>('EMAIL_PASS'),
       },
     });

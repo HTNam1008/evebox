@@ -1,4 +1,4 @@
-import { TicketType } from "src/modules/ticket/domain/entities/ticket.entity";
+import { TicketType } from "./tickettype.entity";
 import { EventFrontDisplay } from "src/modules/event/domain/entities/event.entity";
 export interface ShowingFront{
   id    :                String;

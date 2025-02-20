@@ -36,7 +36,7 @@ export const useVerifyOTPForm = () => {
     setTimeLeft(verifyData.resend_allowed_in ?? TIMELEFT);
     setAttempts(verifyData.remaining_attempts ?? ATTEMPTS);
     setRequestToken(verifyData.request_token);
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -142,7 +142,7 @@ export const useVerifyOTPForm = () => {
         alert(result.data.message);
       }
     } catch (err) {
-      setError('Gửi mã OTP thất bại, vui lòng thử lại sau.');
+      setError(`Gửi mã OTP thất bại, vui lòng thử lại sau: ${err}.`);
     }
   };
 

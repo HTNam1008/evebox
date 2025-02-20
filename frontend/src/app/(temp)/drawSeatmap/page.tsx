@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import SeatMap from "./components/seatmap";
-import { SeatMap as SeatMapType } from "./components/seatmapType";
+// import SeatMap from "./components/seatmap";
+// import { SeatMap as SeatMapType } from "./components/seatmapType";
 
 const TempPage: React.FC = () => {
-  const [seatMapData, setSeatMapData] = useState<SeatMapType | null>(null);
+  // const [seatMapData, setSeatMapData] = useState<SeatMapType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [showingIdList, setShowingIdList] = useState<string[]>([]);
   const [selectedShowingId, setSelectedShowingId] = useState<string>("");
@@ -27,7 +27,7 @@ const TempPage: React.FC = () => {
     const fetchSeatMap = async () => {
       try {
         const result = await axios.get(`http://localhost:3001/api/showing/seatmap?showingId=${selectedShowingId}`);
-        setSeatMapData(result.data.data); // Lưu dữ liệu vào state
+        // setSeatMapData(result.data.data); // Lưu dữ liệu vào state
         console.log("Seat map data:", result.data.data);
       } catch (error) {
         console.error("Error fetching seat map data:", error);
@@ -54,7 +54,7 @@ const TempPage: React.FC = () => {
       </select>
       
     </div>
-    <div>{seatMapData && <SeatMap seatMap={seatMapData} />}</div>
+    {/* <div>{seatMapData && <SeatMap seatMap={seatMapData} />}</div> */}
     </>
   );
 };

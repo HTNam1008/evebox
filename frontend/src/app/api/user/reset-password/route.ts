@@ -17,14 +17,21 @@ export async function POST(request: Request) {
       { newPassword, confirmPassword, resetToken }
     );
 
-    return NextResponse.json(
-      { message: 'Đổi mật khẩu thành công' },
-      { status: 200 }
-    );
+    if (response.data.statusCode == 200) {
+      return NextResponse.json(
+        { message: 'Đổi mật khẩu thành công' },
+        { status: 200 }
+      );
+    }
 
-  } catch (error: any) {
     return NextResponse.json(
-      { message: error.response?.data?.message || 'Đổi mật khẩu thất bại' },
+      { message: 'Đổi mật khẩu thất bại' },
+      { status: 500 }
+    );
+  } catch (error) {
+    console.error('Error:', error);
+    return NextResponse.json(
+      { message: 'Đổi mật khẩu thất bại' },
       { status: 500 }
     );
   }

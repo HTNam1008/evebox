@@ -1,23 +1,15 @@
 import { Decimal } from "@prisma/client/runtime/library";
 import { ShowingFront } from "src/modules/showing/domain/entities/showing.entity";
-
-export interface Image{
-  id: number;
-  imageUrl: string;
-}
-
-export interface Categories{
-  id: number;
-  name: string;
-}
+import { Categories, EventCategorySpecial } from "./categories.entity";
+import { Images } from "src/modules/images/domain/entities/images.entity";
 
 export interface EventFrontDisplay {
   id: number;
   title: string;
   startDate: Date;
   lastScore: Decimal;
-  Images_Events_imgLogoIdToImages: Image;
-  Images_Events_imgPosterIdToImages: Image;
+  Images_Events_imgLogoIdToImages: Images;
+  Images_Events_imgPosterIdToImages: Images;
   totalClicks: number;
   weekClicks: number;
 }
@@ -29,8 +21,8 @@ export interface EventSearchData {
   startDate: Date;
   endDate: Date;
   lastScore: Decimal;
-  Images_Events_imgLogoIdToImages: Image;
-  Images_Events_imgPosterIdToImages: Image;
+  Images_Events_imgLogoIdToImages: Images;
+  Images_Events_imgPosterIdToImages: Images;
 }
 
 export interface EventData {
@@ -42,22 +34,17 @@ export interface EventData {
   organizerId: string;
   status: string;
   locationId: number;
-  Images_Events_imgLogoIdToImages: Image;
-  Images_Events_imgPosterIdToImages: Image;
+  venue: string;
+  Images_Events_imgLogoIdToImages?: Images;
+  Images_Events_imgPosterIdToImages?: Images;
   createdAt: Date;
-  locationsString: string;
+  locationsString?: string;
   lastScore: Decimal;
   isSpecial: boolean;
   isOnlyOnEve: boolean;
-  categories: Categories[];
-  showing: ShowingFront[];
+  categories?: Categories[];
+  showing?: ShowingFront[];
 }
-
-export interface EventCategorySpecial {
-  Categories: Categories;
-  Events: EventFrontDisplay;
-}
-
 
 export interface FrontDisplayData {
   specialEvents: EventFrontDisplay[];
