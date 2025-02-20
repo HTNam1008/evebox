@@ -1,6 +1,9 @@
 # Stage 1: Build
 FROM node:18-alpine AS builder
 
+# Install OpenSSL and other required dependencies
+RUN apk add --no-cache openssl libc6-compat
+
 # Set working directory
 WORKDIR /app
 
@@ -24,6 +27,9 @@ RUN npm run build
 
 # Stage 2: Production
 FROM node:18-alpine
+
+# Install OpenSSL in production image
+RUN apk add --no-cache openssl libc6-compat
 
 # Set working directory
 WORKDIR /app

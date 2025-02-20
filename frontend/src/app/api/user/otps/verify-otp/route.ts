@@ -11,9 +11,10 @@ export async function POST(request: Request) {
     );
 
     return NextResponse.json(response.data, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
+    console.error('Error:', error);
     return NextResponse.json(
-      { message: error.response?.data?.message || 'Xác thực thất bại' },
+      { message: 'Xác thực thất bại' },
       { status: 500 }
     );
   }

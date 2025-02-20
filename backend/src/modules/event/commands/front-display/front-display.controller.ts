@@ -1,7 +1,9 @@
 import { Controller, Get, Query, Res, HttpStatus } from '@nestjs/common';
 import { FrontDisplayService } from './front-display.service';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { EventResponse } from '../event/event-response.dto';
+import { FrontDisplayResponse } from './front-display-response.dto';
 
 @Controller('api/event')
 export class FrontDisplayController {
@@ -12,6 +14,7 @@ export class FrontDisplayController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Front display data retrieved successfully',
+    type: FrontDisplayResponse,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -42,10 +45,17 @@ export class FrontDisplayController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Recommended events retrieved successfully',
+    type: EventResponse,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Invalid input',
+  })
+  @ApiQuery({
+    name: 'timeWindow',
+    enum: ['week', 'month'],
+    required: true,
+    description: 'Time window for recommended events (week or month)',
   })
   async getRecommendedEvents(
     @Query('timeWindow') timeWindow: 'week' | 'month',

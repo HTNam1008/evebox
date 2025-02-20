@@ -7,7 +7,6 @@ import { LoginUserService } from './commands/login/login-user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from '../../shared/strategies/jwt.strategy';
-import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
 import { SendWelcomeEmailHandler } from './domain/events/handler/send-welcome-email.service';
 import { EmailModule } from 'src/infrastructure/adapters/email/email.module';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -63,7 +62,6 @@ import { GetUserService } from './queries/get-user/get-user.service';
     GetUserController,
   ],
   providers: [
-    PrismaService,
     RegisterUserService,
     LoginUserService,
     LogoutUserService,
