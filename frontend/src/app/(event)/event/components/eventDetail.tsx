@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import React from 'react';
 import '@/styles/admin/pages/EventDetail.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,6 +10,7 @@ import 'tailwindcss/tailwind.css';
 import '@/styles/admin/pages/Dashboard.css';
 
 interface EventProps {
+    id: number;
     title: string;
     description: string;
     date: string;
@@ -22,6 +24,12 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
     const [isTicketInfoExpanded, setIsTicketInfoExpanded] = useState(false);
 
     const [isTicketNoteExpanded, setIsTicketNoteExpanded] = useState(false);
+
+    const router = useRouter();
+
+    const handleBuyTicket = () => {
+        router.push(`/event/${event.id}/booking/select-ticket`);
+    }
 
     return (
         <div className="mt-5 mb-5">
@@ -151,7 +159,7 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
                                                     </div>
                                                     20:00 - 23:00, 25 tháng 1, 2024
                                                 </div>
-                                                <button type="button" className="btn-buy">Mua vé ngay</button>
+                                                <button onClick={handleBuyTicket} type="button" className="btn-buy">Mua vé ngay</button>
                                             </div>
 
                                             {/* Phần mở rộng "Vé" */}

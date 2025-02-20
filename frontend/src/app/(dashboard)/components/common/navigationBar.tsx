@@ -7,6 +7,8 @@ import Sidebar from "./sidebar";
 import apiClient from "@/services/apiClient";
 import { useSession } from "next-auth/react";
 import { UserInfo, UserInfoResponse } from "@/types/model/userInfo";
+import Image from "next/image";
+
 
 const NavigationBar = () => {
   const [isLangOpen, setIsLangOpen] = useState(false);
@@ -50,11 +52,14 @@ const NavigationBar = () => {
             </button>
             <Link href={"/"} className="flex items-center gap-2">
               <div className="w-18 h-9 rounded">
-                <img
-                  src="/images/dashboard/logo-icon.png"
-                  alt="logo"
-                  className="w-18 h-9"
-                />
+              <Image
+  src="/images/dashboard/logo-icon.png"
+  alt="logo"
+  width={30} // Adjust as needed
+  height={30} // Adjust as needed
+  priority // Ensures the logo loads fast
+/>
+
               </div>
               <span className="text-white font-bold text-xl hidden sm:inline">
                 EveBox
@@ -67,12 +72,15 @@ const NavigationBar = () => {
               <button
                 className="flex items-center gap-1 sm:gap-2 text-white p-2 hover:bg-teal-700 rounded-md"
                 onClick={() => setIsLangOpen(!isLangOpen)}
+              // eslint-disable-next-line react/jsx-no-comment-textnodes
               >
-                <img
-                  src="/images/dashboard/vietnam-icon.png"
-                  alt="flag"
-                  className="w-8 sm:w-12 h-7"
-                />
+                <Image
+  src="/images/dashboard/vietnam-icon.png"
+  alt="flag"
+  width={28}
+  height={28}
+/>
+
                 <span className="hidden sm:inline">VI</span>
                 <ChevronDown size={16} className="hidden sm:block" />
               </button>
@@ -81,19 +89,23 @@ const NavigationBar = () => {
                 <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32">
                   <div className="relative bg-white rounded-md overflow-hidden">
                     <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                      <img
-                        src="/images/dashboard/vietnam-icon.png"
-                        alt="English"
-                        className="w-8 h-6 rounded"
-                      />
+                      <Image
+  src="/images/dashboard/vietnam-icon.png"
+  alt="flag"
+  width={28}
+  height={28}
+/>
+
                       <span className="text-gray-700">EN</span>
                     </button>
                     <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                      <img
-                        src="/images/dashboard/vietnam-icon.png"
-                        alt="Vietnamese"
-                        className="w-8 h-6 rounded"
-                      />
+                    <Image
+  src="/images/dashboard/vietnam-icon.png"
+  alt="flag"
+  width={28}
+  height={28}
+/>
+
                       <span className="text-gray-700">VI</span>
                     </button>
                   </div>
