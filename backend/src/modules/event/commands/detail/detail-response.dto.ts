@@ -126,6 +126,9 @@ export class EventDetailResponseDto {
   @ApiProperty({ example: 20 })
   locationId: number;
 
+  @ApiProperty({ example: 'Sân khấu Thien Dang' })
+  venue: string;
+
   @ApiProperty({ type: ImageDto })
   Images_Events_imgLogoIdToImages: ImageDto;
 
