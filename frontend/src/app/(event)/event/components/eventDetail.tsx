@@ -1,10 +1,13 @@
 'use client'
 
+/* Package System */
 import React from 'react';
-import '@/styles/admin/pages/EventDetail.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'tailwindcss/tailwind.css';
+
+/* Package Application */
+import '@/styles/admin/pages/EventDetail.css';
 import '@/styles/admin/pages/Dashboard.css';
 import Comment from "./comment";
 import Description from "./description";
@@ -28,20 +31,18 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
         <div className="mt-5 mb-5">
             <EventBox event={event} />
 
-            <div>
-                <div className="row align-items-start">
-                    <div className="col-lg-8 col-md-12 custom-col-left ">
-                        <Description description={event.description} />
-                        <TicketDetails />
-                    </div>
-                    <MoreInformation title={event.title} location={event.location} />
+            <div className="row align-items-start">
+                <div className="col-lg-8 col-md-12 custom-col-left ">
+                    <Description description={event.description} />
+                    <TicketDetails />
                 </div>
+                <MoreInformation title={event.title} location={event.location} />
             </div>
 
             <Comment />
 
             {/* Events Section */}
-            <div className="flex justify-center mt-8 px-4">
+            <div className="d-flex justify-center mt-8">
                 <div className="w-full md:w-5/6">
                     <EventSlider
                         title="Các sự kiện khác"
@@ -49,7 +50,6 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
                         events={events}
                         showViewMore={true}
                     />
-
                 </div>
             </div>
         </div>
