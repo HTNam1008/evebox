@@ -15,13 +15,13 @@ const Dashboard = () => {
     const { events, loading, error } = useFetchEvents();
 
     if (loading) {
-      return <div>Loading events...</div>;
+        return <div>Loading events...</div>;
     }
-  
+
     if (error) {
-      return <div>{error}</div>;
+        return <div>{error}</div>;
     }
-  
+
     const { specialEvents, trendingEvents, onlyOnEve } = events;
     return (
         <div className="min-h-screen flex flex-col">
@@ -40,12 +40,12 @@ const Dashboard = () => {
                     <div className="w-full md:w-5/6">
                         <EventSlider title="Sự kiện" subtitle="Đặc biệt" events={specialEvents} />
                         <div className="mt-8">
-          <EventSlider title="Sự kiện" subtitle="Xu hướng" events={trendingEvents} />
-        </div>
-        <div className="mt-8">
-          <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={onlyOnEve} showViewMore />
-        </div>
-       
+                            <EventSlider title="Sự kiện" subtitle="Xu hướng" events={trendingEvents} />
+                        </div>
+                        <div className="mt-8">
+                            <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={onlyOnEve} showViewMore />
+                        </div>
+
                     </div>
                 </div>
             </main>

@@ -36,7 +36,7 @@ export const useVerifyOTPForm = () => {
     setTimeLeft(verifyData.resend_allowed_in ?? TIMELEFT);
     setAttempts(verifyData.remaining_attempts ?? ATTEMPTS);
     setRequestToken(verifyData.request_token);
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (timeLeft === 0) {
