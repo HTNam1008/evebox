@@ -5,7 +5,8 @@ import { Button, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, 
 import Link from 'next/link';
 import { useVerifyOTPForm } from '../libs/hooks/useVerifyOtpForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '@/styles/admin/pages/VerifyOTP.css'
+import '@/styles/admin/pages/VerifyOTP.css';
+import Image from 'next/image';
 
 export const VerifyOTPForm = () => {
   const {
@@ -27,7 +28,7 @@ export const VerifyOTPForm = () => {
 
   return (
     <div className='container-fluid vh-100 p-0'>
-     <div className='row h-100 m-0'>
+      <div className='row h-100 m-0'>
         <div className={`col-md-5 d-flex align-items-center justify-content-center left-register-pane`}>
           <div className="text-center">
             <h2>Chào mừng bạn quay lại!</h2>
@@ -41,7 +42,13 @@ export const VerifyOTPForm = () => {
           <div className="w-75">
             <div className='verify-form'>
               <div className="verify-container d-flex flex-column align-items-center">
-                <img src="../../../images/logo.png" alt="EveBox Logo" className="mb-3 img-fluid logo" />
+                <Image
+                  src="/images/logo.png"
+                  alt="EveBox Logo"
+                  width={50}
+                  height={50}
+                  className="logo"
+                />
                 <h3><strong>Xác thực OTP</strong></h3>
                 <br></br>
                 <h4><strong>Nhập mã OTP gồm 6 chữ số</strong></h4>
