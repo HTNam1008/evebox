@@ -16,6 +16,7 @@ export default function QuestionForm() {
     const [event, setEvent] = useState(null);
     const [totalTickets, setTotalTickets] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
+    const [isFormValid, setIsFormValid] = useState(false);
     // const [hasSelectedTickets, setHasSelectedTickets] = useState(false);
 
     useEffect(() => {
@@ -35,28 +36,9 @@ export default function QuestionForm() {
         <div className="mt-5 mb-5">
             <Navigation title="Bảng câu hỏi" />
             <div className="px-32 py-0">
-                {/* <div className="row align-items-center">
-                    <div className="col d-flex justify-content-start">
-                        <i className="bi bi-arrow-left-square icon-back"></i>
-                    </div>
-                    <div className="col">
-                        <p className='title-page'>Bảng câu hỏi</p>
-                    </div>
-                    <div className="col text-center">
-                        <div className="alert alert-info bg-alert ">
-                            <p>Hoàn tất đặt vé trong</p>
-                            <div className='row'>
-                                <div>15</div>
-                                <div>:</div>
-                                <div>00</div>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-
                 <div className="row align-items-start mt-4">
-                    <QuestionList />
-                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} />
+                    <QuestionList onValidationChange={setIsFormValid} />
+                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} isFormValid={isFormValid} />
                 </div>
 
             </div>

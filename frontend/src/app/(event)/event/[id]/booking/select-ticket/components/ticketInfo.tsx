@@ -5,6 +5,7 @@ import { Calendar, MapPin, Ticket } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface EventProps {
     id: number;
@@ -42,11 +43,7 @@ export default function TicketInfor({
     return (
         <div className="flex flex-col md:flex-row px-32 py-8 items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
             <div className="w-full md:w-1/2">
-                <img 
-                    src="/images/event.png" 
-                    alt="Event" 
-                    className="w-full h-64 object-cover rounded-lg" 
-                />
+                <Image src="/images/event.png" alt="Event" width={500} height={300} className="w-full h-64 object-cover rounded-lg" />
             </div>
 
             <div className="w-full md:w-1/2">

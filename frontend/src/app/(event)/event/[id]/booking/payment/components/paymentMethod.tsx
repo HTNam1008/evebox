@@ -4,7 +4,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import PaymentInfoDialog from "./dialogs/paymentInfoDialog";
-import TimeOutDialog from "./dialogs/timeOutDialog";
 
 /* Package Application */
 import '@/../public/styles/events/payment.css';
@@ -12,7 +11,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function PaymentMethod() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isTimeOutOpen, setIsTimeOutOpen] = useState(false);
 
     const [selectedMethod, setSelectedMethod] = useState("shopeepay");
 
@@ -26,10 +24,6 @@ export default function PaymentMethod() {
     const handleOpenInfoDialog = () => {
         setIsDialogOpen(true);
     };
-
-    // const handleOpenTimeOutDialog = () => {
-    //     setIsTimeOutOpen(true);
-    // }
 
     return (
         <>
@@ -81,7 +75,6 @@ export default function PaymentMethod() {
                 </div>
             </div>
             <PaymentInfoDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
-            <TimeOutDialog open={isTimeOutOpen} onClose={() => setIsTimeOutOpen(false)} />
         </>
     );
 }

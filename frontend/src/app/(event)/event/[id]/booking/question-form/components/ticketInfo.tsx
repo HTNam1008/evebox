@@ -1,7 +1,10 @@
-'use client'
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import React from "react";
 import { useRouter } from "next/navigation";
+import ConfirmDialog from './dialogs/confirmDialog';
 
 interface EventProps {
     id: number;
@@ -15,15 +18,16 @@ interface TicketInformationProps {
     event: EventProps | null;
     totalTickets: number;
     totalAmount: number;
+    isFormValid: boolean;
 }
 
-
-
-export default function TicketInformation({ event, totalTickets, totalAmount }: TicketInformationProps) {
+export default function TicketInformation({ event, totalTickets, totalAmount, isFormValid }: TicketInformationProps) {
+    const [openDialog, setOpenDialog] = useState(false);
     const router = useRouter();
     const handlePayment = () => {
         router.push(`/event/${event?.id}/booking/payment`);
     }
+
     return (
         <div className="col-5 border-start" style={{ borderLeft: '1px solid #ddd' }}>
             <div className='container'>
@@ -53,16 +57,19 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                     ) : (
                         <p>Đang tải dữ liệu...</p>
                     )}
-
                 </div>
                 <hr className="custom-hr" />
                 <div className='row'>
                     <div className="col-md-8 d-flex justify-content-start">
                         <p className='title-info'>Thông tin đặt vé</p>
                     </div>
-                    <div className="col-md-4 d-flex justify-content-end">
-                        <p>Chọn lại vé</p>
-                    </div>
+                    {event && (
+                        <div className="col-md-4 d-flex justify-content-end">
+                            <p style={{ cursor: 'pointer', color: '#007bff' }} onClick={() => setOpenDialog(true)}>
+                                Chọn lại vé
+                            </p>
+                        </div>
+                    )}
                 </div>
                 <div className='row' style={{ fontWeight: 'bold' }}>
                     <div className="col-md-8 d-flex justify-content-start">
@@ -96,9 +103,13 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                     <p>Vui lòng trả lời tất cả câu hỏi để tiếp tục</p>
                 </div>
                 <div className='row'>
-                    <button onClick={handlePayment} className='h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'>Thanh toán</button>
+                    {/* <button onClick={handlePayment} className='h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'>Thanh toán</button> */}
+                    <button onClick={handlePayment} className={isFormValid ? 'h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]' : 'btn-order-disable'}
+                        disabled={!isFormValid}>Thanh toán
+                    </button>
                 </div>
             </div>
+            <ConfirmDialog open={openDialog} onClose={() => setOpenDialog(false)} id={event?.id}/>
         </div>
-    )
+    );
 }
