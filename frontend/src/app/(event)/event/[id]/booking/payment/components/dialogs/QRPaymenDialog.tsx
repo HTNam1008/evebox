@@ -1,5 +1,6 @@
 'use client';
 
+/* Package System */
 import { useEffect, useState } from "react";
 import { Dialog } from "@mui/material";
 import Image from "next/image";
@@ -12,40 +13,44 @@ interface QRPaymentDialogProps {
 }
 
 export default function QRPaymentDialog({ open, onClose, amount, qrImage }: QRPaymentDialogProps) {
-    const [minutes, setMinutes] = useState(15);
-    const [seconds, setSeconds] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(15 * 60);
 
-    const startCountdown = () => {
-        setMinutes(15);
-        setSeconds(0);
+    useEffect(() => {
+        if (!open) return; // Nếu dialog không mở thì không làm gì cả
+
+        // Lấy thời gian còn lại từ localStorage
+        const storedTime = localStorage.getItem('timeLeft');
+        const storedTimestamp = localStorage.getItem('timestamp');
+
+        if (storedTime && storedTimestamp) {
+            const elapsedTime = Math.floor((Date.now() - Number(storedTimestamp)) / 1000);
+            const remainingTime = Math.max(Number(storedTime) - elapsedTime, 0);
+            setTimeLeft(remainingTime);
+
+            if (remainingTime === 0) {
+                localStorage.setItem('timeLeft', '0');
+                return;
+            }
+        }
 
         const timer = setInterval(() => {
-            setSeconds((prevSeconds) => {
-                if (prevSeconds === 0) {
-                    setMinutes((prevMinutes) => {
-                        if (prevMinutes === 0) {
-                            clearInterval(timer);
-                            onClose();
-                            return 0;
-                        }
-                        return prevMinutes - 1;
-                    });
-                    return 59;
+            setTimeLeft((prevTime) => {
+                if (prevTime <= 1) {
+                    clearInterval(timer);
+                    localStorage.setItem('timeLeft', '0');
+                    return 0;
                 }
-                return prevSeconds - 1;
+                localStorage.setItem('timeLeft', String(prevTime - 1));
+                localStorage.setItem('timestamp', String(Date.now()));
+                return prevTime - 1;
             });
         }, 1000);
 
-        return timer;
-    };
-
-    useEffect(() => {
-        let timer: NodeJS.Timeout;
-        if (open) {
-            timer = startCountdown();
-        }
         return () => clearInterval(timer);
     }, [open]);
+
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md">
@@ -83,7 +88,6 @@ export default function QRPaymentDialog({ open, onClose, amount, qrImage }: QRPa
                                 ))}
                             </ol>
 
-                            {/* Đồng hồ đếm ngược */}
                             <div className="bg-teal-100 p-2 rounded d-flex justify-content-center align-items-center mt-3">
                                 <span className="fw-bold">Giao dịch sẽ kết thúc sau</span>
                                 <span className="bg-teal-500 text-white px-2 mx-1 rounded">{minutes}</span>

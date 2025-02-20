@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import React from "react";
+import { useRouter } from "next/navigation";
 import ConfirmDialog from './dialogs/confirmDialog';
 
 interface EventProps {
@@ -21,6 +23,10 @@ interface TicketInformationProps {
 
 export default function TicketInformation({ event, totalTickets, totalAmount, isFormValid }: TicketInformationProps) {
     const [openDialog, setOpenDialog] = useState(false);
+    const router = useRouter();
+    const handlePayment = () => {
+        router.push(`/event/${event?.id}/booking/payment`);
+    }
 
     return (
         <div className="col-5 border-start" style={{ borderLeft: '1px solid #ddd' }}>
@@ -97,8 +103,10 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                     <p>Vui lòng trả lời tất cả câu hỏi để tiếp tục</p>
                 </div>
                 <div className='row'>
-                    <button className={isFormValid ? 'btn-order' : 'btn-order-disable'}
-                        disabled={!isFormValid}>Thanh toán</button>
+                    {/* <button onClick={handlePayment} className='h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'>Thanh toán</button> */}
+                    <button onClick={handlePayment} className={isFormValid ? 'h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]' : 'btn-order-disable'}
+                        disabled={!isFormValid}>Thanh toán
+                    </button>
                 </div>
             </div>
             <ConfirmDialog open={openDialog} onClose={() => setOpenDialog(false)} id={event?.id}/>

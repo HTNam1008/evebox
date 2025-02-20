@@ -23,6 +23,14 @@ export default function QuestionList({ onValidationChange }: { onValidationChang
                         Vé điện tử sẽ được gửi đến địa chỉ email của bạn, vui lòng đảm bảo địa chỉ email
                         của bạn là chính xác.
                     </div>
+
+                    {!isValid && (
+                        <div className="alert alert-danger">
+                            <i className="bi bi-exclamation-triangle-fill mr-2"></i>
+                            Vui lòng điền đầy đủ thông tin để tiếp tục
+                        </div>
+                    )}
+
                     <div className="col-md-12">
                         <label htmlFor="phone" className="form-label d-flex justify-content-start">
                             <b><span className='red-star'>*</span> Số điện thoại của bạn</b>

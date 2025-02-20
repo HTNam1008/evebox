@@ -17,18 +17,37 @@ export default function Navigation({ title }: { title: string }) {
     const initialMinutes = 15;
     const initialSeconds = 0;
 
+    const totalInitialTime = initialMinutes * 60 + initialSeconds;
+
     const [isTimeout, setIsTimeout] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(initialMinutes * 60 + initialSeconds);
+    const [timeLeft, setTimeLeft] = useState(totalInitialTime);
     useEffect(() => {
         if (pathname === "/event/1/booking/select-ticket") return; // Không hiển thị trên trang này
+
+        const storedTime = localStorage.getItem('timeLeft');
+        const storedTimestamp = localStorage.getItem('timestamp');
+
+        if (storedTime && storedTimestamp) {
+            const elapsedTime = Math.floor((Date.now() - Number(storedTimestamp)) / 1000);
+            const remainingTime = Math.max(Number(storedTime) - elapsedTime, 0);
+            setTimeLeft(remainingTime);
+
+            if (remainingTime === 0) {
+                setIsTimeout(true);
+                return;
+            }
+        }
 
         const timer = setInterval(() => {
             setTimeLeft((prevTime) => {
                 if (prevTime <= 1) {
                     clearInterval(timer);
                     setIsTimeout(true);
+                    localStorage.setItem('timeLeft', '0');
                     return 0;
                 }
+                localStorage.setItem('timeLeft', String(prevTime - 1));
+                localStorage.setItem('timestamp', String(Date.now()));
                 return prevTime - 1;
             });
         }, 1000);
