@@ -12,7 +12,7 @@ export default function QuestionList({ onValidationChange }: { onValidationChang
         const isFormValid = phone.trim() !== "" && email.trim() !== "" && address.trim() !== "" && agree;
         setIsValid(isFormValid);
         onValidationChange(isFormValid); // Truyền trạng thái form lên component cha
-    }, [phone, email, address, agree]);
+    }, [phone, email, address, agree, onValidationChange]);
 
     return (
         <div className="col-7">
