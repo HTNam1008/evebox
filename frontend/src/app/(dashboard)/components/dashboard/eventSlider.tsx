@@ -6,34 +6,43 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import Link from 'next/link';
+import Image from "next/image";
+
+
+interface Event {
+  id: number;
+  title: string;
+  startDate: string;
+  status: string;
+  Images_Events_imgLogoIdToImages?: { imageUrl: string };
+}
 
 interface EventSliderProps {
   title: string;
   subtitle?: string;
   showViewMore?: boolean;
-  events: number[];
+  events: Event[];
 }
 
-const EventSlider = ({ title, subtitle, showViewMore = false, events }: EventSliderProps) => {
+const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
   return (
-    <>
+    <div className="relative">
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
         <h2 className="text-xl md:text-2xl font-bold">
           {title} {subtitle && <span className="text-teal-400">{subtitle}</span>}
         </h2>
-        {showViewMore && (
-          <a
-            href="#"
-            className="text-teal-500 hover:text-teal-700 text-sm md:text-base flex items-center gap-1 transition-colors duration-300"
-          >
+        {/* {showViewMore && (
+          <a href="#" className="text-teal-500 hover:text-teal-700 text-sm md:text-base flex items-center gap-1 transition-colors duration-300">
             Xem thêm <span>&rarr;</span>
           </a>
-        )}
+        )} */}
       </div>
 
+      {/* Swiper Slider */}
       <Swiper
         slidesPerView={4}
-        slidesPerGroup={4} 
+        slidesPerGroup={4}
         spaceBetween={10}
         modules={[Navigation]}
         navigation={{
@@ -42,31 +51,29 @@ const EventSlider = ({ title, subtitle, showViewMore = false, events }: EventSli
         }}
         className="mySwiper"
       >
-        {events.map((_, index) => (
-          <SwiperSlide key={index}>
-            <Link href={{
-              pathname: `/event/${index}`
-            }}>
+        {events.map((event) => (
+          <SwiperSlide key={event.id}>
+            <Link href={`/event/${event.id}`}>
               <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow">
                 <div className="flex items-center justify-center aspect-[13/9] overflow-hidden">
-                  <img
-                    src="/images/dashboard/card_pic.png"
-                    alt="Event"
+                  <Image
+                    src={event.Images_Events_imgLogoIdToImages?.imageUrl || '/images/dashboard/card_pic.png'}
+                    alt={event.title}
                     className="w-full object-cover hover:scale-105 transition-transform duration-300 padding-30"
+                    width={160}
+                    height={120}
                   />
                 </div>
                 <div className="p-3">
                   <h3 className="font-bold text-left text-base mb-3 line-clamp-2 leading-tight text-white">
-                    Nhớ Trịnh Công Sơn 3 - Quang Dũng - Cẩm Vân - Khắc Triệu - Cece Trường
+                    {event.title}
                   </h3>
                   <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
                     <time className="text-left text-teal-500">
-                      <span>20:00 - 23:00</span>
-                      <br />
-                      <span>25 tháng 10, 2024</span>
+                      <span>{new Date(event.startDate).toLocaleDateString()}</span>
                     </time>
                     <span className={`rounded-lg bg-emerald-200 px-2 font-medium text-sky-950 text-center md:text-left`}>
-                      {index % 2 === 0 ? "Miễn phí" : "950.000đ"}
+                      {event.status === 'free' ? "Miễn phí" : "950.000đ"}
                     </span>
                   </div>
                 </div>
@@ -81,7 +88,7 @@ const EventSlider = ({ title, subtitle, showViewMore = false, events }: EventSli
           <ChevronRight className="text-3xl text-white hover:text-gray-900 transition-transform" />
         </button>
       </Swiper>
-      </>
+    </div>
   );
 };
 

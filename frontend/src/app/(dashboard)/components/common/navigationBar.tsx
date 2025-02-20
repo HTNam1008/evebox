@@ -6,11 +6,14 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./sidebar";
 import apiClient from "@/services/apiClient";
 import { useSession } from "next-auth/react";
+import { UserInfo, UserInfoResponse } from "@/types/model/userInfo";
+import Image from "next/image";
+
 
 const NavigationBar = () => {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState<any>(null); // Replace `any` with a proper type if known
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null); // Replace `any` with a proper type if known
   const [isLoading, setLoading] = useState(false);
   const { data: session } = useSession();
   
@@ -19,7 +22,7 @@ const NavigationBar = () => {
     const fetchUserInfo = async () => {
       setLoading(true);
       try {
-        const response = await apiClient.get("/api/user/me"); // Assuming your API route is /api/me
+        const response = await apiClient.get<UserInfoResponse>("/api/user/me"); // Assuming your API route is /api/me
         setUserInfo(response.data.data);
       } catch (error) {
         console.error("Error fetching user info:", error);
@@ -49,11 +52,14 @@ const NavigationBar = () => {
             </button>
             <Link href={"/"} className="flex items-center gap-2">
               <div className="w-18 h-9 rounded">
-                <img
-                  src="/images/dashboard/logo-icon.png"
-                  alt="logo"
-                  className="w-18 h-9"
-                />
+              <Image
+  src="/images/dashboard/logo-icon.png"
+  alt="logo"
+  width={30} // Adjust as needed
+  height={30} // Adjust as needed
+  priority // Ensures the logo loads fast
+/>
+
               </div>
               <span className="text-white font-bold text-xl hidden sm:inline">
                 EveBox
@@ -66,12 +72,15 @@ const NavigationBar = () => {
               <button
                 className="flex items-center gap-1 sm:gap-2 text-white p-2 hover:bg-teal-700 rounded-md"
                 onClick={() => setIsLangOpen(!isLangOpen)}
+              // eslint-disable-next-line react/jsx-no-comment-textnodes
               >
-                <img
-                  src="/images/dashboard/vietnam-icon.png"
-                  alt="flag"
-                  className="w-8 sm:w-12 h-7"
-                />
+                <Image
+  src="/images/dashboard/vietnam-icon.png"
+  alt="flag"
+  width={28}
+  height={28}
+/>
+
                 <span className="hidden sm:inline">VI</span>
                 <ChevronDown size={16} className="hidden sm:block" />
               </button>
@@ -80,19 +89,23 @@ const NavigationBar = () => {
                 <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32">
                   <div className="relative bg-white rounded-md overflow-hidden">
                     <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                      <img
-                        src="/images/dashboard/vietnam-icon.png"
-                        alt="English"
-                        className="w-8 h-6 rounded"
-                      />
+                      <Image
+  src="/images/dashboard/vietnam-icon.png"
+  alt="flag"
+  width={28}
+  height={28}
+/>
+
                       <span className="text-gray-700">EN</span>
                     </button>
                     <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                      <img
-                        src="/images/dashboard/vietnam-icon.png"
-                        alt="Vietnamese"
-                        className="w-8 h-6 rounded"
-                      />
+                    <Image
+  src="/images/dashboard/vietnam-icon.png"
+  alt="flag"
+  width={28}
+  height={28}
+/>
+
                       <span className="text-gray-700">VI</span>
                     </button>
                   </div>
@@ -139,11 +152,13 @@ const NavigationBar = () => {
 };
 
 export default NavigationBar;
-function useQuery(arg0: {
+
+// no using useQuery
+/* function useQuery(arg0: {
   queryKey: (string | undefined)[]; queryFn: () => Promise<any>; enabled: boolean; // Only run if session exists
   staleTime: number; // Cache for 5 minutes
   cacheTime: number;
 }): { data: any; isLoading: any; } {
   throw new Error("Function not implemented.");
-}
+} */
 

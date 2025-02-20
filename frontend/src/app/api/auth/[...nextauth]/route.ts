@@ -1,8 +1,7 @@
-import NextAuth, { AuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import axios from "axios";
+import { authOptions } from "@/lib/authOptions";
+import NextAuth from "next-auth";
 
-export const authOptions: AuthOptions = {
+/* export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -63,7 +62,7 @@ export const authOptions: AuthOptions = {
     signIn: "/login", 
   },
   secret: process.env.NEXTAUTH_SECRET,
-  /* cookies: {
+  cookies: {
     sessionToken: {
       name: `__Secure-next-auth.session-token`,  // Tên cookie
       options: {
@@ -73,8 +72,8 @@ export const authOptions: AuthOptions = {
         path: "/",  // Cookie này chỉ hợp lệ cho toàn bộ trang web
       },
     },
-  }, */
-};
+  },
+}; */
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

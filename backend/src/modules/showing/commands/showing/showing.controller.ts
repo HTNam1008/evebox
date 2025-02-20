@@ -1,9 +1,10 @@
 import { Controller, Get, Query, Res, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 
 import { ShowingService } from './showing.service';
+import { AllShowingsResponseDto, SeatMapResponseDto, ShowingResponseDto } from './showing-response.dto';
 
 @Controller('api/showing')
 export class ShowingController {
@@ -11,9 +12,16 @@ export class ShowingController {
 
   @Get('/')
   @ApiOperation({ summary: 'Get showing data' })
+  @ApiQuery({
+    name: 'showingId',
+    required: true,
+    example: '16962844867169',
+    description: 'The ID of the showing to retrieve',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Showing data retrieved successfully',
+    type: ShowingResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -47,9 +55,16 @@ export class ShowingController {
 
   @Get('/seatmap')
   @ApiOperation({ summary: 'Get seat map' })
+  @ApiQuery({
+    name: 'showingId',
+    required: true,
+    example: '16962844867169',
+    description: 'The ID of the showing to retrieve',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Seat map retrieved successfully',
+    type: SeatMapResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -86,6 +101,7 @@ export class ShowingController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'All showings retrieved successfully',
+    type: AllShowingsResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,

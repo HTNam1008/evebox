@@ -1,10 +1,10 @@
-import { useState, useContext, useEffect } from 'react';
-import axios, { AxiosError } from 'axios';
+import { useState/* , useContext */, useEffect } from 'react';
+import axios/* , { AxiosError } */ from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
-import { AuthContext } from '../../../../../contexts/auth.context';
-import { ErrorResponse } from '../../../../../types/ErrorResponse';
+// import { AuthContext } from '../../../../../contexts/auth.context';
+// import { ErrorResponse } from '../../../../../types/ErrorResponse';
 import { signIn } from 'next-auth/react';
 
 export const useLoginForm = () => {
@@ -12,7 +12,7 @@ export const useLoginForm = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { login } = useContext(AuthContext);
+  // const { login } = useContext(AuthContext);
 
   const handleGoogleLogin = () => {
     try {
@@ -30,10 +30,10 @@ export const useLoginForm = () => {
 
       window.addEventListener('message', (event) => {
         if (event.origin === process.env.NEXT_PUBLIC_API_URL) {
-          const { type, data, error } = event.data;
+          const { type/* , data */, error } = event.data;
 
           if (type === 'GOOGLE_LOGIN_SUCCESS') {
-            const { access_token } = data;
+            // const { access_token } = data;
             // login(access_token);
             router.push('/');
             popup?.close();
@@ -44,7 +44,7 @@ export const useLoginForm = () => {
         }
       });
     } catch (err) {
-      setError('Đã xảy ra lỗi khi đăng nhập với Google.');
+      setError(`Đã xảy ra lỗi khi đăng nhập với Google: ${err}.`);
     } finally {
       setIsLoading(false);
     }
@@ -106,7 +106,7 @@ export const useLoginForm = () => {
           router.push('/'); // Điều hướng về trang chủ khi đăng nhập thành công
         }
       } catch (err) {
-        setError('Đăng nhập thất bại');
+        setError(`Đăng nhập thất bại: ${err}`);
       } finally {
         setIsLoading(false);
       }
