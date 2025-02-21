@@ -36,22 +36,22 @@ export class EventWeeklyRepository {
         : [streetAndWard, ""];
 
       let provinceAdd = await this.prisma.province.findFirst({
-          where: { name: province },
+          where: { name: province || "Default"},
       });
       
       if (!provinceAdd) {
           provinceAdd = await this.prisma.province.create({
-              data: { name: province },
+              data: { name: province || "Default"},
           });
           this.logger.log(`Province "${province}" created.`);
       }
       
       let districtAdd = await this.prisma.districts.findFirst({
-        where: { name: district, provinceId: provinceAdd.id },
+        where: { name: district || "Default", provinceId: provinceAdd.id },
       });
       if (!districtAdd) {
         districtAdd = await this.prisma.districts.create({
-          data: { name: district, provinceId: provinceAdd.id },
+          data: { name: district || "Default", provinceId: provinceAdd.id },
         });
         this.logger.log(`District "${district}" created.`);
       }

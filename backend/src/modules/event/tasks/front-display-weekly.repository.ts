@@ -116,18 +116,35 @@ export class FrontDisplayWeeklyRepository {
         }
 
         // 🛑 Bước 6: Xử lý categories
+        
         if (bigCates?.length) {
+          let validCatesEventIds = [];
+          for (const cate of bigCates) {
+              validCatesEventIds = [...validCatesEventIds, ...cate.events.map((event: { originalId: number }) => event.originalId)];
+          }
+          existingEvents = await this.prisma.events.findMany({
+            where: { id: { in: validCatesEventIds } },
+            select: { id: true }
+          });
+          existingEventIds = new Set(existingEvents.map(e => e.id));
+          const missingCatesEventIds = validCatesEventIds.filter(eventId => !existingEventIds.has(eventId));
+          this.logger.log(`Missing cate event IDs: ${missingCatesEventIds}`);
+          if (missingCatesEventIds.length > 0) {
+              await Promise.all(missingCatesEventIds.map(eventId => 
+                  this.eventWeeklyRepository.createOrUpdateEventDetail(eventId)
+              ));
+          }
             for (const cate of bigCates) {
                 let categoryId: number;
                 switch (cate.cateId) {
                     case 8: categoryId = 1; break;
-                    case 12: categoryId = 3; break;
-                    case 10: categoryId = 6; break;
+                    case 12: categoryId = 5; break;
+                    case 10: categoryId = 2; break;
                     default: continue;
                 }
-
-                const cateEveIds: number[] = cate.events.map((event: { id: number }) => event.id);
-
+                
+                const cateEveIds: number[] = cate.events.map((event: { originalId: number }) => event.originalId);
+                this.logger.log(`Category ID: ${categoryId}, Event IDs: ${cateEveIds}`);
                 if (cateEveIds.length > 0) {
                     await this.prisma.eventCategories.updateMany({
                         where: { eventId: { in: cateEveIds }, categoryId },
@@ -142,8 +159,6 @@ export class FrontDisplayWeeklyRepository {
         this.logger.error("Error updating event data:", error.message);
     }
   }
-
-
   
   async updateLastScore() {
     try {
