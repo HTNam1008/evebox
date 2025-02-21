@@ -53,6 +53,17 @@ export async function POST(request: Request) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<{ message?: string; errors?: string[] }>;
 
+      if (axiosError.response?.status === 500) {
+        return NextResponse.json(
+          {
+            status: 503,
+            error: 'Service Unavailable',
+            message: 'The server is currently unavailable. Please try again later.'
+          },
+          { status: 503 }
+        );
+      }
+
       return NextResponse.json(
         {
           message: axiosError.response?.data?.message || 'Đăng ký thất bại',
@@ -63,9 +74,17 @@ export async function POST(request: Request) {
     } else {
       console.error('Unexpected error during registration:', error);
 
+      // return NextResponse.json(
+      //   { message: 'Đăng ký thất bại' },
+      //   { status: 500 }
+      // );
       return NextResponse.json(
-        { message: 'Đăng ký thất bại' },
-        { status: 500 }
+        {
+          status: 503,
+          error: 'Service Unavailable',
+          message: 'The server is currently unavailable. Please try again later.'
+        },
+        { status: 503 }
       );
     }
   }
