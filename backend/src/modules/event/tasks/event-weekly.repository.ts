@@ -158,6 +158,7 @@ export class EventWeeklyRepository {
           locationId: location.id,
           venue: fetchedEventDetails.venue || "Default Venue",
           lastScore: 0,
+          minTicketPrice: fetchedEventDetails.minTicketPrice || 0,
         },
         create: {
           id: fetchedEventDetails.originalId,
@@ -171,6 +172,7 @@ export class EventWeeklyRepository {
           imgLogoId: createdLogoImage.id,
           status: fetchedEventDetails.status || "active",
           lastScore: 0,
+          minTicketPrice: fetchedEventDetails.minTicketPrice || 0,
         },
       });
       this.logger.log(`Event "${fetchedEventDetails.title}" (ID: ${fetchedEventDetails.originalId}) created or updated.`);
@@ -213,4 +215,28 @@ export class EventWeeklyRepository {
       this.logger.error(`Error fetching data: ${error.message}`);
     } 
   }
+
+  async updateAllEvents() {
+    const events = await this.prisma.events.findMany({ select: { id: true } });
+  
+    // Lấy toàn bộ thông tin sự kiện trước khi cập nhật
+    const updatedData = await Promise.all(
+      events.map(async (event) => {
+        const fetchedEventDetails = await this.fetchEventDetails(event.id);
+        if (!fetchedEventDetails) return null;
+        return {
+          where: { id: event.id },
+          data: { minTicketPrice: fetchedEventDetails.minTicketPrice || 0 },
+        };
+      })
+    );
+  
+    // Lọc ra những dữ liệu hợp lệ
+    const validUpdates = updatedData.filter(Boolean);
+  
+    // Dùng $transaction để thực hiện tất cả cập nhật trong một lần duy nhất
+    await this.prisma.$transaction(
+      validUpdates.map((update) => this.prisma.events.update(update))
+    );
+  }  
 }

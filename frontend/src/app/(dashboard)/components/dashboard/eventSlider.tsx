@@ -1,5 +1,6 @@
 'use client';
 
+// Package System
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from 'swiper/modules';
@@ -8,15 +9,8 @@ import 'swiper/css/navigation';
 import Link from 'next/link';
 import Image from "next/image";
 
-
-interface Event {
-  id: number;
-  title: string;
-  startDate: string;
-  status: string;
-  Images_Events_imgLogoIdToImages?: { imageUrl: string };
-  Images_Events_imgPosterIdToImages?: { imageUrl: string };
-}
+//Package App
+import { Event } from '../../libs/interface/dashboard.interface';
 
 interface EventSliderProps {
   title: string;
@@ -53,20 +47,20 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
         className="mySwiper"
       >
         {events.map((event) => (
-          <SwiperSlide key={event.id}>
+          <SwiperSlide key={event.id} className="h-full">
             <Link href={`/event/${event.id}`}>
-              <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow">
-                <div className="flex items-center justify-center aspect-[13/9] overflow-hidden">
+              <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow flex flex-col h-full">
+                <div className="flex items-center justify-center p-2 w-full h-auto overflow-hidden">
                   <Image
                     src={event.Images_Events_imgPosterIdToImages?.imageUrl || '/images/dashboard/card_pic.png'}
                     alt={event.title}
-                    className="w-full object-cover hover:scale-105 transition-transform duration-300 padding-30"
-                    width={160}
-                    height={120}
+                    className="w-full aspect-video object-cover rounded-lg hover:scale-110 transition-transform duration-300 padding-30"
+                    width={140}
+                    height={100}
                   />
                 </div>
-                <div className="p-3">
-                  <h3 className="font-bold text-left text-base mb-3 line-clamp-2 leading-tight text-white">
+                <div className="p-3 flex flex-col flex-grow">
+                  <h3 className="font-bold text-left text-sm mb-2 text-white line-clamp-2 min-h-[48px] leading-tight">
                     {event.title}
                   </h3>
                   <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
@@ -74,7 +68,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
                       <span>{new Date(event.startDate).toLocaleDateString()}</span>
                     </time>
                     <span className={`rounded-lg bg-emerald-200 px-2 font-medium text-sky-950 text-center md:text-left`}>
-                      {event.status === 'free' ? "Miễn phí" : "950.000đ"}
+                      {event.status === 'free' ? "Miễn phí" : "Từ "+ event.minTicketPrice.toLocaleString("vi-VN") +"đ"}
                     </span>
                   </div>
                 </div>
