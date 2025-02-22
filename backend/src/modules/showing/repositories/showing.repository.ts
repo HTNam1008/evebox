@@ -29,6 +29,7 @@ export class ShowingRepository {
             startDate: true,
             status: true,
             lastScore: true,
+            minTicketPrice: true,
             Images_Events_imgLogoIdToImages: true,
             Images_Events_imgPosterIdToImages: true,
             totalClicks: true,

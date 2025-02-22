@@ -19,6 +19,12 @@ export const LoginForm = () => {
     formik,
   } = useLoginForm();
 
+  if (error) {
+    if (error=="SERVER_DOWN") {
+      throw new Error(error);
+    }
+  }
+
   return (
     <div>
       <div className="row">
