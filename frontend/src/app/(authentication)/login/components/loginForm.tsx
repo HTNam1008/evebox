@@ -12,7 +12,7 @@ export const LoginForm = () => {
   const {
     showPassword,
     setShowPassword,
-    /* error, */
+    error,
     isLoading,
     handleGoogleLogin,
     formik,
@@ -102,6 +102,7 @@ export const LoginForm = () => {
                 </div>
 
                 <div className="short-input">
+                  {error && error !== '' && <div className="alert alert-danger error-msg text-center">{error}</div>}
                   <button type="submit" className="btn btn-login w-100" style={{ marginBottom: '20px', marginTop: '10px' }} >
                     {isLoading ? (
                       <CircularProgress size={24} />
