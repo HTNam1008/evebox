@@ -19,7 +19,9 @@ export const LoginForm = () => {
   } = useLoginForm();
 
   if (error) {
-    throw new Error(error);
+    if (error=="SERVER_DOWN") {
+      throw new Error(error);
+    }
   }
 
   return (

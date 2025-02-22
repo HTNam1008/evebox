@@ -102,7 +102,7 @@ export const useLoginForm = () => {
 
         if (res?.error) {
           console.log(res.error);
-          setError("500 - Internal Server Error"); // Store the error    
+          setError(res.error); // Store the error    
         } else {
           router.push("/"); // Redirect on successful login
         }
