@@ -10,10 +10,10 @@ import { USER_MESSAGES } from 'src/shared/constants/constants';
 @Controller('/api/user')
 @ApiTags('Authentication')
 export class RegisterUserController {
-  constructor(private readonly registerUserService: RegisterUserService) {}
+  constructor(private readonly registerUserService: RegisterUserService) { }
 
   @Post('register')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Register new user',
     description: 'Register new user and send OTP for verification'
   })
@@ -41,10 +41,13 @@ export class RegisterUserController {
     const result = await this.registerUserService.execute(command);
 
     if (result.isErr()) {
-      return res.status(200).json(ErrorHandler.badRequest(result.unwrapErr().message));
+      return res.status(400).json({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: result.unwrapErr().message
+      });
     }
 
-    return res.status(200).json({ 
+    return res.status(200).json({
       statusCode: HttpStatus.OK,
       message: USER_MESSAGES.SUCCESS.REGISTER,
       data: {

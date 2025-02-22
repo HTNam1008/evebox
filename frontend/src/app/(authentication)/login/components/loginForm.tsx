@@ -12,11 +12,17 @@ export const LoginForm = () => {
   const {
     showPassword,
     setShowPassword,
-    /* error, */
+    error, 
     isLoading,
     handleGoogleLogin,
     formik,
   } = useLoginForm();
+
+  if (error) {
+    if (error=="SERVER_DOWN") {
+      throw new Error(error);
+    }
+  }
 
   return (
     <div>

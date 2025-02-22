@@ -1,26 +1,30 @@
 'use client';
 console.log('dashboard - Rendering on client:', typeof window !== 'undefined');
 
+/* Package System */
 import 'tailwindcss/tailwind.css';
-import '@/styles/admin/pages/Dashboard.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
+
+/* Package Application */
+import '@/styles/admin/pages/Dashboard.css';
 import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
 import { useFetchEvents } from './libs/hooks/useFetchEvents';
+// import Error from './components/dashboard/error';
+
 
 const Dashboard = () => {
     // const slides = fetchData();
     const { events, loading, error } = useFetchEvents();
-
     if (loading) {
-        return <div>Loading events...</div>;
+      return <div>Loading events...</div>;
     }
-
+  
     if (error) {
-        return <div>{error}</div>;
-    }
+        throw new Error("500 - Internal Server Error"); // This triggers `error.tsx`
+      }
 
     const { specialEvents, trendingEvents, onlyOnEve } = events;
     return (
