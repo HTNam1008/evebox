@@ -34,6 +34,7 @@ export interface EventData {
   organizerId: string;
   status: string;
   locationId: number;
+  venue: string;
   Images_Events_imgLogoIdToImages?: Images;
   Images_Events_imgPosterIdToImages?: Images;
   createdAt: Date;

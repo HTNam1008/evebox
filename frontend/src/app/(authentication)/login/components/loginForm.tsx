@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/styles/admin/pages/Login.css';
 import { useLoginForm } from '../libs/hooks/useLoginForm';
 import Link from 'next/link';
+import Image from 'next/image'
 
 export const LoginForm = () => {
   const {
@@ -24,7 +25,13 @@ export const LoginForm = () => {
           <div className="w-75">
             <div className="login-form">
               <div className="login-container d-flex flex-column align-items-center">
-                <img src="../../../images/logo.png" alt="EveBox Logo" className="logo" />
+                <Image
+                  src="/images/logo.png"
+                  alt="EveBox Logo"
+                  width={50}
+                  height={50}
+                  className="logo"
+                />
                 <h3 className='mt-3'><strong>Đăng nhập EveBox</strong></h3>
               </div>
               <form onSubmit={formik.handleSubmit}>

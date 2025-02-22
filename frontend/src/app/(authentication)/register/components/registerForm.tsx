@@ -6,6 +6,7 @@ import Link from 'next/link';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/styles/admin/pages/Register.css';
 import { useRegisterForm } from '../libs/hooks/useRegisterForm';
+import Image from 'next/image'
 
 export const RegisterForm = () => {
     const {
@@ -37,7 +38,13 @@ export const RegisterForm = () => {
                     <div className="w-75">
                         <div className="register-form">
                             <div className="register-container d-flex flex-column align-items-center">
-                                <img src="../../../images/logo.png" alt="EveBox Logo" className="mb-3 img-fluid logo" />
+                                <Image
+                                    src="/images/logo.png"
+                                    alt="EveBox Logo"
+                                    width={50}
+                                    height={50} 
+                                    className="mb-3 img-fluid logo"
+                                />
                                 <h3><strong>Đăng ký ngay với EveBox</strong></h3>
                             </div>
                             <form onSubmit={formik.handleSubmit}>

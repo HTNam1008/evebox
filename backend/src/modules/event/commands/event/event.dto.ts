@@ -39,6 +39,10 @@ export class CreateEventDto {
   @ApiProperty({ example: "Phuong 3", description: 'Ward String' })
   @IsString()
   wardString: string;
+
+  @ApiProperty({ example: "San khau Thien Dang", description: 'Venue String' })
+  @IsString()
+  venue: string;
   
   @ApiProperty({ example: "10 To Hien Thanh", description: 'Location String' })
   @IsString()

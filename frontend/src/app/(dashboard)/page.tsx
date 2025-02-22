@@ -1,27 +1,31 @@
 'use client';
 console.log('dashboard - Rendering on client:', typeof window !== 'undefined');
 
+/* Package System */
 import 'tailwindcss/tailwind.css';
-import '@/styles/admin/pages/Dashboard.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
+
+/* Package Application */
+import '@/styles/admin/pages/Dashboard.css';
 import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
 import { useFetchEvents } from './libs/hooks/useFetchEvents';
+import Error from './components/dashboard/error';
 
 const Dashboard = () => {
     // const slides = fetchData();
     const { events, loading, error } = useFetchEvents();
 
     if (loading) {
-      return <div>Loading events...</div>;
+        return <div>Loading events...</div>;
     }
-  
+
     if (error) {
-      return <div>{error}</div>;
+        return <Error />;
     }
-  
+
     const { specialEvents, trendingEvents, onlyOnEve } = events;
     return (
         <div className="min-h-screen flex flex-col">
@@ -40,12 +44,12 @@ const Dashboard = () => {
                     <div className="w-full md:w-5/6">
                         <EventSlider title="Sự kiện" subtitle="Đặc biệt" events={specialEvents} />
                         <div className="mt-8">
-          <EventSlider title="Sự kiện" subtitle="Xu hướng" events={trendingEvents} />
-        </div>
-        <div className="mt-8">
-          <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={onlyOnEve} showViewMore />
-        </div>
-       
+                            <EventSlider title="Sự kiện" subtitle="Xu hướng" events={trendingEvents} />
+                        </div>
+                        <div className="mt-8">
+                            <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={onlyOnEve} showViewMore />
+                        </div>
+
                     </div>
                 </div>
             </main>

@@ -55,9 +55,7 @@ export class EventFrontDisplayRepository {
       const specialEvents = await this.prisma.eventCategories.findMany({
         where: {
           categoryId: category.id,
-          Events: {
-            isSpecial: true,
-          },
+          isSpecial: true,
         },
         select: {
           Categories: {
