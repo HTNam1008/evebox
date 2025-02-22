@@ -24,15 +24,20 @@ interface EventProps {
     location: string;
 }
 
+interface EventMoreProps extends EventProps {
+    startDate: string;
+    status: string;
+}
+
+
 // Client component
 export default function EventDetailClient({ event }: { event: EventProps }) {
-    const events = [1, 2, 3, 4, 5, 6, 7, 8];
-
-    const router = useRouter();
-
-    const handleBuyTicket = () => {
-        router.push(`/event/${event.id}/booking/select-ticket`);
-    }
+    const events: EventMoreProps[] = [
+        { id: 1, title: "Sự kiện 1", description: "Mô tả sự kiện 1", date: "2024-07-01", location: "Hà Nội", startDate: "2024-06-30", status: "upcoming" },
+        { id: 2, title: "Sự kiện 2", description: "Mô tả sự kiện 2", date: "2024-07-05", location: "TP HCM", startDate: "2024-07-01", status: "ongoing" },
+        { id: 3, title: "Sự kiện 3", description: "Mô tả sự kiện 3", date: "2024-07-10", location: "Đà Nẵng", startDate: "2024-07-08", status: "completed" },
+        { id: 4, title: "Sự kiện 4", description: "Mô tả sự kiện 4", date: "2024-07-15", location: "Huế", startDate: "2024-07-14", status: "upcoming" }
+    ];    
 
     return (
         <div className="mt-5 mb-5">
