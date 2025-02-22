@@ -12,6 +12,7 @@ import Image from "next/image";
 
 //Package App
 import { Event } from '../../libs/interface/dashboard.interface';
+import '@/styles/admin/eventSlider.css';
 
 interface EventSliderProps {
   title: string;
@@ -45,12 +46,13 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
           nextEl: '.custom-swiper-button-next',
           prevEl: '.custom-swiper-button-prev',
         }}
-        // style={{
-        //   overflowX: 'auto',
-        //   scrollBehavior: 'smooth',
-        //   display: 'flex',
-        // }}
-        /* events are able to be slided by touchpad but the arrows will be disappear */
+        style={{
+          overflowX: 'auto',
+          scrollBehavior: 'smooth',
+          display: 'flex',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
         className="mySwiper"
       >
         {events.map((event) => (
@@ -83,13 +85,20 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
             </Link>
           </SwiperSlide>
         ))}
-        <button className="custom-swiper-button-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
+        {/* <button className="custom-swiper-button-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
           <ChevronLeft className="text-3xl text-white hover:text-gray-900 transition-transform" />
         </button>
         <button className="custom-swiper-button-next absolute right-2 top-1/2 -translate-y-1/2 z-10 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
           <ChevronRight className="text-3xl text-white hover:text-gray-900 transition-transform" />
-        </button>
+        </button> */}
       </Swiper>
+
+      <button className="custom-swiper-button-prev">
+        <ChevronLeft />
+      </button>
+      <button className="custom-swiper-button-next">
+        <ChevronRight />
+      </button>
     </div>
   );
 };
