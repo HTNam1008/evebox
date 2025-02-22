@@ -84,29 +84,31 @@ export const useLoginForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email('Email không hợp lệ').required('Yêu cầu nhập email'),
-      password: Yup.string().required('Yêu cầu nhập mật khẩu'),
+      email: Yup.string().email("Email không hợp lệ").required("Yêu cầu nhập email"),
+      password: Yup.string().required("Yêu cầu nhập mật khẩu"),
     }),
     onSubmit: async (values) => {
       try {
         setIsLoading(true);
-        const res = await signIn('credentials', {
+        const res = await signIn("credentials", {
           redirect: false,
           email: values.email,
           password: values.password,
         });
 
         if (res?.error) {
-          setError(res.error);
+          console.log(res.error);
+          setError("500 - Internal Server Error"); // Store the error    
         } else {
-          router.push('/'); // Điều hướng về trang chủ khi đăng nhập thành công
+          router.push("/"); // Redirect on successful login
         }
-      } catch (err) {
-        setError(`Đăng nhập thất bại: ${err}`);
+      } catch (error) {
+        console.log(error);
+        setError("Đăng nhập thất bại, vui lòng thử lại.");
       } finally {
         setIsLoading(false);
       }
