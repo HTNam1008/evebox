@@ -15,6 +15,8 @@ import TicketDetails from "./ticketDetails";
 import MoreInformation from './moreInformation';
 import EventSlider from '../../../(dashboard)/components/dashboard/eventSlider';
 import EventBox from './eventBox';
+import { useFetchRecommendedEvents } from '@/app/(dashboard)/libs/hooks/useFetchRecommendedEvents';
+// import { useRouter } from 'next/router';
 
 interface EventProps {
     id: number;
@@ -26,13 +28,23 @@ interface EventProps {
 
 // Client component
 export default function EventDetailClient({ event }: { event: EventProps }) {
-    const events = [1, 2, 3, 4, 5, 6, 7, 8];
+    const { events, loading, error } = useFetchRecommendedEvents();
 
-    const router = useRouter();
-
-    const handleBuyTicket = () => {
-        router.push(`/event/${event.id}/booking/select-ticket`);
+    if (loading) {
+        return <div>Loading events...</div>;
     }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    //const { specialEvents, trendingEvents, onlyOnEve } = events;
+
+    // const router = useRouter();
+
+    // const handleBuyTicket = () => {
+    //     router.push(`/event/${event.id}/booking/select-ticket`);
+    // }
 
     return (
         <div className="mt-5 mb-5">

@@ -111,6 +111,7 @@ model Events {
   imgLogoId                         Int?              
   imgPosterId                       Int?              
   createdAt                         DateTime          @default(now())
+  minTicketPrice                    Int               @default(0)
   isOnlyOnEve                       Boolean           @default(false)
   isSpecial                         Boolean           @default(false)
   lastScore                         Decimal           @db.Decimal(10, 2)

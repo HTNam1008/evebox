@@ -1,15 +1,11 @@
 'use client';
 
+//Package System
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface Event {
-  id: number;
-  title: string;
-  startDate: string;
-  status: string;
-  Images_Events_imgLogoIdToImages: { imageUrl: string };
-}
+//Package App
+import { Event } from '../../libs/interface/dashboard.interface';
 
 interface EventResponse {
   specialEvents: Event[];
@@ -31,7 +27,7 @@ export const useFetchEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/event/front-display');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/event/front-display`);
         if (response.status === 200) {
           setEvents(response.data.data); // Assuming `data` contains the necessary keys
         }

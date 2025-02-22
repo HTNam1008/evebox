@@ -3,11 +3,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface Event {
-  id: number;
-  title: string;
-  Images_Events_imgPosterIdToImages?: { imageUrl: string };
-}
+import { Event } from '../../libs/interface/dashboard.interface';
 
 export const useFetchRecommendedEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -17,7 +13,7 @@ export const useFetchRecommendedEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/event/recommended-events', {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/event/recommended-events`, {
           params: { timeWindow: 'week' },
         });
         if (response.status === 200) {

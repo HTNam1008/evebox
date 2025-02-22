@@ -20,6 +20,7 @@ export class EventSearchRepository {
         endDate: true,
         createdAt: true,
         lastScore: true,
+        minTicketPrice: true,
         EventCategories: {
           select: {
             Categories: {
