@@ -1,13 +1,16 @@
 "use client";
 console.log('search control - Rendering on client:', typeof window !== 'undefined');
 
+//Package System
 import { ChevronDown, Search } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { CalendarDate} from "@internationalized/date";
-import DatePicker from './datePicker';
 import Link from 'next/link';
 import { RangeValue } from "@react-types/shared";
 import 'tailwindcss/tailwind.css';
+
+//Package App
+import DatePicker from './datePicker';
 
 export default function SearchControls() {
     const [searchText, setSearchText] = useState('');

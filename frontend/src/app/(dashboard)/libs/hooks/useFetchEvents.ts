@@ -1,15 +1,11 @@
 'use client';
 
+//Package System
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface Event {
-  id: number;
-  title: string;
-  startDate: string;
-  status: string;
-  Images_Events_imgLogoIdToImages: { imageUrl: string };
-}
+//Package App
+import { Event } from '../../libs/interface/dashboard.interface';
 
 interface EventResponse {
   specialEvents: Event[];

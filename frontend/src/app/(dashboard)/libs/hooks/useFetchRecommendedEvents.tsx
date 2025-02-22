@@ -3,13 +3,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface Event {
-  id: number;
-  title: string;
-  startDate: string;
-  status: string;
-  Images_Events_imgPosterIdToImages?: { imageUrl: string };
-}
+import { Event } from '../../libs/interface/dashboard.interface';
 
 export const useFetchRecommendedEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);

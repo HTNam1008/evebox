@@ -1,10 +1,13 @@
 "use client"
 console.log('image-slider - Rendering on client:', typeof window !== 'undefined');
 
-import { useFetchRecommendedEvents } from '@/app/(dashboard)/libs/hooks/useFetchRecommendedEvents';
+//Package System
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Image from "next/image";
+
+//Package App
+import { useFetchRecommendedEvents } from '@/app/(dashboard)/libs/hooks/useFetchRecommendedEvents';
 
 
 const ImageSlider = () => {

@@ -1,5 +1,6 @@
 'use client';
 
+// Package System
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from 'swiper/modules';
@@ -8,14 +9,8 @@ import 'swiper/css/navigation';
 import Link from 'next/link';
 import Image from "next/image";
 
-
-interface Event {
-  id: number;
-  title: string;
-  startDate: string;
-  status: string;
-  Images_Events_imgPosterIdToImages?: { imageUrl: string };
-}
+//Package App
+import { Event } from '../../libs/interface/dashboard.interface';
 
 interface EventSliderProps {
   title: string;
@@ -73,7 +68,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
                       <span>{new Date(event.startDate).toLocaleDateString()}</span>
                     </time>
                     <span className={`rounded-lg bg-emerald-200 px-2 font-medium text-sky-950 text-center md:text-left`}>
-                      {event.status === 'free' ? "Miễn phí" : "950.000đ"}
+                      {event.status === 'free' ? "Miễn phí" : "Từ "+ event.minTicketPrice.toLocaleString("vi-VN") +"đ"}
                     </span>
                   </div>
                 </div>
