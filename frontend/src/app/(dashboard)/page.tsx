@@ -12,6 +12,7 @@ import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
 import { useFetchEvents } from './libs/hooks/useFetchEvents';
+import DashboardLoading from './loading';
 // import Error from './components/dashboard/error';
 
 
@@ -19,12 +20,12 @@ const Dashboard = () => {
     // const slides = fetchData();
     const { events, loading, error } = useFetchEvents();
     if (loading) {
-      return <div>Loading events...</div>;
+      return <DashboardLoading />;
     }
   
     if (error) {
         throw new Error("500 - Internal Server Error"); // This triggers `error.tsx`
-      }
+    }
 
     const { specialEvents, trendingEvents, onlyOnEve } = events;
     return (
@@ -49,7 +50,6 @@ const Dashboard = () => {
                         <div className="mt-8">
                             <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={onlyOnEve} showViewMore />
                         </div>
-
                     </div>
                 </div>
             </main>
