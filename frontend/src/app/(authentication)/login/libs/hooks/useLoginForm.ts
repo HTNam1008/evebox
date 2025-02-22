@@ -100,10 +100,12 @@ export const useLoginForm = () => {
           password: values.password,
         });
 
-        if (res?.error) {
-          setError(res.error);
+        if (res?.status === 200) {
+          router.push('/');
+        } else if (res?.status === 401) {
+          setError('Email không tồn tại hoặc mật khẩu không chính xác!');
         } else {
-          router.push('/'); // Điều hướng về trang chủ khi đăng nhập thành công
+          setError('Đăng nhập thất bại: ' + res?.error);
         }
       } catch (err) {
         setError(`Đăng nhập thất bại: ${err}`);
@@ -117,6 +119,7 @@ export const useLoginForm = () => {
     showPassword,
     setShowPassword,
     error,
+    setError,
     isLoading,
     handleGoogleLogin,
     formik,

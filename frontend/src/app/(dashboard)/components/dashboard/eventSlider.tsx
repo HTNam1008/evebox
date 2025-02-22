@@ -1,5 +1,6 @@
 'use client';
 
+/* Package System */
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from 'swiper/modules';
@@ -7,7 +8,6 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import Link from 'next/link';
 import Image from "next/image";
-
 
 interface Event {
   id: number;
@@ -49,6 +49,12 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
           nextEl: '.custom-swiper-button-next',
           prevEl: '.custom-swiper-button-prev',
         }}
+        // style={{
+        //   overflowX: 'auto',
+        //   scrollBehavior: 'smooth',
+        //   display: 'flex',
+        // }}
+        /* events are able to be slided by touchpad but the arrows will be disappear */
         className="mySwiper"
       >
         {events.map((event) => (

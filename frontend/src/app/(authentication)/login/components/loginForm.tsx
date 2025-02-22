@@ -13,6 +13,7 @@ export const LoginForm = () => {
     showPassword,
     setShowPassword,
     error,
+    setError,
     isLoading,
     handleGoogleLogin,
     formik,
@@ -44,7 +45,10 @@ export const LoginForm = () => {
                     className={`form-control ${formik.touched.email && formik.errors.email ? 'is-invalid' : ''}`}
                     placeholder="Nhập email của bạn"
                     style={{ height: '46px' }}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      if (error) setError('');
+                      formik.handleChange(e);
+                    }}
                     onBlur={formik.handleBlur}
                     value={formik.values.email}
                   />
@@ -65,7 +69,10 @@ export const LoginForm = () => {
                       className={`form-control pr-10 ${formik.touched.password && formik.errors.password ? 'is-invalid' : ''}`}
                       placeholder="Nhập mật khẩu"
                       style={{ height: '46px', paddingRight: '50px' }}
-                      onChange={formik.handleChange}
+                      onChange={(e) => {
+                        if (error) setError('');
+                        formik.handleChange(e);
+                      }}
                       onBlur={formik.handleBlur}
                       value={formik.values.password}
                     />
