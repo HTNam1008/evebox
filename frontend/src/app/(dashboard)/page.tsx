@@ -12,7 +12,7 @@ import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
 import { useFetchEvents } from './libs/hooks/useFetchEvents';
-// import Error from './components/dashboard/error';
+import mapCategoryName from './libs/functions/mapCategoryName';
 
 
 const Dashboard = () => {
@@ -26,7 +26,7 @@ const Dashboard = () => {
         throw new Error("500 - Internal Server Error"); // This triggers `error.tsx`
       }
 
-    const { specialEvents, trendingEvents, onlyOnEve } = events;
+    const { specialEvents, trendingEvents, onlyOnEve, categorySpecial } = events;
     return (
         <div className="min-h-screen flex flex-col">
             <main className="flex-1">
@@ -50,6 +50,11 @@ const Dashboard = () => {
                             <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={onlyOnEve} showViewMore />
                         </div>
 
+                        {categorySpecial?.map((category, index) => (
+                            <div key={index} className="mt-8">
+                                <EventSlider title={mapCategoryName(category.category.name)} events={category.events} />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </main>

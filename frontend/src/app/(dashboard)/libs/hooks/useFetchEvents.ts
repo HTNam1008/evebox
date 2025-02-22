@@ -7,19 +7,30 @@ import axios from 'axios';
 //Package App
 import { Event } from '../../libs/interface/dashboard.interface';
 
+interface Category {
+  id: number;
+  name: string;
+  createAt: string;
+}
+
+interface CategorySpecial {
+  category: Category;
+  events: Event[];
+}
+
 interface EventResponse {
   specialEvents: Event[];
   trendingEvents: Event[];
   onlyOnEve: Event[];
-  categorySpecial: Event[];
+  categorySpecial: CategorySpecial[];
 }
 
 export const useFetchEvents = () => {
-  const [events, setEvents] = useState<EventResponse>({
+  const [events, setEvents] = useState({
     specialEvents: [],
     trendingEvents: [],
     onlyOnEve: [],
-    categorySpecial: [],
+    categorySpecial: [] as CategorySpecial[],
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
