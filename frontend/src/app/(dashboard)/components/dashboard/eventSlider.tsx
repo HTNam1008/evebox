@@ -1,6 +1,7 @@
 'use client';
 
-// Package System
+
+/* Package System */
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from 'swiper/modules';
@@ -44,6 +45,12 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
           nextEl: '.custom-swiper-button-next',
           prevEl: '.custom-swiper-button-prev',
         }}
+        // style={{
+        //   overflowX: 'auto',
+        //   scrollBehavior: 'smooth',
+        //   display: 'flex',
+        // }}
+        /* events are able to be slided by touchpad but the arrows will be disappear */
         className="mySwiper"
       >
         {events.map((event) => (
@@ -60,7 +67,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
                   />
                 </div>
                 <div className="p-3 flex flex-col flex-grow">
-                  <h3 className="font-bold text-left text-sm mb-2 text-white line-clamp-2 min-h-[48px] leading-tight">
+                  <h3 className="font-bold text-left text-sm mb-2 text-white line-clamp-2 min-h-[36px] leading-tight">
                     {event.title}
                   </h3>
                   <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
