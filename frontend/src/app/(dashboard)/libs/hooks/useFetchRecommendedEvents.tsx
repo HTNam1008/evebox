@@ -6,6 +6,8 @@ import axios from 'axios';
 interface Event {
   id: number;
   title: string;
+  startDate: string;
+  status: string;
   Images_Events_imgPosterIdToImages?: { imageUrl: string };
 }
 
@@ -17,7 +19,7 @@ export const useFetchRecommendedEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/event/recommended-events', {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/event/recommended-events`, {
           params: { timeWindow: 'week' },
         });
         if (response.status === 200) {
