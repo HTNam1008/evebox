@@ -16,6 +16,7 @@ export class EventFrontDisplayRepository {
         startDate: true,
         status: true,
         lastScore: true,
+        minTicketPrice: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         totalClicks: true,
@@ -35,6 +36,7 @@ export class EventFrontDisplayRepository {
         startDate: true,
         status: true,
         lastScore: true,
+        minTicketPrice: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         totalClicks: true,
@@ -55,9 +57,7 @@ export class EventFrontDisplayRepository {
       const specialEvents = await this.prisma.eventCategories.findMany({
         where: {
           categoryId: category.id,
-          Events: {
-            isSpecial: true,
-          },
+          isSpecial: true,
         },
         select: {
           Categories: {
@@ -73,6 +73,7 @@ export class EventFrontDisplayRepository {
               startDate: true,
               status: true,
               lastScore: true,
+              minTicketPrice: true,
               Images_Events_imgLogoIdToImages: true,
               Images_Events_imgPosterIdToImages: true,
               totalClicks: true,
@@ -108,6 +109,7 @@ export class EventFrontDisplayRepository {
         startDate: true,
         status: true,
         lastScore: true,
+        minTicketPrice: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         weekClicks: true,
@@ -150,6 +152,7 @@ export class EventFrontDisplayRepository {
         startDate: true,
         status: true,
         lastScore: true,
+        minTicketPrice: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         weekClicks: true,

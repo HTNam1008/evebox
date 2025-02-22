@@ -19,9 +19,11 @@ export class EventDetailRepository {
         organizerId: true,
         status: true,
         locationId: true,
+        minTicketPrice: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         createdAt: true,
+        venue: true,
         locations: {
           select: {
             id: true,
@@ -149,6 +151,7 @@ export class EventDetailRepository {
         startDate: true,
         status: true,
         lastScore: true,
+        minTicketPrice: true,
         Images_Events_imgLogoIdToImages: true,
         Images_Events_imgPosterIdToImages: true,
         weekClicks: true,

@@ -107,9 +107,11 @@ model Events {
   organizerId                       String?
   status                            String            @db.VarChar(55)
   locationId                        Int
-  imgLogoId                         Int?              @unique
-  imgPosterId                       Int?              @unique
+  venue                             String?           @db.VarChar(100)
+  imgLogoId                         Int?              
+  imgPosterId                       Int?              
   createdAt                         DateTime          @default(now())
+  minTicketPrice                    Int               @default(0)
   isOnlyOnEve                       Boolean           @default(false)
   isSpecial                         Boolean           @default(false)
   lastScore                         Decimal           @db.Decimal(10, 2)
@@ -126,8 +128,8 @@ model Events {
 model Images {
   id                                Int     @id @default(autoincrement())
   imageUrl                          String  @db.VarChar(255)
-  Events_Events_imgLogoIdToImages   Events? @relation("Events_imgLogoIdToImages")
-  Events_Events_imgPosterIdToImages Events? @relation("Events_imgPosterIdToImages")
+  Events_Events_imgLogoIdToImages   Events[] @relation("Events_imgLogoIdToImages")
+  Events_Events_imgPosterIdToImages Events[] @relation("Events_imgPosterIdToImages")
 }
 
 model districts {
@@ -214,7 +216,7 @@ model Showing {
 }
 
 model Ticket {
-  id           String     @id
+  id           String     @id @default(uuid())
   seatId       Int
   showingId    String
   ticketTypeId String

@@ -12,6 +12,7 @@ export interface EventFrontDisplay {
   Images_Events_imgPosterIdToImages: Images;
   totalClicks: number;
   weekClicks: number;
+  minTicketPrice?: number;
 }
 
 export interface EventSearchData {
@@ -21,6 +22,7 @@ export interface EventSearchData {
   startDate: Date;
   endDate: Date;
   lastScore: Decimal;
+  minTicketPrice?: number;
   Images_Events_imgLogoIdToImages: Images;
   Images_Events_imgPosterIdToImages: Images;
 }
@@ -34,6 +36,8 @@ export interface EventData {
   organizerId: string;
   status: string;
   locationId: number;
+  venue: string;
+  minTicketPrice?: number;
   Images_Events_imgLogoIdToImages?: Images;
   Images_Events_imgPosterIdToImages?: Images;
   createdAt: Date;
