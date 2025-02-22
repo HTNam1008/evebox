@@ -16,6 +16,7 @@ import MoreInformation from './moreInformation';
 import EventSlider from '../../../(dashboard)/components/dashboard/eventSlider';
 import EventBox from './eventBox';
 import { useFetchRecommendedEvents } from '@/app/(dashboard)/libs/hooks/useFetchRecommendedEvents';
+import EventLoading from '../[id]/loading';
 // import { useRouter } from 'next/router';
 
 interface EventProps {
@@ -31,7 +32,7 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
     const { events, loading, error } = useFetchRecommendedEvents();
 
     if (loading) {
-        return <div>Loading events...</div>;
+        return <EventLoading />;
     }
 
     if (error) {

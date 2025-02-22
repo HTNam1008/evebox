@@ -12,6 +12,8 @@ import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
 import { useFetchEvents } from './libs/hooks/useFetchEvents';
+import DashboardLoading from './loading';
+// import Error from './components/dashboard/error';
 import mapCategoryName from './libs/functions/mapCategoryName';
 
 
@@ -19,12 +21,12 @@ const Dashboard = () => {
     // const slides = fetchData();
     const { events, loading, error } = useFetchEvents();
     if (loading) {
-      return <div>Loading events...</div>;
+      return <DashboardLoading />;
     }
   
     if (error) {
         throw new Error("500 - Internal Server Error"); // This triggers `error.tsx`
-      }
+    }
 
     const { specialEvents, trendingEvents, onlyOnEve, categorySpecial } = events;
     return (
