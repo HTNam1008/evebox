@@ -15,6 +15,7 @@ interface Event {
   startDate: string;
   status: string;
   Images_Events_imgLogoIdToImages?: { imageUrl: string };
+  Images_Events_imgPosterIdToImages?: { imageUrl: string };
 }
 
 interface EventSliderProps {
@@ -57,7 +58,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
               <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow">
                 <div className="flex items-center justify-center aspect-[13/9] overflow-hidden">
                   <Image
-                    src={event.Images_Events_imgLogoIdToImages?.imageUrl || '/images/dashboard/card_pic.png'}
+                    src={event.Images_Events_imgPosterIdToImages?.imageUrl || '/images/dashboard/card_pic.png'}
                     alt={event.title}
                     className="w-full object-cover hover:scale-105 transition-transform duration-300 padding-30"
                     width={160}
