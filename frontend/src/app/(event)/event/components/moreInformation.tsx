@@ -36,10 +36,7 @@ export default function MoreInformation({ title, location }: MoreInformationProp
                         Tags
                     </h2>
                     <div className="mt-2">
-                        <a className="txt-tags mr-4" href="#">Indonesia event</a>
-                        <a className="txt-tags mr-4" href="#">Seminar</a>
-                        <a className="txt-tags mr-4" href="#">Hot</a>
-                        <a className="txt-tags mr-4" href="#">Music</a>
+                       
                     </div>
                 </div>
             </div>

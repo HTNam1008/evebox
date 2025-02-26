@@ -1,124 +1,116 @@
 'use client';
 
 import { useState } from "react";
+import Image from "next/image";
 
-const TicketDetails = () => {
-    const [isTicketInfoExpanded, setIsTicketInfoExpanded] = useState(false);
-    const [isTicketNoteExpanded, setIsTicketNoteExpanded] = useState(false);
+
+interface TicketType {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    originalPrice: number;
+    status: string;
+    imageUrl?: string;
+  }
+  
+  interface Showing {
+    id: string;
+    startTime: string;
+    endTime: string;
+    status: string;
+    TicketType: TicketType[];
+  }
+  
+
+const TicketDetails = ({ showings }: { showings: Showing[] }) => {    
+    const [expandedShowId, setExpandedShowId] = useState<string | null>(null);
+    // const [isTicketInfoExpanded, setIsTicketInfoExpanded] = useState(false);
+    // const [isTicketNoteExpanded, setIsTicketNoteExpanded] = useState(false);
 
     return (
         <>
-            <div className="flex justify-center mt-8 ml-2" id="info-ticket">
-                <div className="w-full md:w-5/6">
-                    <h2 className="text-xl md:text-2xl font-bold">
-                        Thông tin vé
-                    </h2>
-                    <div className="card mt-3">
-                        <ul className="list-group list-group-flush">
-                            <li className="list-group-item li-ticket">
-                                <div className="d-flex justify-content-between align-items-center">
-                                    {/* Nút toggle */}
-                                    <div className="d-flex text-ticket">
-                                        <div className="mr-2" onClick={() => setIsTicketInfoExpanded(!isTicketInfoExpanded)}>
-                                            {isTicketInfoExpanded ? (<i className="bi bi-chevron-down"></i>)
-                                                : (<i className="bi bi-chevron-right"></i>)}
-                                        </div>
-                                        20:00 - 23:00, 25 tháng 1, 2024
-                                    </div>
-                                    <button type="button" className="btn-buy">Mua vé ngay</button>
-                                </div>
-
-                                {/* Phần mở rộng "Vé" */}
-                                {isTicketInfoExpanded && (
-                                    <ul className="ul-ticket-item">
-                                        <hr></hr>
-                                        <li className="list-group-item li-ticket-item p-0">
-                                            <div className="d-flex justify-content-between align-items-center mt-3 mb-3">
-                                                <div className="d-flex ml-4 text-ticket" >
-                                                    Vé thường
-                                                </div>
-                                                <div className="d-flex flex-column align-items-end">
-                                                    <p className="price mb-0">308.000đ</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <hr></hr>
-                                        <li className="list-group-item li-ticket-item p-0">
-                                            <div className="d-flex justify-content-between align-items-center mt-3 mb-3">
-                                                <div className="d-flex ml-3 text-ticket" >
-                                                    <div className="mr-2" onClick={() => setIsTicketNoteExpanded(!isTicketNoteExpanded)}>
-                                                        {isTicketNoteExpanded ? (<i className="bi bi-chevron-down"></i>)
-                                                            : (<i className="bi bi-chevron-right"></i>)}
-                                                    </div>
-                                                    Vé ưu đãi
-                                                </div>
-                                                <div className="d-flex flex-column align-items-end">
-                                                    <p className="price mb-0">278.000đ</p>
-                                                </div>
-                                            </div>
-                                            {/* Phần mở rộng "Vé ưu đãi" */}
-                                            {isTicketNoteExpanded && (
-                                                <ul className="ul-ticket-item">
-                                                    <li className="list-group-item li-ticket-item p-0">
-                                                        <div className="d-flex justify-content-between align-items-center mt-3 mb-3">
-                                                            <p className="card-text ml-3" style={{ color: '#F4EEEE' }}>
-                                                                Vé ưu đãi giảm 10% dành cho nhóm khách đăng ký trên 4 slot
-                                                            </p>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            )}
-                                        </li>
-                                    </ul>
-                                )}
-                            </li>
-                            <li className="list-group-item li-ticket">
-                                <div className="d-flex justify-content-between align-items-center">
-                                    <div className="d-flex mr-2 text-ticket">
-                                        <i className="bi bi-chevron-right mr-2"></i>
-                                        20:00 - 23:00, 25 tháng 10, 2024
-                                    </div>
-                                    <div className="d-flex flex-column align-items-end">
-                                        <p className="price-sold-out mb-2">250.000đ</p>
-                                        <button type="button" className="btn-sold-out">Hết vé</button>
-                                    </div>
-                                </div>
-                            </li>
-                            <li className="list-group-item li-ticket">
-                                <div className="d-flex justify-content-between align-items-center">
-                                    <div className="d-flex mr-2 text-ticket">
-                                        <i className="bi bi-chevron-right mr-2"></i>
-                                        20:00 - 23:00, 25 tháng 8, 2024
-                                    </div>
-                                    <button type="button" className="btn-disable">Vé chưa mở bán</button>
-                                </div>
-                            </li>
-                            <li className="list-group-item li-ticket">
-                                <div className="d-flex justify-content-between align-items-center">
-                                    <div className="d-flex mr-2 text-ticket">
-                                        <i className="bi bi-chevron-right mr-2"></i>
-                                        20:00 - 23:00, 25 tháng 10, 2025
-                                    </div>
-                                    <button type="button" className="btn-disable">Vé ngừng bán</button>
-                                </div>
-                            </li>
-                        </ul>
+      <div className="flex justify-center mt-8 ml-2" id="info-ticket">
+        <div className="w-full md:w-5/6">
+          <h2 className="text-xl md:text-2xl font-bold">Thông tin vé</h2>
+          <div className="card mt-3">
+            <ul className="list-group list-group-flush">
+              {showings.map((showing) => (
+                <li key={showing.id} className="list-group-item li-ticket">
+                  <div className="d-flex justify-content-between align-items-center">
+                    {/* Toggle Button for Show Details */}
+                    <div className="d-flex text-ticket" onClick={() => setExpandedShowId(expandedShowId === showing.id ? null : showing.id)}>
+                      <div className="mr-2">
+                        {expandedShowId === showing.id ? (
+                          <i className="bi bi-chevron-down"></i>
+                        ) : (
+                          <i className="bi bi-chevron-right"></i>
+                        )}
+                      </div>
+                      {new Date(showing.startTime).toLocaleTimeString("vi-VN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}{" "}
+                      -{" "}
+                      {new Date(showing.endTime).toLocaleTimeString("vi-VN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}{" "}
+                      {new Date(showing.startTime).toLocaleDateString("vi-VN")}
                     </div>
-                </div>
-            </div>
 
-            {/* Contact */}
-            <div className="flex justify-center mt-8 ml-2">
-                <div className="w-full md:w-5/6">
-                    <h2 className="text-xl md:text-2xl font-bold">
-                        Liên hệ người tổ chức
-                    </h2>
-                    <p className="card-text mt-2">
-                        Vui lòng truy cập <a href="#">www.sneakypeeks.com</a> và tham khảo phần Câu hỏi thường gặp để biết thêm chi tiết
-                    </p>
-                </div>
-            </div>
-        </>
+                    {/* Button: Show Availability */}
+                    {showing.status === "sold_out" ? (
+                      <button type="button" className="btn-sold-out">Hết vé</button>
+                    ) : (
+                      <button type="button" className="btn-buy">Mua vé ngay</button>
+                    )}
+                  </div>
+
+                  {/* Ticket Types for This Showing */}
+                  {expandedShowId === showing.id && (
+                    <ul className="ul-ticket-item">
+                      {showing.TicketType.map((ticket) => (
+                        <li key={ticket.id} className="list-group-item li-ticket-item p-0">
+                          <div className="d-flex justify-content-between align-items-center mt-3 mb-3">
+                            <div className="d-flex ml-4 text-ticket">
+                              {ticket.name}
+                            </div>
+                            <div className="d-flex flex-column align-items-end">
+                              <p className="price mb-0">{ticket.price.toLocaleString("vi-VN")}đ</p>
+                            </div>
+                          </div>
+                          {/* Ticket Image */}
+                          {ticket.imageUrl && (
+                            <div className="text-center">
+                              <Image width={140}
+                                height={100} src={ticket.imageUrl} alt={ticket.name} className="w-32 rounded-lg shadow-md" />
+                            </div>
+                          )}
+                          {/* Ticket Description */}
+                          <p className="text-white-500 text-sm mt-2">{ticket.description}</p>
+                          <hr />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Section */}
+      <div className="flex justify-center mt-8 ml-2">
+        <div className="w-full md:w-5/6">
+          <h2 className="text-xl md:text-2xl font-bold">Liên hệ người tổ chức</h2>
+          <p className="card-text mt-2">
+            Vui lòng truy cập <a href="#">www.sneakypeeks.com</a> và tham khảo phần Câu hỏi thường gặp để biết thêm chi tiết.
+          </p>
+        </div>
+      </div>
+    </>
     )
 };
 

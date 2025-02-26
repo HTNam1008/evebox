@@ -56,10 +56,12 @@
 }
 
 .txt-name-event-title {
+    margin-top: 2px;
     color: white;
-    font-size: 40px;
+    font-size: 34px;
     font-weight: bold;
     white-space: normal;
+    word-spacing: normal;
     /* Cho phép chữ tự động xuống dòng */
     word-wrap: break-word;
     /* Ngắt từ dài nếu cần thiết */
