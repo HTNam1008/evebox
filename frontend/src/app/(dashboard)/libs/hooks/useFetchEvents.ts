@@ -18,12 +18,12 @@ interface CategorySpecial {
   events: Event[];
 }
 
-interface EventResponse {
-  specialEvents: Event[];
-  trendingEvents: Event[];
-  onlyOnEve: Event[];
-  categorySpecial: CategorySpecial[];
-}
+// interface EventResponse {
+//   specialEvents: Event[];
+//   trendingEvents: Event[];
+//   onlyOnEve: Event[];
+//   categorySpecial: CategorySpecial[];
+// }
 
 export const useFetchEvents = () => {
   const [events, setEvents] = useState({

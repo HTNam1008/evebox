@@ -19,16 +19,45 @@ import { useFetchRecommendedEvents } from '@/app/(dashboard)/libs/hooks/useFetch
 import EventLoading from '../[id]/loading';
 // import { useRouter } from 'next/router';
 
-interface EventProps {
+interface TicketType {
+    id: string;
+    name: string;
+    description: string;
+    color: string;
+    isFree: boolean;
+    price: number;
+    originalPrice: number;
+    maxQtyPerOrder: number;
+    minQtyPerOrder: number;
+    effectiveFrom: string;
+    effectiveTo: string;
+    status: string;
+    imageUrl?: string;
+  }
+  
+  interface Showing {
+    id: string;
+    eventId: number;
+    status: string;
+    startTime: string;
+    endTime: string;
+    TicketType: TicketType[];
+  }
+  
+  interface Event {
     id: number;
     title: string;
     description: string;
-    date: string;
-    location: string;
-}
+    startDate: string;
+    venue: string;
+    showing: Showing[];
+    Images_Events_imgPosterIdToImages?: { imageUrl: string };
+  }
+  
+
 
 // Client component
-export default function EventDetailClient({ event }: { event: EventProps }) {
+export default function EventDetailClient({ event }: { event: Event }) {
     const { events, loading, error } = useFetchRecommendedEvents();
 
     if (loading) {
@@ -39,14 +68,6 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
         return <div>{error}</div>;
     }
 
-    //const { specialEvents, trendingEvents, onlyOnEve } = events;
-
-    // const router = useRouter();
-
-    // const handleBuyTicket = () => {
-    //     router.push(`/event/${event.id}/booking/select-ticket`);
-    // }
-
     return (
         <div className="mt-5 mb-5">
             <EventBox event={event} />
@@ -54,9 +75,9 @@ export default function EventDetailClient({ event }: { event: EventProps }) {
             <div className="row align-items-start">
                 <div className="col-lg-8 col-md-12 custom-col-left ">
                     <Description description={event.description} />
-                    <TicketDetails />
+                    <TicketDetails showings={event.showing || []} />
                 </div>
-                <MoreInformation title={event.title} location={event.location} />
+                <MoreInformation title={event.title} location={event.venue} />
             </div>
 
             <Comment />

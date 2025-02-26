@@ -2,22 +2,51 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-
-interface EventProps {
+interface Ticket {
+    originalPrice: number;
+    maxQtyPerOrder: number;
+    minQtyPerOrder: number;
+    effectiveFrom: string;
+    effectiveTo: string;
+    status: string;
+    imageUrl?: string;
+    isHidden: boolean;
+  }
+  
+interface Event {
+    id: number;
     title: string;
     description: string;
-    date: string;
-    location: string;
-}
+    startDate: string;
+    venue: string;
+    tickets?: Ticket[];
+    Images_Events_imgPosterIdToImages?: { imageUrl: string };
+  }
 
-export default function EventBox({ event }: { event: EventProps }) {
+  // Function to remove <img> tags from HTML content
+  const extractFirstParagraph = (html: string) => {
+    // Match the first <p>...</p> and extract its content
+    const match = html.match(/<p[^>]*>(.*?)<\/p>/);
+    return match ? match[1] : ''; // Return content inside first <p> or empty string
+  };
+
+export default function EventBox({ event }: { event: Event }) {
     const router = useRouter(); // Sử dụng useRouter
 
     return (
         <div className="d-flex justify-content-center px-4">
             <div className="eve-image d-flex justify-content-center align-items-center">
                 {/* Mask phủ lên hình ảnh */}
-                <div className="mask mask-img"></div>
+                <div
+    className="mask mask-img"
+    style={{
+        backgroundImage: `url(${event.Images_Events_imgPosterIdToImages?.imageUrl || '/images/default-mask.png'})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        opacity: 0.5, // Adjust opacity for the overlay effect
+    }}
+></div>
 
                 {/* Nút "Quay lại" */}
                 <div className="back-button-wrapper position-absolute mt-4">
@@ -27,14 +56,17 @@ export default function EventBox({ event }: { event: EventProps }) {
                     </button>
                 </div>
 
-                <div className="eve-padding">
+                <div className="mt-8 eve-padding">
                     <div className="row justify-content-between">
                         {/* Thông tin sự kiện */}
-                        <div className="col-lg-7 col-md-12 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>
+                        <div className="col-lg-7 col-md-12 mt-4mt-4 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>
                             <div>
                                 <p className="txt-name-event-title">{event.title}</p>
-                                <p className="card-text" style={{ color: 'white' }}>{event.description}</p>
-                                <p className="card-text view-location" onClick={() => document.getElementById('event-location')?.scrollIntoView({ behavior: 'smooth' })}>
+                                <div
+                                    className="card-text  text-white prose max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: extractFirstParagraph(event.description) }}
+                                />
+                                <p className="mt-4 card-text view-location" onClick={() => document.getElementById('event-location')?.scrollIntoView({ behavior: 'smooth' })}>
                                     <i className="bi bi-geo-alt mr-2"></i>
                                     Xem bản đồ
                                 </p>
@@ -48,20 +80,20 @@ export default function EventBox({ event }: { event: EventProps }) {
                                     <h5 className="card-title title-box">Ngày & giờ</h5>
                                     <p className="card-text m-0 text-body-secondary">
                                         <i className="bi bi-calendar2-event mr-2"></i>
-                                        {event.date}
-                                        <button
+                                        {event.startDate}
+                                        {/* <button
                                             type="button" className="btn btn-outline-dark ml-6 mt-2 mb-2 btn-date"
                                             onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}
                                         >
                                             + 4 ngày khác
-                                        </button>
+                                        </button> */}
                                     </p>
                                     <p className="card-text text-add p-0">Thêm vào lịch</p>
 
                                     <h5 className="card-title mt-2 title-box">Địa điểm</h5>
                                     <p className="card-text text-body-secondary mb-3">
                                         <i className="bi bi-geo-alt mr-2"></i>
-                                        {event.location}
+                                        {event.venue}
                                     </p>
 
                                     <hr />

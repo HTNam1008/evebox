@@ -1,6 +1,4 @@
 'use client';
-
-
 /* Package System */
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from "swiper/react";
