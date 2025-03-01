@@ -13,9 +13,7 @@ export const useFetchRecommendedEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/event/recommended-events`, {
-          params: { timeWindow: 'week' },
-        });
+        const response = await axios.get(`/api/event/recommended-events?timeWindow=week`);
         if (response.status === 200) {
           setEvents(response.data.data);
         }
