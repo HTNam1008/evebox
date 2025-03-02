@@ -3,7 +3,7 @@ console.log('search control - Rendering on client:', typeof window !== 'undefine
 
 //Package System
 import { ChevronDown, Search } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CalendarDate} from "@internationalized/date";
 import Link from 'next/link';
 import { RangeValue } from "@react-types/shared";
@@ -11,6 +11,8 @@ import 'tailwindcss/tailwind.css';
 
 //Package App
 import DatePicker from './datePicker';
+import axios from 'axios';
+import { Category } from '@/types/model/frontDisplay';
 
 export default function SearchControls() {
     const [searchText, setSearchText] = useState('');
@@ -18,11 +20,24 @@ export default function SearchControls() {
     const [isEventTypeOpen, setIsEventTypeOpen] = useState(false);
     const [isLocationOpen, setIsLocationOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-    const options = ["Âm nhạc", "Kịch", "Học thuật", "Thể thao", "Workshop", "Hòa nhạc"];
+    const [categories, setCategories] = useState<Category[]>([]); 
     const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
     const locations = ["Hà Nội", "TP.HCM", "Đà Nẵng"];
     const dropdownEventRef = useRef(null);
     const dropdownLocationRef = useRef(null);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+          try {
+            const response = await axios.get(`/api/categories`);
+            setCategories(response.data || []); 
+          } catch (error) {
+            console.error("Error fetching categories:", error);
+            setCategories([]); 
+          }
+        };
+        fetchCategories();
+    }, []);
 
     const toggleOption = (option: string) => {
         if (selectedOptions.includes(option)) {
@@ -64,18 +79,18 @@ export default function SearchControls() {
                             {/* Dropdown menu */}
                             {isEventTypeOpen && (
                                 <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg text-[#0C4762] small-text">
-                                    {options.map((option) => (
+                                    {categories.map((option) => (
                                         <label
-                                            key={option}
+                                            key={option.id}
                                             className="flex items-center p-2 hover:bg-[#0C4762] hover:bg-opacity-[0.31] cursor-pointer"
                                         >
                                             <input
                                                 type="checkbox"
-                                                checked={selectedOptions.includes(option)}
-                                                onChange={() => toggleOption(option)}
+                                                checked={selectedOptions.includes(option.name)}
+                                                onChange={() => toggleOption(option.name)}
                                                 className="mr-2"
                                             />
-                                            {option}
+                                            {option.name}
                                         </label>
                                     ))}
                                 </div>
