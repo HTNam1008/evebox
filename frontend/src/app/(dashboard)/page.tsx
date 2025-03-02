@@ -16,7 +16,6 @@ import DashboardLoading from './loading';
 // import Error from './components/dashboard/error';
 import mapCategoryName from './libs/functions/mapCategoryName';
 
-
 const Dashboard = () => {
     // const slides = fetchData();
     const { events, loading, error } = useFetchEvents();
