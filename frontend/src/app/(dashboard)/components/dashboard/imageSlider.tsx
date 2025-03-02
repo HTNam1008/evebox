@@ -9,6 +9,7 @@ import Image from "next/image";
 //Package App
 import { useFetchRecommendedEvents } from '@/app/(dashboard)/libs/hooks/useFetchRecommendedEvents';
 import Link from 'next/link';
+import DashboardLoading from '../../loading';
 
 
 const ImageSlider = () => {
@@ -22,7 +23,9 @@ const ImageSlider = () => {
     return () => clearInterval(timer);
   }, [events]);
 
-  if (loading) return <div>Loading recommended events...</div>;
+  if (loading) {
+    return <DashboardLoading />;
+  }
   if (error) return <div>{error}</div>;
 
   return (

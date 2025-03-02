@@ -1,11 +1,10 @@
 'use client';
-
 //Package System
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CategorySpecial } from '@/types/model/frontDisplay';
-
-export const useFetchEvents = () => {
+ 
+export const useFetchEvents =  () => {
   const [events, setEvents] = useState({
     specialEvents: [],
     trendingEvents: [],
