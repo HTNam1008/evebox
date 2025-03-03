@@ -26,6 +26,7 @@ export class EventDetailService {
         organizerId: eventDetail.organizerId,
         status: eventDetail.status,
         locationId: eventDetail.locationId,
+        minTicketPrice: eventDetail.minTicketPrice,
         venue: eventDetail.venue,
         Images_Events_imgLogoIdToImages: eventDetail.Images_Events_imgLogoIdToImages,
         Images_Events_imgPosterIdToImages: eventDetail.Images_Events_imgPosterIdToImages,
