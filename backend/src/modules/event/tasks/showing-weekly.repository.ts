@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
 import { EventWeeklyRepository } from './event-weekly.repository';
 import axios from 'axios';
+import e from 'express';
 
 @Injectable()
 export class ShowingWeeklyRepository {
@@ -131,6 +132,192 @@ export class ShowingWeeklyRepository {
       return null;
     }
   }
+
+  async fetchShowingForEventNoShowing(eventId: number) {
+    try {
+      const existEvent = await this.prisma.events.findFirst({
+        where: { id: eventId },
+      });
+      if (!existEvent) {
+        this.logger.warn(`Event ID: ${eventId} does not exist.`);
+        await this.eventWeeklyRepository.createOrUpdateEventDetail(eventId);
+      }
+  
+      const result = await axios.get(`https://api-v2.ticketbox.vn/gin/api/v1/events/${eventId}`);
+      const showings = result.data.data.result.showings;
+  
+      if (showings.length > 0) {
+        for (const showing of showings) {
+          if (showing.id === 0) {
+            // 🔹 Chỉ lưu Showing với ID tự động sinh và TicketType
+            // this.logger.log(`Processing Showing ID: ${showing.id} (Status: Over)`);
+            const showingIDgenerate = "showing-" + eventId.toString() + "-" + showings.indexOf(showing).toString();
+            this.logger.log(`Generated Showing ID: ${showingIDgenerate}`);
+            await this.prisma.$transaction(async (tx) => {
+              // 1. Tạo Showing (ID tự sinh)
+              const createdShowing = await tx.showing.create({
+                data: {
+                  id: showingIDgenerate,
+                  eventId,
+                  status: showing.status,
+                  isFree: showing.isFree,
+                  isSalable: showing.isSalable,
+                  isPresale: showing.isPresale,
+                  seatMapId: 184,
+                  startTime: showing.startTime ? new Date(showing.startTime) : new Date(),
+                  endTime: showing.endTime ? new Date(showing.endTime) : null,
+                  isEnabledQueueWaiting: showing.isEnabledQueueWaiting,
+                  showAllSeats: showing.showAllSeats,
+                },
+              });
+              this.logger.log(`Created Showing with auto-generated ID: ${createdShowing.id}`);
+  
+              // 2. Tạo Ticket Types cho showing này
+              for (const ticketType of showing.ticketTypes) {
+                await tx.ticketType.upsert({
+                  where: { id: ticketType.id.toString() },
+                  update: {
+                    showingId: createdShowing.id, // Liên kết với showing mới
+                    name: ticketType.name,
+                    description: ticketType.description,
+                    color: ticketType.color,
+                    isFree: ticketType.isFree,
+                    price: ticketType.price,
+                    originalPrice: ticketType.originalPrice,
+                    maxQtyPerOrder: ticketType.maxQtyPerOrder,
+                    minQtyPerOrder: ticketType.minQtyPerOrder,
+                    effectiveFrom: ticketType.startTime ? new Date(ticketType.startTime) : new Date(),
+                    effectiveTo: ticketType.endTime ? new Date(ticketType.endTime) : null,
+                    position: ticketType.position,
+                    status: ticketType.status,
+                    imageUrl: ticketType.imageUrl,
+                  },
+                  create: {
+                    id: ticketType.id.toString(),
+                    showingId: createdShowing.id, // Liên kết với showing mới
+                    name: ticketType.name,
+                    description: ticketType.description,
+                    color: ticketType.color,
+                    isFree: ticketType.isFree,
+                    price: ticketType.price,
+                    originalPrice: ticketType.originalPrice,
+                    maxQtyPerOrder: ticketType.maxQtyPerOrder,
+                    minQtyPerOrder: ticketType.minQtyPerOrder,
+                    effectiveFrom: ticketType.startTime ? new Date(ticketType.startTime) : new Date(),
+                    effectiveTo: ticketType.endTime ? new Date(ticketType.endTime) : null,
+                    position: ticketType.position,
+                    status: ticketType.status,
+                    imageUrl: ticketType.imageUrl,
+                  },
+                });
+              }
+            });
+  
+            continue; // 🔹 Skip các bước tiếp theo nếu status là 'showing_is_over'
+          }
+          return;
+          // 🔹 Nếu không phải 'showing_is_over', giữ nguyên logic cũ
+          const seatmapResult = await axios.get(
+            `https://api-v2.ticketbox.vn/event/api/v1/events/showings/${showing.id}/seatmap`
+          );
+          const seatmap = seatmapResult.data.data.result;
+  
+          await this.prisma.$transaction(async (tx) => {
+            // 1. Upsert Seatmap
+            const updatedSeatmap = await tx.seatmap.upsert({
+              where: { id: seatmap.id },
+              update: {
+                name: seatmap.name,
+                status: seatmap.status,
+                viewBox: seatmap.viewbox,
+              },
+              create: {
+                id: seatmap.id,
+                name: seatmap.name,
+                status: seatmap.status,
+                viewBox: seatmap.viewbox,
+              },
+            });
+            this.logger.log(`Processed Seatmap: ${updatedSeatmap.id}`);
+  
+            // 2. Upsert Showing (vẫn giữ nguyên ID như cũ)
+            const createdShowing = await tx.showing.upsert({
+              where: { id: showing.id.toString() },
+              update: {
+                status: showing.status,
+                isFree: showing.isFree,
+                isSalable: showing.isSalable,
+                isPresale: showing.isPresale,
+                seatMapId: showing.seatMapId,
+                startTime: showing.startTime ? new Date(showing.startTime) : new Date(),
+                endTime: showing.endTime ? new Date(showing.endTime) : null,
+                isEnabledQueueWaiting: showing.isEnabledQueueWaiting,
+                showAllSeats: showing.showAllSeats,
+              },
+              create: {
+                id: showing.id.toString(),
+                eventId,
+                status: showing.status,
+                isFree: showing.isFree,
+                isSalable: showing.isSalable,
+                isPresale: showing.isPresale,
+                seatMapId: showing.seatMapId,
+                startTime: showing.startTime ? new Date(showing.startTime) : new Date(),
+                endTime: showing.endTime ? new Date(showing.endTime) : null,
+                isEnabledQueueWaiting: showing.isEnabledQueueWaiting,
+                showAllSeats: showing.showAllSeats,
+              },
+            });
+            this.logger.log(`Processed Showing: ${createdShowing.id}`);
+  
+            // 3. Upsert Ticket Types
+            for (const ticketType of showing.ticketTypes) {
+              await tx.ticketType.upsert({
+                where: { id: ticketType.id.toString() },
+                update: {
+                  showingId: showing.id.toString(),
+                  name: ticketType.name,
+                  description: ticketType.description,
+                  color: ticketType.color,
+                  isFree: ticketType.isFree,
+                  price: ticketType.price,
+                  originalPrice: ticketType.originalPrice,
+                  maxQtyPerOrder: ticketType.maxQtyPerOrder,
+                  minQtyPerOrder: ticketType.minQtyPerOrder,
+                  effectiveFrom: ticketType.startTime ? new Date(ticketType.startTime) : new Date(),
+                  effectiveTo: ticketType.endTime ? new Date(ticketType.endTime) : null,
+                  position: ticketType.position,
+                  status: ticketType.status,
+                  imageUrl: ticketType.imageUrl,
+                },
+                create: {
+                  id: ticketType.id.toString(),
+                  showingId: showing.id.toString(),
+                  name: ticketType.name,
+                  description: ticketType.description,
+                  color: ticketType.color,
+                  isFree: ticketType.isFree,
+                  price: ticketType.price,
+                  originalPrice: ticketType.originalPrice,
+                  maxQtyPerOrder: ticketType.maxQtyPerOrder,
+                  minQtyPerOrder: ticketType.minQtyPerOrder,
+                  effectiveFrom: ticketType.startTime ? new Date(ticketType.startTime) : new Date(),
+                  effectiveTo: ticketType.endTime ? new Date(ticketType.endTime) : null,
+                  position: ticketType.position,
+                  status: ticketType.status,
+                  imageUrl: ticketType.imageUrl,
+                },
+              });
+            }
+          });
+        }
+      }
+    } catch (error) {
+      this.logger.error(`Error fetching showing for event ID: ${eventId}: ${error.message}`);
+      return null;
+    }
+  }
+  
 
   async fetchSeatMapForShowing(showingId: string) {
     try {
