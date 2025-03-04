@@ -29,7 +29,8 @@ export default function EventDetailClient({ event: events, recommendedEvent: rec
                     <Description description={events.description} />
                     <TicketDetails showings={events.showing} />
                 </div>
-                <MoreInformation title={events.title} location={events.venue} />
+                <MoreInformation title={event.title} location={event.venue} locationsString={event.locationsString} />
+
             </div>
 
             <Comment />

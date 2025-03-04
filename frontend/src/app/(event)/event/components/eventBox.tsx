@@ -1,9 +1,33 @@
 'use client';
 
+/* Pacakage System */
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { EventDetail } from '../libs/event.interface';
-import { formatYYYYMMDDToLocaleDateString } from '@/utils/helpers';
+
+/* Package Application */
+import { convertLocationToVietnamese } from '@/utils/helpers';
+
+interface Ticket {
+    originalPrice: number;
+    maxQtyPerOrder: number;
+    minQtyPerOrder: number;
+    effectiveFrom: string;
+    effectiveTo: string;
+    status: string;
+    imageUrl?: string;
+    isHidden: boolean;
+}
+
+interface Event {
+    id: number;
+    title: string;
+    description: string;
+    startDate: string;
+    venue: string;
+    tickets?: Ticket[];
+    locationsString: string;
+    Images_Events_imgPosterIdToImages?: { imageUrl: string };
+}
 
 const extractFirstParagraph = (html: string) => {
     // Match the first <p>...</p> and extract its content
@@ -40,7 +64,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                 <div className="mt-8 eve-padding">
                     <div className="row justify-content-between">
                         {/* Thông tin sự kiện */}
-                        <div className="col-lg-7 col-md-12 mt-4mt-4 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>
+                        <div className="event-info col-lg-7 col-md-12 mt-4mt-4 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>
                             <div>
                                 <p className="txt-name-event-title">{event.title}</p>
                                 <div
@@ -61,7 +85,12 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                     <h5 className="card-title title-box">Ngày & giờ</h5>
                                     <p className="card-text m-0 text-body-secondary">
                                         <i className="bi bi-calendar2-event mr-2"></i>
-                                        {formatYYYYMMDDToLocaleDateString(event.startDate, true)}
+                                        {new Date(event.startDate).toLocaleString('vi-VN', {
+                                            weekday: 'long',
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                        })}
                                         {/* <button
                                             type="button" className="btn btn-outline-dark ml-6 mt-2 mb-2 btn-date"
                                             onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}
@@ -72,9 +101,12 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                     <p className="card-text text-add p-0">Thêm vào lịch</p>
 
                                     <h5 className="card-title mt-2 title-box">Địa điểm</h5>
-                                    <p className="card-text text-body-secondary mb-3">
+                                    <p className="card-text text-body-secondary">
                                         <i className="bi bi-geo-alt mr-2"></i>
                                         {event.venue}
+                                    </p>
+                                    <p className="card-text text-body-secondary ml-6 mb-3" id="event-location" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
+                                        {convertLocationToVietnamese(event.locationsString)}
                                     </p>
 
                                     <hr />
