@@ -39,7 +39,7 @@ export class UpdateWeeklyService {
     // Chạy qua tất cả các ID sự kiện
     for (const { id } of eventIds) {
       this.logger.log(`Processing event ID: ${id}`);
-      await this.showingWeeklyRepository.fetchShowingForEvent(id);
+      await this.showingWeeklyRepository.fetchShowingForEventNoShowing(id);
       // break;
     }
 
