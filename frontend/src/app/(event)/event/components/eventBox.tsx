@@ -29,14 +29,13 @@ interface Event {
     Images_Events_imgPosterIdToImages?: { imageUrl: string };
 }
 
-// Function to remove <img> tags from HTML content
 const extractFirstParagraph = (html: string) => {
     // Match the first <p>...</p> and extract its content
     const match = html.match(/<p[^>]*>(.*?)<\/p>/);
     return match ? match[1] : ''; // Return content inside first <p> or empty string
 };
 
-export default function EventBox({ event }: { event: Event }) {
+export default function EventBox({ event }: { event: EventDetail }) {
     const router = useRouter(); // Sử dụng useRouter
 
     return (
@@ -116,7 +115,8 @@ export default function EventBox({ event }: { event: Event }) {
                                         <h5 className="card-title title-box text-center w-100">
                                             Giá từ
                                             <span className="ml-2 text-teal-400" style={{ cursor: "pointer" }}>
-                                                350.000đ
+                                                {event.minTicketPrice.toLocaleString('vi-VN')}đ
+                                                {/* 350.000đ */}
                                                 <i className="bi bi-chevron-right ml-1" style={{ fontSize: 18 }} />
                                             </span>
                                         </h5>

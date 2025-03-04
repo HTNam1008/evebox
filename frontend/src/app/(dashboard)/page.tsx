@@ -1,6 +1,3 @@
-'use client';
-console.log('dashboard - Rendering on client:', typeof window !== 'undefined');
-
 /* Package System */
 import 'tailwindcss/tailwind.css';
 import 'swiper/css';
@@ -11,30 +8,31 @@ import '@/styles/admin/pages/Dashboard.css';
 import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
-import { useFetchEvents } from './libs/hooks/useFetchEvents';
-import DashboardLoading from './loading';
-// import Error from './components/dashboard/error';
 import mapCategoryName from './libs/functions/mapCategoryName';
+import { CategorySpecial } from '@/types/model/frontDisplay';
+import { fetchEvents } from './libs/server/fetchEvents';
+import { fetchRecommendEvents } from './libs/server/fetchRecommendEvents';
 
+const Dashboard = async () => {
+    const data = await fetchEvents();
+    const dataImageSlider = await fetchRecommendEvents();
 
-const Dashboard = () => {
-    // const slides = fetchData();
-    const { events, loading, error } = useFetchEvents();
-    if (loading) {
-      return <DashboardLoading />;
-    }
-  
-    if (error) {
-        throw new Error("500 - Internal Server Error"); // This triggers `error.tsx`
-    }
+    // Xử lý dữ liệu nếu cần
+    const events = {
+        specialEvents: data.data.specialEvents || [],
+        trendingEvents: data.data.trendingEvents || [],
+        onlyOnEve: data.data.onlyOnEve || [],
+        categorySpecial: data.data.categorySpecial as CategorySpecial[] || [],
+    };
 
-    const { specialEvents, trendingEvents, onlyOnEve, categorySpecial } = events;
+    const sliderEvents = dataImageSlider.data || [];
+
     return (
         <div className="min-h-screen flex flex-col">
             <main className="flex-1">
                 <div className="w-full flex justify-center flex-col items-center px-4 md:mt-8">
                     <div className="w-full md:w-5/6 relative">
-                        <ImageSlider />
+                        <ImageSlider events={sliderEvents} />
                         <SearchControls />
                     </div>
                 </div>
@@ -44,15 +42,15 @@ const Dashboard = () => {
                 {/* Events Section */}
                 <div className="flex justify-center mt-8 px-4">
                     <div className="w-full md:w-5/6">
-                        <EventSlider title="Sự kiện" subtitle="Đặc biệt" events={specialEvents} />
+                        <EventSlider title="Sự kiện" subtitle="Đặc biệt" events={events.specialEvents} />
                         <div className="mt-8">
-                            <EventSlider title="Sự kiện" subtitle="Xu hướng" events={trendingEvents} />
+                            <EventSlider title="Sự kiện" subtitle="Xu hướng" events={events.trendingEvents} />
                         </div>
                         <div className="mt-8">
-                            <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={onlyOnEve} showViewMore />
+                            <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={events.onlyOnEve} showViewMore />
                         </div>
 
-                        {categorySpecial?.map((category, index) => (
+                        {events.categorySpecial?.map((category, index) => (
                             <div key={index} className="mt-8">
                                 <EventSlider title={mapCategoryName(category.category.name)} events={category.events} />
                             </div>

@@ -2,34 +2,17 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { Showing } from "../libs/event.interface";
+import { useRouter } from "next/navigation";
 
+const TicketDetails = ({ showings }: { showings: Showing[] }) => {
+  const [expandedShowId, setExpandedShowId] = useState<string | null>(null);
+  // const [isTicketInfoExpanded, setIsTicketInfoExpanded] = useState(false);
+  // const [isTicketNoteExpanded, setIsTicketNoteExpanded] = useState(false);
+  const router = useRouter();
 
-interface TicketType {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    originalPrice: number;
-    status: string;
-    imageUrl?: string;
-  }
-  
-  interface Showing {
-    id: string;
-    startTime: string;
-    endTime: string;
-    status: string;
-    TicketType: TicketType[];
-  }
-  
-
-const TicketDetails = ({ showings }: { showings: Showing[] }) => {    
-    const [expandedShowId, setExpandedShowId] = useState<string | null>(null);
-    // const [isTicketInfoExpanded, setIsTicketInfoExpanded] = useState(false);
-    // const [isTicketNoteExpanded, setIsTicketNoteExpanded] = useState(false);
-
-    return (
-        <>
+  return (
+    <>
       <div className="flex justify-center mt-8 ml-2" id="info-ticket">
         <div className="w-full md:w-5/6">
           <h2 className="text-xl md:text-2xl font-bold">Thông tin vé</h2>
@@ -63,7 +46,7 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
                     {showing.status === "sold_out" ? (
                       <button type="button" className="btn-sold-out">Hết vé</button>
                     ) : (
-                      <button type="button" className="btn-buy">Mua vé ngay</button>
+                      <button type="button" className="btn-buy" onClick={() => router.push(`/event/${showing.eventId}/booking/select-ticket`)}>Mua vé ngay</button>
                     )}
                   </div>
 
@@ -88,7 +71,9 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
                             </div>
                           )}
                           {/* Ticket Description */}
-                          <p className="text-white-500 text-sm mt-2">{ticket.description}</p>
+                          <div style={{ whiteSpace: 'pre-line' }}>
+                            <p className="text-white-500 text-sm mt-2">{ticket.description}</p>
+                          </div>
                           <hr />
                         </li>
                       ))}
@@ -111,7 +96,7 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
         </div>
       </div>
     </>
-    )
+  )
 };
 
 export default TicketDetails;

@@ -1,5 +1,4 @@
 "use client"
-console.log('footer - Rendering on client:', typeof window !== 'undefined');
 
 import { Linkedin, Instagram, Facebook } from 'lucide-react';
 
