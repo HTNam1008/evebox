@@ -1,5 +1,4 @@
 "use client"
-console.log('sidebar - Rendering on client:', typeof window !== 'undefined');
 
 import Link from 'next/link';
 import { User, Ticket, Calendar, LogOut } from 'lucide-react';

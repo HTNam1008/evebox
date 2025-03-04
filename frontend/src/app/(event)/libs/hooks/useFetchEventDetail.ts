@@ -2,41 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { fetchEventDetail } from '../server/fetchEventDetail';
-
-interface TicketType {
-  id: string;
-  name: string;
-  description: string;
-  color: string;
-  isFree: boolean;
-  price: number;
-  originalPrice: number;
-  maxQtyPerOrder: number;
-  minQtyPerOrder: number;
-  effectiveFrom: string;
-  effectiveTo: string;
-  status: string;
-  imageUrl?: string;
-}
-
-interface Showing {
-  id: string;
-  eventId: number;
-  status: string;
-  startTime: string;
-  endTime: string;
-  TicketType: TicketType[];
-}
-
-interface Event {
-  id: number;
-  title: string;
-  description: string;
-  startDate: string;
-  venue: string;
-  showing: Showing[];
-  Images_Events_imgPosterIdToImages?: { imageUrl: string };
-}
+import { Event } from '@/types/model/event';
 
 export function useFetchEventDetail(eventId: string) {
   const [event, setEvent] = useState<Event | null>(null);

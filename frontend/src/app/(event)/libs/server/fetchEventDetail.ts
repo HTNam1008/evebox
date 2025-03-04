@@ -1,19 +1,24 @@
 export async function fetchEventDetail(eventId: string) {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/event/detail?eventId=${eventId}`,
-        { cache: 'no-store' }
-      );
-  
-      if (!response.ok) {
-        throw new Error('Failed to fetch event details');
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/event/detail?eventId=${eventId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        next: {
+          revalidate: 60, // ISR: Cập nhật dữ liệu mỗi 60s
+        },
       }
-  
-      const data = await response.json();
-      return data?.data || null;
-    } catch (error) {
-      console.error('Error fetching event details:', error);
-      return null;
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch event details");
     }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching event details:", error);
   }
-  
+}
