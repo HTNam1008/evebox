@@ -1,13 +1,19 @@
 'use client';
 
+/* Package System */
 import Image from "next/image";
-import { GoogleMapsEmbed } from '@next/third-parties/google'
+import { GoogleMapsEmbed } from '@next/third-parties/google';
+
+/* Package Application */
+import { convertLocationToVietnamese } from "@/utils/helpers";
+        
 interface MoreInformationProps {
     title: string;
     location: string;
+    locationsString: string;
 }
 
-export default function MoreInformation({ title, location }: MoreInformationProps) {
+export default function MoreInformation({ title, location, locationsString }: MoreInformationProps) {
     return (
         <div className="col-lg-4 col-md-12" id="event-location">
             {/* Location */}
@@ -27,12 +33,15 @@ export default function MoreInformation({ title, location }: MoreInformationProp
                             height="100%"
                         />
                     </div>
-                    <h5 className="card-title mt-2">
+                    <h5 className="card-title font-bold mt-2">
                         {title}
                     </h5>
                     <p className="card-text mt-2">
                         <i className="bi bi-geo-alt mr-2"></i>
                         {location}
+                    </p>
+                    <p className="card-text text-body-secondary ml-6 mb-2" id="event-location" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
+                        {convertLocationToVietnamese(locationsString)}
                     </p>
                 </div>
             </div>
