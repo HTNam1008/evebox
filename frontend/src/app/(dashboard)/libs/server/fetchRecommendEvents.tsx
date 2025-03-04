@@ -1,6 +1,26 @@
-'use client';
+export const fetchRecommendEvents = async () => {
+    try {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/event/recommended-events?timeWindow=week`,
+            {
+                next: {
+                    revalidate: 60 // ISR: Cập nhật dữ liệu mỗi 60s
+                },
+                // cache: "no-store",
+            }
+        );
 
-import { useEffect, useState } from 'react';
+        if (!response.ok) throw new Error('Failed to fetch slider events');
+        return response.json();
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error; // Sẽ được xử lý bởi error.tsx
+    }
+};
+
+// 'use client';
+
+/* import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { Event } from '../../libs/interface/dashboard.interface';
@@ -29,4 +49,4 @@ export const useFetchRecommendedEvents = () => {
   }, []);
 
   return { events, loading, error };
-};
+}; */

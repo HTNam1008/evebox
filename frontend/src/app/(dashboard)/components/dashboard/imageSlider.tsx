@@ -1,28 +1,26 @@
-"use client"
-console.log('image-slider - Rendering on client:', typeof window !== 'undefined');
-
-//Package System
+"use client";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Image from "next/image";
+import { Event } from '../../libs/interface/dashboard.interface';
 
-//Package App
-import { useFetchRecommendedEvents } from '@/app/(dashboard)/libs/hooks/useFetchRecommendedEvents';
+interface ImageSliderProps {
+  events: Event[]; // Nhận dữ liệu từ props
+}
 
-
-const ImageSlider = () => {
-  const { events, loading, error } = useFetchRecommendedEvents();
+const ImageSlider = ({ events }: ImageSliderProps) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % events.length);
-    }, 5000);
-    return () => clearInterval(timer);
+    if (events.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % events.length);
+      }, 5000);
+      return () => clearInterval(timer);
+    }
   }, [events]);
 
-  if (loading) return <div>Loading recommended events...</div>;
-  if (error) return <div>{error}</div>;
+  if (!events || events.length === 0) return <div>No events available.</div>;
 
   return (
     <div className="relative rounded-lg overflow-hidden">
