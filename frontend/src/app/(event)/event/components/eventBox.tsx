@@ -1,7 +1,12 @@
 'use client';
 
+/* Pacakage System */
 import React from 'react';
 import { useRouter } from 'next/navigation';
+
+/* Package Application */
+import { convertLocationToVietnamese } from '@/utils/helpers';
+
 interface Ticket {
     originalPrice: number;
     maxQtyPerOrder: number;
@@ -11,8 +16,8 @@ interface Ticket {
     status: string;
     imageUrl?: string;
     isHidden: boolean;
-  }
-  
+}
+
 interface Event {
     id: number;
     title: string;
@@ -20,15 +25,16 @@ interface Event {
     startDate: string;
     venue: string;
     tickets?: Ticket[];
+    locationsString: string;
     Images_Events_imgPosterIdToImages?: { imageUrl: string };
-  }
+}
 
-  // Function to remove <img> tags from HTML content
-  const extractFirstParagraph = (html: string) => {
+// Function to remove <img> tags from HTML content
+const extractFirstParagraph = (html: string) => {
     // Match the first <p>...</p> and extract its content
     const match = html.match(/<p[^>]*>(.*?)<\/p>/);
     return match ? match[1] : ''; // Return content inside first <p> or empty string
-  };
+};
 
 export default function EventBox({ event }: { event: Event }) {
     const router = useRouter(); // Sử dụng useRouter
@@ -38,15 +44,15 @@ export default function EventBox({ event }: { event: Event }) {
             <div className="eve-image d-flex justify-content-center align-items-center">
                 {/* Mask phủ lên hình ảnh */}
                 <div
-    className="mask mask-img"
-    style={{
-        backgroundImage: `url(${event.Images_Events_imgPosterIdToImages?.imageUrl || '/images/default-mask.png'})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        opacity: 0.5, // Adjust opacity for the overlay effect
-    }}
-></div>
+                    className="mask mask-img"
+                    style={{
+                        backgroundImage: `url(${event.Images_Events_imgPosterIdToImages?.imageUrl || '/images/default-mask.png'})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        opacity: 0.5, // Adjust opacity for the overlay effect
+                    }}
+                ></div>
 
                 {/* Nút "Quay lại" */}
                 <div className="back-button-wrapper position-absolute mt-4">
@@ -59,7 +65,7 @@ export default function EventBox({ event }: { event: Event }) {
                 <div className="mt-8 eve-padding">
                     <div className="row justify-content-between">
                         {/* Thông tin sự kiện */}
-                        <div className="col-lg-7 col-md-12 mt-4mt-4 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>
+                        <div className="event-info col-lg-7 col-md-12 mt-4mt-4 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>
                             <div>
                                 <p className="txt-name-event-title">{event.title}</p>
                                 <div
@@ -80,7 +86,12 @@ export default function EventBox({ event }: { event: Event }) {
                                     <h5 className="card-title title-box">Ngày & giờ</h5>
                                     <p className="card-text m-0 text-body-secondary">
                                         <i className="bi bi-calendar2-event mr-2"></i>
-                                        {event.startDate}
+                                        {new Date(event.startDate).toLocaleString('vi-VN', {
+                                            weekday: 'long',
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                        })}
                                         {/* <button
                                             type="button" className="btn btn-outline-dark ml-6 mt-2 mb-2 btn-date"
                                             onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}
@@ -91,9 +102,12 @@ export default function EventBox({ event }: { event: Event }) {
                                     <p className="card-text text-add p-0">Thêm vào lịch</p>
 
                                     <h5 className="card-title mt-2 title-box">Địa điểm</h5>
-                                    <p className="card-text text-body-secondary mb-3">
+                                    <p className="card-text text-body-secondary">
                                         <i className="bi bi-geo-alt mr-2"></i>
                                         {event.venue}
+                                    </p>
+                                    <p className="card-text text-body-secondary ml-6 mb-3" id="event-location" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
+                                        {convertLocationToVietnamese(event.locationsString)}
                                     </p>
 
                                     <hr />

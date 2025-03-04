@@ -51,6 +51,7 @@ interface TicketType {
     startDate: string;
     venue: string;
     showing: Showing[];
+    locationsString: string;
     Images_Events_imgPosterIdToImages?: { imageUrl: string };
   }
   
@@ -77,7 +78,7 @@ export default function EventDetailClient({ event }: { event: Event }) {
                     <Description description={event.description} />
                     <TicketDetails showings={event.showing || []} />
                 </div>
-                <MoreInformation title={event.title} location={event.venue} />
+                <MoreInformation title={event.title} location={event.venue} locationsString={event.locationsString} />
             </div>
 
             <Comment />
