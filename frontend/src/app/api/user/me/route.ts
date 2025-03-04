@@ -8,7 +8,7 @@ import { authOptions } from '@/lib/authOptions';
 export async function GET(): Promise<NextResponse<UserInfoResponse | ErrorResponse>> {
   try {
     const session = await getServerSession(authOptions);
-
+    console.log('Session route api me:', session);
     if (!session?.user?.accessToken) {
       return NextResponse.json(
         { statusCode: 401, message: 'Unauthorized' },

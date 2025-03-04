@@ -2,7 +2,6 @@ import { fetchRecommendEvents } from '@/app/(dashboard)/libs/server/fetchRecomme
 import EventDetailClient from '../components/eventDetail';
 import { fetchEventDetail } from '@/app/(event)/libs/server/fetchEventDetail';
 
-
 export default async function Page({params}: {
   params: Promise<{ id: string }>;
 }) {
@@ -18,3 +17,5 @@ export default async function Page({params}: {
     </div>
   );
 }
+
+export const dynamic = 'force-dynamic';
