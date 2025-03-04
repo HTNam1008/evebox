@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { fetchEventDetail } from '../server/fetchEventDetail';
 
 interface TicketType {
   id: string;
@@ -27,7 +28,6 @@ interface Showing {
   TicketType: TicketType[];
 }
 
-
 interface Event {
   id: number;
   title: string;
@@ -38,34 +38,24 @@ interface Event {
   Images_Events_imgPosterIdToImages?: { imageUrl: string };
 }
 
-export const useFetchEventDetail = (eventId: string) => {
+export function useFetchEventDetail(eventId: string) {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchEventDetail = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/event/detail?eventId=${eventId}`, {
-          cache: 'no-store', // Always fetch fresh data
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch event details");
-        }
-
-        const data = await response.json();
-        setEvent(data?.data || null);
-      } catch (err) {
-        setError("Error loading event details");
-        console.error(err);
-      } finally {
-        setLoading(false);
+    async function fetchData() {
+      setLoading(true);
+      const eventData = await fetchEventDetail(eventId);
+      if (!eventData) {
+        setError('Error loading event details');
       }
-    };
+      setEvent(eventData);
+      setLoading(false);
+    }
 
-    fetchEventDetail();
+    fetchData();
   }, [eventId]);
 
   return { event, loading, error };
-};
+}
