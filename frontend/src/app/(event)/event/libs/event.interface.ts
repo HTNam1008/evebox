@@ -41,4 +41,5 @@ export interface EventDetail {
   minTicketPrice: number;
   locationsString: string;
   Images_Events_imgPosterIdToImages?: { imageUrl: string };
+  locationsString: string;
 }

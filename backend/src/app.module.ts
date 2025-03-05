@@ -1,6 +1,6 @@
 // src/app.module.ts
 
-import { Module } from '@nestjs/common';
+import { Injectable, Module, NestMiddleware } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from './infrastructure/database/prisma/prisma.service';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -32,4 +32,5 @@ import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
     ImagesModule,
   ],
 })
+
 export class AppModule {}
