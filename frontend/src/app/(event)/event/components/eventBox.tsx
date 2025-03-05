@@ -6,28 +6,7 @@ import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import { convertLocationToVietnamese } from '@/utils/helpers';
-
-interface Ticket {
-    originalPrice: number;
-    maxQtyPerOrder: number;
-    minQtyPerOrder: number;
-    effectiveFrom: string;
-    effectiveTo: string;
-    status: string;
-    imageUrl?: string;
-    isHidden: boolean;
-}
-
-interface Event {
-    id: number;
-    title: string;
-    description: string;
-    startDate: string;
-    venue: string;
-    tickets?: Ticket[];
-    locationsString: string;
-    Images_Events_imgPosterIdToImages?: { imageUrl: string };
-}
+import { EventDetail } from '../libs/event.interface';
 
 const extractFirstParagraph = (html: string) => {
     // Match the first <p>...</p> and extract its content
@@ -61,7 +40,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                     </button>
                 </div>
 
-                <div className="mt-8 eve-padding">
+                <div className="mt-8 eve-padding w-full">
                     <div className="row justify-content-between">
                         {/* Thông tin sự kiện */}
                         <div className="event-info col-lg-7 col-md-12 mt-4mt-4 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>
