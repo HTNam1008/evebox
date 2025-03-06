@@ -15,69 +15,22 @@ import TicketDetails from "./ticketDetails";
 import MoreInformation from './moreInformation';
 import EventSlider from '../../../(dashboard)/components/dashboard/eventSlider';
 import EventBox from './eventBox';
-import { useFetchRecommendedEvents } from '@/app/(dashboard)/libs/hooks/useFetchRecommendedEvents';
-import EventLoading from '../[id]/loading';
-// import { useRouter } from 'next/router';
-
-interface TicketType {
-    id: string;
-    name: string;
-    description: string;
-    color: string;
-    isFree: boolean;
-    price: number;
-    originalPrice: number;
-    maxQtyPerOrder: number;
-    minQtyPerOrder: number;
-    effectiveFrom: string;
-    effectiveTo: string;
-    status: string;
-    imageUrl?: string;
-  }
-  
-  interface Showing {
-    id: string;
-    eventId: number;
-    status: string;
-    startTime: string;
-    endTime: string;
-    TicketType: TicketType[];
-  }
-  
-  interface Event {
-    id: number;
-    title: string;
-    description: string;
-    startDate: string;
-    venue: string;
-    showing: Showing[];
-    Images_Events_imgPosterIdToImages?: { imageUrl: string };
-  }
-  
-
+import { Event } from '@/app/(dashboard)/libs/interface/dashboard.interface';
+import { EventDetail } from '../libs/event.interface';
 
 // Client component
-export default function EventDetailClient({ event }: { event: Event }) {
-    const { events, loading, error } = useFetchRecommendedEvents();
-
-    if (loading) {
-        return <EventLoading />;
-    }
-
-    if (error) {
-        return <div>{error}</div>;
-    }
-
+export default function EventDetailClient({ event: events, recommendedEvent: recommendedEvents }: { event: EventDetail, recommendedEvent: Event[]}) {
     return (
         <div className="mt-5 mb-5">
-            <EventBox event={event} />
+            <EventBox event={events} />
 
             <div className="row align-items-start">
                 <div className="col-lg-8 col-md-12 custom-col-left ">
-                    <Description description={event.description} />
-                    <TicketDetails showings={event.showing || []} />
+                    <Description description={events.description} />
+                    <TicketDetails showings={events.showing} />
                 </div>
-                <MoreInformation title={event.title} location={event.venue} />
+                <MoreInformation title={events.title} location={events.venue} locationsString={events.locationsString} />
+
             </div>
 
             <Comment />
@@ -88,7 +41,7 @@ export default function EventDetailClient({ event }: { event: Event }) {
                     <EventSlider
                         title="Các sự kiện khác"
                         subtitle="Bạn có thể thích"
-                        events={events}
+                        events={recommendedEvents}
                         showViewMore={true}
                     />
                 </div>
@@ -96,3 +49,4 @@ export default function EventDetailClient({ event }: { event: Event }) {
         </div>
     );
 }
+

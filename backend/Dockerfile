@@ -22,6 +22,9 @@ RUN npx prisma generate --schema=./src/infrastructure/database/prisma/schema.pri
 # Copy the entire source code to the container
 COPY . .
 
+# Copy the environment variables
+# COPY .env ./.env
+
 # Build the application
 RUN npm run build
 
@@ -43,10 +46,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
-
 # Expose port the backend uses
 EXPOSE 3001
-
 
 # Define the command to run the app
 CMD ["npm", "run", "start:prod"]

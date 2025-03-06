@@ -1,5 +1,4 @@
 "use client";
-console.log('search control - Rendering on client:', typeof window !== 'undefined');
 
 //Package System
 import { ChevronDown, Search } from 'lucide-react';

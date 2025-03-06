@@ -1,8 +1,8 @@
+Dockerfile
+.dockerignore
 node_modules
 npm-debug.log
-Dockerfile
-docker-compose.yml
-.dockerignore
+README.md
+.next
+docker
 .git
-.gitignore
-.env

@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       province_id,
       agree
     });
-
+    
     const { request_token, remaining_attempts, resend_allowed_in } = response.data.data;
 
     if (response.data?.statusCode && response.data.statusCode >= 400) {

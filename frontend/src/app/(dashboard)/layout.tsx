@@ -13,11 +13,11 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <NavigationBar />
           <Suspense fallback={<DashboardLoading />}>
+            <NavigationBar />
             <main>{children}</main>
+            <Footer />
           </Suspense>
-          <Footer />
         </Providers>
       </body>
     </html>

@@ -41,6 +41,7 @@ apiClient.interceptors.response.use(
 
       try {
         const session = await getSession();
+        console.log("Session:", session);
         const refreshToken = session?.user?.refreshToken;
         if (!refreshToken) {
           throw new Error("No refresh token available");

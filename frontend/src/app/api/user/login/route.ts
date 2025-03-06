@@ -11,7 +11,8 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
+    
+    console.log('API URL login:', process.env.NEXT_PUBLIC_API_URL);
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, {
       email,
       password,
