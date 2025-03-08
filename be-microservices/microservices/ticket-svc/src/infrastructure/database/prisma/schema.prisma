@@ -237,8 +237,9 @@ model PayOSInfo {
 
 model PaymentInfo{
   id            Int         @id @default(autoincrement())
-  PaymentMethod PaymentMethod
-  paymentId     Int
+  method        PaymentMethod
+  paymentCode     Int
+  Ticket      Ticket[]
 }
 
 
@@ -257,7 +258,7 @@ model Ticket {
   purchasedAt  DateTime?
   qrCode       String?
   paymentId    Int?
-  PaymentInfo  PaymentInfo @relation(fields: [paymentId], references: [id])
+  PaymentInfo  PaymentInfo? @relation(fields: [paymentId], references: [id])
   Seat         Seat       @relation(fields: [seatId], references: [id])
   Showing      Showing    @relation(fields: [showingId], references: [id])
   TicketType   TicketType @relation(fields: [ticketTypeId], references: [id])
