@@ -23,7 +23,7 @@ export default function InformationEventClient() {
 
                 <NoteDialog open={open} onClose={() => setOpen(false)}></NoteDialog>
 
-                <div className='w-full'>
+                <div className='w-full flex flex-col'>
                     <Navigation title="Tạo sự kiện" />
                 </div>
             </div>
