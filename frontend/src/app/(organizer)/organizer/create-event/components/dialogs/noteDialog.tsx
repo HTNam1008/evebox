@@ -26,7 +26,7 @@ export default function NoteDialog({ open, onClose }: NoteDialogProps) {
                 <div className="flex gap-4 mt-4 mb-4">
                     <button
                         onClick={onClose}
-                        className="w-full px-10 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all"
+                        className="w-40 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all"
                     >
                         OK
                     </button>
