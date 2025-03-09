@@ -10,7 +10,7 @@ import InputField from "./common/form/inputField";
 import SelectField from "./common/form/selectField";
 import ImageUpload from "./common/form/imageUpload";
 
-export default function FormInformationEventClient() {
+export default function FormInformationEventClient({ onNextStep }: { onNextStep: () => void }) {
     const [logo, setLogo] = useState<string | null>(null);
     const [background, setBackground] = useState<string | null>(null);
     const [logoOrg, setLogoOrg] = useState<string | null>(null);
@@ -110,6 +110,7 @@ export default function FormInformationEventClient() {
 
         if (Object.keys(newErrors).length === 0) {
             alert("Form hợp lệ! Gửi dữ liệu...");
+            onNextStep();
         }
     };
 

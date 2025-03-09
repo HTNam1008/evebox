@@ -7,31 +7,25 @@ import { useState } from 'react';
 
 /* Package Application */
 import NoteDialog from './dialogs/noteDialog'
-import Sidebar from './common/sidebar';
-import Navigation from './common/navigation';
 import FormInformationEventClient from './formInfoEvent';
+import TimeAndTypeTickets from './time&TypeTickets';
+import Navigation from './common/navigation';
 
 export default function InformationEventClient() {
     const [open, setOpen] = useState(true);
+    const [step, setStep] = useState(1);
 
     return (
         <>
-            <div className="flex min-h-screen">
-                {/* Sidebar có chiều rộng cố định và không đè lên nội dung */}
-                <div className="w-64 bg-gray-900 mr-6">
-                    <Sidebar />
-                </div>
+            <Navigation title="Tạo sự kiện" step={step}  />
+            <NoteDialog open={open} onClose={() => setOpen(false)}></NoteDialog>
 
-                <NoteDialog open={open} onClose={() => setOpen(false)}></NoteDialog>
-
-                <div className='w-full flex flex-col'>
-                    <Navigation title="Tạo sự kiện" />
-                    
-                    <FormInformationEventClient></FormInformationEventClient>
-                </div>
-
-                
-            </div>
+            {/* <FormInformationEventClient></FormInformationEventClient> */}
+            {step === 1 ? (
+                <FormInformationEventClient onNextStep={() => setStep(2)} />
+            ) : (
+                <TimeAndTypeTickets /> // Hiển thị bước 2 khi đủ điều kiện
+            )}
         </>
     )
 }

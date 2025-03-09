@@ -4,7 +4,7 @@
 
 //Package App
 
-export default function Navigation({ title }: { title: string }) {
+export default function Navigation({ title, step }: { title: string, step: number }) {
     const steps = [
         { number: 1, label: "Thông tin sự kiện", active: true },
         { number: 2, label: "Thời gian & loại vé", active: false },
@@ -19,22 +19,25 @@ export default function Navigation({ title }: { title: string }) {
             {/* Stepper */}
             <div className="w-full flex justify-center">
                 <ol className="flex space-x-8">
-                    {steps.map((step, index) => (
-                        <li key={index} className={`flex items-center space-x-2.5 ${step.active ? 'text-black-600' : 'text-gray-500'}`}>
-                            <span className={`text-sm mb-2 flex items-center justify-center w-8 h-8 border rounded-full ${step.active ? 'border-[#51DACF] bg-[#51DACF] text-white' : 'border-gray-500'}`}>
-                                {step.number}
-                            </span>
+                {steps.map((s, index) => {
+                        const isActive = s.number === step; // Kiểm tra bước hiện tại
+                        return (
+                            <li key={index} className={`flex items-center space-x-2.5 ${isActive ? 'text-black-600' : 'text-gray-500'}`}>
+                                <span className={`text-sm mb-2 flex items-center justify-center w-8 h-8 border rounded-full ${isActive ? 'border-[#51DACF] bg-[#51DACF] text-white' : 'border-gray-500'}`}>
+                                    {s.number}
+                                </span>
 
-                            {/* Title + underline */}
-                            <div className="relative flex flex-col items-center">
-                                <h3 className="text-sm font-medium leading-tight mb-2">{step.label}</h3>
+                                {/* Title + underline */}
+                                <div className="relative flex flex-col items-center">
+                                    <h3 className="text-sm font-medium leading-tight mb-2">{s.label}</h3>
 
-                                {step.active && (
-                                    <div className="absolute left-0 bottom-[-6px] w-full h-1 bg-[#51DACF]"></div>
-                                )}
-                            </div>
-                        </li>
-                    ))}
+                                    {isActive && (
+                                        <div className="absolute left-0 bottom-[-6px] w-full h-1 bg-[#51DACF]"></div>
+                                    )}
+                                </div>
+                            </li>
+                        );
+                    })}
 
                     <div className="flex gap-4 mt-4 mb-6">
                         <button
