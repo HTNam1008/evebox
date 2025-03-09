@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
 import { ShowingModule } from './modules/showing/showing.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { TempModule } from './modules/(temp)/temp.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { TempModule } from './modules/(temp)/temp.module';
     CqrsModule,
 
     ShowingModule,
+    PaymentModule,
     TempModule,
   ],
 })

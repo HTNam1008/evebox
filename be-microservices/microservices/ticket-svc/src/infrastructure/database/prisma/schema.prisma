@@ -219,6 +219,11 @@ enum PaymentMethod{
   PAYOS
 }
 
+model PaymentMethodStatus{
+  paymentMethod PaymentMethod @unique
+  status        Boolean       @default(false)
+}
+
 model PayOSInfo {
   bin           String? @db.VarChar(20)
   accountNumber String? @db.VarChar(50)
