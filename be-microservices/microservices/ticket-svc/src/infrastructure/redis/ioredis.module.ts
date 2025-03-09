@@ -6,4 +6,4 @@ import { IORedisService } from './ioredis.service';
   providers: [IORedisService],
   exports: [IORedisService],
 })
-export class RedisModule {}
+export class IORedisModule {}
