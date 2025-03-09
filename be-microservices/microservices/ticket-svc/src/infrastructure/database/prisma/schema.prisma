@@ -215,6 +215,13 @@ model Showing {
   @@index([eventId])
 }
 
+model ShowingTicketTypeQuantity{
+  id             String      @id @default(uuid())
+  showingId      String
+  ticketTypeId   String
+  quantity       Int         @default(0)
+}
+
 enum PaymentMethod{
   PAYOS
 }
