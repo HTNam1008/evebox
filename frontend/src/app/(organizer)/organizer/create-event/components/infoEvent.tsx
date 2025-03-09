@@ -26,7 +26,7 @@ export default function InformationEventClient() {
 
                 <div className='w-full flex flex-col'>
                     <Navigation title="Tạo sự kiện" />
-
+                    
                     <FormInformationEventClient></FormInformationEventClient>
                 </div>
 

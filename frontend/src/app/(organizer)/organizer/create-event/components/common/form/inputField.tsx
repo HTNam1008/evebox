@@ -16,7 +16,7 @@ const InputField: React.FC<InputFieldProps> = ({
     value,
     onChange,
     error = false,
-    maxLength = 80,
+    maxLength,
     required = false,
 }) => {
     return (
