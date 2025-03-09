@@ -9,6 +9,7 @@ import { useState } from 'react';
 import NoteDialog from './dialogs/noteDialog'
 import Sidebar from './common/sidebar';
 import Navigation from './common/navigation';
+import FormInformationEventClient from './formInfoEvent';
 
 export default function InformationEventClient() {
     const [open, setOpen] = useState(true);
@@ -25,7 +26,11 @@ export default function InformationEventClient() {
 
                 <div className='w-full flex flex-col'>
                     <Navigation title="Tạo sự kiện" />
+
+                    <FormInformationEventClient></FormInformationEventClient>
                 </div>
+
+                
             </div>
         </>
     )

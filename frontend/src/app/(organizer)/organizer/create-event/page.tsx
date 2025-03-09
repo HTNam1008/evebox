@@ -2,7 +2,7 @@
 import 'tailwindcss/tailwind.css';
 
 /* Package Application */
-import InformationEventClient from './components/inforEvent';
+import InformationEventClient from './components/infoEvent';
 
 export default async function Page() {
 
