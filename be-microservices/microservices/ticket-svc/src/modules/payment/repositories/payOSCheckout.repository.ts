@@ -22,7 +22,15 @@ export class payOSCheckoutRepository {
         }
       });
       if(payOSInfo){
-        return Ok(payOSInfo.orderCode);
+        const paymentInfo = await this.prisma.paymentInfo.create({
+          data: {
+            method: "PAYOS",
+            paymentCode: payOSInfo.orderCode,
+          }
+        });
+        if(paymentInfo){
+          return Ok(payOSInfo.orderCode);
+        }
       }
       return Err(new Error('Database Error.'));
     }catch(error){

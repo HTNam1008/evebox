@@ -288,6 +288,7 @@ model FormResponse {
   answers   FormAnswer[]
   createdAt DateTime     @default(now())
   userId    String
+  showingId String?
   Ticket    Ticket[]
 }
 
@@ -314,6 +315,7 @@ model Ticket {
   qrCode       String?
   paymentId    Int?
   formResponseId Int?
+  mailSent  Boolean    @default(false)
   FormResponse FormResponse? @relation(fields: [formResponseId], references: [id])
   PaymentInfo  PaymentInfo? @relation(fields: [paymentId], references: [id])
   Seat         Seat?       @relation(fields: [seatId], references: [id])

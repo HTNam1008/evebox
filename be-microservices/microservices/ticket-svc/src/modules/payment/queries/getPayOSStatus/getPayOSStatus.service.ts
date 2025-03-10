@@ -12,6 +12,13 @@ export class GetPayOSStatusService {
 
   async execute(orderCode: number): Promise<Result<String, Error>> {
     try {
+      const createdTicket = await this.getPayOSStatusRepository.createTicket(orderCode);
+      if(createdTicket){
+        return Ok("PAID");
+      }
+      else{
+        return Ok("PENDING");
+      }
       console.log(orderCode);
       const payOSInfo = await this.getPayOSStatusRepository.getPayOSPaymentLink(orderCode);
       if (!payOSInfo) {
@@ -26,6 +33,9 @@ export class GetPayOSStatusService {
       if(response.status !== "PENDING"){
         await this.getPayOSStatusRepository.updatePayOSStatus(response.orderCode, response.status);
         // return Ok(response.status);
+      }
+      if(response.status === "PAID"){
+        await this.getPayOSStatusRepository.createTicket(response.orderCode);
       }
       return Ok(response.status);
     } catch (error) {

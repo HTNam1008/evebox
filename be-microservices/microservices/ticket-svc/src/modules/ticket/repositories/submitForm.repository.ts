@@ -12,11 +12,16 @@ export class SubmitFormRepository {
         where: {
           userId: userId,
           formId: submitFormDto.formId,
+          showingId: submitFormDto.showingId,
+          Ticket: {
+            none: {}, // Không có ticket nào liên kết với FormResponse này
+          },
         },
         include: {
-          answers: true, // Lấy luôn danh sách câu trả lời
+          answers: true,
         },
       });
+      
 
       if (existsForm) {
         // Xóa các câu trả lời cũ trước khi cập nhật mới
@@ -48,6 +53,7 @@ export class SubmitFormRepository {
         data: {
           userId: userId,
           formId: submitFormDto.formId,
+          showingId: submitFormDto.showingId,
           answers: {
             create: submitFormDto.answers.map((answer) => ({
               formInputId: answer.formInputId,

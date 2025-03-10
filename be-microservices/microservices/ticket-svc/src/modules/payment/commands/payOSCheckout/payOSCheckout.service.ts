@@ -32,7 +32,7 @@ export class PayOSCheckoutService {
           amount: amount,
           description: "Evebox"+ " - " + Date.now(),
           cancelUrl: payOSCheckoutDto.paymentCancelUrl,
-          returnUrl: payOSCheckoutDto.paymentSuccessUrl,
+          returnUrl: payOSCheckoutDto.paymentSuccessUrl + "?orderCode=" + orderCode,
         }
       );
       const payOSInfoCreated = await this.payOSCheckoutRepository.checkout(payOSCheckout, userId, payOSCheckoutDto);
