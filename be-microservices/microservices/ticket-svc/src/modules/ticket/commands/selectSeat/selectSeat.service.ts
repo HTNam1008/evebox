@@ -24,16 +24,18 @@ export class SelectSeatService {
       }
       // **🔹 Lấy tất cả các key chứa ghế đã giữ**
       const seatKeys = await redis.keys(`ticket:${selectSeatDto.showingId}:${selectSeatDto.tickettypeId}:*`);
-      console.log('seatKeys', seatKeys);
       // **🔹 Lấy toàn bộ giá trị của các key đó**
       const seatValues = seatKeys.length > 0 ? await redis.mget(seatKeys) : [];
-      console.log('seatValues', seatValues);
       // **🔹 Tính tổng số ghế đã giữ**
       const currentSeatCount = seatValues.reduce((sum, value) => sum + (value ? parseInt(value, 10) : 0), 0);
-      console.log('currentSeatCount', currentSeatCount);
       const maxSeatData = await this.selectSeatRepository.getTicketQuantity(selectSeatDto.showingId, selectSeatDto.tickettypeId);
       const maxSeat = maxSeatData ? maxSeatData.quantity : 0; 
       if (seatInfo.length === 0) {
+        const checkSeatAvailability = await this.selectSeatRepository.checkTicketTypeAvailability(selectSeatDto.showingId, selectSeatDto.tickettypeId, selectSeatDto.quantity);
+        if (!checkSeatAvailability) {
+
+          return Err(new Error('Not enough seats available'));
+        }
         if (selectSeatDto.quantity > 0 && maxSeat && (selectSeatDto.quantity + currentSeatCount) <= maxSeat) {
           await redis.set(key, selectSeatDto.quantity, 'EX', 1200);
           return Ok(true);
@@ -42,6 +44,10 @@ export class SelectSeatService {
       }
       else{
         // **Case 2: Lock ghế cụ thể**
+        const checkSeatAvailability = await this.selectSeatRepository.checkSeatAvailability(selectSeatDto.showingId, seatInfo);
+        if (!checkSeatAvailability) {
+          return Err(new Error('Seat is not available'));
+        }
         const keyExists = await redis.keys(`seat:${selectSeatDto.showingId}:*`);
         for (const keyEx of keyExists) {
           const value = await redis.get(keyEx);

@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import e from "express";
 
-class SeatInfo {
+export class SeatInfo {
   @ApiProperty({ example: 4, description: 'Seat ID' })
   seatId: number;
 }
@@ -9,11 +9,11 @@ import { Transform } from 'class-transformer';
 import { IsOptional, IsInt, Min } from 'class-validator';
 
 export class SelectSeatDto {
-  @ApiProperty({ example: '123122311', description: 'Showing ID' })
+  @ApiProperty({ example: '16962844867169', description: 'Showing ID' })
   showingId: string;
 
-  @ApiProperty({ example: '12354', description: 'Ticket Type ID' })
-  tickettypeId: string;
+  @ApiProperty({ example: '1027771', description: 'Ticket Type ID' })
+  tickettypeId?: string;
 
   @ApiProperty({ example: 3, description: 'Num of Ticket', required: false })
   @Transform(({ value }) => (value === undefined ? 0 : Number(value))) // Nếu undefined, gán 0

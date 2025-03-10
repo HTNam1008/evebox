@@ -249,7 +249,8 @@ model PayOSInfo {
   showingId     String
   userId        String
   ticketTypeId  String?
-  seatId        Int?
+  seatId        Int[]
+  quantity      Int?
 }
 
 
@@ -303,7 +304,7 @@ model FormAnswer {
 
 model Ticket {
   id           String     @id @default(uuid())
-  seatId       Int
+  seatId       Int?
   showingId    String
   ticketTypeId String
   status       Int
@@ -315,7 +316,7 @@ model Ticket {
   formResponseId Int?
   FormResponse FormResponse? @relation(fields: [formResponseId], references: [id])
   PaymentInfo  PaymentInfo? @relation(fields: [paymentId], references: [id])
-  Seat         Seat       @relation(fields: [seatId], references: [id])
+  Seat         Seat?       @relation(fields: [seatId], references: [id])
   Showing      Showing    @relation(fields: [showingId], references: [id])
   TicketType   TicketType @relation(fields: [ticketTypeId], references: [id])
 
