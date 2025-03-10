@@ -1,6 +1,6 @@
 /* Event box */
 .eve-image {
-    background-image: url(../../../../public/images/dashboard/presentation_pic.png);
+    background-image: url(../../../../public/images/bg-mask.jpg);
     background-position: center;
     background-size: cover;
     height: 500px;
