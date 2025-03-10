@@ -8,7 +8,7 @@ import { PayOSModule } from './infrastructure/adapters/payment/payOS/payOS.modul
 import { IORedisModule } from './infrastructure/redis/ioredis.module';
 import { ShowingModule } from './modules/showing/showing.module';
 import { PaymentModule } from './modules/payment/payment.module';
-import { TempModule } from './modules/(temp)/temp.module';
+// import { TempModule } from './modules/(temp)/temp.module';
 import { TicketModule } from './modules/ticket/ticket.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './shared/strategies/jwt.strategy';
@@ -37,7 +37,7 @@ import { JwtStrategy } from './shared/strategies/jwt.strategy';
     ShowingModule,
     PaymentModule,
     TicketModule,
-    TempModule,
+    // TempModule,
   ],
   providers: [
     JwtStrategy,

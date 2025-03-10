@@ -5,12 +5,16 @@ import { getPaymentMethodRepository } from './repositories/getPaymentMethod.repo
 import { PayOSCheckoutController } from './commands/payOSCheckout/payOSCheckout.controller';
 import { PayOSCheckoutService } from './commands/payOSCheckout/payOSCheckout.service';
 import { payOSCheckoutRepository } from './repositories/payOSCheckout.repository';
+import { GetPayOSStatusController } from './queries/getPayOSStatus/getPayOSStatus.controller';
+import { GetPayOSStatusRepository } from './repositories/getPayOSStatus.repository';
+import { GetPayOSStatusService } from './queries/getPayOSStatus/getPayOSStatus.service';
 
 @Module({
   controllers: 
     [
       getPaymentMethodController,
       PayOSCheckoutController,
+      GetPayOSStatusController,
     ],
   providers: 
     [
@@ -19,6 +23,9 @@ import { payOSCheckoutRepository } from './repositories/payOSCheckout.repository
 
       PayOSCheckoutService,
       payOSCheckoutRepository,
+
+      GetPayOSStatusService,
+      GetPayOSStatusRepository,
     ],
 })
 export class PaymentModule {}
