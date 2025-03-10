@@ -8,13 +8,13 @@ import { Ok, Err, Result } from 'oxide.ts';
 export class SubmitFormService {
   constructor(private readonly submitFormRepository: SubmitFormRepository) {}
 
-  async submitForm(submitFormDto: SubmitFormDto): Promise<Result<SubmitFormResponseData, Error>> {
+  async submitForm(submitFormDto: SubmitFormDto, userId: string): Promise<Result<SubmitFormResponseData, Error>> {
     try{
       const formValidCheck = await this.submitFormRepository.checkValidForm(submitFormDto);
       if (!formValidCheck) {
         return Err(new Error('Invalid form data'));
       }
-      const formResponse = await this.submitFormRepository.submitForm(submitFormDto);
+      const formResponse = await this.submitFormRepository.submitForm(submitFormDto, userId);
       if (!formResponse) {
         return Err(new Error('Failed to submit form'));
       }

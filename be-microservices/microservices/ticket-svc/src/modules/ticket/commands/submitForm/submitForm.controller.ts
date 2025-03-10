@@ -1,15 +1,22 @@
-import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Request, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiBody, ApiHeader } from '@nestjs/swagger';
 import { SubmitFormDto } from './submitForm.dto';
 import { SubmitFormService } from './submitForm.service';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
+import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 
 @Controller('api/ticket')
 export class SubmitFormController {
   constructor(private readonly submitFormService: SubmitFormService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('/submitForm')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Submit form responses' })
   @ApiBody({ type: SubmitFormDto })
   @ApiResponse({
@@ -24,9 +31,13 @@ export class SubmitFormController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error',
   })
-  async submitForm(@Body() submitFormDto: SubmitFormDto, @Res() res: Response) {
+  async submitForm(
+    @Request() req,
+    @Body() submitFormDto: SubmitFormDto, 
+    @Res() res: Response) {
     try {
-      const result = await this.submitFormService.submitForm(submitFormDto);
+      const user = req.user;
+      const result = await this.submitFormService.submitForm(submitFormDto, user.email);
 
       if (result.isErr()) {
         const error = result.unwrapErr();

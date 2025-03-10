@@ -6,11 +6,11 @@ import { SubmitFormDto } from '../commands/submitForm/submitForm.dto';
 export class SubmitFormRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async submitForm(submitFormDto: SubmitFormDto) {
+  async submitForm(submitFormDto: SubmitFormDto, userId: string) {
     try{
       const existsForm = await this.prisma.formResponse.findFirst({
         where: {
-          userId: submitFormDto.userId,
+          userId: userId,
           formId: submitFormDto.formId,
         },
         include: {
@@ -46,7 +46,7 @@ export class SubmitFormRepository {
       // Nếu chưa có dữ liệu, tạo mới
       return await this.prisma.formResponse.create({
         data: {
-          userId: submitFormDto.userId,
+          userId: userId,
           formId: submitFormDto.formId,
           answers: {
             create: submitFormDto.answers.map((answer) => ({

@@ -11,13 +11,13 @@ export class SelectSeatService {
     private readonly redisService: IORedisService,
     private selectSeatRepository: SelectSeatRepository,
   ) {}
-  async execute(selectSeatDto: SelectSeatDto): Promise<Result<Boolean, Error>> {
+  async execute(selectSeatDto: SelectSeatDto, email: string): Promise<Result<Boolean, Error>> {
     try {
       const redis = this.redisService.getClient();
       const seatInfo = selectSeatDto.seatInfo;
 
       // **Case 1: Lock theo số lượng ghế (`quantity`)**
-      const key = `ticket:${selectSeatDto.showingId}:${selectSeatDto.tickettypeId}:${selectSeatDto.userId}`;
+      const key = `ticket:${selectSeatDto.showingId}:${selectSeatDto.tickettypeId}:${email}`;
       const keyExists = await redis.exists(key);
       if (keyExists) {
         await redis.del(key);
@@ -45,7 +45,7 @@ export class SelectSeatService {
         const keyExists = await redis.keys(`seat:${selectSeatDto.showingId}:*`);
         for (const keyEx of keyExists) {
           const value = await redis.get(keyEx);
-          if (value === selectSeatDto.userId) {
+          if (value === email) {
             await redis.del(keyEx);
           }
         }
@@ -60,7 +60,7 @@ export class SelectSeatService {
     
         for (const seat of seatInfo) {
           const seatKey = `seat:${selectSeatDto.showingId}:${seat.seatId}`;
-          await redis.set(seatKey, selectSeatDto.userId, 'EX', 1200);
+          await redis.set(seatKey, email, 'EX', 1200);
         }
         return Ok(true);
       }

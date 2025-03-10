@@ -23,6 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(req: Request, payload: any) {
     const authHeader = req.headers.authorization;
+    console.log('authHeader', authHeader);
     if (!authHeader) {
       throw new UnauthorizedException('Authorization header missing');
     }

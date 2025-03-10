@@ -15,9 +15,6 @@ export class SelectSeatDto {
   @ApiProperty({ example: '12354', description: 'Ticket Type ID' })
   tickettypeId: string;
 
-  @ApiProperty({ example: 'user12354', description: 'User ID' })
-  userId: string;
-
   @ApiProperty({ example: 3, description: 'Num of Ticket', required: false })
   @Transform(({ value }) => (value === undefined ? 0 : Number(value))) // Nếu undefined, gán 0
   @IsOptional()

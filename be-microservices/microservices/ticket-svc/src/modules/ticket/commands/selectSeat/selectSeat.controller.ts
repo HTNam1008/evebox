@@ -1,15 +1,22 @@
-import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Request, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiBody, ApiHeader } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { SelectSeatDto } from './selectSeat.dto';
 import { SelectSeatService } from './selectSeat.service';
+import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 
 @Controller('api/ticket')
 export class SelectSeatController {
   constructor(private readonly selectSeatService: SelectSeatService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('/selectSeat')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Select seats for a booking' })
   @ApiBody({ type: SelectSeatDto })
   @ApiResponse({
@@ -28,8 +35,12 @@ export class SelectSeatController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error',
   })
-  async selectSeat(@Body() selectSeatDto: SelectSeatDto, @Res() res: Response) {
-    const result = await this.selectSeatService.execute(selectSeatDto);
+  async selectSeat(
+    @Request() req,
+    @Body() selectSeatDto: SelectSeatDto, 
+    @Res() res: Response) {
+    const user = req.user;
+    const result = await this.selectSeatService.execute(selectSeatDto, user.email);
     await this.selectSeatService.logRedisData();
     if (result.isErr()) {
       const error = result.unwrapErr();

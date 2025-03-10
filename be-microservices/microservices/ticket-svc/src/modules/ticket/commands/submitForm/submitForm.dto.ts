@@ -17,10 +17,6 @@ export class SubmitFormDto {
   @IsInt()
   formId: number;
 
-  @ApiProperty({ example: 'user123', description: 'User ID submitting the form' })
-  @IsString()
-  userId: string;
-
   @ApiProperty({ type: [FormAnswerDto], description: 'List of answers' })
   @IsArray()
   @ValidateNested({ each: true })
