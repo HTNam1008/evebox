@@ -1,99 +1,89 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## First, U need to install Docker & run redis container
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+- First time, open docker desktop, in terminal run:
+```
+docker run --name redis-server -d -p 6379:6379 redis
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+- From the second time onwards: Just open Docker Desktop and run:
+```
+docker start redis-server
 ```
 
-## Run tests
+## Run ticket-svc
+Port: 8001
+Update your .env *NEXT_TICKET_SVC_URL* = localhost:8001 to use
+From now, API showing & seatmap must be call *TICKET_SVC_URL*
 
-```bash
-# unit tests
-$ npm run test
+## Gen Data to test
+Ticketbox does not provide an API to fetch all forms, so we need to handle this differently
+Run prisma Studio & add some data to tables:
 
-# e2e tests
-$ npm run test:e2e
+- Form
+add 1 form
 
-# test coverage
-$ npm run test:cov
-```
+- FormInput
+add 2,3 FormInput & set FormId
 
-## Deployment
+(or use my data (form 1))
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- Showing
+Choose 1 showing u want to test booking for it. Add formId u created
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- ShowingTicketTypeQuantity
+If ur showing is not have seatmap, just select tickettype & quantity to buy ("Chi Dep Concert")
+Add data to this table
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+## API BOOKING STEP
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### STEP 1
+- From Event Detail Page. When click "Mua ve". Route to Seatmap/Booking Page
+*Call Showing & Seatmap API*
 
-## Resources
+### STEP 2
+- After selected seat or quantity of Tickettype
+*Call selectSeat to lock-seat*
 
-Check out a few resources that may come in handy when working with NestJS:
+Need Token Bearer, same API /user/me in NavigationBar.tsx File
+If selecting seats on the seat map: Provide ShowingID and an array of SeatID.
+If selecting the number of tickets by ticket type (TicketType): Provide ShowingID, TicketTypeId, and Quantity.
+If not needed, these values can be left empty.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+If lock-seat return success, route to Form Page
+### Step 3
+After submit form,
+*Call API submitForm*
 
-## Support
+If success, route to payment Page
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Step 4
+*Call API getPaymentMethod* to get which payments are now available and display
 
-## Stay in touch
+After user choose PAYOS
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+*Call API PayOSCheckout*
+Cancel URL: Must be the current payment page, keeping all states intact when the user cancels the payment
+Success URL: A new page where the user will be redirected after a successful payment to confirm the transaction
 
-## License
+receive paymentUrl in response
+route to that page
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+After user cancel payment, it will auto back to Cancel-URL
+In case payment success, auto route to Success-URL with OrderCode
+Example, if success-url is local:host:3000/success
+PayOS will call-back to local:host:3000/success?orderCode=1000
+
+### Step 5
+
+In Success-URL Page,
+*Call API getPayOSStatus* to check again
+if receive "PAID", display success
+else, I Think must route to homepage. To prevent unauthorized access to this page via direct URL entry ^^
+
+Done!!!
+
+### TODO 
+- Set webhook later. Because webhook is just available on production, need more time to set up
+- Send email after success. I just create Ticket after payment-success, need research how to gen qrCode for each ticket & send ticket via email

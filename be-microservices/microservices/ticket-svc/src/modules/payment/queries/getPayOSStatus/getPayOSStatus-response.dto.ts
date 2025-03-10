@@ -1,16 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class selectSeatResponseDto {
+export class GetPayOSStatusResponseDto {
   @ApiProperty({ example: 200, description: 'Response status code' })
   statusCode: number;
 
   @ApiProperty({
-    example: 'Seat locked successfully',
+    example: 'Payos status data retrieved successfully',
     description: 'Response message',
   })
   message: string;
 
-  @ApiProperty({ example: true, description: 'Available seat status'})
-  data: boolean;
-  
+  @ApiProperty({ example: "PAID", description: 'Payment status' })
+  status: string;
 }
