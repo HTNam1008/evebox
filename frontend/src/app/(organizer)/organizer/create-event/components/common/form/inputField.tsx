@@ -22,7 +22,7 @@ const InputField: React.FC<InputFieldProps> = ({
     return (
         <>
             <label className="block text-sm font-bold mb-2">
-                {required && <span className="text-red-500">*</span>} {label}
+                {required && <span className="text-red-500">* </span>} {label}
             </label>
             <div className="relative">
                 <input

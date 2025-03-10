@@ -1,10 +1,25 @@
 "use client";
 
+/* Package System */
+import React from 'react';
+import 'tailwindcss/tailwind.css';
+import { useState } from 'react';
+
+/* Package Application */
+import Navigation from './common/navigation';
+import FormTimeTypeTicketClient from './formTimeType';
+
 export default function TimeAndTypeTickets() {
+    // const [step, setStep] = useState(2); 
+    const [step] = useState(2);
+
     return (
-        <div>
-            <h2 className="text-xl font-bold">Bước 2: Nhập thêm thông tin</h2>
-            <p>Tiếp tục nhập thông tin sự kiện của bạn...</p>
-        </div>
+        <>
+            <Navigation title="Thời gian và loại vé" step={step} />
+
+            <div className="flex justify-center">
+                <FormTimeTypeTicketClient />
+            </div>
+        </>
     );
 }

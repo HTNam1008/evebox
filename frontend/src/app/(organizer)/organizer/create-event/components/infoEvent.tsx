@@ -18,9 +18,9 @@ export default function InformationEventClient() {
     return (
         <>
             <Navigation title="Tạo sự kiện" step={step}  />
+            
             <NoteDialog open={open} onClose={() => setOpen(false)}></NoteDialog>
 
-            {/* <FormInformationEventClient></FormInformationEventClient> */}
             {step === 1 ? (
                 <FormInformationEventClient onNextStep={() => setStep(2)} />
             ) : (

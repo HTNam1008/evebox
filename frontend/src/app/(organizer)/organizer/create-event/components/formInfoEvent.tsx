@@ -121,7 +121,7 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                 <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit}>
                     <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <label className="block text-sm font-bold mb-2">
-                            <span className="text-red-500">*</span> Upload hình ảnh
+                            <span className="text-red-500">* </span> Upload hình ảnh
                         </label>
 
                         <div className="flex flex-wrap -mx-3 mb-6">
@@ -169,7 +169,7 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                     <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto"
                         style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <label className="block text-sm font-bold mb-2">
-                            <span className="text-red-500">*</span> Địa điểm sự kiện
+                            <span className="text-red-500">* </span> Địa điểm sự kiện
                         </label>
 
                         {/* Radio buttons */}
@@ -294,7 +294,7 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                         <div className="flex flex-wrap -mx-3 mb-6">
                             <div className="w-full px-3">
                                 <label className="block text-sm font-bold mb-2">
-                                    <span className="text-red-500">*</span> Thông tin sự kiện
+                                    <span className="text-red-500">* </span> Thông tin sự kiện
                                 </label>
                                 <div className="relative">
                                     <input
@@ -313,7 +313,7 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                             {/* Logo ban tổ chức */}
                             <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
                                 <label className="block text-sm font-bold mb-2">
-                                    <span className="text-red-500">*</span> Upload hình ảnh
+                                    <span className="text-red-500">* </span> Upload hình ảnh
                                 </label>
                                 <div className=" text-center">
                                     <ImageUpload
@@ -343,7 +343,7 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                                 {/* Thông tin ban tổ chức */}
                                 <div className="mt-4">
                                     <label className="block text-sm font-bold mb-2">
-                                        <span className="text-red-500">*</span> Thông tin ban tổ chức
+                                        <span className="text-red-500">* </span> Thông tin ban tổ chức
                                     </label>
                                     <div className="relative">
                                         <textarea
