@@ -207,6 +207,8 @@ model Showing {
   endTime               DateTime
   isEnabledQueueWaiting Boolean
   showAllSeats          Boolean
+  formId                Int?
+  Form                  Form?        @relation(fields: [formId], references: [id])
   Events                Events       @relation(fields: [eventId], references: [id])
   Seatmap               Seatmap      @relation(fields: [seatMapId], references: [id])
   Ticket                Ticket[]
@@ -244,16 +246,60 @@ model PayOSInfo {
   checkoutUrl   String?
   qrCode        String?
   createdAt     DateTime @default(now())
+  showingId     String
+  userId        String
+  ticketTypeId  String?
+  seatId        Int?
 }
 
 
 model PaymentInfo{
   id            Int         @id @default(autoincrement())
   method        PaymentMethod
-  paymentCode     Int
-  Ticket      Ticket[]
+  paymentCode   Int
+  Ticket        Ticket[]
 }
 
+model Form {
+  id        Int          @id @default(autoincrement())
+  name      String       @db.VarChar(255) // Tên của form
+  inputs    FormInput[]  // Các trường trong form
+  responses FormResponse[]
+  createdAt DateTime     @default(now())
+  Showing   Showing[]
+}
+
+model FormInput {
+  id       Int      @id @default(autoincrement())
+  formId   Int      
+  form     Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  fieldName String  @db.VarChar(255) // Tên trường (e.g., "buyerEmail", "buyerPhone")
+  type      String  @db.VarChar(50) // Kiểu dữ liệu (e.g., "text", "number", "email", "date")
+  required  Boolean @default(true) // Trường này có bắt buộc không?
+  regex     String?  @db.Text
+  FormAnswer FormAnswer[]
+}
+
+model FormResponse {
+  id        Int          @id @default(autoincrement())
+  formId    Int          
+  form      Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  answers   FormAnswer[]
+  createdAt DateTime     @default(now())
+  userId    String
+  Ticket    Ticket[]
+}
+
+model FormAnswer {
+  id            Int      @id @default(autoincrement())
+  formResponseId Int      
+  formResponse  FormResponse @relation(fields: [formResponseId], references: [id], onDelete: Cascade)
+  
+  formInputId   Int      
+  formInput     FormInput @relation(fields: [formInputId], references: [id], onDelete: Cascade)
+
+  value         String?   @db.Text // Giá trị người dùng nhập
+}
 
 model Ticket {
   id           String     @id @default(uuid())
@@ -262,14 +308,12 @@ model Ticket {
   ticketTypeId String
   status       Int
   price        Int
-  userId       Int?
-  buyerEmail   String?    @db.VarChar(255)
-  buyerPhone   String?    @db.VarChar(10)
-  buyerName    String?    @db.VarChar(255)
-  buyerAddress String?    @db.VarChar(255)
+  userId       String?
   purchasedAt  DateTime?
   qrCode       String?
   paymentId    Int?
+  formResponseId Int?
+  FormResponse FormResponse? @relation(fields: [formResponseId], references: [id])
   PaymentInfo  PaymentInfo? @relation(fields: [paymentId], references: [id])
   Seat         Seat       @relation(fields: [seatId], references: [id])
   Showing      Showing    @relation(fields: [showingId], references: [id])
