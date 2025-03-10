@@ -1,11 +1,15 @@
 // booking/select-ticket/components/ticketInfor.tsx
 'use client';
 
+/* Package System */
 import { Calendar, MapPin, Ticket } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+
+/* Package Application */
+import CollapsibleDescription from './collapsibleDescriptionProp';
 
 interface EventProps {
     id: number;
@@ -80,7 +84,8 @@ export default function TicketInfor({
                 <div className="text-gray-500 flex items-center space-x-2 mt-2">
                     <MapPin size={18} /> <span>{event.locationsString}</span>
                 </div>
-                <div className="text-sm text-gray-600 mt-2" dangerouslySetInnerHTML={{ __html: cleanDescriptionHTML(event.description) }}></div>
+                {/* <div className="text-sm text-gray-600 mt-2 event-description" dangerouslySetInnerHTML={{ __html: cleanDescriptionHTML(event.description) }}></div> */}
+                <CollapsibleDescription htmlContent={cleanDescriptionHTML(event.description)} maxHeight={140} />
                 <div className="flex items-center space-x-2 mt-4">
                     <Ticket size={18} /> <span className="text-gray-700">x{totalTickets}</span>
                 </div>
