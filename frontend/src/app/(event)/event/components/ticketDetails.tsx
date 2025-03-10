@@ -1,9 +1,12 @@
 'use client';
 
+/* Package System */
 import { useState } from "react";
 import Image from "next/image";
-import { Showing } from "../libs/event.interface";
 import { useRouter } from "next/navigation";
+
+/* Package Application */
+import { Showing } from "../libs/event.interface";
 
 const TicketDetails = ({ showings }: { showings: Showing[] }) => {
   const [expandedShowId, setExpandedShowId] = useState<string | null>(null);
@@ -46,7 +49,14 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
                     {showing.status === "sold_out" ? (
                       <button type="button" className="btn-sold-out">Hết vé</button>
                     ) : (
-                      <button type="button" className="btn-buy" onClick={() => router.push(`/event/${showing.eventId}/booking/select-ticket`)}>Mua vé ngay</button>
+                      // <button type="button" className="btn-buy" onClick={() => router.push(`/event/${showing.eventId}/booking/select-ticket`)}>Mua vé ngay</button>
+                      <button 
+                        type="button"
+                        className="btn-buy"
+                        onClick={() => router.push(`/event/${showing.eventId}/booking/select-ticket?showingId=${showing.id}&eventId=${showing.eventId}`)}
+                      >
+                        Mua vé ngay
+                      </button>
                     )}
                   </div>
 
