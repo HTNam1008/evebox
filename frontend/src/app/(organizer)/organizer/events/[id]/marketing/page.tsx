@@ -2,7 +2,6 @@ import SidebarOrganizer from "../components/sidebarOrganizer";
 import DateRangePicker from "./components/dateRangePicker";
 
 import 'tailwindcss/tailwind.css';
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TrafficChart from "../marketing/components/trafficChart";
 

@@ -1,7 +1,6 @@
-
-
 import 'tailwindcss/tailwind.css';
-import Dropdown, { DropdownWrapper } from './components/dropdown';
+
+import { DropdownWrapper } from './components/dropdown';
 import SidebarOrganizer from '../components/sidebarOrganizer';
 import OrderTabs from './components/ordersTab';
 
