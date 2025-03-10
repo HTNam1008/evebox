@@ -40,7 +40,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                     </button>
                 </div>
 
-                <div className="mt-8 eve-padding">
+                <div className="mt-8 eve-padding w-full">
                     <div className="row justify-content-between">
                         {/* Thông tin sự kiện */}
                         <div className="event-info col-lg-7 col-md-12 mt-4mt-4 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>

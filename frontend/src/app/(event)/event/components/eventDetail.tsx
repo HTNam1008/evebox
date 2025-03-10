@@ -30,7 +30,6 @@ export default function EventDetailClient({ event: events, recommendedEvent: rec
                     <TicketDetails showings={events.showing} />
                 </div>
                 <MoreInformation title={events.title} location={events.venue} locationsString={events.locationsString} />
-
             </div>
 
             <Comment />
