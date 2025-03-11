@@ -8,7 +8,9 @@ import apiClient from "@/services/apiClient";
 import { useSession } from "next-auth/react";
 import { UserInfo, UserInfoResponse } from "@/types/model/userInfo";
 import Image from "next/image";
-
+import LanguageSwitcher from "../common/languageSwitcher";
+import { useTranslations } from "next-intl";
+import { useI18n } from "../../../providers/I18nProvider";
 
 const NavigationBar = () => {
   const [isLangOpen, setIsLangOpen] = useState(false);
@@ -16,6 +18,10 @@ const NavigationBar = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null); // Replace `any` with a proper type if known
   const [isLoading, setLoading] = useState(false);
   const { data: session } = useSession();
+  const { locale } = useI18n(); // Get current locale
+  const t = useTranslations("common");
+console.log("Translation function:", t);
+console.log("Translated login:", t("login"));
   
   useEffect(() => {
     // Fetch user info when the component mounts
@@ -74,42 +80,13 @@ const NavigationBar = () => {
                 onClick={() => setIsLangOpen(!isLangOpen)}
               // eslint-disable-next-line react/jsx-no-comment-textnodes
               >
-                <Image
-  src="/images/dashboard/vietnam-icon.png"
-  alt="flag"
-  width={28}
-  height={28}
-/>
-
+                <Image  src={locale === "vi" ? "/images/dashboard/vietnam-icon.png" : "/images/dashboard/english-icon.png"} alt="flag" width={28} height={28}/>
                 <span className="hidden sm:inline">VI</span>
                 <ChevronDown size={16} className="hidden sm:block" />
               </button>
 
               {isLangOpen && (
-                <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg py-1 w-32">
-                  <div className="relative bg-white rounded-md overflow-hidden">
-                    <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                      <Image
-  src="/images/dashboard/vietnam-icon.png"
-  alt="flag"
-  width={28}
-  height={28}
-/>
-
-                      <span className="text-gray-700">EN</span>
-                    </button>
-                    <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full">
-                    <Image
-  src="/images/dashboard/vietnam-icon.png"
-  alt="flag"
-  width={28}
-  height={28}
-/>
-
-                      <span className="text-gray-700">VI</span>
-                    </button>
-                  </div>
-                </div>
+                 <LanguageSwitcher/> 
               )}
             </div>
 
@@ -128,7 +105,7 @@ const NavigationBar = () => {
               <div>
                 <Link href="/login" style={{ textDecoration: "none" }}>
                   <button className="text-white hover:text-teal-100 text-sm sm:text-base">
-                    Đăng nhập
+                  {t("login") || "Fallback Text"}
                   </button>
                 </Link>
 
