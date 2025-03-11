@@ -102,6 +102,38 @@ class EventDto {
   weekClicks: number;
 }
 
+class FormInputDto {
+  @ApiProperty({ example: 1, description: 'Input ID' })
+  id: number;
+
+  @ApiProperty({ example: 1, description: 'Form ID' })
+  formId: number;
+
+  @ApiProperty({ example: 'name', description: 'Field name' })
+  fieldName: string;
+
+  @ApiProperty({ example: 'text', description: 'Field type' })
+  type: string;
+
+  @ApiProperty({ example: true, description: 'Is field required' })
+  required: boolean;
+
+  @ApiProperty({ example: '^[a-zA-Z]+$', description: 'Field regex' })
+  regex: string;
+}
+
+class FormDto {
+
+  @ApiProperty({ example: 1, description: 'Form ID' })
+  id: number;
+
+  @ApiProperty({ example: 'booking', description: 'Form name' })
+  name: string;
+
+  @ApiProperty({ type: [FormInputDto], description: 'List of form inputs' })
+  inputs: FormInputDto[];
+}
+
 class ShowingDataDto {
   @ApiProperty({ example: '16962844867169', description: 'Showing ID' })
   id: string;
@@ -147,6 +179,9 @@ class ShowingDataDto {
 
   @ApiProperty({ type: [TicketTypeDto], description: 'List of available ticket types' })
   TicketType: TicketTypeDto[];
+
+  @ApiProperty({ type: FormDto, description: 'Booking form' })
+  Form: FormDto;
 }
 
 export class ShowingResponseDto {

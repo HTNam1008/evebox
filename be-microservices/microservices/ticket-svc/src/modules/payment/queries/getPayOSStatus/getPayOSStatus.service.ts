@@ -12,14 +12,7 @@ export class GetPayOSStatusService {
 
   async execute(orderCode: number): Promise<Result<String, Error>> {
     try {
-      const createdTicket = await this.getPayOSStatusRepository.createTicket(orderCode);
-      if(createdTicket){
-        return Ok("PAID");
-      }
-      else{
-        return Ok("PENDING");
-      }
-      console.log(orderCode);
+      // console.log(orderCode);
       const payOSInfo = await this.getPayOSStatusRepository.getPayOSPaymentLink(orderCode);
       if (!payOSInfo) {
         return Err(new Error('Order not found.'));

@@ -70,6 +70,12 @@ class SectionDto {
   @ApiProperty({ example: false, description: 'Is this section the stage' })
   isStage: boolean;
 
+  @ApiProperty({ example: false, description: 'Is this section reserving seat' })
+  isReservingSeat: boolean;
+
+  @ApiProperty({ example: 1, description: 'Section status' })
+  status: number;
+
   @ApiProperty({
     example: [
       {
