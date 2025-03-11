@@ -20,7 +20,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 }) => {
     return (
         <>
-            <label className={`bg-white border-2 border-dashed border-gray-400 p-4 flex flex-col items-center justify-center ${height} cursor-pointer`}>
+            <label className={`w-full bg-white border-2 border-dashed border-gray-400 p-4 flex flex-col items-center justify-center ${height} cursor-pointer`}>
                 {image ? (
                     <Image
                         src={image}

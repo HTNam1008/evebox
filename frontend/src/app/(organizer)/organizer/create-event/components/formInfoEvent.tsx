@@ -6,7 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 
 /* Package Application */
-import InputField from "./common/form/inputField";
+import InputField from "./common/form/inputCountField";
 import SelectField from "./common/form/selectField";
 import ImageUpload from "./common/form/imageUpload";
 

@@ -12,6 +12,7 @@ interface DateTimePickerProps {
     selectedDate: Date | null;
     setSelectedDate: (date: Date | null) => void;
     popperPlacement?: "bottom-start" | "bottom-end";
+    required?: boolean;
 }
 
 export default function DateTimePicker({
@@ -19,12 +20,15 @@ export default function DateTimePicker({
     selectedDate,
     setSelectedDate,
     popperPlacement = "bottom-start",
+    required = false,
 }: DateTimePickerProps) {
     const datePickerRef = useRef<DatePicker | null>(null);
 
     return (
         <>
-            <label className="block text-sm font-bold mb-2">{label}</label>
+            <label className="block text-sm font-bold mb-2">
+                {required && <span className="text-red-500">* </span>} {label}
+            </label>
             <div className="relative">
                 <input
                     type="text"

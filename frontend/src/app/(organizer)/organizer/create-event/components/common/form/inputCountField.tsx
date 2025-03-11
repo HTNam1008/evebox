@@ -2,17 +2,21 @@ import React from "react";
 
 interface InputFieldProps {
     label: string;
-    value: string;
     placeholder: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: boolean;
+    maxLength?: number;
     required?: boolean;
 }
 
-const InputField: React.FC<InputFieldProps> = ({
+const InputCountField: React.FC<InputFieldProps> = ({
     label,
-    value,
     placeholder,
+    value,
+    onChange,
     error = false,
+    maxLength,
     required = false,
 }) => {
     return (
@@ -26,13 +30,18 @@ const InputField: React.FC<InputFieldProps> = ({
                         error ? "border-red-500" : "border-gray-400"
                     }`}
                     type="text"
-                    value={value}
                     placeholder={placeholder}
+                    maxLength={maxLength}
+                    value={value}
+                    onChange={onChange}
                 />
+                <p className="text-sm text-gray-400 pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                    {value.length}/{maxLength}
+                </p>
             </div>
             {error && <p className="text-red-500 text-sm mt-1">Vui lòng nhập {label.toLowerCase()}</p>}
         </>
     );
 };
 
-export default InputField;
+export default InputCountField;
