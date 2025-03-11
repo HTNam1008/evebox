@@ -2,9 +2,10 @@
 import 'tailwindcss/tailwind.css';
 
 /* Package Application */
-// import InformationEventClient from './components/infoEvent';
 import Sidebar from './components/common/sidebar';
-import TimeAndTypeTickets from './components/time&TypeTickets';
+// // import InformationEventClient from './components/infoEvent';
+// import TimeAndTypeTickets from './components/time&TypeTickets';
+import Setting from './components/setting';
 
 export default async function Page() {
 
@@ -17,7 +18,10 @@ export default async function Page() {
 
             <div className='w-full flex flex-col'>
                 {/* <InformationEventClient></InformationEventClient> */}
-                <TimeAndTypeTickets></TimeAndTypeTickets>
+{/* 
+                <TimeAndTypeTickets></TimeAndTypeTickets> */}
+
+                <Setting></Setting>
             </div>
             
         </div>
