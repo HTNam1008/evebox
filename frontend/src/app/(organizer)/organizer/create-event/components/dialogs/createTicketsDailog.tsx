@@ -71,15 +71,15 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
     return (
         <>
             <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
-                <div className="text-white dialog-header px-6 py-4 justify-center items-center flex relative" style={{ background: '#0C4762' }}>
+                <div className="text-white dialog-header px-6 py-2 pb-4  justify-center items-center flex relative" style={{ background: '#0C4762' }}>
                     <DialogTitle className="!m-0 !p-0 text-lg text-center font-bold">Tạo loại vé mới</DialogTitle>
                     <button onClick={onClose} className="absolute right-2 top-2 px-1 py-1 close-btn">
                         <Icon icon="ic:baseline-close" width="20" height="20" />
                     </button>
                 </div>
 
-                <DialogContent className="p-6 flex flex-col justify-center items-center">
-                    <div className="content mx-4 mt-4">
+                <DialogContent sx={{ overflowY: "auto", maxHeight: "70vh" }}>
+                    <div className="content mx-4">
                         {/* Tên vé */}
                         <div className="flex flex-wrap -mx-3 mb-6">
                             <div className="w-full px-3">
@@ -153,6 +153,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                     placeholder="10"
                                     error={errors.ticketNumMax}
                                     required
+                                    onChange={(e) => setTicketNum(e.target.value)}
                                 />
                             </div>
                         </div>

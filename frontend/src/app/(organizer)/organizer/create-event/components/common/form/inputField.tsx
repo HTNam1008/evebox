@@ -6,6 +6,7 @@ interface InputFieldProps {
     placeholder: string;
     error?: boolean;
     required?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -14,6 +15,7 @@ const InputField: React.FC<InputFieldProps> = ({
     placeholder,
     error = false,
     required = false,
+    onChange,
 }) => {
     return (
         <>
@@ -28,6 +30,7 @@ const InputField: React.FC<InputFieldProps> = ({
                     type="text"
                     value={value}
                     placeholder={placeholder}
+                    onChange={onChange}
                 />
             </div>
             {error && <p className="text-red-500 text-sm mt-1">Vui lòng nhập {label.toLowerCase()}</p>}
