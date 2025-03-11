@@ -64,13 +64,13 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
                   {expandedShowId === showing.id && (
                     <ul className="ul-ticket-item">
                       {showing.TicketType.map((ticket) => (
-                        <li key={ticket.id} className="list-group-item li-ticket-item p-0">
-                          <div className="d-flex justify-content-between align-items-center mt-3 mb-3">
-                            <div className="d-flex ml-4 text-ticket">
+                        <li key={ticket.id} className="li-ticket-item !border-dashed !border-white-500 rounded-lg p-4 shadow-md">
+                          <div className="d-flex justify-content-between align-items-center mb-2">
+                            <div className="d-flex ml-2 text-ticket text-lg font-bold text-[#9ef5cf]">
                               {ticket.name}
                             </div>
                             <div className="d-flex flex-column align-items-end">
-                              <p className="price mb-0">{ticket.price.toLocaleString("vi-VN")}đ</p>
+                              <p className="price mb-0 !border !border-[#9ef5cf] rounded-lg p-2">{ticket.price.toLocaleString("vi-VN")}đ</p>
                             </div>
                           </div>
                           {/* Ticket Image */}
@@ -82,9 +82,8 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
                           )}
                           {/* Ticket Description */}
                           <div style={{ whiteSpace: 'pre-line' }}>
-                            <p className="text-white-500 text-sm mt-2">{ticket.description}</p>
+                            <p className="text-white-500 text-sm ml-4">{ticket.description}</p>
                           </div>
-                          <hr />
                         </li>
                       ))}
                     </ul>

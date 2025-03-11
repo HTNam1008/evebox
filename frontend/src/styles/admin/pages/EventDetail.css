@@ -143,11 +143,11 @@
 }
 
 .li-ticket-item{
-    background-color: #0C4762 !important;
+    background-color: #10648a !important;
     color: white !important;
     font-size: 16px !important;
     padding: 10px 15px !important;
-    border: none !important;
+    margin: 15px;
 }
 
 .ul-ticket-item{
@@ -190,7 +190,7 @@
 
 .price {
     font-weight: 500;
-    color: #9EF5CF;
+    color: #FFFFFF;
 }
 
 /*---------------------------------------------------------------------------------------------------*/
