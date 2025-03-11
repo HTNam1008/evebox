@@ -187,6 +187,8 @@ model Section {
   name         String
   seatmapId    Int
   isStage      Boolean
+  isReservingSeat Boolean @default(false)
+  status       Int      @default(2)
   element      Json
   attribute    Json
   createdAt    DateTime @default(now())

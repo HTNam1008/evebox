@@ -28,6 +28,8 @@ export class getShowingSeatmapService {
           element: section.element,
           attribute: section.attribute,
           ticketTypeId: section.ticketTypeId,
+          status: section.status,
+          isReservingSeat: section.isReservingSeat,
           Row: section.Row.map(row => ({
             id: row.id,
             name: row.name,

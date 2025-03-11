@@ -18,6 +18,21 @@ interface EventFrontDisplay {
   minTicketPrice?: number;
 }
 
+interface FormInput {
+  id: number;
+  formId: number;
+  fieldName: string;
+  type: string;
+  required: boolean;
+  regex?: string;
+}
+
+interface Form {
+  id: number;
+  name: string;
+  inputs: FormInput[];
+}
+
 export interface ShowingFront{
   id    :                String;
   eventId:               number;
@@ -30,6 +45,7 @@ export interface ShowingFront{
   endTime       :        Date;
   isEnabledQueueWaiting: Boolean;
   showAllSeats:          Boolean;
+  Form?:            Form;
   TicketType:           TicketType[];
 }
 
@@ -45,6 +61,7 @@ export interface ShowingData{
   endTime       :        Date;
   isEnabledQueueWaiting: Boolean;
   showAllSeats:          Boolean;
+  Form?:           Form;
   TicketType:           TicketType[];
   Events:                EventFrontDisplay;
 }
