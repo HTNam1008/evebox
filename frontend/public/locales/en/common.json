@@ -1,3 +1,18 @@
 {
-    "login": "Login"
+    "login": "Login",
+    "register": "Sign up",
+    "langCode": "EN",
+    "searchTitle": "Name of event, organizer, ...",
+    "searchHint": "Enter name of event, organizer, ...",
+    "categoryTitle": "Category type",
+    "categoryHint": "Select category type",
+    "locationTitle": "Location",
+    "locationHint": "Select location",
+    "timeTitle": "Time",
+    "specialTitle": "Special",
+    "specialSubtitle": "Event",
+    "trendingTitle": "Trending",
+    "trendingSubtitle": "Event",
+    "onlyTitle": "Only on",
+    "onlySubtitle": "Evebox"
 }

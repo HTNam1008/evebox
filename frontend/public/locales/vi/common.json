@@ -1,3 +1,18 @@
 {
-    "login": "Đăng nhập"
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "langCode": "VI",
+    "searchTitle": "Tên sự kiện, diễn giả, ...",
+    "searchHint": "Nhập tên sự kiện, diễn giả, ...",
+    "categoryTitle": "Loại sự kiện",
+    "categoryHint": "Chọn loại sự kiện",
+    "locationTitle": "Địa điểm",
+    "locationHint": "Chọn địa điểm",
+    "timeTitle": "Thời gian",
+    "specialTitle": "Sự kiện",
+    "specialSubtitle": "Đặc biệt",
+    "trendingTitle": "Sự kiện",
+    "trendingSubtitle": "Xu hướng",
+    "onlyTitle": "Sự kiện",
+    "onlySubtitle": "Đặc sắc"
 }

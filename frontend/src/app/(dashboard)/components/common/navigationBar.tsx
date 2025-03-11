@@ -20,8 +20,6 @@ const NavigationBar = () => {
   const { data: session } = useSession();
   const { locale } = useI18n(); // Get current locale
   const t = useTranslations("common");
-console.log("Translation function:", t);
-console.log("Translated login:", t("login"));
   
   useEffect(() => {
     // Fetch user info when the component mounts
@@ -81,7 +79,7 @@ console.log("Translated login:", t("login"));
               // eslint-disable-next-line react/jsx-no-comment-textnodes
               >
                 <Image  src={locale === "vi" ? "/images/dashboard/vietnam-icon.png" : "/images/dashboard/english-icon.png"} alt="flag" width={28} height={28}/>
-                <span className="hidden sm:inline">VI</span>
+                <span className="hidden sm:inline">{t("langCode") || "Fallback Text"}</span>
                 <ChevronDown size={16} className="hidden sm:block" />
               </button>
 
@@ -111,7 +109,7 @@ console.log("Translated login:", t("login"));
 
                 <Link href="/register" style={{ textDecoration: "none" }}>
                   <button className="ml-4 bg-teal-200 text-teal-950 px-3 sm:px-4 py-2 rounded-md hover:bg-teal-50 text-sm sm:text-base">
-                    Đăng ký
+                  {t("register") || "Fallback Text"}
                   </button>
                 </Link>
               </div>
