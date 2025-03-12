@@ -15,7 +15,7 @@ export default function Description({ description }: DescriptionProps) {
             <div className="w-full md:w-5/6">
                 <h2 className="text-xl md:text-2xl font-bold px-2">Mô tả</h2>
                 <div
-                    className={`mt-2 overflow-hidden event-description transition-all duration-500 ${isExpanded ? 'max-h-full' : 'max-h-24'}`}
+                    className={`mt-2 overflow-hidden event-description transition-all duration-500 ${isExpanded ? 'max-h-full' : 'max-h-40'}`}
                     style={{ lineHeight: "1.6" }}
                 >
                     <div

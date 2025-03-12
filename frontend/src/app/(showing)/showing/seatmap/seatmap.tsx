@@ -63,7 +63,6 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap, onSeatSelectionChan
       } else {
         newSeatSelected.add(seat.id);
       }
-      console.log('newSelected', newSeatSelected);
 
       // lần đầu chọn -> set loại vé được chọn
       if (!selectedTicketType && !isSelected) {
