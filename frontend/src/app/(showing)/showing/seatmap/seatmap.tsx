@@ -2,18 +2,30 @@
 
 /* Package System */
 import React, { useState } from "react";
-import { SeatMap } from "@/types/model/seatmap";
+import { Seat, SeatMap } from "@/types/model/seatmap";
 
 /* Package Application */
 import "@/../public/styles/showing/seatmap.css";
+import AlertDialog from "../components/alertDialog";
 
 interface SeatMapProps {
   seatMap: SeatMap;
+  onSeatSelectionChange?: (
+    seat: {
+      id: number;
+      ticketTypeId: string
+    },
+    isSelected: boolean
+  ) => void;
 }
 
-const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap }) => {
+const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap, onSeatSelectionChange }) => {
   const [selectedSeats, setSelectedSeats] = useState<Set<number>>(new Set());
   const [zoom, setZoom] = useState<number>(1);
+  const [selectedTicketType, setSelectedTicketType] = useState<string | null>(null);
+
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -34,19 +46,39 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap }) => {
     });
   }
 
-  const handleSeatClick = (seatId: number, status: number) => {
+  const handleSeatClick = (seat: Seat, sectionTicketTypeId: string, status: number) => {
     if (status === 2) return;
 
+    if (selectedTicketType && selectedTicketType !== sectionTicketTypeId) {
+      setAlertMessage("Bạn chỉ được chọn chỗ ngồi của 1 loại vé duy nhất.");
+      setAlertOpen(true);
+      return;
+    }
+
     setSelectedSeats((prevSelected) => {
-      const newSelected = new Set(prevSelected);
-      if (newSelected.has(seatId)) {
-        newSelected.delete(seatId);
+      const newSeatSelected = new Set(prevSelected);
+      const isSelected = newSeatSelected.has(seat.id);
+      if (isSelected) {
+        newSeatSelected.delete(seat.id);
       } else {
-        newSelected.add(seatId);
+        newSeatSelected.add(seat.id);
       }
-      return newSelected;
+      console.log('newSelected', newSeatSelected);
+
+      // lần đầu chọn -> set loại vé được chọn
+      if (!selectedTicketType && !isSelected) {
+        setSelectedTicketType(sectionTicketTypeId);
+      }
+      // không còn ghế được chọn -> reset selectedTicketType
+      if (newSeatSelected.size === 0) {
+        setSelectedTicketType(null);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      onSeatSelectionChange?.({ id: seat.id, ticketTypeId: sectionTicketTypeId }, !isSelected);
+      return newSeatSelected;
     });
-  }
+  };
 
   const getSeatLabel = (rowName: string, seatName: string): string => {
     return `${rowName}-${seatName}`;
@@ -65,8 +97,11 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap }) => {
     });
   }
 
+  const stageSections = seatMap.Section?.filter(s => s.isStage);
+  const normalSections = seatMap.Section?.filter(s => !s.isStage);
+
   return (
-    <div className="seatmap-container relative overflow-hidden" onWheelCapture={handleWheel}>
+    <div className="seatmap-container relative overflow-hidden" onWheel={handleWheel}>
       <div className="seatmap-legend-container absolute top-0 left-[50%] transform -translate-x-1/2 z-10 bg-white bg-opacity-80 w-full">
         <div className="mb-3 seatmap-legend justify-between">
           <div className="legend-item">
@@ -91,10 +126,28 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap }) => {
           }}
         >
           <svg viewBox={seatMap.viewBox} className="seatmap">
-            {seatMap?.Section?.map((section) => (
+            {stageSections?.map((section) => (
               <g key={section.id}>
                 {section.element?.map((el, index) => (
-                  <path key={index} d={el.data} fill={el.fill} transform={`translate(${el.x}, ${el.y})`} />
+                  <path
+                    key={index}
+                    d={el.data}
+                    fill={el.fill}
+                    transform={`translate(${el.x}, ${el.y})`}
+                  />
+                ))}
+              </g>
+            ))}
+
+            {normalSections?.map((section) => (
+              <g key={section.id}>
+                {section.element?.map((el, index) => (
+                  <path
+                    key={index}
+                    d={el.data}
+                    fill={el.fill}
+                    transform={`translate(${el.x}, ${el.y})`}
+                  />
                 ))}
 
                 {section.Row?.map((row) =>
@@ -120,7 +173,7 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap }) => {
                           stroke="#000"
                           strokeWidth={1}
                           fill={fillColor}
-                          onClick={() => handleSeatClick(seat.id, seat.status)}
+                          onClick={() => handleSeatClick(seat, section.ticketTypeId ?? "", seat.status)}
                           style={{ cursor: seat.status === 2 ? "not-allowed" : "pointer" }}
                         />
                         {zoom >= 1.5 && (
@@ -148,6 +201,12 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap }) => {
           Vị trí đã chọn: {selectedSeatLabels.join(", ")}
         </div>
       </div>
+
+      <AlertDialog
+        message={alertMessage}
+        open={alertOpen}
+        onClose={() => setAlertOpen(false)}
+      />
     </div>
   );
 };
