@@ -7,10 +7,10 @@ interface DescriptionProps {
     description: string;
 }
 
-const cleanDescriptionHTML = (html: string) => {
-    return html.replace(/<img[^>]*>/g, "") // Remove all <img> tags
-        .replace(/<\/?h3[^>]*>/g, ""); // Remove all <h3> tags
-};
+// const cleanDescriptionHTML = (html: string) => {
+//     return html.replace(/<img[^>]*>/g, "") // Remove all <img> tags
+//         .replace(/<\/?h3[^>]*>/g, ""); // Remove all <h3> tags
+// };
 
 export default function Description({ description }: DescriptionProps) {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -20,12 +20,12 @@ export default function Description({ description }: DescriptionProps) {
             <div className="w-full md:w-5/6">
                 <h2 className="text-xl md:text-2xl font-bold px-2">Mô tả</h2>
                 <div
-                    className={`mt-2 overflow-hidden transition-all duration-500 ${isExpanded ? 'max-h-full' : 'max-h-24'}`}
+                    className={`mt-2 overflow-hidden event-description transition-all duration-500 ${isExpanded ? 'max-h-full' : 'max-h-24'}`}
                     style={{ lineHeight: "1.6" }}
                 >
                     <div
                         className="prose max-w-none px-2 text-gray-800"
-                        dangerouslySetInnerHTML={{ __html: cleanDescriptionHTML(description) }}
+                        dangerouslySetInnerHTML={{ __html: description }}
                     />
                 </div>
                 <div
