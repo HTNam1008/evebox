@@ -7,11 +7,6 @@ interface DescriptionProps {
     description: string;
 }
 
-// const cleanDescriptionHTML = (html: string) => {
-//     return html.replace(/<img[^>]*>/g, "") // Remove all <img> tags
-//         .replace(/<\/?h3[^>]*>/g, ""); // Remove all <h3> tags
-// };
-
 export default function Description({ description }: DescriptionProps) {
     const [isExpanded, setIsExpanded] = useState(false);
 
