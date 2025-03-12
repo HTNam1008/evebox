@@ -1,5 +1,6 @@
 // import { Controller, Get, Post, Delete, Body, Param, HttpStatus, Res } from '@nestjs/common';
 // import PayOS from "@payos/node";
+// import { PayOSService } from 'src/infrastructure/adapters/payment/payOS/payos.service';
 
 // interface CheckoutRequestType {
 //   orderCode: number;
@@ -26,9 +27,9 @@
 
 // @Controller('api/temp')
 // export class TempController {
-//   private payOS: PayOS;
+//   // private payOS: PayOS;
 
-//   constructor() {
+//   constructor(private readonly payOS: PayOSService) {
     
 //   }
 
@@ -41,11 +42,6 @@
 //   @Post('/payos/checkout')
 //   async createPaymentLink(@Body() body: CheckoutRequestType, @Res() res) {
 //     try {
-//       this.payOS = new PayOS(
-//         "c195b614-d6cd-4110-8e15-f8d51d15abb3", // API Key
-//         "f045e3d4-a95e-4352-bb8d-c95d0bc82fdf", // Secret Key
-//         "9359ef73af436f9bccba2082ea56efc6f0287594585c9f6794cb279427b3bbe1" // Checksum Key
-//       );
 //       const response: CheckoutResponseDataType = await this.payOS.createPaymentLink(body);
 //       return res.status(HttpStatus.CREATED).json(response);
 //     } catch (error) {

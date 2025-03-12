@@ -1,15 +1,16 @@
 'use client';
 
 /* Package System */
+import { useRef, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import Link from 'next/link';
-import Image from "next/image";
+import Image from 'next/image';
 
-//Package App
+/* Package Application */
 import { Event } from '../../libs/interface/dashboard.interface';
 import '@/styles/admin/eventSlider.css';
 
@@ -21,12 +22,28 @@ interface EventSliderProps {
 }
 
 const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+
+  useEffect(() => {
+    if (swiperInstance && prevRef.current && nextRef.current) {
+      swiperInstance.params.navigation.prevEl = prevRef.current;
+      swiperInstance.params.navigation.nextEl = nextRef.current;
+      swiperInstance.navigation.destroy();
+      swiperInstance.navigation.init();
+      swiperInstance.navigation.update();
+    }
+  }, [swiperInstance, prevRef, nextRef]);
+
   return (
     <div className="relative">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
         <h2 className="text-xl md:text-2xl font-bold">
-          {title} {subtitle && <span className="text-teal-400">{subtitle}</span>}
+          {title}{' '}
+          {subtitle && <span className="text-teal-400">{subtitle}</span>}
         </h2>
         {/* {showViewMore && (
           <a href="#" className="text-teal-500 hover:text-teal-700 text-sm md:text-base flex items-center gap-1 transition-colors duration-300">
@@ -41,10 +58,8 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
         slidesPerGroup={4}
         spaceBetween={10}
         modules={[Navigation]}
-        navigation={{
-          nextEl: '.custom-swiper-button-next',
-          prevEl: '.custom-swiper-button-prev',
-        }}
+        onSwiper={setSwiperInstance}
+        // navigation={true}
         style={{
           overflowX: 'auto',
           scrollBehavior: 'smooth',
@@ -60,7 +75,10 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
               <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow flex flex-col h-full">
                 <div className="flex items-center justify-center p-2 w-full h-auto overflow-hidden">
                   <Image
-                    src={event.Images_Events_imgPosterIdToImages?.imageUrl || '/images/dashboard/card_pic.png'}
+                    src={
+                      event.Images_Events_imgPosterIdToImages?.imageUrl ||
+                      '/images/dashboard/card_pic.png'
+                    }
                     alt={event.title}
                     className="w-full aspect-video object-cover rounded-lg hover:scale-110 transition-transform duration-300 padding-30"
                     width={140}
@@ -73,10 +91,16 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
                   </h3>
                   <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
                     <time className="text-left text-teal-500">
-                      <span>{new Date(event.startDate).toLocaleDateString()}</span>
+                      <span>
+                        {new Date(event.startDate).toLocaleDateString()}
+                      </span>
                     </time>
-                    <span className={`rounded-lg bg-emerald-200 px-2 font-medium text-sky-950 text-center md:text-left`}>
-                      {event.status === 'free' ? "Miễn phí" : "Từ "+ event.minTicketPrice.toLocaleString("vi-VN") +"đ"}
+                    <span className="rounded-lg bg-emerald-200 px-2 font-medium text-sky-950 text-center md:text-left">
+                      {event.status === 'free'
+                        ? 'Miễn phí'
+                        : 'Từ ' +
+                        event.minTicketPrice.toLocaleString('vi-VN') +
+                        'đ'}
                     </span>
                   </div>
                 </div>
@@ -92,10 +116,11 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
         </button> */}
       </Swiper>
 
-      <button className="custom-swiper-button-prev">
+      {/* Các nút custom navigation */}
+      <button ref={prevRef} className="custom-swiper-button-prev">
         <ChevronLeft />
       </button>
-      <button className="custom-swiper-button-next">
+      <button ref={nextRef} className="custom-swiper-button-next">
         <ChevronRight />
       </button>
     </div>
