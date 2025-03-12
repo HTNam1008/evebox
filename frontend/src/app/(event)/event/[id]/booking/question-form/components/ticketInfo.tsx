@@ -19,9 +19,11 @@ interface TicketInformationProps {
     totalTickets: number;
     totalAmount: number;
     isFormValid: boolean;
+    ticketTypeName?: string;
+    ticketPrice?: number;
 }
 
-export default function TicketInformation({ event, totalTickets, totalAmount, isFormValid }: TicketInformationProps) {
+export default function TicketInformation({ event, totalTickets, totalAmount, isFormValid, ticketTypeName, ticketPrice }: TicketInformationProps) {
     const [openDialog, setOpenDialog] = useState(false);
     const router = useRouter();
     const handlePayment = () => {
@@ -82,8 +84,8 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                 <div className='row'>
                     <div className="col-md-8 d-flex justify-content-start">
                         <p className='text-start'>
-                            <span style={{ display: "block" }}>Early Bird Ticket</span>
-                            <span style={{ display: "block" }}>599.000đ</span>
+                            <span style={{ display: "block" }}>{ticketTypeName}</span>
+                            <span style={{ display: "block" }}>{ticketPrice?.toLocaleString("vi-VN")}</span>
                         </p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
@@ -96,7 +98,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                         <p>Tạm tính</p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
-                        <p>{totalAmount}</p>
+                        <p>{totalAmount.toLocaleString("vi-VN")}đ</p>
                     </div>
                 </div>
                 <div className='row mt-2 mb-4'>
