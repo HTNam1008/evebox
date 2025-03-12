@@ -12,10 +12,10 @@ export default function Description({ description }: DescriptionProps) {
 
     return (
         <div className="flex justify-center mt-8 ml-2">
-            <div className="w-full md:w-5/6">
+            <div className="w-full md:w-5/6 bg-gray-100 rounded-lg p-2">
                 <h2 className="text-xl md:text-2xl font-bold px-2">Mô tả</h2>
                 <div
-                    className={`mt-2 overflow-hidden event-description transition-all duration-500 ${isExpanded ? 'max-h-full' : 'max-h-40'}`}
+                    className={`mt-2 overflow-hidden event-description transition-all duration-500 ${isExpanded ? 'max-h-full' : 'max-h-52'}`}
                     style={{ lineHeight: "1.6" }}
                 >
                     <div
@@ -24,13 +24,13 @@ export default function Description({ description }: DescriptionProps) {
                     />
                 </div>
                 <div
-                    className="d-flex justify-content-center div-more cursor-pointer mt-2"
+                    className="d-flex justify-content-center div-more cursor-pointer mt-2 hover:text-gray-600 bg-transparent"
                     onClick={() => setIsExpanded(!isExpanded)}
                 >
                     {isExpanded ? (
-                        <i className="bi bi-chevron-up"></i>
+                        <i className="bi bi-chevron-up bg-transparent"></i>
                     ) : (
-                        <i className="bi bi-chevron-down"></i>
+                        <i className="bi bi-chevron-down bg-transparent"></i>
                     )}
                 </div>
             </div>

@@ -37,7 +37,7 @@ export default function MoreInformation({ title, location, locationsString }: Mo
                         {title}
                     </h5>
                     <p className="card-text mt-2">
-                        <i className="bi bi-geo-alt mr-2"></i>
+                        <i className="bi bi-geo-alt-fill mr-2"></i>
                         {location}
                     </p>
                     <p className="card-text text-body-secondary ml-6 mb-2" id="event-location" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
