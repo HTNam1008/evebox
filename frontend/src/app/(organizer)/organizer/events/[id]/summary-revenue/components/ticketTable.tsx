@@ -2,7 +2,7 @@
 
 const TicketTable = () => {
   return (
-    <table className="w-full mt-2 border border-gray-300 shadow-lg">
+    <table className="w-full border border-gray-300 shadow-lg">
       <thead>
         <tr className="bg-[#0C4762] text-white">
           <th className="border px-4 py-2 text-left">Loại vé</th>

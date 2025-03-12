@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Search } from "lucide-react";
+import Link from "next/link";
 
 const VoucherTable = () => {
     const [search, setSearch] = useState("");
@@ -35,11 +36,11 @@ const VoucherTable = () => {
                 </div>
 
                 <div className="flex gap-3">
-                    <button
-                        className="px-4 py-2 bg-[#48D1CC] text-[#0C4762] rounded-md transition duration-200 hover:bg-[#51DACF]"
-                    >
-                        Tạo voucher
-                    </button>
+                    <Link href="create-voucher">
+                        <button className="px-4 py-2 bg-[#48D1CC] text-[#0C4762] rounded-md transition duration-200 hover:bg-[#51DACF]">
+                            Tạo voucher
+                        </button>
+                    </Link>
                 </div>
             </div>
 

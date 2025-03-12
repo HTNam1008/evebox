@@ -7,40 +7,50 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from "chart.js";
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
+// TODO: chart can't show data when run build & start, but run dev, chart is ok
+ 
+export const data = {
+    labels: ["Week 01", "Week 02", "Week 03", "Week 04", "Week 05", "Week 06", "Week 07", "Week 08", "Week 09", "Week 10"],
+    datasets: [
+        {
+            id: 1,
+            label: "Doanh thu",
+            data: [2, 4, 3, 6, 5, 8, 7, 6, 9, 8],
+            borderColor: "#0369a1",
+            backgroundColor: "#0369a1",
+            tension: 0.4,
+        },
+        {
+            id: 2,
+            label: "Số vé bán",
+            data: [1, 3, 4, 5, 6, 7, 6, 7, 8, 9],
+            borderColor: "#64748b",
+            backgroundColor: "#64748b",
+            tension: 0.4,
+        },
+    ],
+    
+};
+
 const SummaryControls = () => {
     const [activeTab, setActiveTab] = useState("24h");
+
+    /** TODO: Handle toggle sidebar in mobile
+     * 
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const toggleSidebar = () => {
         setSidebarOpen((prev) => !prev);
     };
-
-    const data = {
-        labels: ["Week 01", "Week 02", "Week 03", "Week 04", "Week 05", "Week 06", "Week 07", "Week 08", "Week 09", "Week 10"],
-        datasets: [
-            {
-                label: "Doanh thu",
-                data: [2, 4, 3, 6, 5, 8, 7, 6, 9, 8],
-                borderColor: "#0369a1",
-                backgroundColor: "#0369a1",
-                tension: 0.4,
-            },
-            {
-                label: "Số vé bán",
-                data: [1, 3, 4, 5, 6, 7, 6, 7, 8, 9],
-                borderColor: "#64748b",
-                backgroundColor: "#64748b",
-                tension: 0.4,
-            },
-        ],
-    };
+     */
 
     return (
         <>
             <h1 className="text-2xl font-bold text-[#0C4762]">
                 <button
                     className="top-4 left-4 z-50 md:hidden bg-[#0C4762] text-white p-2 rounded-md shadow-md"
-                    onClick={toggleSidebar}
+                // TODO: Handle toggle sidebar in mobile
+                // onClick={toggleSidebar}
                 >
                     <Menu size={16} />
                 </button>
@@ -87,7 +97,7 @@ const SummaryControls = () => {
             <div>
                 {activeTab === "24h" ?
                     <div className="mt-6 shadow-lg rounded-lg p-4 w-full overflow-x-auto">
-                        <Line data={data} />
+                        <Line datasetIdKey='id' data={data} />
                     </div>
                     :
                     <div className="mt-6 shadow-lg rounded-lg p-4 w-full overflow-x-auto">

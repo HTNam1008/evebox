@@ -16,9 +16,7 @@ export default function Member() {
                     <p className="text-sm text-[#51DACF] pt-2">20:00 - 23:00, 25 tháng 10, 2024</p>
                     <div className="border-t-2 border-[#0C4762] mt-2"></div>
                     <div className="py-6 flex items-center space-x-6">
-                        <h2 className="text-xl font-semibold text-[#0C4762] whitespace-nowrap">
-                            Danh sách thành viên
-                        </h2>
+                        <h3 className="text-lg font-bold text-[#0C4762] mb-2">Danh sách thành viên</h3>
                     </div>
 
                     <MemberTable />

@@ -1,32 +1,37 @@
 "use client"
 
 import Link from 'next/link';
-import { User, Ticket, Calendar, Settings, BarChart, Edit, Users, Map, ArrowLeft, Menu } from 'lucide-react';
+import { User, Ticket, Calendar, BarChart, Edit, Users, Map, ArrowLeft, Menu } from 'lucide-react';
 import { SidebarProps } from '../libs/interface/organizer.interface';
+import { usePathname } from 'next/navigation';
 
 const SidebarOrganizer: React.FC<SidebarProps> = ({ onClose }) => {
+  const pathName = usePathname();
+  const parts = pathName.split("/");
+  const eventId = parts[3];
+
   const menuSections = [
     {
       title: 'Báo cáo',
       items: [
-        { text: 'Tổng kết', href: '/summary', icon: <BarChart size={18} /> },
-        { text: 'Phân tích', href: '/analysis', icon: <Ticket size={18} /> },
-        { text: 'Danh sách đơn hàng', href: '/orders', icon: <Calendar size={18} /> },
-        { text: 'Check-in', href: '/check-in', icon: <User size={18} /> },
+        { text: 'Tổng kết', href: `/organizer/events/${eventId}/summary-revenue`, icon: <BarChart size={18} /> },
+        { text: 'Phân tích', href: `/organizer/events/${eventId}/marketing`, icon: <Ticket size={18} /> },
+        { text: 'Danh sách đơn hàng', href: `/organizer/events/${eventId}/orders`, icon: <Calendar size={18} /> },
+        { text: 'Check-in', href: `/organizer/events/${eventId}/check-in`, icon: <User size={18} /> },
       ],
     },
     {
       title: 'Cài đặt sự kiện',
       items: [
-        { text: 'Thành viên', href: '/members', icon: <Users size={18} /> },
+        { text: 'Thành viên', href: 'member', icon: <Users size={18} /> },
         { text: 'Chỉnh sửa', href: '/edit', icon: <Edit size={18} /> },
-        { text: 'Seatmap', href: '/seatmap', icon: <Map size={18} /> },
+        { text: 'Seatmap', href: `/organizer/events/${eventId}/vouchers`, icon: <Map size={18} /> },
       ],
     },
     {
       title: 'Marketing',
       items: [
-        { text: 'Voucher', href: '/voucher', icon: <Ticket size={18} /> },
+        { text: 'Voucher', href: `/organizer/events/${eventId}/vouchers/voucher-list`, icon: <Ticket size={18} /> },
       ],
     },
   ];

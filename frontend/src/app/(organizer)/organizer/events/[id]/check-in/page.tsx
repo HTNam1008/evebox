@@ -16,11 +16,11 @@ export default function CheckinInfo() {
                 <div className="border-t-2 border-[#0C4762] mt-2"></div>
 
                 {/* Check-in */}
-                <h2 className="text-xl font-semibold mb-4 mt-6">Check-in</h2>
+                <h3 className="text-lg font-bold text-[#0C4762] mb-2 mt-6">Check-in</h3>
                 <CheckinStats />
 
                 {/* Chi tiết vé */}
-                <h2 className="text-xl font-semibold mt-6 mb-2">Chi tiết</h2>
+                <h3 className="text-lg font-bold text-[#0C4762] mb-2 mt-6">Chi tiết</h3>
                 <div className="overflow-x-auto">
                     <TicketTable />
                 </div>
