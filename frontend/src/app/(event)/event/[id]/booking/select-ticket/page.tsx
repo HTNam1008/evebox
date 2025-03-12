@@ -12,7 +12,7 @@ import 'tailwindcss/tailwind.css';
 import Navigation from '../components/navigation';
 import TicketInfor from './components/ticketInfo';
 import SelectTicket from './components/selectTicket';
-import { SeatMap, ShowingData } from '@/types/model/seatmap';
+import { SeatMap, ShowingData, TicketType } from '@/types/model/seatmap';
 import SeatMapComponent from '@/app/(showing)/showing/seatmap/seatmap';
 import Loading from '@/app/(showing)/showing/components/loading';
 import Error from '@/app/(showing)/showing/components/error';
@@ -31,6 +31,7 @@ export default function SelectTicketPage() {
     const eventId = searchParams?.get('eventId');
     const [event, setEvent] = useState<EventDetail | null>(null);
     const [isLoadingEvent, setIsLoadingEvent] = useState(false);
+    const [ticketType, setTicketType] = useState<TicketType[]>([]);
 
     useEffect(() => {
         if (!eventId) return;
@@ -63,8 +64,6 @@ export default function SelectTicketPage() {
     useEffect(() => {
         if (!showingId) return;
 
-        console.log('get showing data');
-
         setIsLoadingSeatmap(true);
         setSeatmapError("");
 
@@ -73,6 +72,7 @@ export default function SelectTicketPage() {
                 .then((data) => {
                     if (data?.data) {
                         setSeatMapData(data.data);
+                        setTicketType(data?.data?.TicketType || []);
                     } else {
                         setSeatmapError("Không tìm thấy dữ liệu showing");
                     }
@@ -82,11 +82,19 @@ export default function SelectTicketPage() {
         }
         else {
             fetchSeatMap(showingId)
-                .then((data) => {
-                    if (data?.data) {
-                        setSeatMapData(data.data);
+                .then((seatMapResponse) => {
+                    if (seatMapResponse?.data) {
+                        setSeatMapData(seatMapResponse.data);
+
+                        return fetchShowingData(showingId);
                     } else {
                         setSeatmapError("Không tìm thấy dữ liệu sơ đồ chỗ ngồi");
+                        return null;
+                    }
+                })
+                .then((showingResponse) => {
+                    if (showingResponse?.data?.TicketType) {
+                        setTicketType(showingResponse.data.TicketType);
                     }
                 })
                 .catch(() => setSeatmapError("Lỗi khi tải dữ liệu sơ đồ chỗ ngồi"))
@@ -94,14 +102,18 @@ export default function SelectTicketPage() {
         }
     }, [showingId]);
 
-    
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const isShowingData = (data: any): data is ShowingData => {
         return !!(data && typeof data === "object" && "TicketType" in data);
     };
 
-    // Tính tổng số vé và tổng tiền
     const totalTickets = Object.values(selectedTickets).reduce((a, b) => a + b, 0);
+
+    const selectedTicketType =
+        Object.keys(selectedTickets).length === 1
+            ? ticketType.find((t) => t.id === Object.keys(selectedTickets)[0])
+            : undefined;
 
     useEffect(() => {
         if (!seatMapData) return;
@@ -114,42 +126,83 @@ export default function SelectTicketPage() {
 
             setTotalAmount(newTotal);
         }
-    }, [selectedTickets, seatMapData]);
+        else {
+            const newTotal = Object.entries(selectedTickets).reduce((sum, [ticketTypeId, quantity]) => {
+                const ticket = ticketType.find((t) => t.id === ticketTypeId);
+                return sum + (ticket?.price || 0) * quantity;
+            }, 0);
+            setTotalAmount(newTotal);
+        }
+    }, [selectedTickets, seatMapData, ticketType]);
+
+    const handleSeatSelectionChange = (seat: { id: number; ticketTypeId: string }, isSelected: boolean) => {
+        setSelectedTickets((prev) => {
+            const ticketTypeId = seat.ticketTypeId;
+            const currentCount = prev[ticketTypeId] || 0;
+            return {
+                ...prev,
+                [ticketTypeId]: isSelected ? currentCount + 1 : Math.max(currentCount - 1, 0)
+            };
+        });
+    };
 
     return (
         <div>
             <Navigation title="Chọn vé" />
             {(!isLoadingEvent && event) ? (
-                <TicketInfor 
-                    event={event} 
+                <TicketInfor
+                    event={event}
                     totalTickets={totalTickets}
                     totalAmount={totalAmount}
                     hasSelectedTickets={totalTickets > 0}
+                    selectedTicketTypeName={selectedTicketType?.name || ""}
+                    selectedTicketPrice={selectedTicketType?.price || 0}
                 />
             ) : (
                 <Loading />
             )}
-            <div className="seatmap-container">
+            <div className="showing-seatmap-container flex flex-row justify-center my-5 mx-0">
                 {isLoadingSeatmap ? (
                     <Loading />
                 ) : seatmapError ? (
                     <Error />
                 ) : isShowingData(seatMapData) ? (
                     <SelectTicket
-                    tickets={(seatMapData?.TicketType || []).map((ticket) => ({
-                        id: ticket.id,
-                        name: ticket.name,
-                        price: ticket.price,
-                        available: ticket.status !== "sold_out",
-                        description: ticket.description,
-                    }))}
-                    selectedTickets={selectedTickets}
-                    setSelectedTickets={setSelectedTickets}
-                    selectedTicket={selectedTicket}
-                    setSelectedTicket={setSelectedTicket}
-                />
+                        tickets={(seatMapData?.TicketType || []).map((ticket) => ({
+                            id: ticket.id,
+                            name: ticket.name,
+                            price: ticket.price,
+                            available: ticket.status !== "sold_out",
+                            description: ticket.description,
+                        }))}
+                        selectedTickets={selectedTickets}
+                        setSelectedTickets={setSelectedTickets}
+                        selectedTicket={selectedTicket}
+                        setSelectedTicket={setSelectedTicket}
+                    />
                 ) : (
-                    <SeatMapComponent seatMap={seatMapData as SeatMap} />
+                    <>
+                        <SeatMapComponent seatMap={seatMapData as SeatMap} onSeatSelectionChange={handleSeatSelectionChange} />
+                        <div className='w-[30%] pl-4'>
+                            {ticketType.length > 0 && (
+                                <div className='ticket-type-list'>
+                                    <h2 className='font-bold text-lg mb-2'>Giá vé</h2>
+                                    {ticketType.map((type) => (
+                                        <div key={type.id} className='ticket-type-item flex justify-between items-center mb-2'>
+                                            <div className='flex items-center'>
+                                                <span
+                                                    className="inline-block ticket-type-color w-10 h-6 rounded mr-2"
+                                                    style={{ backgroundColor: type.color }}
+                                                ></span>
+                                                <span className='ticket-type-name'>{type.name}</span>
+                                            </div>
+                                            <span className='ticket-type-price text-[#0C4762] font-semibold'>{type.price.toLocaleString("vi-VN")}đ</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

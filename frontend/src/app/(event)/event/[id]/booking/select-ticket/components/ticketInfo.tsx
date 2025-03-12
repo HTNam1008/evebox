@@ -10,6 +10,7 @@ import Image from 'next/image';
 
 /* Package Application */
 import CollapsibleDescription from './collapsibleDescriptionProp';
+import { convertLocationToVietnamese } from '@/utils/helpers';
 
 interface EventProps {
     id: number;
@@ -26,18 +27,17 @@ interface TicketInforProps {
     totalTickets: number;
     totalAmount: number;
     hasSelectedTickets: boolean;
+    selectedTicketTypeName?: string;
+    selectedTicketPrice?: number;
 }
-
-const cleanDescriptionHTML = (html: string) => {
-    return html.replace(/<img[^>]*>/g, "") // Remove all <img> tags
-        .replace(/<\/?h3[^>]*>/g, ""); // Remove all <h3> tags
-};
 
 export default function TicketInfor({
     event,
     totalTickets,
     totalAmount,
-    hasSelectedTickets
+    hasSelectedTickets,
+    selectedTicketTypeName,
+    selectedTicketPrice,
 }: TicketInforProps) {
     const router = useRouter();
 
@@ -46,6 +46,8 @@ export default function TicketInfor({
         localStorage.setItem('totalTickets', totalTickets.toString());
         localStorage.setItem('totalAmount', totalAmount.toString());
         localStorage.setItem('hasSelectedTickets', hasSelectedTickets.toString());
+        localStorage.setItem('selectedTicketTypeName', selectedTicketTypeName || '');
+        localStorage.setItem('selectedTicketPrice', selectedTicketPrice?.toString() || '');
 
         // Điều hướng đến trang tiếp theo
         router.push(`/event/${event.id}/booking/question-form`);
@@ -82,10 +84,9 @@ export default function TicketInfor({
                     </span>
                 </div>
                 <div className="text-gray-500 flex items-center space-x-2 mt-2">
-                    <MapPin size={18} /> <span>{event.locationsString}</span>
+                    <MapPin size={18} /> <span>{convertLocationToVietnamese(event.locationsString)}</span>
                 </div>
-                {/* <div className="text-sm text-gray-600 mt-2 event-description" dangerouslySetInnerHTML={{ __html: cleanDescriptionHTML(event.description) }}></div> */}
-                <CollapsibleDescription htmlContent={cleanDescriptionHTML(event.description)} maxHeight={140} />
+                <CollapsibleDescription htmlContent={event.description} maxHeight={140} />
                 <div className="flex items-center space-x-2 mt-4">
                     <Ticket size={18} /> <span className="text-gray-700">x{totalTickets}</span>
                 </div>
