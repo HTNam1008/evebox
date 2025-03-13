@@ -39,7 +39,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                 <div className='row mt-3 text-start'>
                     <div className="col-md-4">
                         <Image
-                            src={`${event?.Images_Events_imgPosterIdToImages?.imageUrl}` || '/images/presentation_pic.png'}
+                            src={`${event?.Images_Events_imgPosterIdToImages?.imageUrl ?? ''}` || '/images/presentation_pic.png'}
                             width={165}
                             height={110}
                             alt="Image of event"
