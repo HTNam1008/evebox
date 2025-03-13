@@ -1,4 +1,4 @@
-"use client"
+/* "use client"
 
 import { useEffect, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
@@ -53,3 +53,4 @@ export default function PaymentQRCode() {
     </div>
   );
 }
+ */

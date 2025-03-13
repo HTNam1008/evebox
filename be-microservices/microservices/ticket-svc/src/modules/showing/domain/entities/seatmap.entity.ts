@@ -27,6 +27,8 @@ export interface Section{
   isStage: boolean;
   element?: JsonValue;
   attribute: JsonValue;
+  status: number;
+  isReservingSeat: boolean;
   ticketTypeId?: string;
   Row?: Row[];
 }

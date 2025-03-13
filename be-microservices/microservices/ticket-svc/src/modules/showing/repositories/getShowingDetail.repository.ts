@@ -22,6 +22,22 @@ export class getShowingDetailRepository {
         endTime: true,
         isEnabledQueueWaiting: true,
         showAllSeats: true,
+        Form: {
+          select: {
+            id: true,
+            name: true,
+            inputs: {
+              select: {
+                id: true,
+                formId: true,
+                fieldName: true,
+                type: true,
+                required: true,
+                regex: true,
+              },
+            },
+          },
+        },
         Events: {
           select: {
             id: true,

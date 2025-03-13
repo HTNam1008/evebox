@@ -39,6 +39,8 @@ export class getShowingSeatmapRepository {
             element: true,
             attribute: true,
             ticketTypeId: true,
+            status: true,
+            isReservingSeat: true,
             Row: {
               select: {
                 id: true,

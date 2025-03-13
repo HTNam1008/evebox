@@ -5,7 +5,6 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 
 /* Package Application */
-import { convertLocationToVietnamese } from '@/utils/helpers';
 import { EventDetail } from '../libs/event.interface';
 import { useTranslations } from "next-intl";
 
@@ -43,7 +42,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                     </button>
                 </div>
 
-                <div className="mt-8 eve-padding">
+                <div className="mt-8 eve-padding w-full">
                     <div className="row justify-content-between">
                         {/* Thông tin sự kiện */}
                         <div className="event-info col-lg-7 col-md-12 mt-4mt-4 p-0 d-flex align-items-center text-left" style={{ zIndex: 2 }}>
@@ -83,12 +82,9 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                     <p className="card-text text-add p-0">{t("addCalender") || "Fallback Text"}</p>
 
                                     <h5 className="card-title mt-2 title-box">{t("priceTitle") || "Fallback Text"}</h5>
-                                    <p className="card-text text-body-secondary">
-                                        <i className="bi bi-geo-alt mr-2"></i>
+                                    <p className="card-text text-body-secondary mb-2" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
+                                        <i className="bi bi-geo-alt-fill mr-2"></i>
                                         {event.venue}
-                                    </p>
-                                    <p className="card-text text-body-secondary ml-6 mb-3" id="event-location" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
-                                        {convertLocationToVietnamese(event.locationsString)}
                                     </p>
 
                                     <hr />
