@@ -55,11 +55,6 @@ export default function SelectTicket({
     };
 
     const handleSelect = (id: string) => {
-        if (selectedTicket && selectedTicket !== id) {
-            setAlertMessage("Bạn chỉ được mua 1 loại vé duy nhất.");
-            setAlertOpen(true);
-            return;
-        }
         setSelectedTicket(id);
     };
 
@@ -69,7 +64,7 @@ export default function SelectTicket({
                 <hr className="mb-8 border-2 border-[#0C4762]" />
 
                 <div className='ticket-container flex justify-center'>
-                    <div className='inline-grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 mx-auto'>
+                    <div className='inline-grid grid-flow-col auto-cols-[minmax(250px,1fr)] gap-4 mx-auto'>
                         {tickets.map((ticket) => (
                             <div
                                 key={ticket.id}
