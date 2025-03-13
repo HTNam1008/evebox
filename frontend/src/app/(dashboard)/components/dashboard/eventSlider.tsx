@@ -4,6 +4,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper as SwiperClass } from 'swiper/types';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -13,6 +14,11 @@ import Image from 'next/image';
 /* Package Application */
 import { Event } from '../../libs/interface/dashboard.interface';
 import '@/styles/admin/eventSlider.css';
+
+type NavigationOptionsTyped = {
+  prevEl?: HTMLElement | null;
+  nextEl?: HTMLElement | null;
+};
 
 interface EventSliderProps {
   title: string;
@@ -24,18 +30,20 @@ interface EventSliderProps {
 const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+
+  
+  const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(null);
+  const navigation = swiperInstance?.params.navigation as NavigationOptionsTyped;
 
   useEffect(() => {
     if (swiperInstance && prevRef.current && nextRef.current) {
-      swiperInstance.params.navigation.prevEl = prevRef.current;
-      swiperInstance.params.navigation.nextEl = nextRef.current;
+      navigation.prevEl = prevRef.current;
+      navigation.nextEl = nextRef.current;
       swiperInstance.navigation.destroy();
       swiperInstance.navigation.init();
       swiperInstance.navigation.update();
     }
-  }, [swiperInstance, prevRef, nextRef]);
+  }, [swiperInstance, prevRef, nextRef, navigation]);
 
   return (
     <div className="relative">
@@ -45,11 +53,6 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
           {title}{' '}
           {subtitle && <span className="text-teal-400">{subtitle}</span>}
         </h2>
-        {/* {showViewMore && (
-          <a href="#" className="text-teal-500 hover:text-teal-700 text-sm md:text-base flex items-center gap-1 transition-colors duration-300">
-            Xem thêm <span>&rarr;</span>
-          </a>
-        )} */}
       </div>
 
       {/* Swiper Slider */}
@@ -108,12 +111,6 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
             </Link>
           </SwiperSlide>
         ))}
-        {/* <button className="custom-swiper-button-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
-          <ChevronLeft className="text-3xl text-white hover:text-gray-900 transition-transform" />
-        </button>
-        <button className="custom-swiper-button-next absolute right-2 top-1/2 -translate-y-1/2 z-10 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
-          <ChevronRight className="text-3xl text-white hover:text-gray-900 transition-transform" />
-        </button> */}
       </Swiper>
 
       {/* Các nút custom navigation */}
