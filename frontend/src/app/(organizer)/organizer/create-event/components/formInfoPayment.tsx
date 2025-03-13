@@ -12,6 +12,12 @@ export default function FormInfoPaymentClient() {
     const [bankName, setBankName] = useState("");
     const [bankBranch, setBankBranch] = useState("");
     const [typeBusiness, setTypeBusiness] = useState("Cá nhân");
+    const [perName, setPerName] = useState("");
+    const [perAddress, setPerAddress] = useState("");
+    const [taxCode, setTaxCode] = useState("");
+    const [companyName, setCompanyName] = useState("");
+    const [companyAddress, setCompanyAddress] = useState("");
+    const [companyTaxCode, setCompanyTaxCode] = useState("");
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
         const value = e.target.value;
@@ -19,10 +25,12 @@ export default function FormInfoPaymentClient() {
         if (field === "accNum") setAccNum(value);
         if (field === "bankName") setBankName(value);
         if (field === "bankBranch") setBankBranch(value);
-
-        // if (errors[field]) {
-        //     setErrors((prev) => ({ ...prev, [field]: false }));
-        // }
+        if (field === "perName") setPerName(value);
+        if (field === "perAddress") setPerAddress(value);
+        if (field === "taxCode") setTaxCode(value);
+        if (field === "companyName") setCompanyName(value);
+        if (field === "companyAddress") setCompanyAddress(value);
+        if (field === "companyTaxCode") setCompanyTaxCode(value);
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, field: string) => {
@@ -34,10 +42,6 @@ export default function FormInfoPaymentClient() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const newErrors: { [key: string]: boolean } = {};
-
-        // if (!eventName.trim()) newErrors.eventName = true;
-
-        // setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
             alert("Form hợp lệ! Gửi dữ liệu...");
@@ -152,57 +156,120 @@ export default function FormInfoPaymentClient() {
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap items-center -mx-3 mb-6">
-                            <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                                <label className="block text-sm font-bold mb-2 text-right">
-                                    Họ tên:
-                                </label>
-                            </div>
+                        {/* Hiển thị khi Loại hình kinh doanh là Cá nhân */}
+                        {typeBusiness === "Cá nhân" && (
+                            <div className='infoOfPersonal'>
+                                <div className="flex flex-wrap items-center -mx-3 mb-6">
+                                    <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                                        <label className="block text-sm font-bold mb-2 text-right">
+                                            Họ tên:
+                                        </label>
+                                    </div>
 
-                            <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
-                                <InputCountField
-                                    label=""
-                                    placeholder=""
-                                    value={bankName}
-                                    onChange={(e) => handleInputChange(e, "bankName")}
-                                    maxLength={100}
-                                />
-                            </div>
-                        </div>
+                                    <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
+                                        <InputCountField
+                                            label=""
+                                            placeholder=""
+                                            value={perName}
+                                            onChange={(e) => handleInputChange(e, "perName")}
+                                            maxLength={100}
+                                        />
+                                    </div>
+                                </div>
 
-                        <div className="flex flex-wrap items-center -mx-3 mb-6">
-                            <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                                <label className="block text-sm font-bold mb-2 text-right">
-                                    Địa chỉ:
-                                </label>
-                            </div>
+                                <div className="flex flex-wrap items-center -mx-3 mb-6">
+                                    <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                                        <label className="block text-sm font-bold mb-2 text-right">
+                                            Địa chỉ:
+                                        </label>
+                                    </div>
 
-                            <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
-                                <InputCountField
-                                    label=""
-                                    placeholder=""
-                                    value={bankBranch}
-                                    onChange={(e) => handleInputChange(e, "bankBranch")}
-                                    maxLength={100}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap items-center -mx-3 mb-6">
-                            <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                                <label className="block text-sm font-bold mb-2 text-right">
-                                    Mã số thuế:
-                                </label>
-                            </div>
+                                    <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
+                                        <InputCountField
+                                            label=""
+                                            placeholder=""
+                                            value={perAddress}
+                                            onChange={(e) => handleInputChange(e, "perAddress")}
+                                            maxLength={100}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap items-center -mx-3 mb-6">
+                                    <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                                        <label className="block text-sm font-bold mb-2 text-right">
+                                            Mã số thuế:
+                                        </label>
+                                    </div>
 
-                            <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
-                                <InputField
-                                    label=""
-                                    placeholder=""
-                                    value={accNum}
-                                    onChange={(e) => handleInputChange(e, "accNum")}
-                                />
+                                    <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
+                                        <InputField
+                                            label=""
+                                            placeholder=""
+                                            value={taxCode}
+                                            onChange={(e) => handleInputChange(e, "taxCode")}
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        )}
+
+                        {/* Hiển thị khi Loại hình kinh doanh là Doanh nghiệp/Tổ chức */}
+                        {typeBusiness === "Doanh nghiệp/Tổ chức" && (
+                            <div className='infoOfCompany'>
+                                <div className="flex flex-wrap items-center -mx-3 mb-6">
+                                    <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                                        <label className="block text-sm font-bold mb-2 text-right">
+                                            Tên công ty:
+                                        </label>
+                                    </div>
+
+                                    <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
+                                        <InputCountField
+                                            label=""
+                                            placeholder=""
+                                            value={companyName}
+                                            onChange={(e) => handleInputChange(e, "companyName")}
+                                            maxLength={100}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-wrap items-center -mx-3 mb-6">
+                                    <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                                        <label className="block text-sm font-bold mb-2 text-right">
+                                            Địa chỉ công ty:
+                                        </label>
+                                    </div>
+
+                                    <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
+                                        <InputCountField
+                                            label=""
+                                            placeholder=""
+                                            value={companyAddress}
+                                            onChange={(e) => handleInputChange(e, "companyAddress")}
+                                            maxLength={100}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap items-center -mx-3 mb-6">
+                                    <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                                        <label className="block text-sm font-bold mb-2 text-right">
+                                            Mã số thuế:
+                                        </label>
+                                    </div>
+
+                                    <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
+                                        <InputField
+                                            label=""
+                                            placeholder=""
+                                            value={companyTaxCode}
+                                            onChange={(e) => handleInputChange(e, "companyTaxCode")}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                     </div>
 
                     <div className="flex justify-center mt-4 mb-4">
