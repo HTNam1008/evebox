@@ -38,8 +38,8 @@ export default function EventDetailClient({ event: events, recommendedEvent: rec
             <div className="d-flex justify-center mt-8">
                 <div className="w-full md:w-5/6">
                     <EventSlider
-                        title="Các sự kiện khác"
-                        subtitle="Bạn có thể thích"
+                        title="anotherEvents"
+                        subtitle="mayLike"
                         events={recommendedEvents}
                         showViewMore={true}
                     />

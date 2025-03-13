@@ -47,5 +47,7 @@
     "onlyOnEve":"Only on",
     "specialEvent":"Event",
     "trendingEvent":"Event",
-    "onlyOneveEvent":"Event"
+    "onlyOneveEvent":"Event",
+    "anotherEvents":"Another events",
+    "mayLike":"You may like"
 }
