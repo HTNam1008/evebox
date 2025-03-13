@@ -49,5 +49,11 @@
     "trendingEvent":"Event",
     "onlyOneveEvent":"Event",
     "anotherEvents":"Another events",
-    "mayLike":"You may like"
+    "mayLike":"You may like",
+    "navigatorSentence1":"Go to ",
+    "navigatorSentence2":"and refer to Popular Question to get more detail",
+    "like":"Like",
+    "comment":"Comment",
+    "share":"Share",
+    "commentHint":"Enter your comment"
 }

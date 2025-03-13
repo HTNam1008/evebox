@@ -49,5 +49,11 @@
     "trendingEvent":"Xu hướng",
     "onlyOneveEvent":"Đặc sắc",
     "anotherEvents":"Các sự kiện khác",
-    "mayLike":"Bạn có thể thích"
+    "mayLike":"Bạn có thể thích",
+    "navigatorSentence1":"Vui lòng truy cập",
+    "navigatorSentence2":"và tham khảo phần Câu hỏi thường gặp để biết thêm chi tiết.",
+    "like":"Thích",
+    "comment":"Bình luận",
+    "share":"Chia sẻ",
+    "commentHint":"Nhập bình luận của bạn"
 }

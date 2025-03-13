@@ -108,7 +108,7 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
         <div className="w-full md:w-5/6">
           <h2 className="text-xl md:text-2xl font-bold">{t('contactOrganizer')}</h2>
           <p className="card-text mt-2">
-            Vui lòng truy cập <a href="#">www.sneakypeeks.com</a> và tham khảo phần Câu hỏi thường gặp để biết thêm chi tiết.
+            {t('navigatorSentence1')} <a href="#">www.sneakypeeks.com</a> {t('navigatorSentence2')}
           </p>
         </div>
       </div>

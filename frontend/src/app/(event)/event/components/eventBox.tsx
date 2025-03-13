@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 /* Package Application */
 import { EventDetail } from '../libs/event.interface';
 import { useTranslations } from "next-intl";
-
+import { useI18n } from "../../../providers/I18nProvider";
 
 const extractFirstParagraph = (html: string) => {
     // Match the first <p>...</p> and extract its content
@@ -17,6 +17,7 @@ const extractFirstParagraph = (html: string) => {
 
 export default function EventBox({ event }: { event: EventDetail }) {
     const t = useTranslations("common");
+    const { locale } = useI18n(); // Get current locale 
     const router = useRouter(); // Sử dụng useRouter
 
     return (
@@ -66,7 +67,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                     <h5 className="card-title title-box">{t("dateTime") || "Fallback Text"}</h5>
                                     <p className="card-text m-0 text-body-secondary">
                                         <i className="bi bi-calendar2-event mr-2"></i>
-                                        {new Date(event.startDate).toLocaleString('vi-VN', {
+                                        {new Date(event.startDate).toLocaleString( locale === "vi" ? 'vi-VN' : 'en-US', {
                                             weekday: 'long',
                                             year: 'numeric',
                                             month: 'long',

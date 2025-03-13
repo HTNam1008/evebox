@@ -41,15 +41,15 @@ const Comment = () => {
                     <div className="small d-flex justify-content-start">
                         <a href="#!" className="d-flex align-items-center me-3" style={{ textDecoration: "none" }}>
                             <i className="bi bi-hand-thumbs-up mr-2"></i>
-                            <p className="mb-0">Thích</p>
+                            <p className="mb-0">{t('like')}</p>
                         </a>
                         <a href="#!" className="d-flex align-items-center me-3" style={{ textDecoration: "none" }}>
                             <i className="bi bi-chat-dots mr-2"></i>
-                            <p className="mb-0">Bình luận</p>
+                            <p className="mb-0">{t('comment')}</p>
                         </a>
                         <a href="#!" className="d-flex align-items-center me-3" style={{ textDecoration: "none" }}>
                             <i className="bi bi-share-fill mr-2"></i>
-                            <p className="mb-0">Chia sẻ</p>
+                            <p className="mb-0">{t('share')}</p>
                         </a>
                     </div>
                 </div>
@@ -71,7 +71,7 @@ const Comment = () => {
                                 className="form-control mb-2"
                                 id="textAreaExample"
                                 style={{ background: "#fff", resize: "none", height: "100px" }}
-                                placeholder="Nhập bình luận của bạn"
+                                placeholder={t('commentHint')}
                                 defaultValue={""}
                             />
 

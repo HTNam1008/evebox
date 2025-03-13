@@ -7,7 +7,7 @@ import { GoogleMapsEmbed } from '@next/third-parties/google';
 /* Package Application */
 import { convertLocationToVietnamese } from "@/utils/helpers";
 import { useTranslations } from "next-intl";
-
+import { useI18n } from "../../../providers/I18nProvider";
         
 interface MoreInformationProps {
     title: string;
@@ -17,6 +17,7 @@ interface MoreInformationProps {
 
 export default function MoreInformation({ title, location, locationsString }: MoreInformationProps) {
     const t = useTranslations("common");
+    const { locale } = useI18n(); // Get current locale
     
     return (
         <div className="col-lg-4 col-md-12" id="event-location">
@@ -32,7 +33,7 @@ export default function MoreInformation({ title, location, locationsString }: Mo
                             apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""}
                             mode="place"
                             q={location}
-                            language="vi"
+                            language={locale}
                             width="100%"
                             height="100%"
                         />
@@ -45,7 +46,7 @@ export default function MoreInformation({ title, location, locationsString }: Mo
                         {location}
                     </p>
                     <p className="card-text text-body-secondary ml-6 mb-2" id="event-location" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
-                        {convertLocationToVietnamese(locationsString)}
+                        {locale === "vi" ? convertLocationToVietnamese(locationsString) : locationsString}
                     </p>
                 </div>
             </div>
