@@ -102,9 +102,7 @@ export default function SelectTicketPage() {
         }
     }, [showingId]);
 
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const isShowingData = (data: any): data is ShowingData => {
+    const isShowingData = (data: unknown): data is ShowingData => {
         return !!(data && typeof data === "object" && "TicketType" in data);
     };
 
@@ -117,7 +115,6 @@ export default function SelectTicketPage() {
 
     useEffect(() => {
         if (!seatMapData) return;
-        console.log("🚀 ~ useEffect ~ seatMapData:", seatMapData)
 
         if ("TicketType" in seatMapData) {
             const newTotal = Object.entries(selectedTickets).reduce((sum, [id, quantity]) => {
@@ -128,10 +125,8 @@ export default function SelectTicketPage() {
             setTotalAmount(newTotal);
         }
         else {
-            console.log("🚀 ~ newTotal ~ selectedTickets in else:", selectedTickets)
             const newTotal = Object.entries(selectedTickets).reduce((sum, [ticketTypeId, quantity]) => {
                 const ticket = ticketType.find((t) => t.id === ticketTypeId);
-                console.log("🚀 ~ newTotal ~ ticket:", ticket)
                 return sum + (ticket?.price || 0) * quantity;
             }, 0);
             setTotalAmount(newTotal);
