@@ -2,12 +2,16 @@
 
 import React from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+
 
 const Comment = () => {
+    const t = useTranslations("common");
+    
     return (
         <div className="w-full cmt-pad mt-8">
             <h2 className="text-xl md:text-2xl font-bold">
-                Bình luận
+                {t("commentTitle") || "Fallback Text"}
             </h2>
 
             <div className="card mt-3">

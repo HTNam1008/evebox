@@ -9,9 +9,12 @@ import 'swiper/css/navigation';
 import Link from 'next/link';
 import Image from "next/image";
 
+
 //Package App
 import { Event } from '../../libs/interface/dashboard.interface';
 import '@/styles/admin/eventSlider.css';
+import { useTranslations } from "next-intl";
+
 
 interface EventSliderProps {
   title: string;
@@ -21,12 +24,14 @@ interface EventSliderProps {
 }
 
 const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
+  const t = useTranslations("common");
+  
   return (
     <div className="relative">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
         <h2 className="text-xl md:text-2xl font-bold">
-          {title} {subtitle && <span className="text-teal-400">{subtitle}</span>}
+          {t(`${title}` || "")}  {subtitle && <span className="text-teal-400"> {t(`${subtitle}`)}</span>}
         </h2>
         {/* {showViewMore && (
           <a href="#" className="text-teal-500 hover:text-teal-700 text-sm md:text-base flex items-center gap-1 transition-colors duration-300">

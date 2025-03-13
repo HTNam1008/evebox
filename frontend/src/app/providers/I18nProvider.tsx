@@ -48,7 +48,7 @@ export default function I18nProvider({ children }: { children: React.ReactNode }
     localStorage.setItem("locale", lang);
   };
 
-  if (!messages) return <p>Loading...</p>;
+  if (!messages) return <p></p>;
 
   return (
     <I18nContext.Provider value={{ locale, changeLanguage }}>
