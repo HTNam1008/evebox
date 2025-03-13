@@ -117,6 +117,7 @@ export default function SelectTicketPage() {
 
     useEffect(() => {
         if (!seatMapData) return;
+        console.log("🚀 ~ useEffect ~ seatMapData:", seatMapData)
 
         if ("TicketType" in seatMapData) {
             const newTotal = Object.entries(selectedTickets).reduce((sum, [id, quantity]) => {
@@ -127,8 +128,10 @@ export default function SelectTicketPage() {
             setTotalAmount(newTotal);
         }
         else {
+            console.log("🚀 ~ newTotal ~ selectedTickets in else:", selectedTickets)
             const newTotal = Object.entries(selectedTickets).reduce((sum, [ticketTypeId, quantity]) => {
                 const ticket = ticketType.find((t) => t.id === ticketTypeId);
+                console.log("🚀 ~ newTotal ~ ticket:", ticket)
                 return sum + (ticket?.price || 0) * quantity;
             }, 0);
             setTotalAmount(newTotal);
@@ -161,7 +164,7 @@ export default function SelectTicketPage() {
             ) : (
                 <Loading />
             )}
-            <div className="showing-seatmap-container flex flex-row justify-center my-5 mx-0">
+            <div className="showing-seatmap-container flex flex-row justify-center my-4 mx-0">
                 {isLoadingSeatmap ? (
                     <Loading />
                 ) : seatmapError ? (
