@@ -29,7 +29,7 @@ export default function ConfirmDialog({ open, onClose, id }: ConfirmDialogProps)
 
             <DialogContent className="p-6 flex flex-col justify-center items-center">
                 <Icon icon="material-symbols:warning" width="50" height="50"  color="#f59e0b"  />
-                <p className="text-center">Bạn sẽ mất vị trí mình đã lựa chọn. Đơn hàng đang trong quá trinh thanh toán cũng sẽ bị ảnh hưởng. </p>
+                <p className="text-center">Bạn sẽ mất vị trí mình đã lựa chọn. <br></br>Đơn hàng đang trong quá trinh thanh toán cũng sẽ bị ảnh hưởng. </p>
                 <p className="text-center">Bạn có muốn tiếp tục?</p>
                 <div className="flex gap-4 mt-4">
                     <button 
