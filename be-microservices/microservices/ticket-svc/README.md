@@ -15,7 +15,8 @@ docker start redis-server
 ## Run ticket-svc
 Port: 8001
 Update your .env *NEXT_TICKET_SVC_URL* = localhost:8001 to use
-From now, API showing & seatmap must be call *TICKET_SVC_URL*
+
+## From now, API showing & seatmap must be call *TICKET_SVC_URL*
 
 ## Gen Data to test
 Ticketbox does not provide an API to fetch all forms, so we need to handle this differently

@@ -43,7 +43,7 @@ export class getShowingSeatmapService {
               positionX: new Float32Array([seat.positionX]),
               positionY: new Float32Array([seat.positionY]),
               createdAt: seat.createdAt,
-              status: seat.Ticket[0].status,
+              status: seat.Ticket[0]?.status || 1,
             })),
           })),
         })),

@@ -23,11 +23,13 @@ export class GetRedisSeatService {
       if (ticketKeys.length === 0) {
         const seatKey = `seat:${showingId}:${email}`;
         const seatValue = await redis.get(seatKey);
+        const ttl = await redis.ttl(seatKey);
         return Ok({
           showingId: showingId,
           ticketTypeId: '',
           seatId: seatValue ? JSON.parse(seatValue) : [],
           quantity: 0,
+          expiredTime: ttl,
         })
       }
       else{
@@ -40,7 +42,7 @@ export class GetRedisSeatService {
           showingId: showingId,
           ticketTypeId: ticketTypeId,
           seatId: [],
-          quantity: seatValue ? JSON.parse(seatValue).length : 0,
+          quantity: seatValue ? JSON.parse(seatValue) : 0,
           expiredTime: ttl,
         })
       }
