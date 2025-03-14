@@ -6,7 +6,8 @@ import Sidebar from './components/common/sidebar';
 // // import InformationEventClient from './components/infoEvent';
 // import TimeAndTypeTickets from './components/time&TypeTickets';
 // import Setting from './components/setting';
-import InformationPaymentClient from './components/infoPayment';
+// import InformationPaymentClient from './components/infoPayment';
+import CreateQuestions from './components/createQuestion';
 
 export default async function Page() {
 
@@ -24,7 +25,9 @@ export default async function Page() {
 
                 {/* <Setting></Setting> */}
 
-                <InformationPaymentClient></InformationPaymentClient>
+                {/* <InformationPaymentClient></InformationPaymentClient> */}
+
+                <CreateQuestions />
             </div>
             
         </div>

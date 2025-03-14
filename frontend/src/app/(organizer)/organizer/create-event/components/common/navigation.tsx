@@ -10,6 +10,7 @@ export default function Navigation({ title, step }: { title: string, step: numbe
         { number: 2, label: "Thời gian & loại vé", active: false },
         { number: 3, label: "Cài đặt", active: false },
         { number: 4, label: "Thông tin thanh toán", active: false },
+        { number: 5, label: "Thông tin đăng ký", active: false },
     ];
 
     return (

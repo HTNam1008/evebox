@@ -149,9 +149,7 @@ export default function FormTimeTypeTicketClient() {
                         className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
                     >
                         <CirclePlus size={20} /> Tạo suất diễn
-                    </button>
-
-                    
+                    </button>                    
                 </div>
 
 
