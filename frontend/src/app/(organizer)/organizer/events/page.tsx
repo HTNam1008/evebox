@@ -32,7 +32,7 @@ const events = [
     }
 ];
 
-export default function Member() {
+export default function Event() {
 
     return (
         <main>
