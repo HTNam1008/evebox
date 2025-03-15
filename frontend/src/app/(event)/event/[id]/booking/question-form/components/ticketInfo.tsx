@@ -10,8 +10,10 @@ interface EventProps {
     id: number;
     title: string;
     description: string;
-    date: string;
-    location: string;
+    startDate: string;
+    venue: string;
+    Images_Events_imgPosterIdToImages?: { imageUrl: string };
+    locationsString: string;
 }
 
 interface TicketInformationProps {
@@ -37,7 +39,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                 <div className='row mt-3 text-start'>
                     <div className="col-md-4">
                         <Image
-                            src='/images/dashboard/presentation_pic.png'
+                            src={`${event?.Images_Events_imgPosterIdToImages?.imageUrl ?? ''}` || '/images/event.png'}
                             width={165}
                             height={110}
                             alt="Image of event"
@@ -49,11 +51,16 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                             <p className='d-flex justify-content-start'>{event.title}</p>
                             <p className='d-flex justify-content-start'>
                                 <i className="bi bi-geo-alt mr-2"></i>
-                                {event.location}
+                                {event.venue}
                             </p>
                             <p className='d-flex justify-content-start'>
                                 <i className="bi bi-calendar2-event mr-2"></i>
-                                {event.date}
+                                {new Date(event.startDate).toLocaleString('vi-VN', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                })}
                             </p>
                         </div>
                     ) : (
@@ -111,7 +118,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                     </button>
                 </div>
             </div>
-            <ConfirmDialog open={openDialog} onClose={() => setOpenDialog(false)} id={event?.id}/>
+            <ConfirmDialog open={openDialog} onClose={() => setOpenDialog(false)} id={event?.id} />
         </div>
     );
 }

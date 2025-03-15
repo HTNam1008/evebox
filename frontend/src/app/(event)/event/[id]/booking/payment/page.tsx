@@ -1,6 +1,6 @@
 "use client"
 
-/* Package System */ 
+/* Package System */
 import { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
@@ -10,6 +10,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import PaymentMethod from "./components/paymentMethod";
 import Navigation from "../components/navigation";
 import TicketInformation from "./components/ticketInfo";
+import CountdownTimer from "../components/countdownTimer";
 
 const PaymentPage = () => {
   const [event, setEvent] = useState(null);
@@ -33,6 +34,11 @@ const PaymentPage = () => {
   return (
     <div className="mt-5 mb-5">
       <Navigation title="Thanh toán" />
+
+      <div className="fixed top-10 right-10 mt-4">
+        <CountdownTimer />
+      </div>
+
       <div className="px-32 py-0">
         <div className="row align-items-start mt-4">
           <PaymentMethod />

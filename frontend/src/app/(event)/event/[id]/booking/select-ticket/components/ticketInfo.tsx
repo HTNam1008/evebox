@@ -2,15 +2,14 @@
 'use client';
 
 /* Package System */
-import { Calendar, MapPin, Ticket } from 'lucide-react';
+import { Calendar, Ticket } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 /* Package Application */
-import CollapsibleDescription from './collapsibleDescriptionProp';
-import { convertLocationToVietnamese } from '@/utils/helpers';
+// import CollapsibleDescription from './collapsibleDescriptionProp';
 
 interface EventProps {
     id: number;
@@ -54,14 +53,14 @@ export default function TicketInfor({
     };
 
     return (
-        <div className="flex flex-col md:flex-row px-32 py-8 items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
-            <div className="w-full md:w-1/2">
+        <div className="info-container flex flex-col md:flex-row px-32 py-8 items-stretch space-y-4 md:space-y-0 md:space-x-6 min-h-[540]">
+            <div className="w-full md:w-2/3">
                 <Image
                     src={`${event.Images_Events_imgPosterIdToImages?.imageUrl}` || '/images/event.png'}
                     alt="Event"
-                    width={500}
-                    height={300}
-                    className="w-full h-64 object-cover rounded-lg"
+                    width={800}
+                    height={540}
+                    className="object-cover rounded-lg"
                     style={{
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
@@ -70,39 +69,43 @@ export default function TicketInfor({
                 />
             </div>
 
-            <div className="w-full md:w-1/2">
-                <h2 className="text-lg font-semibold">{event.title}</h2>
-                <div className="text-gray-500 flex items-center space-x-2 mt-4">
-                    <Calendar size={18} />
-                    <span>
-                        {new Date(event.startDate).toLocaleString('vi-VN', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                        })}
-                    </span>
-                </div>
-                <div className="text-gray-500 flex items-center space-x-2 mt-2">
-                    <MapPin size={18} /> <span>{convertLocationToVietnamese(event.locationsString)}</span>
-                </div>
-                <CollapsibleDescription htmlContent={event.description} maxHeight={140} />
-                <div className="flex items-center space-x-2 mt-4">
-                    <Ticket size={18} /> <span className="text-gray-700">x{totalTickets}</span>
+            <div className="w-full md:w-1/3 pt-2 pb-2 flex flex-col justify-between">
+                <div className='ticket-info-wrapper'>
+                    <h2 className="text-lg font-semibold">{event.title}</h2>
+                    <div className="text-gray-500 flex items-center space-x-2 mt-4">
+                        <Calendar size={18} />
+                        <span>
+                            {new Date(event.startDate).toLocaleString('vi-VN', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                            })}
+                        </span>
+                    </div>
+                    <div className="text-gray-500 flex items-center space-x-2 mt-2">
+                        <i className="bi bi-geo-alt-fill mr-1"></i> <span>{event.venue}</span>
+                    </div>
+                    {/* <CollapsibleDescription htmlContent={event.description} maxHeight={140} /> */}
                 </div>
 
-                <button
-                    className={`w-full p-2 rounded-lg mt-4 ${hasSelectedTickets
+                <div className='action-wrapper pb-4'>
+                    <div className="flex items-center space-x-2 mt-4">
+                        <Ticket size={28} /> <span className="text-gray-700 text-xl">x{totalTickets}</span>
+                    </div>
+                    <button
+                        className={`w-full choose-ticket-btn items-center p-2 rounded-lg mt-4 ${hasSelectedTickets
                             ? 'bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
-                    disabled={!hasSelectedTickets}
-                    onClick={handleContinue}
-                >
-                    {hasSelectedTickets
-                        ? `Tiếp tục - ${totalAmount.toLocaleString()}đ`
-                        : 'Vui lòng chọn vé'}
-                </button>
+                            }`}
+                        disabled={!hasSelectedTickets}
+                        onClick={handleContinue}
+                    >
+                        {hasSelectedTickets
+                            ? `Tiếp tục - ${totalAmount.toLocaleString()}đ`
+                            : 'Vui lòng chọn vé'}
+                    </button>
+                </div>
             </div>
         </div>
     );

@@ -5,7 +5,6 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 
 /* Package Application */
-import { convertLocationToVietnamese } from '@/utils/helpers';
 import { EventDetail } from '../libs/event.interface';
 
 const extractFirstParagraph = (html: string) => {
@@ -80,12 +79,9 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                     <p className="card-text text-add p-0">Thêm vào lịch</p>
 
                                     <h5 className="card-title mt-2 title-box">Địa điểm</h5>
-                                    <p className="card-text text-body-secondary">
-                                        <i className="bi bi-geo-alt mr-2"></i>
+                                    <p className="card-text text-body-secondary mb-2" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
+                                        <i className="bi bi-geo-alt-fill mr-2"></i>
                                         {event.venue}
-                                    </p>
-                                    <p className="card-text text-body-secondary ml-6 mb-3" id="event-location" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
-                                        {convertLocationToVietnamese(event.locationsString)}
                                     </p>
 
                                     <hr />

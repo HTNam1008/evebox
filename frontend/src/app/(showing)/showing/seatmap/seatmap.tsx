@@ -54,30 +54,28 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap, onSeatSelectionChan
       setAlertOpen(true);
       return;
     }
+    
+    const newSeatSelected = new Set(selectedSeats);
+    const isSelected = newSeatSelected.has(seat.id);
+    if (isSelected) {
+      newSeatSelected.delete(seat.id);
+    } else {
+      newSeatSelected.add(seat.id);
+    }
 
-    setSelectedSeats((prevSelected) => {
-      const newSeatSelected = new Set(prevSelected);
-      const isSelected = newSeatSelected.has(seat.id);
-      if (isSelected) {
-        newSeatSelected.delete(seat.id);
-      } else {
-        newSeatSelected.add(seat.id);
-      }
-      console.log('newSelected', newSeatSelected);
+    // lần đầu chọn -> set loại vé được chọn
+    if (!selectedTicketType && !isSelected) {
+      setSelectedTicketType(sectionTicketTypeId);
+    }
+    // không còn ghế được chọn -> reset selectedTicketType
+    if (newSeatSelected.size === 0) {
+      setSelectedTicketType(null);
+    }
 
-      // lần đầu chọn -> set loại vé được chọn
-      if (!selectedTicketType && !isSelected) {
-        setSelectedTicketType(sectionTicketTypeId);
-      }
-      // không còn ghế được chọn -> reset selectedTicketType
-      if (newSeatSelected.size === 0) {
-        setSelectedTicketType(null);
-      }
+    setSelectedSeats(newSeatSelected);
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      onSeatSelectionChange?.({ id: seat.id, ticketTypeId: sectionTicketTypeId }, !isSelected);
-      return newSeatSelected;
-    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    onSeatSelectionChange?.({ id: seat.id, ticketTypeId: sectionTicketTypeId }, !isSelected);
   };
 
   const getSeatLabel = (rowName: string, seatName: string): string => {

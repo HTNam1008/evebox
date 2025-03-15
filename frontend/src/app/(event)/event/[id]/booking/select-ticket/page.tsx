@@ -102,9 +102,7 @@ export default function SelectTicketPage() {
         }
     }, [showingId]);
 
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const isShowingData = (data: any): data is ShowingData => {
+    const isShowingData = (data: unknown): data is ShowingData => {
         return !!(data && typeof data === "object" && "TicketType" in data);
     };
 
@@ -161,7 +159,7 @@ export default function SelectTicketPage() {
             ) : (
                 <Loading />
             )}
-            <div className="showing-seatmap-container flex flex-row justify-center my-5 mx-0">
+            <div className="showing-seatmap-container flex flex-row justify-center my-4 mx-0">
                 {isLoadingSeatmap ? (
                     <Loading />
                 ) : seatmapError ? (
