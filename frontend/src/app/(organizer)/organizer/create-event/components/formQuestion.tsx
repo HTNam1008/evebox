@@ -9,6 +9,7 @@ import RadioOption from "./common/form/radioOption";
 import InputCountField from "./common/form/inputCountField";
 import CustomRadioButton from "./common/form/customRadioButton";
 import MultipleAnswer from "./common/form/multipleAns";
+import OneAnswer from "./common/form/oneAns";
 
 export default function FormQuestionClient() {
     const [name, setName] = useState("");
@@ -17,6 +18,27 @@ export default function FormQuestionClient() {
     const [quesText, setQuesText] = useState("quesText");
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
+    // One Answer
+    const [oneTexts, setOneTexts] = useState<string[]>([""]);
+    const [oneCheckedItems, setOneCheckedItems] = useState<boolean[]>([false]); // Trạng thái checked của mỗi input
+
+    const handleOneAddOption = () => {
+        setOneTexts([...oneTexts, ""]);
+        setOneCheckedItems([...oneCheckedItems, false]); // Thêm trạng thái checked mới
+    };
+    
+    const handleOneDelete = (index: number) => {
+        setOneTexts(oneTexts.filter((_, i) => i !== index));
+        setOneCheckedItems(oneCheckedItems.filter((_, i) => i !== index)); // Xóa trạng thái checked tương ứng
+    };
+
+    const toggleOneChecked = (index: number) => {
+        const newChecked = [...oneCheckedItems];
+        newChecked[index] = !newChecked[index]; // Đảo trạng thái checked
+        setOneCheckedItems(newChecked);
+    };
+
+    // Multiple Answer
     const [texts, setTexts] = useState<string[]>([""]);
     const [checkedItems, setCheckedItems] = useState<boolean[]>([false]); // Trạng thái checked của mỗi input
 
@@ -25,7 +47,6 @@ export default function FormQuestionClient() {
         setCheckedItems([...checkedItems, false]); // Thêm trạng thái checked mới
     };
     
-
     const handleDelete = (index: number) => {
         setTexts(texts.filter((_, i) => i !== index));
         setCheckedItems(checkedItems.filter((_, i) => i !== index)); // Xóa trạng thái checked tương ứng
@@ -36,6 +57,7 @@ export default function FormQuestionClient() {
         newChecked[index] = !newChecked[index]; // Đảo trạng thái checked
         setCheckedItems(newChecked);
     };
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
         const value = e.target.value;
@@ -50,10 +72,6 @@ export default function FormQuestionClient() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const newErrors: { [key: string]: boolean } = {};
-
-        // if (!eventName.trim()) newErrors.eventName = true;
-
-        // setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
             alert("Form hợp lệ! Gửi dữ liệu...");
@@ -175,6 +193,34 @@ export default function FormQuestionClient() {
                                         />
                                     </div>
                                 </div>
+
+                                {quesText === "oneAns" && (<div className="border border-gray-400 p-4 rounded bg-white w-full mt-4">
+                                    {oneTexts.map((text, index) => (
+                                        <OneAnswer
+                                            key={index}
+                                            value={text}
+                                            checked={oneCheckedItems[index]} // Truyền trạng thái checked xuống component con
+                                            onChange={(newValue) => {
+                                                const newTexts = [...oneTexts];
+                                                newTexts[index] = newValue;
+                                                setOneTexts(newTexts);
+                                            }}
+                                            onToggle={() => toggleOneChecked(index)} // Hàm xử lý chọn/bỏ chọn
+                                            onDelete={() => handleOneDelete(index)}
+                                        />
+                                    ))}
+
+                                    <div className="ml-2">
+                                        <button
+                                            type="button"
+                                            className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
+                                            onClick={handleOneAddOption}
+                                        >
+                                            <CirclePlus size={20} /> Thêm tùy chọn
+                                        </button>
+                                    </div>
+                                </div>
+                                )}
 
                                 {quesText === "multAns" && (<div className="border border-gray-400 p-4 rounded bg-white w-full mt-4">
                                     {texts.map((text, index) => (
