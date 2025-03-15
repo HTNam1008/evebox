@@ -33,6 +33,7 @@ export class GetRedisSeatService {
         })
       }
       else{
+        // Only can buy 1 ticketType at a time, so we only get the first key
         const ticketKey = ticketKeys[0];
         const seatValue = await redis.get(ticketKey);
         const ttl = await redis.ttl(ticketKey);
