@@ -3,11 +3,11 @@ import 'tailwindcss/tailwind.css';
 
 /* Package Application */
 import Sidebar from './components/common/sidebar';
-import InformationEventClient from './components/infoEvent';
-// import TimeAndTypeTickets from './components/time&TypeTickets';
-// import Setting from './components/setting';
-// import InformationPaymentClient from './components/infoPayment';
-// import CreateQuestions from './components/createQuestion';
+import InformationEventClient from './components/info-event/page';
+// import TimeAndTypeTickets from './components/time-type/page';
+// import Setting from './components/info-setting/page';
+// import InformationPaymentClient from './components/info-payment/page';
+// import CreateQuestions from './components/info-regis/page';
 
 export default async function Page() {
 
@@ -25,11 +25,11 @@ export default async function Page() {
 
                 {/* <Setting></Setting> */}
 
-                {/* <InformationPaymentClient></InformationPaymentClient> */}
-
                 {/* <CreateQuestions /> */}
+
+                {/* <InformationPaymentClient></InformationPaymentClient> */}
             </div>
-            
+
         </div>
     )
 }

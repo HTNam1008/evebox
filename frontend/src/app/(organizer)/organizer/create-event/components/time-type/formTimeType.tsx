@@ -8,8 +8,8 @@ import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 
 /* Package Application */
-import DateTimePicker from "./common/form/dateTimePicker";
-import CreateTypeTicketDailog from "./dialogs/createTicketsDailog";
+import DateTimePicker from "../common/form/dateTimePicker";
+import CreateTypeTicketDailog from "../dialogs/createTicketsDailog";
 
 export default function FormTimeTypeTicketClient() {
     const [month, setMonth] = useState("");

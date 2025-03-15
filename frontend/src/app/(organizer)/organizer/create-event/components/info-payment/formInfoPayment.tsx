@@ -2,9 +2,9 @@
 import { useState } from 'react';
 
 /* Package Application */
-import InputCountField from "./common/form/inputCountField";
-import InputField from './common/form/inputField';
-import SelectField from './common/form/selectField';
+import InputCountField from "../common/form/inputCountField";
+import InputField from '../common/form/inputField';
+import SelectField from '../common/form/selectField';
 
 export default function FormInfoPaymentClient() {
     const [accName, setAccName] = useState("");

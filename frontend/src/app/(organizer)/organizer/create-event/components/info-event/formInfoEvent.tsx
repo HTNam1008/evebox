@@ -6,9 +6,9 @@ import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 
 /* Package Application */
-import InputField from "./common/form/inputCountField";
-import SelectField from "./common/form/selectField";
-import ImageUpload from "./common/form/imageUpload";
+import InputField from "../common/form/inputCountField";
+import SelectField from "../common/form/selectField";
+import ImageUpload from "../common/form/imageUpload";
 
 export default function FormInformationEventClient({ onNextStep }: { onNextStep: () => void }) {
     const [logo, setLogo] = useState<string | null>(null);

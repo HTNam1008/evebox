@@ -6,7 +6,7 @@ import 'tailwindcss/tailwind.css';
 import { useState } from 'react';
 
 /* Package Application */
-import Navigation from './common/navigation';
+import Navigation from '../common/navigation';
 import FormSettingClient from './formSetting';
 
 export default function Setting() {

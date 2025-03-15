@@ -5,7 +5,7 @@ import { useState } from "react";
 import { LockKeyhole, Users, User, Mail, LayoutList, ToggleLeft, ToggleRight } from "lucide-react";
 
 /* Package Application */
-import RadioOption from "./common/form/radioOption";
+import RadioOption from "../common/form/radioOption";
 
 export default function FormSettingClient() {
     const [eventName, setEventName] = useState("name-of-event");

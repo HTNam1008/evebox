@@ -5,11 +5,11 @@ import { useState } from "react";
 import { CirclePlus, Equal, Trash2 } from "lucide-react";
 
 /* Package Application */
-import RadioOption from "./common/form/radioOption";
-import InputCountField from "./common/form/inputCountField";
-import CustomRadioButton from "./common/form/customRadioButton";
-import MultipleAnswer from "./common/form/multipleAns";
-import OneAnswer from "./common/form/oneAns";
+import RadioOption from "../common/form/radioOption";
+import InputCountField from "../common/form/inputCountField";
+import CustomRadioButton from "../common/form/customRadioButton";
+import MultipleAnswer from "../common/form/multipleAns";
+import OneAnswer from "../common/form/oneAns";
 
 export default function FormQuestionClient() {
     const [name, setName] = useState("");
