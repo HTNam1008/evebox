@@ -3,11 +3,11 @@ import 'tailwindcss/tailwind.css';
 
 /* Package Application */
 import Sidebar from './components/common/sidebar';
-// // import InformationEventClient from './components/infoEvent';
+import InformationEventClient from './components/infoEvent';
 // import TimeAndTypeTickets from './components/time&TypeTickets';
 // import Setting from './components/setting';
 // import InformationPaymentClient from './components/infoPayment';
-import CreateQuestions from './components/createQuestion';
+// import CreateQuestions from './components/createQuestion';
 
 export default async function Page() {
 
@@ -19,7 +19,7 @@ export default async function Page() {
             </div>
 
             <div className='w-full flex flex-col'>
-                {/* <InformationEventClient></InformationEventClient> */}
+                <InformationEventClient></InformationEventClient>
 
                 {/* <TimeAndTypeTickets></TimeAndTypeTickets> */}
 
@@ -27,7 +27,7 @@ export default async function Page() {
 
                 {/* <InformationPaymentClient></InformationPaymentClient> */}
 
-                <CreateQuestions />
+                {/* <CreateQuestions /> */}
             </div>
             
         </div>

@@ -11,7 +11,7 @@ import FormInfoPaymentClient from './formInfoPayment';
 
 export default function InformationPaymentClient() {
     // const [step, setStep] = useState(4); 
-    const [step] = useState(4);
+    const [step] = useState(5);
 
     return (
         <>

@@ -11,7 +11,7 @@ import FormQuestionClient from './formQuestion';
 
 export default function CreateQuestions() {
     // const [step, setStep] = useState(3); 
-    const [step] = useState(5);
+    const [step] = useState(4);
 
     return (
         <>
