@@ -99,6 +99,18 @@ export interface ShowingData {
   };
   TicketType?: TicketType[];
   SeatMap?: SeatMap;
+  Form?: {
+    id: number;
+    name: string;
+    inputs?: {
+      id: number;
+      formId: number;
+      fieldName: string;
+      type: string;
+      required: boolean;
+      regex: string;
+    }
+  }
 }
 
 export type SeatMapResponse = BaseApiResponse<ShowingData>;
