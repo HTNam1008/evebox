@@ -14,6 +14,12 @@ export default function PaymentMethod() {
 
     const [selectedMethod, setSelectedMethod] = useState("shopeepay");
 
+    const userData = localStorage.getItem('verifyData');
+    const user = userData ? JSON.parse(userData) : null;
+    const phone = localStorage.getItem('phone');
+    const email = localStorage.getItem('email');
+    // const address = localStorage.getItem('address');
+
     const paymentMethods = [
         { id: "shopeepay", name: "ShopeePay Wallet", image: "/images/shopeepay.png" },
         { id: "momo", name: "Momo Wallet", image: "/images/momo.png" },
@@ -33,7 +39,7 @@ export default function PaymentMethod() {
                     <div className="alert alert-info bg-alert text-sm d-flex align-items-center">
                         <i className="bi bi-exclamation-circle mr-2"></i>
                         Lưu ý kiểm tra thông tin nhận vé. Nếu có thay đổi vui lòng&nbsp;
-                        <a onClick={handleOpenInfoDialog} className="fw-bold text-primary">
+                        <a onClick={handleOpenInfoDialog} className="fw-bold text-primary cursor-pointer hover:underline">
                             cập nhật tại đây
                         </a>
                     </div>
@@ -41,8 +47,8 @@ export default function PaymentMethod() {
                     {/* Thông tin nhận vé */}
                     <div className="mt-3 flex flex-col items-start">
                         <h2 className="fw-bold">Thông tin nhận vé</h2>
-                        <p className="mb-1">Nguyễn Thanh Huệ &nbsp;&nbsp; +84123390876</p>
-                        <p className="text-muted">customer@gmail.com</p>
+                        <p className="mb-1">{user?.name} &nbsp;&nbsp; {phone}</p>
+                        <p className="text-muted">{email}</p>
                     </div>
 
                     {/* Phương thức thanh toán */}
@@ -74,7 +80,7 @@ export default function PaymentMethod() {
                     </div>
                 </div>
             </div>
-            <PaymentInfoDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
+            <PaymentInfoDialog open={isDialogOpen} user={user} onClose={() => setIsDialogOpen(false)} />
         </>
     );
 }

@@ -10,19 +10,23 @@ interface EventProps {
     id: number;
     title: string;
     description: string;
-    date: string;
-    location: string;
+    startDate: string;
+    venue: string;
+    Images_Events_imgPosterIdToImages?: { imageUrl: string };
+    locationsString: string;
 }
 
 interface TicketInformationProps {
     event: EventProps | null;
     totalTickets: number;
     totalAmount: number;
+    ticketTypeName?: string;
+    ticketPrice?: number;
 }
 
 
 
-export default function TicketInformation({ event, totalTickets, totalAmount }: TicketInformationProps) {
+export default function TicketInformation({ event, totalTickets, totalAmount, ticketTypeName, ticketPrice }: TicketInformationProps) {
     const [promoCode, setPromoCode] = useState('');
     const [isQRDialogOpen, setIsQRDialogOpen] = useState(false);
 
@@ -37,7 +41,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                 <div className='row mt-3 mb-3 text-start'>
                     <div className="col-md-4">
                         <Image
-                            src='/images/dashboard/presentation_pic.png'
+                            src={`${event?.Images_Events_imgPosterIdToImages?.imageUrl ?? ''}` || '/images/event.png'}
                             width={165}
                             height={110}
                             alt="Image of event"
@@ -49,11 +53,11 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                             <p className='d-flex justify-content-start'>{event.title}</p>
                             <p className='d-flex justify-content-start'>
                                 <i className="bi bi-geo-alt mr-2"></i>
-                                {event.location}
+                                {event.venue}
                             </p>
                             <p className='d-flex justify-content-start'>
                                 <i className="bi bi-calendar2-event mr-2"></i>
-                                {event.date}
+                                {event.startDate}
                             </p>
                         </div>
                     ) : (
@@ -81,8 +85,8 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                 <div className='row'>
                     <div className="col-md-8 d-flex justify-content-start">
                         <p className='text-start'>
-                            <span style={{ display: "block" }}>Early Bird Ticket</span>
-                            <span style={{ display: "block" }}>599.000đ</span>
+                            <span style={{ display: "block" }}>{ticketTypeName}</span>
+                            <span style={{ display: "block" }}>{ticketPrice?.toLocaleString("vi-VN")}đ</span>
                         </p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
@@ -111,7 +115,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                         <p>Tạm tính</p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
-                        <p>{totalAmount}</p>
+                        <p>{totalAmount.toLocaleString("vi-VN")}đ</p>
                     </div>
                 </div>
                 <hr className="custom-hr" />
@@ -120,7 +124,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount }: 
                         <p style={{color: '#0C4762'}} className='fw-bold'>Tổng tiền</p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
-                        <p style={{color: '#0C4762'}} className='fw-bold'>{totalAmount}</p>
+                        <p style={{color: '#0C4762'}} className='fw-bold'>{totalAmount.toLocaleString("vi-VN")}đ</p>
                     </div>
                 </div>
                 <div className='row mt-2 mb-4'>

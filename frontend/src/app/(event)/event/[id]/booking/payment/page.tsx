@@ -16,6 +16,8 @@ const PaymentPage = () => {
   const [event, setEvent] = useState(null);
   const [totalTickets, setTotalTickets] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [ticketTypeName, setTicketTypeName] = useState('');
+  const [ticketPrice, setTicketPrice] = useState(0);
 
   useEffect(() => {
     fetchEventInfo();
@@ -25,10 +27,14 @@ const PaymentPage = () => {
     const storedEvent = localStorage.getItem('event');
     const storedTotalTickets = localStorage.getItem('totalTickets');
     const storedTotalAmount = localStorage.getItem('totalAmount');
+    const storedTicketTypeName = localStorage.getItem('selectedTicketTypeName');
+    const storedTicketPrice = localStorage.getItem('selectedTicketPrice');
 
     if (storedEvent) setEvent(JSON.parse(storedEvent));
     if (storedTotalTickets) setTotalTickets(Number(storedTotalTickets));
     if (storedTotalAmount) setTotalAmount(Number(storedTotalAmount));
+    if (storedTicketTypeName) setTicketTypeName(storedTicketTypeName);
+    if (storedTicketPrice) setTicketPrice(Number(storedTicketPrice));
   }
 
   return (
@@ -42,7 +48,7 @@ const PaymentPage = () => {
       <div className="px-32 py-0">
         <div className="row align-items-start mt-4">
           <PaymentMethod />
-          <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} />
+          <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} ticketTypeName={ticketTypeName} ticketPrice={ticketPrice} />
         </div>
       </div>
     </div>

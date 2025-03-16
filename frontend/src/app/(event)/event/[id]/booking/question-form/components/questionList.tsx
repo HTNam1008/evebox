@@ -9,10 +9,23 @@ export default function QuestionList({ onValidationChange }: { onValidationChang
     const [isValid, setIsValid] = useState(false);
 
     useEffect(() => {
-        const isFormValid = phone.trim() !== "" && email.trim() !== "" && address.trim() !== "" && agree;
+        const isFormValid = phone.trim() !== "" && email.trim() !== "" && agree;
         setIsValid(isFormValid);
         onValidationChange(isFormValid); // Truyền trạng thái form lên component cha
-    }, [phone, email, address, agree, onValidationChange]);
+    }, [phone, email, agree, onValidationChange]);
+
+    useEffect(() => {
+        // save email and address and phone to local storage
+        if (phone.trim() !== "") {
+            localStorage.setItem("phone", phone);
+        }
+        if (email.trim() !== "") {
+            localStorage.setItem("email", email);
+        }
+        if (address.trim() !== "") {
+            localStorage.setItem("address", address);
+        }
+    }, [phone, email, address]);
 
     return (
         <div className="col-7">
@@ -63,7 +76,7 @@ export default function QuestionList({ onValidationChange }: { onValidationChang
                     </div>
                     <div className="col-md-12">
                         <label htmlFor="address" className="form-label d-flex justify-content-start">
-                            <b><span className='red-star'>*</span> Địa điểm nhận quà (nếu có)</b>
+                            <b>Địa điểm nhận quà (nếu có)</b>
                         </label>
                         <input
                             type="text"
