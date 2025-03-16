@@ -23,3 +23,13 @@ export interface EventLocationInputProps {
     handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>, field: string) => void; 
     setEventTypeSelected: React.Dispatch<React.SetStateAction<string>>; 
 }
+
+export interface EventImageUploadProps {
+    logo: string | null;
+    background: string | null;
+    handleUpload: (event: React.ChangeEvent<HTMLInputElement>, type: string) => void;
+    imageErrors: { logo?: string; background?: string };
+    eventName: string;
+    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void;
+    errors: { eventName?: boolean };
+}

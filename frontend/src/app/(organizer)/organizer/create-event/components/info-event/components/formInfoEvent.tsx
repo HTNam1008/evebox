@@ -6,13 +6,12 @@ import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 
 /* Package Application */
-import InputField from "../../common/form/inputCountField";
 import SelectField from "../../common/form/selectField";
-import ImageUpload from "../../common/form/imageUpload";
 import TextEditor from "./textEditor";
 import { handleImageUpload } from "../../../libs/functions/imageUploadUtils";
 import OrganizationInfoForm from "./organizationInfoForm";
 import EventLocationInput from "./eventLocationInput";
+import EventImageUpload from "./eventImageUpload";
 
 export default function FormInformationEventClient({ onNextStep }: { onNextStep: () => void }) {
     const [logo, setLogo] = useState<string | null>(null);
@@ -131,52 +130,15 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
             <Toaster position="top-center" />
             <div className="flex justify-center">
                 <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit}>
-                    <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
-                        <label className="block text-sm font-bold mb-2">
-                            <span className="text-red-500">* </span> Upload hình ảnh
-                        </label>
-
-                        <div className="flex flex-wrap -mx-3 mb-6">
-                            {/* Upload Logo */}
-                            <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                                <ImageUpload
-                                    image={logo}
-                                    onUpload={(e) => handleUpload(e, "logo")}
-                                    placeholderText="Thêm logo sự kiện"
-                                    dimensions="(720x958)"
-                                    height="h-96"
-                                    error={imageErrors.logo}
-                                />
-                            </div>
-
-                            {/* Upload Background */}
-                            <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
-                                <ImageUpload
-                                    image={background}
-                                    onUpload={(e) => handleUpload(e, "background")}
-                                    placeholderText="Thêm ảnh nền sự kiện"
-                                    dimensions="(1280x720)"
-                                    height="h-96"
-                                    error={imageErrors.background}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex flex-wrap -mx-3 mb-6">
-                            {/* Tên sự kiện */}
-                            <div className="w-full px-3">
-                                <InputField
-                                    label="Tên sự kiện"
-                                    placeholder="Nhập tên sự kiện"
-                                    value={eventName}
-                                    onChange={(e) => handleInputChange(e, "eventName")}
-                                    error={errors.eventName}
-                                    maxLength={100}
-                                    required
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <EventImageUpload
+                        logo={logo}
+                        background={background}
+                        handleUpload={handleUpload}
+                        imageErrors={imageErrors}
+                        eventName={eventName}
+                        handleInputChange={handleInputChange}
+                        errors={errors}
+                    />
 
                     <EventLocationInput
                         eventTypeSelected={eventTypeSelected} eventAddress={eventAddress}
