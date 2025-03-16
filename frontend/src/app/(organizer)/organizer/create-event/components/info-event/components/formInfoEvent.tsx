@@ -10,6 +10,9 @@ import InputField from "../../common/form/inputCountField";
 import SelectField from "../../common/form/selectField";
 import ImageUpload from "../../common/form/imageUpload";
 import TextEditor from "./textEditor";
+import { handleImageUpload } from "../../../libs/functions/imageUploadUtils";
+import OrganizationInfoForm from "./organizationInfoForm";
+import EventLocationInput from "./eventLocationInput";
 
 export default function FormInformationEventClient({ onNextStep }: { onNextStep: () => void }) {
     const [logo, setLogo] = useState<string | null>(null);
@@ -33,8 +36,9 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
     const typeEvents = ["Nhạc sống", "Sân khấu & Nghệ thuật", "Thể thao", "Khác"];
     const wards = ["Phường 1", "Phường 2", "Phường 3"];
 
-    const [post, setPost] 
-    = useState(`<p><strong>Giới thiệu sự kiện:</strong></p>
+    //Nội dung sẵn trong Thông tin sự kiện
+    const [post, setPost]
+        = useState(`<p><strong>Giới thiệu sự kiện:</strong></p>
                 <p>
                     [Tóm tắt ngắn gọn về sự kiện: Nội dung chính, điểm đặc sắc nhất
                     và lý do khiến người tham gia không nên bỏ lỡ]
@@ -64,34 +68,7 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                 <p>Lưu ý về điều khoản VAT</p>`);
 
     const handleUpload = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
-        const file = event.target.files?.[0];
-
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                const img = new Image();
-                img.src = reader.result as string;
-                img.onload = () => {
-                    const { width, height } = img;
-                    if ((type === "logo" && (width !== 720 || height !== 958)) || (type === "background" && (width !== 1280 || height !== 720)) || (type === "logoOrg" && (width !== 275 || height !== 275))) {
-                        setImageErrors((prev) => ({ ...prev, [type]: "Kích thước ảnh không đúng" }));
-                        toast.error("Kích thước ảnh không đúng!", { duration: 10000 });
-                    } else {
-                        setImageErrors((prev) => ({ ...prev, [type]: "" }));
-                        if (type === "logo") {
-                            setLogo(reader.result as string);
-                        } else if (type === "background") {
-                            setBackground(reader.result as string);
-                        } else if (type === "logoOrg") {
-                            setLogoOrg(reader.result as string);
-                        }
-                    }
-                };
-            };
-
-            reader.readAsDataURL(file);
-        }
+        handleImageUpload(event, type, setImageErrors, setLogo, setBackground, setLogoOrg);
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, field: string) => {
@@ -201,112 +178,14 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                         </div>
                     </div>
 
-                    <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto"
-                        style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
-                        <label className="block text-sm font-bold mb-2">
-                            <span className="text-red-500">* </span> Địa điểm sự kiện
-                        </label>
-
-                        {/* Radio buttons */}
-                        <div className="flex items-center gap-6 mt-2 text-sm mb-4">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="event_location"
-                                    className="peer hidden"
-                                    checked={eventTypeSelected === "offline"}
-                                    onChange={() => setEventTypeSelected("offline")}
-                                />
-                                <div className="w-4 h-4 rounded-full border border-black bg-white flex items-center justify-center peer-checked:bg-[#9EF5CF] peer-focus:border-green-700">
-                                    <div className="w-2 h-2 rounded-full bg-white"></div>
-                                </div>
-                                <span>Sự kiện offline</span>
-                            </label>
-
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="event_location"
-                                    className="peer hidden"
-                                    checked={eventTypeSelected === "online"}
-                                    onChange={() => setEventTypeSelected("online")}
-                                />
-                                <div className="w-4 h-4 rounded-full border border-black bg-white flex items-center justify-center peer-checked:bg-[#9EF5CF]">
-                                    <div className="w-2 h-2 rounded-full bg-white"></div>
-                                </div>
-                                <span>Sự kiện online</span>
-                            </label>
-                        </div>
-
-                        {/* Chỉ hiển thị phần nhập địa chỉ khi chọn "Sự kiện offline" */}
-                        {eventTypeSelected === "offline" && (
-                            <div>
-                                <div className="flex flex-wrap -mx-3 mb-6">
-                                    {/* Tên địa điểm */}
-                                    <div className="w-full px-3">
-                                        <InputField
-                                            label="Tên địa điểm"
-                                            placeholder="Nhập tên địa điểm"
-                                            value={eventAddress}
-                                            onChange={(e) => handleInputChange(e, "eventAddress")}
-                                            error={errors.eventAddress}
-                                            maxLength={80}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-wrap -mx-3 mb-6">
-                                    {/* Tỉnh/Thành */}
-                                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                        <SelectField
-                                            label="Tỉnh/Thành"
-                                            options={provinces}
-                                            value={province}
-                                            onChange={(e) => handleSelectChange(e, "province")}
-                                            error={errors.province}
-                                            required
-                                        />
-                                    </div>
-
-                                    {/* Quận/Huyện */}
-                                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                        <SelectField
-                                            label="Quận/Huyện"
-                                            options={districts}
-                                            value={district}
-                                            onChange={(e) => handleSelectChange(e, "district")}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-wrap -mx-3 mb-6">
-                                    {/* Phường/Xã */}
-                                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                        <SelectField
-                                            label="Phường/Xã"
-                                            options={wards}
-                                            value={ward}
-                                            onChange={(e) => handleSelectChange(e, "ward")}
-                                        />
-                                    </div>
-
-                                    {/* Số nhà, đường */}
-                                    <div className="w-full md:w-1/2 px-3">
-                                        <InputField
-                                            label="Số nhà, đường"
-                                            placeholder="Nhập số nhà, đường"
-                                            value={street}
-                                            onChange={(e) => handleInputChange(e, "street")}
-                                            error={errors.street}
-                                            maxLength={80}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    <EventLocationInput
+                        eventTypeSelected={eventTypeSelected} eventAddress={eventAddress}
+                        province={province} district={district} ward={ward} street={street}
+                        errors={errors} provinces={provinces} districts={districts} wards={wards}
+                        handleInputChange={handleInputChange}
+                        handleSelectChange={handleSelectChange}
+                        setEventTypeSelected={setEventTypeSelected}
+                    />
 
                     <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         {/* Thể loại sự kiện */}
@@ -339,61 +218,15 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                         </div>
                     </div>
 
-
-                    <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
-                        <div className="flex flex-wrap -mx-3 mb-6">
-                            {/* Logo ban tổ chức */}
-                            <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                                <label className="block text-sm font-bold mb-2">
-                                    <span className="text-red-500">* </span> Upload hình ảnh
-                                </label>
-                                <div className=" text-center">
-                                    <ImageUpload
-                                        image={logoOrg}
-                                        onUpload={(e) => handleUpload(e, "logoOrg")}
-                                        placeholderText="Thêm logo ban tổ chức"
-                                        dimensions="(275x275)"
-                                        height="h-56"
-                                        error={imageErrors.logoOrg}
-                                    />
-                                </div>
-
-                            </div>
-
-                            {/* Tên ban tổ chức */}
-                            <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
-                                <InputField
-                                    label="Tên ban tổ chức"
-                                    placeholder="Nhập tên ban tổ chức"
-                                    value={nameOrg}
-                                    onChange={(e) => handleInputChange(e, "nameOrg")}
-                                    error={errors.nameOrg}
-                                    maxLength={80}
-                                    required
-                                />
-
-                                {/* Thông tin ban tổ chức */}
-                                <div className="mt-4">
-                                    <label className="block text-sm font-bold mb-2">
-                                        <span className="text-red-500">* </span> Thông tin ban tổ chức
-                                    </label>
-                                    <div className="relative">
-                                        <textarea
-                                            className={`w-full h-32 text-sm block appearance-none w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 ${errors.infoOrg ? "border-red-500" : "border-gray-400"
-                                                }`}
-                                            placeholder="Nhập thông tin ban tổ chức"
-                                            value={infoOrg}
-                                            onChange={(e) => handleInputChange(e, "infoOrg")}
-                                        />
-                                        <p className="text-sm text-gray-400 pointer-events-none absolute inset-y-0 right-0 flex items-end px-2 mb-3">
-                                            0/500
-                                        </p>
-                                    </div>
-                                    {errors.infoOrg && <p className="text-red-500 text-sm mt-1">Vui lòng nhập thông tin ban tổ chức</p>}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <OrganizationInfoForm
+                        logoOrg={logoOrg}
+                        nameOrg={nameOrg}
+                        infoOrg={infoOrg}
+                        handleUpload={handleUpload}
+                        handleInputChange={handleInputChange}
+                        errors={errors}
+                        imageErrors={imageErrors}
+                    />
 
                     {/* Nút Nộp */}
                     <div className="flex justify-center mt-4 mb-4">
