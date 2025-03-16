@@ -6,9 +6,10 @@ import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 
 /* Package Application */
-import InputField from "../common/form/inputCountField";
-import SelectField from "../common/form/selectField";
-import ImageUpload from "../common/form/imageUpload";
+import InputField from "../../common/form/inputCountField";
+import SelectField from "../../common/form/selectField";
+import ImageUpload from "../../common/form/imageUpload";
+import TextEditor from "./textEditor";
 
 export default function FormInformationEventClient({ onNextStep }: { onNextStep: () => void }) {
     const [logo, setLogo] = useState<string | null>(null);
@@ -31,6 +32,36 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
     const districts = ["Quận 1", "Quận 3", "Quận 7"];
     const typeEvents = ["Nhạc sống", "Sân khấu & Nghệ thuật", "Thể thao", "Khác"];
     const wards = ["Phường 1", "Phường 2", "Phường 3"];
+
+    const [post, setPost] 
+    = useState(`<p><strong>Giới thiệu sự kiện:</strong></p>
+                <p>
+                    [Tóm tắt ngắn gọn về sự kiện: Nội dung chính, điểm đặc sắc nhất
+                    và lý do khiến người tham gia không nên bỏ lỡ]
+                </p>
+
+                <p><strong>Chi tiết sự kiện:</strong></p>
+                <ul className="list-disc ml-5">
+                    <li>
+                        <span><strong>Chương trình chính:</strong></span> [Liệt kê
+                        những hoạt động nổi bật trong sự kiện: các phần trình diễn, khách mời
+                        đặc biệt, lịch trình các tiết mục cụ thể nếu có.]
+                    </li>
+                    <li>
+                        <span><strong>Khách mời:</strong></span> [Thông tin về các khách
+                        mời đặc biệt, nghệ sĩ, diễn giả sẽ tham gia sự kiện.]
+                    </li>
+                    <li>
+                        <span><strong>Trải nghiệm đặc biệt:</strong></span> [Nếu có
+                        các hoạt động đặc biệt như workshop, khu trải nghiệm, photo booth,
+                        khu check-in hay ưu đãi dành riêng cho người tham dự.]
+                    </li>
+                </ul>
+
+                <p><strong>Điều khoản và điều kiện:</strong></p>
+                <p>[TnC] sự kiện</p>
+                <p>Lưu ý về điều khoản trẻ em</p>
+                <p>Lưu ý về điều khoản VAT</p>`);
 
     const handleUpload = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
         const file = event.target.files?.[0];
@@ -76,6 +107,10 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
             setErrors((prev) => ({ ...prev, [field]: false }));
         }
     };
+
+    const onChange = (content: string) => {
+        setPost(content);
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
         const value = e.target.value;
@@ -296,12 +331,9 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                                 <label className="block text-sm font-bold mb-2">
                                     <span className="text-red-500">* </span> Thông tin sự kiện
                                 </label>
-                                <div className="relative">
-                                    <input
-                                        className={`text-sm block appearance-none w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400`}
-                                        type="text"
-                                        value={""}
-                                    />
+
+                                <div className="boder ">
+                                    <TextEditor content={post} onChange={onChange} />
                                 </div>
                             </div>
                         </div>
@@ -347,9 +379,8 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                                     </label>
                                     <div className="relative">
                                         <textarea
-                                            className={`w-full h-32 text-sm block appearance-none w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 ${
-                                                errors.infoOrg ? "border-red-500" : "border-gray-400"
-                                            }`}
+                                            className={`w-full h-32 text-sm block appearance-none w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 ${errors.infoOrg ? "border-red-500" : "border-gray-400"
+                                                }`}
                                             placeholder="Nhập thông tin ban tổ chức"
                                             value={infoOrg}
                                             onChange={(e) => handleInputChange(e, "infoOrg")}
