@@ -7,12 +7,12 @@ import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import apiClient from '@/services/apiClient';
 import { SidebarProps } from '../../libs/interface/dashboard.interface';
-
-
+import { useTranslations } from "next-intl";
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
+  const t = useTranslations("common");
 
   const handleLogout = async () => {
     if (!session?.user?.accessToken) {
@@ -40,10 +40,10 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   };
 
   const menuItems = [
-    { icon: <User size={20} />, text: 'Quản lý tài khoản', href: '/account' },
-    { icon: <Ticket size={20} />, text: 'Quản lý vé', href: '/ticket' },
-    { icon: <Calendar size={20} />, text: 'Tạo sự kiện', href: '/create-event' },
-    { icon: <LogOut size={20} />, text: 'Đăng xuất', onClick: handleLogout },  // Sửa để sử dụng button
+    { icon: <User size={20} />, text: t("accountManagement"), href: '/account' },
+    { icon: <Ticket size={20} />, text: t("ticketManagement"), href: '/ticket' },
+    { icon: <Calendar size={20} />, text: t("createEvent"), href: '/create-event' },
+    { icon: <LogOut size={20} />, text: t("logout"), onClick: handleLogout },  // Sửa để sử dụng button
   ];
 
   return (
@@ -61,7 +61,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
       >
         <div className="p-4">
           <div className='flex flex-row justify-between items-center'>
-            <h2 className="text-xl sm:text-2xl font-bold m-0 p-0">QUẢN LÝ</h2>
+            <h2 className="text-xl sm:text-2xl font-bold m-0 p-0">{t("sidebarTitle") || "Fallback Text"}</h2>
             <button
               className="text-white p-2 hover:bg-teal-700 rounded-md"
               onClick={onClose}

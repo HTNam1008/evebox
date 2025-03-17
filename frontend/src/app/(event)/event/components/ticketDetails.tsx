@@ -7,18 +7,20 @@ import { useRouter } from "next/navigation";
 
 /* Package Application */
 import { Showing } from "../libs/event.interface";
+import { useTranslations } from "next-intl";
 
 const TicketDetails = ({ showings }: { showings: Showing[] }) => {
   const [expandedShowId, setExpandedShowId] = useState<string | null>(null);
   // const [isTicketInfoExpanded, setIsTicketInfoExpanded] = useState(false);
   // const [isTicketNoteExpanded, setIsTicketNoteExpanded] = useState(false);
   const router = useRouter();
+  const t = useTranslations("common");
 
   return (
     <>
       <div className="flex justify-center mt-8 ml-2" id="info-ticket">
         <div className="w-full md:w-5/6">
-          <h2 className="text-xl md:text-2xl font-bold">Thông tin vé</h2>
+          <h2 className="text-xl md:text-2xl font-bold">{t("ticketInfo") || "Fallback Text"}</h2>
           <div className="card mt-3">
             <ul className="list-group list-group-flush">
               {showings.map((showing) => (
@@ -47,14 +49,14 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
 
                     {/* Button: Show Availability */}
                     {showing.status === "sold_out" ? (
-                      <button type="button" className="btn-sold-out">Hết vé</button>
+                      <button type="button" className="btn-sold-out">{t('soldOut')}</button>
                     ) : (
                       <button 
                         type="button"
                         className="btn-buy"
                         onClick={() => router.push(`/event/${showing.eventId}/booking/select-ticket?showingId=${showing.id}&eventId=${showing.eventId}`)}
                       >
-                        Mua vé ngay
+                        {t('bookNow')}
                       </button>
                     )}
                   </div>
@@ -104,9 +106,9 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
       {/* Contact Section */}
       <div className="flex justify-center mt-8 ml-2">
         <div className="w-full md:w-5/6">
-          <h2 className="text-xl md:text-2xl font-bold">Liên hệ người tổ chức</h2>
+          <h2 className="text-xl md:text-2xl font-bold">{t('contactOrganizer')}</h2>
           <p className="card-text mt-2">
-            Vui lòng truy cập <a href="#">www.sneakypeeks.com</a> và tham khảo phần Câu hỏi thường gặp để biết thêm chi tiết.
+            {t('navigatorSentence1')} <a href="#">www.sneakypeeks.com</a> {t('navigatorSentence2')}
           </p>
         </div>
       </div>

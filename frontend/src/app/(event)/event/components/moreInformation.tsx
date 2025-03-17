@@ -6,6 +6,8 @@ import { GoogleMapsEmbed } from '@next/third-parties/google';
 
 /* Package Application */
 import { convertLocationToVietnamese } from "@/utils/helpers";
+import { useTranslations } from "next-intl";
+import { useI18n } from "../../../providers/I18nProvider";
         
 interface MoreInformationProps {
     title: string;
@@ -14,13 +16,16 @@ interface MoreInformationProps {
 }
 
 export default function MoreInformation({ title, location, locationsString }: MoreInformationProps) {
+    const t = useTranslations("common");
+    const { locale } = useI18n(); // Get current locale
+    
     return (
         <div className="col-lg-4 col-md-12" id="event-location">
             {/* Location */}
             <div className="flex mt-8 mr-2">
                 <div className="w-full md:w-5/6">
                     <h2 className="text-xl md:text-2xl font-bold mb-2">
-                        Địa điểm sự kiện
+                    {t("locationAddress") || "Fallback Text"}
                     </h2>
                     <div className="ratio ratio-16x9">
                         {/* <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117996.95037632967!2d-74.05953969406828!3d40.75468158321536!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2588f046ee661%3A0xa0b3281fcecc08c!2sManhattan%2C%20Nowy%20Jork%2C%20Stany%20Zjednoczone!5e1!3m2!1spl!2spl!4v1672242444695!5m2!1spl!2spl" allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe> */}
@@ -28,7 +33,7 @@ export default function MoreInformation({ title, location, locationsString }: Mo
                             apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""}
                             mode="place"
                             q={location}
-                            language="vi"
+                            language={locale}
                             width="100%"
                             height="100%"
                         />
@@ -41,7 +46,7 @@ export default function MoreInformation({ title, location, locationsString }: Mo
                         {location}
                     </p>
                     <p className="card-text text-body-secondary ml-6 mb-2" id="event-location" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
-                        {convertLocationToVietnamese(locationsString)}
+                        {locale === "vi" ? convertLocationToVietnamese(locationsString) : locationsString}
                     </p>
                 </div>
             </div>
@@ -62,7 +67,7 @@ export default function MoreInformation({ title, location, locationsString }: Mo
             <div className="flex mt-8 mr-2">
                 <div className="w-full md:w-5/6">
                     <h2 className="text-xl md:text-2xl font-bold">
-                        Chia sẻ với bạn bè
+                        {t("sharingTitle") || "Fallback Text"}
                     </h2>
 
                     <div className="row-app mt-3">
