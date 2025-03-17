@@ -1,21 +1,21 @@
 import { Controller, Get, Post, Query, HttpStatus, Res } from "@nestjs/common";
-import { GetEventDetailService } from "./getEventDetail.service";
+import { GetEventDetailRecommendService } from "./getEventDetailRecommend.service";
 import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
-import { EventDetailResponse } from './getEventDetail-response.dto';
+import { GetEventDetailRecommendResponse } from "./getEventDetailRecommend-response.dto";
 
 @ApiTags('Event')
 @Controller('api/event/detail')
-export class GetEventDetailController {
-  constructor(private readonly eventDetailService: GetEventDetailService) {}
+export class GetEventDetailRecommendController {
+  constructor(private readonly eventDetailService: GetEventDetailRecommendService) {}
 
-  @Get('/')
-  @ApiOperation({ summary: 'Get event details' })
+  @Get('/recommended-events')
+  @ApiOperation({ summary: 'Get recommended events' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Event details retrieved successfully',
-    type: EventDetailResponse,
+    description: 'Recommended events retrieved successfully',
+    type: GetEventDetailRecommendResponse,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -25,15 +25,16 @@ export class GetEventDetailController {
     status: HttpStatus.NOT_FOUND,
     description: 'Event not found',
   })
-  @ApiResponse({
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: 'Internal server error',
-  })
-  async getEventDetail(
+  async getRecommendedEventsInDetail(
     @Query('eventId') eventId: string,
+    @Query('limit') limit: string,
     @Res() res: Response,
   ) {
-    const result = await this.eventDetailService.execute(parseInt(eventId));
+    const result = await this.eventDetailService.getRecommendedEventsInDetail(
+      parseInt(eventId),
+      limit,
+    );
+
     if (result.isErr()) {
       const error = result.unwrapErr();
       return res
@@ -44,7 +45,7 @@ export class GetEventDetailController {
     const data = result.unwrap();
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
-      message: 'Event details retrieved successfully',
+      message: 'Recommended events retrieved successfully',
       data,
     });
   }
