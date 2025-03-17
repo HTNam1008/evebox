@@ -13,9 +13,9 @@ import { LocationModule } from '../location/location.module';
 import { ClickEventController } from './commands/ClickEvent/ClickEvent.controller';
 import { ClickEventRepository } from './repositories/clickEvent.repository';
 import { ClickEventService } from './commands/ClickEvent/clickEvent.service';
-// import { SearchEventController } from './commands/SearchEvent/searchEvent.controller';
-// import { SearchEventService } from './commands/SearchEvent/searchEvent.service';
-// import { SearchEventRepository } from './repositories/searchEvent.repository';
+import { SearchEventController } from './commands/SearchEvent/searchEvent.controller';
+import { SearchEventService } from './commands/SearchEvent/searchEvent.service';
+import { SearchEventRepository } from './repositories/searchEvent.repository';
 import { GetAllCategoriesController } from './queries/getAllCategories/getAllCategories.controller';
 import { GetEventDetailController } from './queries/getEventDetail/getEventDetail.controller';
 import { GetAllCategoriesRepository } from './repositories/getAllCategories.repository';
@@ -25,12 +25,12 @@ import { GetAllCategoriesService } from './queries/getAllCategories/getAllCatego
 // import { GetEventDetailRecommendController } from './queries/getEventDetailRecommend/getEventDetailRecommend.controller';
 import { GetEventDetailService } from './queries/getEventDetail/getEventDetail.service';
 import { GetEventDetailRepository } from './repositories/getEventDetail.repository';
-// import { GetEventFrontDisplayRepository } from './repositories/getEventFrontDisplay.repository';
-// import { GetEventFrontDisplayService } from './queries/getEventFrontDisplay/getEventFrontDisplay.service';
-// import { GetEventFrontDisplayController } from './queries/getEventFrontDisplay/getEventFrontDisplay.controller';
-// import { GetRecommendEventService } from './queries/getRecommendEvent/getRecommendEvent.service';
-// import { GetRecommendEventRepository } from './repositories/getRecommendEvent.repository';
-// import { GetRecommendedEventController } from './queries/getRecommendEvent/getRecommendEvent.controller';
+import { GetEventFrontDisplayRepository } from './repositories/getEventFrontDisplay.repository';
+import { GetEventFrontDisplayService } from './queries/getEventFrontDisplay/getEventFrontDisplay.service';
+import { GetEventFrontDisplayController } from './queries/getEventFrontDisplay/getEventFrontDisplay.controller';
+import { GetRecommendEventService } from './queries/getRecommendEvent/getRecommendEvent.service';
+import { GetRecommendEventRepository } from './repositories/getRecommendEvent.repository';
+import { GetRecommendedEventController } from './queries/getRecommendEvent/getRecommendEvent.controller';
 
 
 @Module({
@@ -38,13 +38,13 @@ import { GetEventDetailRepository } from './repositories/getEventDetail.reposito
   controllers: [
     // EventController, 
     ClickEventController,
-    // SearchEventController,
+    SearchEventController,
 
     GetAllCategoriesController,
     GetEventDetailController,
     // GetEventDetailRecommendController,
-    // GetEventFrontDisplayController,
-    // GetRecommendedEventController,
+    GetEventFrontDisplayController,
+    GetRecommendedEventController,
     ],
   providers: [
     // UpdateWeeklyService, 
@@ -56,8 +56,8 @@ import { GetEventDetailRepository } from './repositories/getEventDetail.reposito
     ClickEventRepository,
     ClickEventService,
 
-    // SearchEventService,
-    // SearchEventRepository,
+    SearchEventService,
+    SearchEventRepository,
 
     GetAllCategoriesRepository,
     GetAllCategoriesService,
@@ -68,11 +68,11 @@ import { GetEventDetailRepository } from './repositories/getEventDetail.reposito
     GetEventDetailService,
     GetEventDetailRepository,
 
-    // GetEventFrontDisplayRepository,
-    // GetEventFrontDisplayService,
+    GetEventFrontDisplayRepository,
+    GetEventFrontDisplayService,
 
-    // GetRecommendEventService,
-    // GetRecommendEventRepository,
+    GetRecommendEventService,
+    GetRecommendEventRepository,
     ],
 })
 export class EventModule {}

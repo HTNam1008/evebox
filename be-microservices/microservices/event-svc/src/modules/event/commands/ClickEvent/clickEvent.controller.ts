@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 
+@ApiTags('Event')
 @Controller('api/event/detail')
 export class ClickEventController {
   constructor(private readonly eventDetailService: ClickEventService) {}
