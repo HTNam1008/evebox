@@ -15,7 +15,7 @@ export class UpdateWeeklyService {
   private readonly showingWeeklyRepository = new ShowingWeeklyRepository(this.prisma);
 
   // Tự động chạy vào thứ 2 đầu tuần
-  @Cron('0 0 * * 1')
+  // @Cron('0 0 * * 1')
   // @Cron('14 22 * * 4')
   async handleMondayJob() {
     this.logger.log('Running database update task on Monday...');
