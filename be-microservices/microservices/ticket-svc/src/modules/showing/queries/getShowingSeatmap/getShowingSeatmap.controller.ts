@@ -1,11 +1,12 @@
 import { Controller, Get, Query, Res, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 
 import { getShowingSeatmapService } from './getShowingSeatmap.service';
 import { SeatMapResponseDto } from './getShowingSeatmap-response.dto';
 
+@ApiTags('Showing')
 @Controller('api/showing')
 export class getShowingSeatmapController {
   constructor(private readonly getShowingSeatmapService: getShowingSeatmapService) {}
@@ -53,3 +54,4 @@ export class getShowingSeatmapController {
     });
   }
 }
+

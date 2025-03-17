@@ -1,10 +1,11 @@
 import { Controller, Get, Query, Res, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { ShowingResponseDto } from './getShowingDetail-response.dto';
 import { getShowingDetailService } from './getShowingDetail.service';
 
+@ApiTags('Showing')
 @Controller('api/showing')
 export class getShowingDetailController {
   constructor(private readonly getShowingDetailService: getShowingDetailService) {}

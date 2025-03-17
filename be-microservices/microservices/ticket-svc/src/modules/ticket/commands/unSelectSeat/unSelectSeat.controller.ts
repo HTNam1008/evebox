@@ -1,11 +1,12 @@
 import { Controller, Delete, Param, Request, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiHeader } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { UnSelectSeatService } from './unSelectSeat.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { UnSelectSeatResponseDto } from './unSelectSeat-response.dto';
 
+@ApiTags('Ticket')
 @Controller('api/ticket')
 export class UnSelectSeatController {
   constructor(private readonly unSelectSeatService: UnSelectSeatService) {}
