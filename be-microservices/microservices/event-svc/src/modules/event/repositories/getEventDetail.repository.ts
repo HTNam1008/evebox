@@ -175,7 +175,6 @@ export class GetEventDetailRepository {
           showingStatus = "register_closed";
         }
       }
-
       // Return kết quả
       return { ticketTypesStatus, showingStatus };
 
