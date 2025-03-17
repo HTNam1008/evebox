@@ -7,31 +7,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String         @id @db.VarChar(255)
+  name          String         @db.VarChar(255)
+  email         String         @unique @db.VarChar(255)
+  phone         String         @db.VarChar(10)
+  password      String         @db.VarChar(255)
+  role_id       Int?
+  created_at    DateTime       @default(now())
+  refreshTokens RefreshToken[]
+  userProvince  UserProvince[]
+  FormResponse   FormResponse[]
+  role          Role?          @relation(fields: [role_id], references: [id])
 
-model Categories {
-  id              Int               @id @default(autoincrement())
-  name            String            @db.VarChar(255)
-  createdAt       DateTime          @default(now())
-  EventCategories EventCategories[]
+  @@map("users")
 }
-model districts {
-  id         Int         @id @default(autoincrement())
-  name       String      @db.VarChar(100)
+
+
+model Role {
+  id        Int    @id
+  role_name String @db.VarChar(50)
+  users     User[]
+
+  @@map("role")
+}
+
+model Province {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(100)
+  created_at   DateTime       @default(now())
+  userProvince UserProvince[]
+  districts      districts[]
+
+  @@map("province")
+}
+
+model UserProvince {
+  userId     String
   provinceId Int
-  createdAt  DateTime    @default(now())
-  province   province    @relation(fields: [provinceId], references: [id], onDelete: Cascade)
-  locations  locations[]
+  province   Province @relation(fields: [provinceId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, provinceId])
+  @@map("user_provinces")
 }
-model locations {
-  id         Int       @id @default(autoincrement())
-  street     String    @db.VarChar(255)
-  ward       String    @db.VarChar(100)
-  districtId Int
-  createdAt  DateTime  @default(now())
-  districts  districts @relation(fields: [districtId], references: [id], onDelete: Cascade)
-  Events     Events[]
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  email     String
+  revoked   Boolean  @default(false)
+  expiresAt DateTime
+  user      User     @relation(fields: [email], references: [email], onDelete: Cascade)
+
+  @@map("refresh_tokens")
 }
-model otps {
+
+model Otp {
   id           String   @id
   email        String
   otp          String
@@ -44,48 +76,36 @@ model otps {
 
   @@index([email])
   @@index([otp])
+  @@map("otps")
 }
-model province {
-  id             Int              @id @default(autoincrement())
-  name           String           @db.VarChar(100)
-  created_at     DateTime         @default(now())
-  districts      districts[]
-  user_provinces user_provinces[]
-}
-model refresh_tokens {
-  id        Int      @id @default(autoincrement())
-  token     String   @unique
-  email     String
-  revoked   Boolean  @default(false)
-  expiresAt DateTime
-  users     users    @relation(fields: [email], references: [email], onDelete: Cascade)
-}
-model role {
-  id        Int     @id
-  role_name String  @db.VarChar(50)
-  users     users[]
-}
-model user_provinces {
-  userId     String
-  provinceId Int
-  province   province @relation(fields: [provinceId], references: [id], onDelete: Cascade)
-  users      users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([userId, provinceId])
+model Categories {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(255)
+  createdAt       DateTime          @default(now())
+  EventCategories EventCategories[]
 }
-model users {
-  id             String           @id @db.VarChar(255)
-  name           String           @db.VarChar(255)
-  email          String           @unique @db.VarChar(255)
-  phone          String           @db.VarChar(10)
-  password       String           @db.VarChar(255)
-  role_id        Int?
-  created_at     DateTime         @default(now())
-  refresh_tokens refresh_tokens[]
-  user_provinces user_provinces[]
-  FormResponse   FormResponse[]
-  role           role?            @relation(fields: [role_id], references: [id])
+
+model districts {
+  id         Int         @id @default(autoincrement())
+  name       String      @db.VarChar(100)
+  provinceId Int
+  createdAt  DateTime    @default(now())
+  province   Province    @relation(fields: [provinceId], references: [id], onDelete: Cascade)
+  locations  locations[]
 }
+
+model locations {
+  id         Int       @id @default(autoincrement())
+  street     String    @db.VarChar(255)
+  ward       String    @db.VarChar(100)
+  districtId Int
+  createdAt  DateTime  @default(now())
+  Events     Events[]
+  districts  districts @relation(fields: [districtId], references: [id], onDelete: Cascade)
+}
+
+
 model Form {
   id           Int            @id @default(autoincrement())
   name         String         @db.VarChar(255)
@@ -124,11 +144,10 @@ model FormResponse {
   showingId  String?
   FormAnswer FormAnswer[]
   Form       Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
-  user       users        @relation(fields: [userId], references: [id], onDelete: Cascade)
   Showing    Showing?     @relation(fields: [showingId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   Ticket     Ticket[]
 }
-
 
 model PayOSInfo {
   bin           String?  @db.VarChar(20)
@@ -160,47 +179,35 @@ model PaymentMethodStatus {
   status        Boolean       @default(false)
 }
 
-enum OTPType {
-  FORGOT_PASSWORD
-  REGISTER
-}
-
-enum PaymentMethod {
-  PAYOS
-}
-
 model OrderInfo {
-  id            String    @id @default(uuid())
-  showingId     String
-  ticketTypeId  String?
-  userId        String?
-  quantity      Int?
-  seatId        Int[]
-  status        Int      // pending, paid
-  PaymentInfo   PaymentInfo[]
+  id           String        @id @default(uuid())
+  showingId    String
+  ticketTypeId String?
+  userId       String?
+  quantity     Int?
+  seatId       Int[]
+  status       Int
+  PaymentInfo  PaymentInfo[]
 }
 
-model TicketQRCode{
-  id            String    @id @default(uuid())
-  ticketId      String
-  ticketTypeId  String?
-  seatId        Int?
-  qrCode        String
-  description   String
-  Ticket        Ticket   @relation(fields: [ticketId], references: [id])
+model TicketQRCode {
+  id           String  @id @default(uuid())
+  qrCode       String
+  description  String
+  seatId       Int?
+  ticketId     String
+  ticketTypeId String?
+  Ticket       Ticket  @relation(fields: [ticketId], references: [id])
 }
-
-// DELETE DATA
 
 model EventCategories {
   id         Int        @id @default(autoincrement())
   eventId    Int
   categoryId Int
   isSpecial  Boolean    @default(false)
-  Events     Events     @relation(fields: [eventId], references: [id], onDelete: Cascade)
   Categories Categories @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  Events     Events     @relation(fields: [eventId], references: [id], onDelete: Cascade)
 }
-
 
 model Images {
   id                                Int      @id @default(autoincrement())
@@ -211,19 +218,19 @@ model Images {
 }
 
 model Ticket {
-  id             String        @id @default(uuid())
+  id             String         @id @default(uuid())
   status         Int
   price          Int
   type           String
   paymentId      Int?
   formResponseId Int?
-  mailSent       Boolean       @default(false)
-  PaymentInfo    PaymentInfo?   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  mailSent       Boolean        @default(false)
+  showingId      String
+  userId         String?
   FormResponse   FormResponse?  @relation(fields: [formResponseId], references: [id], onDelete: Cascade)
-  showingId     String
-  userId        String?
+  PaymentInfo    PaymentInfo?   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  Showing        Showing        @relation(fields: [showingId], references: [id])
   TicketQRCode   TicketQRCode[]
-  Showing      Showing   @relation(fields: [showingId], references: [id])
 }
 
 model Events {
@@ -242,12 +249,12 @@ model Events {
   weekClicks                        Int               @default(0)
   venue                             String?           @db.VarChar(100)
   isApproved                        Boolean           @default(false)
-  orgName                           String?
   orgDescription                    String?
+  orgName                           String?
   EventCategories                   EventCategories[]
-  locations                         locations         @relation(fields: [locationId], references: [id], onDelete: Cascade)
   Images_Events_imgLogoIdToImages   Images?           @relation("Events_imgLogoIdToImages", fields: [imgLogoId], references: [id])
   Images_Events_imgPosterIdToImages Images?           @relation("Events_imgPosterIdToImages", fields: [imgPosterId], references: [id])
+  locations                         locations         @relation(fields: [locationId], references: [id], onDelete: Cascade)
   Showing                           Showing[]
 }
 
@@ -261,30 +268,29 @@ model Row {
 }
 
 model Seat {
-  id        Int      @id @default(autoincrement())
-  name      String
-  rowId     Int
-  positionX Float
-  positionY Float
-  createdAt DateTime @default(now())
-  position  Int
-  Row       Row      @relation(fields: [rowId], references: [id])
+  id         Int          @id @default(autoincrement())
+  name       String
+  rowId      Int
+  positionX  Float
+  positionY  Float
+  createdAt  DateTime     @default(now())
+  position   Int
+  Row        Row          @relation(fields: [rowId], references: [id])
   SeatStatus SeatStatus[]
 }
 
-
 model Section {
-  id              Int      @id @default(autoincrement())
+  id              Int                 @id @default(autoincrement())
   name            String
   seatmapId       Int
   isStage         Boolean
   element         Json
   attribute       Json
-  createdAt       DateTime @default(now())
-  isReservingSeat Boolean  @default(false)
+  createdAt       DateTime            @default(now())
+  isReservingSeat Boolean             @default(false)
   Row             Row[]
+  Seatmap         Seatmap             @relation(fields: [seatmapId], references: [id])
   ticketTypes     TicketTypeSection[]
-  Seatmap         Seatmap  @relation(fields: [seatmapId], references: [id])
 }
 
 model Seatmap {
@@ -297,68 +303,74 @@ model Seatmap {
   Showing   Showing[]
 }
 
-
 model Showing {
-  id                        String                      @id @default(uuid())
-  eventId                   Int
-  status                    String
-  isFree                    Boolean
-  isSalable                 Boolean
-  isPresale                 Boolean
-  seatMapId                 Int
-  startTime                 DateTime
-  endTime                   DateTime
-  isEnabledQueueWaiting     Boolean
-  showAllSeats              Boolean
-  formId                    Int?
-  FormResponse              FormResponse[]
-  Events                    Events                      @relation(fields: [eventId], references: [id])
-  Form                      Form?                       @relation(fields: [formId], references: [id])
-  Seatmap                   Seatmap                     @relation(fields: [seatMapId], references: [id])
-  TicketType                TicketType[]
-  SeatStatus                SeatStatus[]
-  Ticket                    Ticket[]
+  id                    String         @id @default(uuid())
+  eventId               Int
+  status                String
+  isFree                Boolean
+  isSalable             Boolean
+  isPresale             Boolean
+  seatMapId             Int
+  startTime             DateTime
+  endTime               DateTime
+  isEnabledQueueWaiting Boolean
+  showAllSeats          Boolean
+  formId                Int?
+  FormResponse          FormResponse[]
+  SeatStatus            SeatStatus[]
+  Events                Events         @relation(fields: [eventId], references: [id])
+  Form                  Form?          @relation(fields: [formId], references: [id])
+  Seatmap               Seatmap        @relation(fields: [seatMapId], references: [id])
+  Ticket                Ticket[]
+  TicketType            TicketType[]
 }
 
 model TicketType {
-  id                        String                      @id @default(uuid())
-  showingId    String
-  name                      String
-  description               String
-  color                     String
-  isFree                    Boolean
-  price                     Int
-  originalPrice             Int
-  startTime                 DateTime
-  endTime                   DateTime
-  position                  Int
-  imageUrl                  String
-  maxQtyPerOrder            Int
-  minQtyPerOrder            Int
-  isHidden                  Boolean                     @default(false)
-  quantity     Int?       @default(0)
-  sections        TicketTypeSection[]
-  Showing      Showing   @relation(fields: [showingId], references: [id])
+  id             String              @id @default(uuid())
+  showingId      String
+  name           String
+  description    String
+  color          String
+  isFree         Boolean
+  price          Int
+  originalPrice  Int
+  startTime      DateTime
+  endTime        DateTime
+  position       Int
+  imageUrl       String
+  maxQtyPerOrder Int
+  minQtyPerOrder Int
+  isHidden       Boolean             @default(false)
+  quantity       Int?                @default(0)
+  Showing        Showing             @relation(fields: [showingId], references: [id])
+  sections       TicketTypeSection[]
 }
-
 
 model SeatStatus {
-  id   String  @id @default(uuid())
-  showingId  String
-  seatMapId  Int
-  seatId     Int
-  status     Int
-  Showing    Showing   @relation(fields: [showingId], references: [id])
-  Seat       Seat      @relation(fields: [seatId], references: [id])
+  id        String  @id @default(uuid())
+  showingId String
+  status    Int
+  seatId    Int
+  seatMapId Int
+  Seat      Seat    @relation(fields: [seatId], references: [id])
+  Showing   Showing @relation(fields: [showingId], references: [id])
 }
 
-model TicketTypeSection{
+model TicketTypeSection {
   ticketTypeId String
   sectionId    Int
-
-
-  TicketType   TicketType @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
   Section      Section    @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  TicketType   TicketType @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
 
   @@id([ticketTypeId, sectionId])
+}
+
+enum OTPType {
+  FORGOT_PASSWORD
+  REGISTER
+}
+
+enum PaymentMethod {
+  PAYOS
+  MOMO
 }
