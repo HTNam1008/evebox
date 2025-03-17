@@ -37,30 +37,43 @@ class UserFormResponseDto {
   answers: UserFormAnserDto[];
 }
 
-export class UserTicketDto {
-  @ApiProperty( {example: '3671d719-4f12-486d-9b6c-b8343b4c64de', description: 'The id of the ticket' })
-  id: string;
-  
-  @ApiProperty( {example: 78, description: 'The seat id of the ticket' })
-  seatId?: number;
+class PaymentInfoDto {
+  @ApiProperty( {example: '2021-10-10T10:00:00Z', description: 'The paid time of the ticket' })
+  paidAt: Date;
+}
 
-  @ApiProperty( {example: '169898227', description: 'The showing id of the ticket' })
-  showingId: string;
+class TicketQRCodeDto {
+  @ApiProperty( {example: '9090909090900qq8qqw7d', description: 'The qr code of the ticket' })
+  qrCode: string;
 
   @ApiProperty( {example: '1321', description: 'The ticket type id of the ticket' })
   ticketTypeId: string;
 
+  @ApiProperty( {example: 78, description: 'The seat id of the ticket' })
+  seatId?: number;
+}
+
+export class UserTicketDto {
+  @ApiProperty( {example: '3671d719-4f12-486d-9b6c-b8343b4c64de', description: 'The id of the ticket' })
+  id: string;
+
+  @ApiProperty( {example: '169898227', description: 'The showing id of the ticket' })
+  showingId: string;
+
   @ApiProperty( {example: 1, description: 'The status of the ticket' })
   status: number;
 
-  @ApiProperty( {example: '2021-10-10T10:00:00Z', description: 'The created date of the ticket' })
-  purchasedAt: Date;
+  @ApiProperty( {example: "Ve dien tu", description: 'Type of ticket' })
+  type: string;
 
   @ApiProperty( {example: 540000, description: 'The price of the ticket' })
   price: number;
 
-  @ApiProperty( {example: '9090909090900qq8qqw7d', description: 'The qr code of the ticket' })
-  qrCode?: string;
+  @ApiProperty( {type: PaymentInfoDto, description: 'The payment info of the ticket' })
+  PaymentInfo?: PaymentInfoDto;
+
+  @ApiProperty( {type: TicketQRCodeDto, description: 'The qr code of the ticket' })
+  TicketQRCode?: TicketQRCodeDto;
 
   @ApiProperty( {type: UserShowingDto, description: 'The showing of the ticket' })
   Showing?: UserShowingDto;

@@ -15,7 +15,7 @@ export class getShowingSeatmapController {
   @ApiQuery({
     name: 'showingId',
     required: true,
-    example: '16962844867169',
+    example: '15039597206755',
     description: 'The ID of the showing to retrieve',
   })
   @ApiResponse({

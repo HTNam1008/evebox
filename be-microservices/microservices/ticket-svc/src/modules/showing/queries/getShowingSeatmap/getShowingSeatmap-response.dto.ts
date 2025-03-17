@@ -21,12 +21,6 @@ class SeatDto {
   @ApiProperty({ example: { '0': 84.84 }, description: 'Y position of the seat' })
   positionY: JsonValue;
 
-  @ApiProperty({
-    example: '2024-12-17T10:06:33.889Z',
-    description: 'Seat creation date in ISO format',
-  })
-  createdAt: string;
-
   @ApiProperty({ example: 2, description: 'Seat status' })
   status: number;
 }

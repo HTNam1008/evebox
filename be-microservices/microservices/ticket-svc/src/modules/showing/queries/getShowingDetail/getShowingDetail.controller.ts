@@ -14,7 +14,7 @@ export class getShowingDetailController {
   @ApiQuery({
     name: 'showingId',
     required: true,
-    example: '16962844867169',
+    example: '1041811243642',
     description: 'The ID of the showing to retrieve',
   })
   @ApiResponse({

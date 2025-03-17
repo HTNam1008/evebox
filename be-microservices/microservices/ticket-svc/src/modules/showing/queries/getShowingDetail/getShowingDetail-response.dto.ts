@@ -138,7 +138,7 @@ class FormDto {
 }
 
 class ShowingDataDto {
-  @ApiProperty({ example: '16962844867169', description: 'Showing ID' })
+  @ApiProperty({ example: '1041811243642', description: 'Showing ID' })
   id: string;
 
   @ApiProperty({ example: 22911, description: 'Event ID' })
