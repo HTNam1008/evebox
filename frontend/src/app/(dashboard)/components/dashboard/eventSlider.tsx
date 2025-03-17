@@ -19,6 +19,8 @@ type NavigationOptionsTyped = {
   prevEl?: HTMLElement | null;
   nextEl?: HTMLElement | null;
 };
+import { useTranslations } from "next-intl";
+
 
 interface EventSliderProps {
   title: string;
@@ -45,13 +47,14 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
     }
   }, [swiperInstance, prevRef, nextRef, navigation]);
 
+  const t = useTranslations("common");
+  
   return (
     <div className="relative">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
         <h2 className="text-xl md:text-2xl font-bold">
-          {title}{' '}
-          {subtitle && <span className="text-teal-400">{subtitle}</span>}
+          {t(`${title}` || "")}  {subtitle && <span className="text-teal-400"> {t(`${subtitle}`)}</span>}
         </h2>
       </div>
 
