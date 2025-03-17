@@ -178,13 +178,16 @@ model OrderInfo {
   seatId        Int[]
   status        Int      // pending, paid
   PaymentInfo   PaymentInfo[]
-  Ticket        Ticket[]
 }
 
 model TicketQRCode{
   id            String    @id @default(uuid())
+  ticketId      String
+  ticketTypeId  String?
+  seatId        Int?
   qrCode        String
   description   String
+  Ticket        Ticket   @relation(fields: [ticketId], references: [id])
 }
 
 // DELETE DATA
@@ -215,10 +218,12 @@ model Ticket {
   paymentId      Int?
   formResponseId Int?
   mailSent       Boolean       @default(false)
-  orderInfoId    String?
   PaymentInfo    PaymentInfo?   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
   FormResponse   FormResponse?  @relation(fields: [formResponseId], references: [id], onDelete: Cascade)
-  OrderInfo      OrderInfo?     @relation(fields: [orderInfoId], references: [id], onDelete: Cascade)
+  showingId     String
+  userId        String?
+  TicketQRCode   TicketQRCode[]
+  Showing      Showing   @relation(fields: [showingId], references: [id])
 }
 
 model Events {
@@ -278,8 +283,8 @@ model Section {
   createdAt       DateTime @default(now())
   isReservingSeat Boolean  @default(false)
   Row             Row[]
+  ticketTypes     TicketTypeSection[]
   Seatmap         Seatmap  @relation(fields: [seatmapId], references: [id])
-  TicketType      TicketType[]
 }
 
 model Seatmap {
@@ -312,6 +317,7 @@ model Showing {
   Seatmap                   Seatmap                     @relation(fields: [seatMapId], references: [id])
   TicketType                TicketType[]
   SeatStatus                SeatStatus[]
+  Ticket                    Ticket[]
 }
 
 model TicketType {
@@ -331,8 +337,7 @@ model TicketType {
   minQtyPerOrder            Int
   isHidden                  Boolean                     @default(false)
   quantity     Int?       @default(0)
-  sectionId    Int?
-  Section      Section?   @relation(fields: [sectionId], references: [id])
+  sections        TicketTypeSection[]
   Showing      Showing   @relation(fields: [showingId], references: [id])
 }
 
@@ -345,4 +350,15 @@ model SeatStatus {
   status     Int
   Showing    Showing   @relation(fields: [showingId], references: [id])
   Seat       Seat      @relation(fields: [seatId], references: [id])
+}
+
+model TicketTypeSection{
+  ticketTypeId String
+  sectionId    Int
+
+
+  TicketType   TicketType @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
+  Section      Section    @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@id([ticketTypeId, sectionId])
 }

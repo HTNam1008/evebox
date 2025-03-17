@@ -32,13 +32,13 @@ export class TicketTypeDto {
     example: '2024-10-10T06:28:00.000Z',
     description: 'Effective start date in ISO format',
   })
-  effectiveFrom: string;
+  startTime: string;
 
   @ApiProperty({
     example: '2024-12-21T13:00:00.000Z',
     description: 'Effective end date in ISO format',
   })
-  effectiveTo: string;
+  endTime: string;
 
   @ApiProperty({ example: 1, description: 'Position in list' })
   position: number;
@@ -120,6 +120,9 @@ class FormInputDto {
 
   @ApiProperty({ example: '^[a-zA-Z]+$', description: 'Field regex' })
   regex: string;
+
+  @ApiProperty({ example: '["option1", "option2"]', description: 'Field options' })
+  options: JSON;
 }
 
 class FormDto {
@@ -131,7 +134,7 @@ class FormDto {
   name: string;
 
   @ApiProperty({ type: [FormInputDto], description: 'List of form inputs' })
-  inputs: FormInputDto[];
+  FormInput: FormInputDto[];
 }
 
 class ShowingDataDto {
