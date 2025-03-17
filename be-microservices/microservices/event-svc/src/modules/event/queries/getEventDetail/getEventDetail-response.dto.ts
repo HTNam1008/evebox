@@ -37,10 +37,10 @@ class TicketTypeDto {
   minQtyPerOrder: number;
 
   @ApiProperty({ example: '2024-12-14T03:00:00.000Z' })
-  effectiveFrom: string;
+  startTime: Date;
 
   @ApiProperty({ example: '2024-12-27T12:30:00.000Z' })
-  effectiveTo: string;
+  endTime: Date;
 
   @ApiProperty({ example: 1 })
   position: number;
@@ -78,10 +78,13 @@ class ShowingDto {
   seatMapId: number;
 
   @ApiProperty({ example: '2024-12-27T12:30:00.000Z' })
-  startTime: string;
+  startTime: Date;
 
   @ApiProperty({ example: '2024-12-27T15:30:00.000Z' })
-  endTime: string;
+  endTime: Date;
+
+  @ApiProperty({ example: 'Offline' , description: 'Online or offline event'})
+  type: string;
 
   @ApiProperty({ example: false })
   isEnabledQueueWaiting: boolean;
@@ -112,10 +115,7 @@ export class EventDetailResponseDto {
   description: string;
 
   @ApiProperty({ example: '2024-12-27T12:30:00.000Z' })
-  startDate: string;
-
-  @ApiProperty({ example: '2024-12-27T12:30:00.000Z' })
-  endDate: string;
+  startDate: Date;
 
   @ApiProperty({ example: null, nullable: true })
   organizerId: number | null;
@@ -136,7 +136,7 @@ export class EventDetailResponseDto {
   Images_Events_imgPosterIdToImages: ImageDto;
 
   @ApiProperty({ example: '2024-12-17T07:57:23.528Z' })
-  createdAt: string;
+  createdAt: Date;
 
   @ApiProperty({ example: '62 Trần Quang Khải, Tan Dinh Ward, 1 District, Ho Chi Minh City' })
   locationsString: string;

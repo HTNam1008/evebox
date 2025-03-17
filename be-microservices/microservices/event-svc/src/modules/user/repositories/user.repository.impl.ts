@@ -10,7 +10,7 @@ import { Name } from '../domain/value-objects/user/name.vo';
 import { Phone } from '../domain/value-objects/user/phone.vo';
 import { ProvinceId } from '../domain/value-objects/user/province-id.vo';
 import { EventBus } from '@nestjs/cqrs';
-import { Prisma, RefreshToken } from '@prisma/client';
+import { Prisma, refresh_tokens } from '@prisma/client';
 import { IOTPData } from './user.repository.interface';
 import { OTPType } from '../domain/enums/otp-type.enum';
 import { DomainEvent } from 'src/libs/ddd/domain-event.base';
@@ -24,11 +24,11 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   async findByEmail(email: Email): Promise<User | null> {
-    const userRecord = await this.prisma.user.findUnique({
+    const userRecord = await this.prisma.users.findUnique({
       where: { email: email.value },
       include: {
         role: true,
-        userProvince: {
+        user_provinces: {
           include: {
             province: true,
           },
@@ -58,7 +58,7 @@ export class UserRepositoryImpl implements UserRepository {
   async save(user: User): Promise<void> {
     const userOrmData = this.mapToOrmData(user);
     await this.prisma.$transaction(async (tx) => {
-      await tx.user.upsert({
+      await tx.users.upsert({
         where: { id: userOrmData.id },
         update: {
           name: userOrmData.name,
@@ -78,13 +78,13 @@ export class UserRepositoryImpl implements UserRepository {
       });
 
       // Xử lý liên kết với Province thông qua bảng trung gian
-      await tx.userProvince.deleteMany({
+      await tx.user_provinces.deleteMany({
         where: { userId: userOrmData.id },
       });
 
       if (userOrmData.provinceIds.length > 0) {
         console.log('provinceIds:', userOrmData.provinceIds);
-        await tx.userProvince.createMany({
+        await tx.user_provinces.createMany({
           data: userOrmData.provinceIds.map((provinceId) => ({
             userId: userOrmData.id,
             provinceId: provinceId.value,
@@ -106,7 +106,7 @@ export class UserRepositoryImpl implements UserRepository {
     email: string,
     expiresAt: Date,
   ): Promise<void> {
-    await this.prisma.refreshToken.create({
+    await this.prisma.refresh_tokens.create({
       data: {
         token,
         email,
@@ -116,14 +116,14 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async revokeRefreshToken(email: string): Promise<void> {
-    await this.prisma.refreshToken.updateMany({
+    await this.prisma.refresh_tokens.updateMany({
       where: { email },
       data: { revoked: true },
     });
   }
 
   async revokeAllRefreshTokens(email: string): Promise<void> {
-    await this.prisma.refreshToken.updateMany({
+    await this.prisma.refresh_tokens.updateMany({
       where: {
         email: email,
         revoked: false,
@@ -134,17 +134,17 @@ export class UserRepositoryImpl implements UserRepository {
     });
   }
 
-  async findRefreshToken(token: string): Promise<RefreshToken | null> {
-    return this.prisma.refreshToken.findUnique({
+  async findRefreshToken(token: string): Promise<refresh_tokens | null> {
+    return this.prisma.refresh_tokens.findUnique({
       where: { token },
     });
   }
 
   private mapToDomain(
-    userRecord: Prisma.UserGetPayload<{
+    userRecord: Prisma.usersGetPayload<{
       include: {
         role: true;
-        userProvince: { include: { province: true } };
+        user_provinces: { include: { province: true } };
       };
     }>,
   ): User {
@@ -185,7 +185,7 @@ export class UserRepositoryImpl implements UserRepository {
     const role = roleOrError.unwrap();
 
     const provinceIdsOrError = ProvinceId.createList(
-      userRecord.userProvince.map((up: any) => up.province.id),
+      userRecord.user_provinces.map((up: any) => up.province.id),
     );
     if (provinceIdsOrError.isErr()) {
       throw new Error(provinceIdsOrError.unwrapErr().message);
@@ -223,7 +223,7 @@ export class UserRepositoryImpl implements UserRepository {
   async saveOTP(otp: OTP, requestToken: string): Promise<void> {
     try {
       await this.prisma.$transaction(async (tx) => {
-        await tx.otp.upsert({
+        await tx.otps.upsert({
           where: {
             requestToken: requestToken,
           },
@@ -266,7 +266,7 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       const now = new Date();
 
-      return await this.prisma.otp.findFirst({
+      return await this.prisma.otps.findFirst({
         where: {
           AND: [
             { requestToken },
@@ -296,7 +296,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   async incrementOTPAttempts(request_token: string): Promise<void> {
     try {
-      await this.prisma.otp.update({
+      await this.prisma.otps.update({
         where: { requestToken: request_token },
         data: { attempts: { increment: 1 } },
       });
@@ -307,7 +307,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   async getOTPAttempts(request_token: string): Promise<number | null> {
     try {
-      const otp = await this.prisma.otp.findUnique({
+      const otp = await this.prisma.otps.findUnique({
         where: { requestToken: request_token },
         select: { attempts: true },
       });
@@ -319,7 +319,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async markOTPAsUsed(requestToken: string): Promise<void> {
-    await this.prisma.otp.update({
+    await this.prisma.otps.update({
       where: { requestToken },
       data: { isUsed: true },
     });
@@ -330,7 +330,7 @@ export class UserRepositoryImpl implements UserRepository {
   async removeAllRefreshTokens(email: string): Promise<void> {
     try {
       // Delete all refresh tokens for the user
-      await this.prisma.refreshToken.deleteMany({
+      await this.prisma.refresh_tokens.deleteMany({
         where: {
           email: email,
         },
