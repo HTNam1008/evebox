@@ -16,6 +16,15 @@ export class GetRedisSeatResponseData {
 
   @ApiProperty({ example: '1200', description: 'Expired Time, second unit, 1200 mean 1200s = 20m' })
   expiredTime?: number;
+
+  @ApiProperty({ example: 'Bach ngoc', description: 'TicketType Name' })
+  ticketTypeName?: string;
+
+  @ApiProperty({ example: 200, description: 'TicketType Price' })
+  ticketTypePrice?: number;
+
+  @ApiProperty({ example: 3600, description: 'Total Price' })
+  totalAmount?: number;
 }
 
 export class GetRedisSeatResponseDto {
