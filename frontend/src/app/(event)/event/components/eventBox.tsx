@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import { EventDetail } from '../libs/event.interface';
+import { useTranslations } from "next-intl";
+import { useI18n } from "../../../providers/I18nProvider";
 
 const extractFirstParagraph = (html: string) => {
     // Match the first <p>...</p> and extract its content
@@ -14,6 +16,8 @@ const extractFirstParagraph = (html: string) => {
 };
 
 export default function EventBox({ event }: { event: EventDetail }) {
+    const t = useTranslations("common");
+    const { locale } = useI18n(); // Get current locale 
     const router = useRouter(); // Sử dụng useRouter
 
     return (
@@ -35,7 +39,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                 <div className="back-button-wrapper position-absolute mt-4">
                     <button type="button" className="btn-back" onClick={() => router.back()}>
                         <i className="bi bi-chevron-left mr-2" style={{ fontSize: '14px' }}></i>
-                        Quay lại
+                        {t("backBtn") || "Fallback Text"}
                     </button>
                 </div>
 
@@ -51,7 +55,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                 />
                                 <p className="mt-4 card-text view-location" onClick={() => document.getElementById('event-location')?.scrollIntoView({ behavior: 'smooth' })}>
                                     <i className="bi bi-geo-alt mr-2"></i>
-                                    Xem bản đồ
+                                    {t("mapRedirect") || "Fallback Text"}
                                 </p>
                             </div>
                         </div>
@@ -60,10 +64,10 @@ export default function EventBox({ event }: { event: EventDetail }) {
                         <div className="col-lg-5 col-md-12 p-0 d-flex justify-content-end align-items-center" style={{ zIndex: 2 }}>
                             <div className="card" style={{ width: '385px' }}>
                                 <div className="card-body px-4 mt-2 mb-3">
-                                    <h5 className="card-title title-box">Ngày & giờ</h5>
+                                    <h5 className="card-title title-box">{t("dateTime") || "Fallback Text"}</h5>
                                     <p className="card-text m-0 text-body-secondary">
                                         <i className="bi bi-calendar2-event mr-2"></i>
-                                        {new Date(event.startDate).toLocaleString('vi-VN', {
+                                        {new Date(event.startDate).toLocaleString( locale === "vi" ? 'vi-VN' : 'en-US', {
                                             weekday: 'long',
                                             year: 'numeric',
                                             month: 'long',
@@ -76,9 +80,9 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                             + 4 ngày khác
                                         </button> */}
                                     </p>
-                                    <p className="card-text text-add p-0">Thêm vào lịch</p>
+                                    <p className="card-text text-add p-0">{t("addCalender") || "Fallback Text"}</p>
 
-                                    <h5 className="card-title mt-2 title-box">Địa điểm</h5>
+                                    <h5 className="card-title mt-2 title-box">{t("priceTitle") || "Fallback Text"}</h5>
                                     <p className="card-text text-body-secondary mb-2" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
                                         <i className="bi bi-geo-alt-fill mr-2"></i>
                                         {event.venue}
@@ -88,7 +92,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
 
                                     <div className="d-flex justify-content-center align-items-center mt-3 mb-2">
                                         <h5 className="card-title title-box text-center w-100">
-                                            Giá từ
+                                           {t("priceTitle") || "Fallback Text"}
                                             <span className="ml-2 text-teal-400" style={{ cursor: "pointer" }}>
                                                 {event.minTicketPrice.toLocaleString('vi-VN')}đ
                                                 {/* 350.000đ */}
@@ -99,7 +103,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
 
                                     <div className="d-flex justify-content-center">
                                         <button type="button" className="btn-buy-now" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
-                                            Mua vé ngay
+                                           {t("bookNow") || "Fallback Text"}
                                         </button>
                                     </div>
                                 </div>

@@ -6,22 +6,27 @@
     height: 500px;
     width: 90%;
     border-radius: 10px;
-    display: flex; /* Sử dụng flexbox */
-    flex-direction: column; /* Các phần tử con xếp theo cột */
-    overflow: hidden; /* Ngăn chặn nội dung vượt ra ngoài */
+    display: flex;
+    /* Sử dụng flexbox */
+    flex-direction: column;
+    /* Các phần tử con xếp theo cột */
+    overflow: hidden;
+    /* Ngăn chặn nội dung vượt ra ngoài */
     position: relative;
     z-index: 0;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
     padding: 0 10px;
 }
 
-.eve-padding{
+.eve-padding {
     padding-left: 30px;
     padding-right: 30px;
 }
 
-.row, .col-lg-7, .col-lg-5 {
+.row,
+.col-lg-7,
+.col-lg-5 {
     margin: 0 !important;
     padding: 0 !important;
 }
@@ -33,7 +38,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;  /* Để lớp mask ở dưới phần chữ và card */
+    z-index: 1;
+    /* Để lớp mask ở dưới phần chữ và card */
 }
 
 .btn-buy-now {
@@ -67,20 +73,24 @@
     /* Ngắt từ dài nếu cần thiết */
 }
 
-.view-location{
+.view-location {
     color: white;
     cursor: pointer;
 }
 
-#info-ticket, #event-location {
-    scroll-margin-top: 80px; 
+#info-ticket,
+#event-location {
+    scroll-margin-top: 80px;
 }
 
 /* Nút "Quay lại" */
 .back-button-wrapper {
-    top: 10px; /* Khoảng cách từ trên cùng */
-    left: 20px; /* Khoảng cách từ lề trái */
-    z-index: 3; /* Đảm bảo nút hiển thị trên cùng */
+    top: 10px;
+    /* Khoảng cách từ trên cùng */
+    left: 20px;
+    /* Khoảng cách từ lề trái */
+    z-index: 3;
+    /* Đảm bảo nút hiển thị trên cùng */
     padding-left: 20px;
 }
 
@@ -95,6 +105,7 @@
     cursor: pointer;
     border-radius: 5px;
 }
+
 .btn-back:hover {
     color: white;
     background-color: #0C4762;
@@ -124,6 +135,12 @@
     align-items: center;
 }
 
+.event-description h3 img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /*---------------------------------------------------------------------------------------------------*/
 /* Ticket details */
 .custom-col-left {
@@ -141,7 +158,7 @@
     font-size: 16px !important;
 }
 
-.li-ticket-item{
+.li-ticket-item {
     background-color: #10648a !important;
     color: white !important;
     font-size: 16px !important;
@@ -149,7 +166,7 @@
     margin: 15px;
 }
 
-.ul-ticket-item{
+.ul-ticket-item {
     margin-top: 5px;
     padding-left: 0px;
 }
@@ -239,7 +256,7 @@
     background-color: #f1fafd;
 }
 
-.cmt-pad{
+.cmt-pad {
     padding-left: 90px;
     padding-right: 90px;
 }
