@@ -42,12 +42,12 @@ const Dashboard = async () => {
                 {/* Events Section */}
                 <div className="flex justify-center mt-8 px-4">
                     <div className="w-full md:w-5/6">
-                        <EventSlider title="Sự kiện" subtitle="Đặc biệt" events={events.specialEvents} />
+                        <EventSlider title="special" subtitle="specialEvent" events={events.specialEvents} />
                         <div className="mt-8">
-                            <EventSlider title="Sự kiện" subtitle="Xu hướng" events={events.trendingEvents} />
+                            <EventSlider title="trending" subtitle="trendingEvent" events={events.trendingEvents} />
                         </div>
                         <div className="mt-8">
-                            <EventSlider title="Sự kiện" subtitle="Đặc sắc" events={events.onlyOnEve} showViewMore />
+                            <EventSlider title="onlyOnEve" subtitle="onlyOneveEvent" events={events.onlyOnEve} showViewMore />
                         </div>
 
                         {events.categorySpecial?.map((category, index) => (

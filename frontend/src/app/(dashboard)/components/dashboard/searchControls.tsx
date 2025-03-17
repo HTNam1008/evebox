@@ -7,7 +7,7 @@ import { CalendarDate} from "@internationalized/date";
 import Link from 'next/link';
 import { RangeValue } from "@react-types/shared";
 import 'tailwindcss/tailwind.css';
-
+import { useTranslations } from "next-intl";
 //Package App
 import DatePicker from './datePicker';
 
@@ -22,6 +22,7 @@ export default function SearchControls() {
     const locations = ["Hà Nội", "TP.HCM", "Đà Nẵng"];
     const dropdownEventRef = useRef(null);
     const dropdownLocationRef = useRef(null);
+    const t = useTranslations("common");
 
     const toggleOption = (option: string) => {
         if (selectedOptions.includes(option)) {
@@ -36,17 +37,17 @@ export default function SearchControls() {
             <div className="bg-sky-900 text-white p-4 md:p-6 rounded-lg shadow-lg">
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-[1.5] text-left">
-                        <label className="text-sm font-medium mb-2">Tên sự kiện, diễn giả, ...</label>
+                        <label className="text-sm font-medium mb-2"> {t("searchTitle") || "Fallback Text"}</label>
                         <div className="mt-2 relative">
                             <input className="w-full bg-white text-gray-800 rounded p-2 appearance-none pr-8 small-text" type="text"
-                                placeholder="Nhập tên sự kiện, diễn giả..."
+                                placeholder={t('searchHint')}
                                 value={searchText}
                                 onChange={(e) => setSearchText(e.target.value)}>
                             </input>
                         </div>
                     </div>
                     <div className="md:w-48 sm:flex-1 text-left">
-                        <label className="text-sm font-medium mb-2">Loại sự kiện</label>
+                        <label className="text-sm font-medium mb-2">{t('categoryTitle')}</label>
                         <div className="mt-2 relative w-full" ref={dropdownEventRef}>
                             <button
                                 onClick={() => setIsEventTypeOpen(!isEventTypeOpen)}
@@ -55,7 +56,7 @@ export default function SearchControls() {
                                 <span className='truncate'>
                                     {selectedOptions.length > 0
                                         ? selectedOptions.join(", ")
-                                        : "Chọn loại sự kiện"}
+                                        : t('categoryHint')}
                                 </span>
                                 <ChevronDown size={16} className="text-gray-500" />
                             </button>
@@ -82,14 +83,14 @@ export default function SearchControls() {
                         </div>
                     </div>
                     <div className="md:w-48 sm:flex-1 text-left">
-                        <label className="text-sm font-medium mb-2">Địa điểm</label>
+                        <label className="text-sm font-medium mb-2">{t('locationTitle')}</label>
                         <div className="mt-2 relative" ref={dropdownLocationRef}>
                             <button
                                 onClick={() => setIsLocationOpen(!isLocationOpen)}
                                 className="w-full bg-white border border-gray-300 rounded p-2 flex justify-between items-center text-gray-500 small-text"
                             >
                                 <span>
-                                    {selectedLocation ? selectedLocation : "Chọn địa điểm"}
+                                    {selectedLocation ? selectedLocation : t('locationHint')}
                                 </span>
                                 <ChevronDown size={16} className="text-gray-500" />
                             </button>
@@ -114,7 +115,7 @@ export default function SearchControls() {
                         </div>
                     </div>
                     <div className="flex-[1.5] text-left">
-                        <label className="text-sm font-medium mb-2">Thời gian</label>
+                        <label className="text-sm font-medium mb-2">{t('timeTitle')}</label>
                         <div className="mt-2 relative">
                             <DatePicker onDateRangeChange={setDateRange} />
                         </div>
