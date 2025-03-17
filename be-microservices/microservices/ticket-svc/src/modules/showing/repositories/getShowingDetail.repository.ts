@@ -77,8 +77,10 @@ export class getShowingDetailRepository {
       return null;
     }
 
+    const showingType = showing.status;
+
     const showingStatus = await this.getShowingStatus(showingId);
-    console.log(showingStatus);
+    // console.log(showingStatus);
     showing.status = showingStatus.showingStatus;
 
     // // Lặp qua từng ticketType và gán status tương ứng
@@ -91,6 +93,7 @@ export class getShowingDetailRepository {
       id: showing.id,
       eventId: showing.eventId,
       status: showing.status,
+      type: showingType,
       isFree: showing.isFree,
       isSalable: showing.isSalable,
       isPresale: showing.isPresale,
