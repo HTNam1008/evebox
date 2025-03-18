@@ -1,31 +1,75 @@
-"use client";
+'use client';
 
 /* Package System */
 import React from 'react';
 import 'tailwindcss/tailwind.css';
 import { useState } from 'react';
+// import { useRef } from 'react';
+import { Divider } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 /* Package Application */
-import NoteDialog from '../dialogs/noteDialog'
+import NoteDialog from '../../[id]/components/dialogs/noteDialog';
 import FormInformationEventClient from './components/formInfoEvent';
-import TimeAndTypeTickets from '../time-type/page';
-import Navigation from '../common/navigation';
+import Navigation from '../../[id]/components/common/navigation';
 
 export default function InformationEventClient() {
+    const router = useRouter();
     const [open, setOpen] = useState(true);
-    const [step, setStep] = useState(1);
+    const [step] = useState(1);
+
+    const searchParams = useSearchParams();
+    useEffect(() => {
+        if (!searchParams.get('step')) {
+            router.replace('/organizer/create-event?step=infor');
+        }
+    }, [searchParams, router]);
+
+    // Giả lập ID sự kiện, sau này nên tăng theo thứ tự đã có các sự kiện để sinh ID
+    // const eventIdRef = useRef(Math.floor(10000 + Math.random() * 90000)); // Sinh ID ngẫu nhiên (5 chữ số)
+
+    // const handleNextStep = () => {
+    //     router.push(`/organizer/create-event/${eventIdRef.current}?step=showing`);
+    // };
+    // const searchParams = useSearchParams();
+    const handleNextStep = () => {
+        // const eventId = searchParams.get("eventId") || eventIdRef.current;
+        //Gán cứng
+        router.push(`/organizer/create-event/1?step=showing`);
+    };
+    
 
     return (
         <>
-            <Navigation title="Tạo sự kiện" step={step}  />
-            
+            <div className="flex flex-col items-center justify-center p-10 relative">
+                <span className="text-3xl font-semibold mb-6">Tạo sự kiện</span>
+                <div className="w-full flex justify-center">
+                    <ol className="flex space-x-6">
+                        <Navigation step={step} />
+
+                        <div className="flex gap-4 mt-4 mb-6">
+                            <button className="text-xs w-18 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all">
+                                Lưu
+                            </button>
+                        </div>
+
+                        <div className="flex gap-4 mt-4 mb-6">
+                            <button className="text-xs w-30 border-2 border-[#51DACF] text-[#0C4762] font-bold py-2 px-4 rounded bg-[#51DACF] hover:bg-[#0C4762] hover:border-[#0C4762] hover:text-white transition-all"
+                                onClick={handleNextStep}>
+                                Tiếp tục
+                            </button>
+                        </div>
+                    </ol>
+                </div>
+
+                <Divider />
+            </div>
+
             <NoteDialog open={open} onClose={() => setOpen(false)}></NoteDialog>
 
-            {step === 1 ? (
-                <FormInformationEventClient onNextStep={() => setStep(2)} />
-            ) : (
-                <TimeAndTypeTickets /> // Hiển thị bước 2 khi đủ điều kiện
-            )}
+            <FormInformationEventClient onNextStep={handleNextStep} />
         </>
     )
 }

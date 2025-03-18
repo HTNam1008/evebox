@@ -1,7 +1,7 @@
 import React from 'react';
-import ImageUpload from '../../common/form/imageUpload';
-import InputField from '../../common/form/inputCountField';
-import { EventImageUploadProps } from '../../../libs/interface/infoevent.interface';
+import ImageUpload from '../../../[id]/components/common/form/imageUpload';
+import InputField from '../../../[id]/components/common/form/inputCountField';
+import { EventImageUploadProps } from '../../../[id]/libs/interface/infoevent.interface';
 
 const EventImageUpload: React.FC<EventImageUploadProps> = ({
     logo,

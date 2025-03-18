@@ -6,9 +6,9 @@ import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 
 /* Package Application */
-import SelectField from "../../common/form/selectField";
+import SelectField from "../../../[id]/components/common/form/selectField";
 import TextEditor from "./textEditor";
-import { handleImageUpload } from "../../../libs/functions/imageUploadUtils";
+import { handleImageUpload } from "../../../[id]/libs/functions/imageUploadUtils";
 import OrganizationInfoForm from "./organizationInfoForm";
 import EventLocationInput from "./eventLocationInput";
 import EventImageUpload from "./eventImageUpload";
@@ -189,16 +189,6 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
                         errors={errors}
                         imageErrors={imageErrors}
                     />
-
-                    {/* Nút Nộp */}
-                    <div className="flex justify-center mt-4 mb-4">
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white font-bold py-2 px-6 rounded hover:bg-blue-700 transition"
-                        >
-                            Nộp
-                        </button>
-                    </div>
                 </form>
             </div>
         </>
