@@ -47,7 +47,7 @@
     "onlyOnEve":"Sự kiện",
     "specialEvent":"Đặc biệt",
     "trendingEvent":"Xu hướng",
-    "onlyOneveEvent":"Đặc sắc",
+    "onlyOnEveEvent":"Đặc sắc",
     "anotherEvents":"Các sự kiện khác",
     "mayLike":"Bạn có thể thích",
     "navigatorSentence1":"Vui lòng truy cập",
@@ -55,5 +55,10 @@
     "like":"Thích",
     "comment":"Bình luận",
     "share":"Chia sẻ",
-    "commentHint":"Nhập bình luận của bạn"
+    "commentHint":"Nhập bình luận của bạn",
+    "theaterstandard":"Sân khấu & Nghệ thuật",
+    "other":"Khác",
+    "others":"Thể loại khác",
+    "theatersandart":"Sân khấu & Nghệ thuật",
+    "music":"Âm nhạc"
 }
