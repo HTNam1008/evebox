@@ -13,7 +13,7 @@ const OrganizationInfoForm: React.FC<OrganizationInfoFormProps> = ({
     imageErrors,
 }) => {
     return (
-        <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
+        <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mb-8" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
             <div className="flex flex-wrap -mx-3 mb-6">
                 {/* Logo ban tổ chức */}
                 <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
@@ -46,7 +46,7 @@ const OrganizationInfoForm: React.FC<OrganizationInfoFormProps> = ({
                     />
 
                     {/* Thông tin ban tổ chức */}
-                    <div className="mt-4">
+                    <div className="mt-5">
                         <label className="block text-sm font-bold mb-2">
                             <span className="text-red-500">* </span> Thông tin ban tổ chức
                         </label>

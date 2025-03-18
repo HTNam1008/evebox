@@ -19,6 +19,7 @@ export default function InformationEventClient() {
     const router = useRouter();
     const [open, setOpen] = useState(true);
     const [step] = useState(1);
+    const [btnValidate, setBtnValidte] = useState("");
 
     const searchParams = useSearchParams();
     useEffect(() => {
@@ -27,19 +28,18 @@ export default function InformationEventClient() {
         }
     }, [searchParams, router]);
 
-    // Giả lập ID sự kiện, sau này nên tăng theo thứ tự đã có các sự kiện để sinh ID
-    // const eventIdRef = useRef(Math.floor(10000 + Math.random() * 90000)); // Sinh ID ngẫu nhiên (5 chữ số)
+    const handleSave = () => {
+        setBtnValidte("Save");
+    }
 
-    // const handleNextStep = () => {
-    //     router.push(`/organizer/create-event/${eventIdRef.current}?step=showing`);
-    // };
-    // const searchParams = useSearchParams();
+    const handleContinue = () => {
+        setBtnValidte("Continue");
+    }
+
     const handleNextStep = () => {
-        // const eventId = searchParams.get("eventId") || eventIdRef.current;
-        //Gán cứng
         router.push(`/organizer/create-event/1?step=showing`);
     };
-    
+
 
     return (
         <>
@@ -50,14 +50,15 @@ export default function InformationEventClient() {
                         <Navigation step={step} />
 
                         <div className="flex gap-4 mt-4 mb-6">
-                            <button className="text-xs w-18 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all">
+                            <button className="text-xs w-18 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all"
+                                type="submit" form="event-form" onClick={handleSave}>
                                 Lưu
                             </button>
                         </div>
 
                         <div className="flex gap-4 mt-4 mb-6">
                             <button className="text-xs w-30 border-2 border-[#51DACF] text-[#0C4762] font-bold py-2 px-4 rounded bg-[#51DACF] hover:bg-[#0C4762] hover:border-[#0C4762] hover:text-white transition-all"
-                                onClick={handleNextStep}>
+                                type="submit" form="event-form" onClick={handleContinue}>
                                 Tiếp tục
                             </button>
                         </div>
@@ -69,7 +70,7 @@ export default function InformationEventClient() {
 
             <NoteDialog open={open} onClose={() => setOpen(false)}></NoteDialog>
 
-            <FormInformationEventClient onNextStep={handleNextStep} />
+            <FormInformationEventClient onNextStep={handleNextStep} btnValidate={btnValidate} />
         </>
     )
 }

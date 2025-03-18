@@ -13,7 +13,7 @@ import OrganizationInfoForm from "./organizationInfoForm";
 import EventLocationInput from "./eventLocationInput";
 import EventImageUpload from "./eventImageUpload";
 
-export default function FormInformationEventClient({ onNextStep }: { onNextStep: () => void }) {
+export default function FormInformationEventClient({ onNextStep, btnValidate }: { onNextStep: () => void, btnValidate: string }) {
     const [logo, setLogo] = useState<string | null>(null);
     const [background, setBackground] = useState<string | null>(null);
     const [logoOrg, setLogoOrg] = useState<string | null>(null);
@@ -120,8 +120,13 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            alert("Form hợp lệ! Gửi dữ liệu...");
-            onNextStep();
+            
+            if (btnValidate === "Save") {
+                alert("Form hợp lệ!");
+            } else if (btnValidate === "Continue"){
+                alert("Form hợp lệ! Gửi dữ liệu...");
+                onNextStep();
+            }
         }
     };
 
@@ -129,7 +134,7 @@ export default function FormInformationEventClient({ onNextStep }: { onNextStep:
         <>
             <Toaster position="top-center" />
             <div className="flex justify-center">
-                <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit}>
+                <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="event-form">
                     <EventImageUpload
                         logo={logo}
                         background={background}
