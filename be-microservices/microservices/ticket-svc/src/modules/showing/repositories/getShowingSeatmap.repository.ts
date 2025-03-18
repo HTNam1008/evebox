@@ -96,6 +96,7 @@ export class getShowingSeatmapRepository {
         createdAt: seatmap.createdAt,
         viewBox: seatmap.viewBox,
         status: seatmap.status,
+        hasSeat: false,
         Section: seatmap.Section.map(section => ({
           id: section.id,
           name: section.name,
@@ -126,6 +127,7 @@ export class getShowingSeatmapRepository {
       createdAt: seatmap.createdAt,
       viewBox: seatmap.viewBox,
       status: seatmap.status,
+      hasSeat: true,
       Section: seatmap.Section.map(section => ({
         id: section.id,
         name: section.name,
