@@ -23,10 +23,10 @@ import { useTranslations } from 'next-intl';
 interface SelectTicketPageProps {
     showingId: string;
     serverEvent: EventDetail | null;
-    showAllSeats?: boolean;
+    seatMapId?: number;
   }
 
-export default function SelectTicketPage({ showingId, serverEvent, showAllSeats }: SelectTicketPageProps) {
+export default function SelectTicketPage({ showingId, serverEvent, seatMapId }: SelectTicketPageProps) {
     const t = useTranslations('common');
     const [selectedTickets, setSelectedTickets] = useState<{ [key: string]: number }>({});
     const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
@@ -45,7 +45,7 @@ export default function SelectTicketPage({ showingId, serverEvent, showAllSeats 
         setIsLoadingSeatmap(true);
         setSeatmapError("");
 
-        if (showAllSeats) {
+        if (seatMapId === 0) {
             fetchShowingData(showingId)
                 .then((data) => {
                     if (data?.data) {
@@ -78,7 +78,7 @@ export default function SelectTicketPage({ showingId, serverEvent, showAllSeats 
                 .catch(() => setSeatmapError("Lỗi khi tải dữ liệu sơ đồ chỗ ngồi"))
                 .finally(() => setIsLoadingSeatmap(false));
         }
-    }, [showingId, showAllSeats]);
+    }, [showingId, seatMapId]);
 
     const isShowingData = (data: unknown): data is ShowingData => {
         return !!(data && typeof data === "object" && "TicketType" in data);
