@@ -7,8 +7,8 @@ import { ShowingData } from "@/types/model/seatmap";
 export async function fetchShowingData(showingId: string): Promise<BaseApiResponse<ShowingData> | null> {
   try {
     const response = await fetch(
-      // `${process.env.NEXT_PUBLIC_API_URL}/api/showing?showingId=${showingId}`,
-      `${process.env.NEXT_TICKET_SVC_URL}/api/showing?showingId=${showingId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/showing?showingId=${showingId}`,
+      // `${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/showing?showingId=${showingId}`,
       {
         method: "GET",
         headers: {

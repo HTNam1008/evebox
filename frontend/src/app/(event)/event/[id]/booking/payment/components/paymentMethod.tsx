@@ -1,7 +1,7 @@
 'use client'
 
 /* Package System */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import PaymentInfoDialog from "./dialogs/paymentInfoDialog";
 
@@ -9,10 +9,18 @@ import PaymentInfoDialog from "./dialogs/paymentInfoDialog";
 import '@/../public/styles/events/payment.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+interface PaymentMethod {
+    paymentMethod: string;
+    status: string;
+}
+
 export default function PaymentMethod() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const [selectedMethod, setSelectedMethod] = useState("shopeepay");
+    const [selectedMethod, setSelectedMethod] = useState("");
+
+    const [isLoadingMethods, setIsLoadingMethods] = useState(true);
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
 
     const userData = localStorage.getItem('verifyData');
     const user = userData ? JSON.parse(userData) : null;
@@ -20,16 +28,37 @@ export default function PaymentMethod() {
     const email = localStorage.getItem('email');
     // const address = localStorage.getItem('address');
 
-    const paymentMethods = [
-        { id: "shopeepay", name: "ShopeePay Wallet", image: "/images/shopeepay.png" },
-        { id: "momo", name: "Momo Wallet", image: "/images/momo.png" },
-        { id: "credit", name: "International Credit/Debit Card", image: "/images/visa.png" },
-        { id: "atm", name: "ATM Card/Internet Banking", image: "/images/atm.png" },
-    ];
 
     const handleOpenInfoDialog = () => {
         setIsDialogOpen(true);
     };
+
+    useEffect(() => {
+        const fetchPaymentMethods = async () => {
+            setIsLoadingMethods(true);
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/payment/getPaymentMethodStatus`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch payment methods: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                setPaymentMethods(data?.data);
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu phương thức thanh toán:", error);
+            } finally {
+                setIsLoadingMethods(false);
+            }
+        };
+
+        fetchPaymentMethods();
+    }, []);
 
     return (
         <>
@@ -55,25 +84,25 @@ export default function PaymentMethod() {
                     <div className="mt-4 flex flex-col">
                         <h4 className="fw-bold self-start">Phương thức thanh toán</h4>
                         <div className="rounded-lg mt-5">
-                            {paymentMethods.map((method) => (
+                            {!isLoadingMethods && paymentMethods?.map((method) => (
                                 <div
-                                    key={method.id}
+                                    key={method.paymentMethod}
                                     className={`d-flex align-items-center h-14 justify-content-between border rounded-lg pl-3 pr-3 mb-2 cursor-pointer transition-all duration-300 
-                                ${selectedMethod === method.id ? 'border-2 border-black shadow-[4px_4px_0px_0px_#0022BA]' : 'border-2 border-gray-300'}`}
-                                    onClick={() => setSelectedMethod(method.id)}
+                                ${selectedMethod === method.paymentMethod ? 'border-2 border-black shadow-[4px_4px_0px_0px_#0022BA]' : 'border-2 border-gray-300'}`}
+                                    onClick={() => setSelectedMethod(method.paymentMethod)}
                                 >
                                     <div className="flex items-center">
                                         <input
                                             type="radio"
                                             name="paymentMethod"
-                                            value={method.id}
-                                            checked={selectedMethod === method.id}
-                                            onChange={() => setSelectedMethod(method.id)}
+                                            value={method.paymentMethod}
+                                            checked={selectedMethod === method.paymentMethod}
+                                            onChange={() => setSelectedMethod(method.paymentMethod)}
                                             className="me-2"
                                         />
-                                        <span className="fw-bold">{method.name}</span>
+                                        <span className="fw-bold">{method.paymentMethod}</span>
                                     </div>
-                                    <Image className={`method-img rounded-lg ${method.id !== 'shopeepay' ? 'max-w-[107px] justify-end max-h-[38px] object-contain' : ''}`} src={method.image} alt={method.name} width={107} height={21.5} />
+                                    <Image className={`method-img rounded-lg max-w-[107px] justify-end max-h-[38px] object-contain`} src={`/images/${method.paymentMethod}-logo.svg`} alt={method.paymentMethod} width={107} height={21.5} />
                                 </div>
                             ))}
                         </div>
