@@ -129,6 +129,9 @@ class SeatMapDto {
 
   @ApiProperty({ type: [SectionDto], description: 'List of sections in the seatmap' })
   Section: SectionDto[];
+
+  @ApiProperty({ example: false, description: "Is this seatmap has seat" })
+  hasSeat: boolean;
 }
 
 export class SeatMapResponseDto {
