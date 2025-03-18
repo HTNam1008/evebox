@@ -83,9 +83,12 @@ export class getShowingSeatmapRepository {
 
     const seatMapHasAnyRows = seatmap.Section.some(section => section.Row.length > 0);
     if (!seatMapHasAnyRows) {
-      const ticketTypesStatus = await Promise.all(seatmapId.TicketType.map(ticketType => 
-        this.getSectionStatus(ticketType.id)
-      ));
+      const ticketTypesStatus = [];
+      for (const ticketType of seatmapId.TicketType) {
+        const status = await this.getSectionStatus(ticketType.id);
+        ticketTypesStatus.push(status);
+      }
+
       
       return {
         id: seatmap.id,
@@ -104,21 +107,6 @@ export class getShowingSeatmapRepository {
           ticketTypeId: ticketTypesStatus.find(ticketTypeStatus => ticketTypeStatus.sectionId === section.id)?.ticketTypeId || "",
           status:ticketTypesStatus.find(ticketTypeStatus => ticketTypeStatus.sectionId === section.id)?.status || 0,
           isReservingSeat: section.isReservingSeat,
-          Row: section.Row.map(row => ({
-            id: row.id,
-            name: row.name,
-            sectionId: row.sectionId,
-            createdAt: row.createdAt,
-            Seat: row.Seat.map(seat => ({
-              id: seat.id,
-              name: seat.name,
-              rowId: seat.rowId,
-              position: seat.position,
-              positionX: new Float32Array([seat.positionX]),
-              positionY: new Float32Array([seat.positionY]),
-              status: seat.SeatStatus[0]?.status || 1,
-            })),
-          })),
         })),
       }
     }
@@ -130,7 +118,8 @@ export class getShowingSeatmapRepository {
       const seatId = key.split(':')[2];
       seatIds.push(parseInt(seatId));
     }
-    console.log(seatIds);
+    // console.log(seatIds);
+    // console.log(seatmapId.TicketType);
     return {
       id: seatmap.id,
       name: seatmap.name,
@@ -145,8 +134,10 @@ export class getShowingSeatmapRepository {
         isStage: section.isStage,
         element: section.element,
         attribute: section.attribute,
-        ticketTypeId: seatmapId.TicketType.find(ticketType => ticketType.sections[0].sectionId === section.id)?.id || "",
-        status: 0,
+        ticketTypeId: seatmapId.TicketType.find(ticketType => 
+          ticketType.sections.some(sectionItem => sectionItem.sectionId === section.id)
+        )?.id || "",
+              status: 0,
         isReservingSeat: section.isReservingSeat,
         Row: section.Row.map(row => ({
           id: row.id,
@@ -181,6 +172,7 @@ export class getShowingSeatmapRepository {
           }
         }
       });
+      console.log(ticketTypeIds);
       return ticketTypeIds;
     }
     catch(error){
@@ -191,6 +183,7 @@ export class getShowingSeatmapRepository {
 
   async getSectionStatus(ticketTypeId: string){
     try{
+      // console.log("Start getSectionStatus")
       const ticketTypeQuantity = await this.prisma.ticketType.findUnique({
         where: {
           id: ticketTypeId,
@@ -212,7 +205,7 @@ export class getShowingSeatmapRepository {
           ticketTypeId: ticketTypeId,
         }
       });
-
+      // console.log("End getSectionStatus")
       return {
         ticketTypeId,
         sectionId: ticketTypeQuantity.sections[0].sectionId,

@@ -19,9 +19,13 @@ export class UnSelectSeatService {
           await redis.del(key);
         }
       }
-      const seatKey = `seat:${showingId}:${email}`;
-      if (await redis.exists(seatKey)) {
-        await redis.del(seatKey);
+      const seatKey = `seat:${showingId}:*`;
+      const seatKeys = await redis.keys(seatKey);
+      for (const key of seatKeys) {
+        const value = await redis.get(key);
+        if (value === email) {
+          await redis.del(key);
+        }
       }
       return Ok(true);
     } catch (error) {
