@@ -47,7 +47,7 @@
     "onlyOnEve":"Only on",
     "specialEvent":"Event",
     "trendingEvent":"Event",
-    "onlyOneveEvent":"Event",
+    "onlyOnEveEvent":"Event",
     "anotherEvents":"Another events",
     "mayLike":"You may like",
     "navigatorSentence1":"Go to ",
@@ -55,5 +55,10 @@
     "like":"Like",
     "comment":"Comment",
     "share":"Share",
-    "commentHint":"Enter your comment"
+    "commentHint":"Enter your comment",
+    "theaterstandard":"Theater standard",
+    "other":"Other",
+    "others":"Other categories",
+    "theatersandart":"Theater & Art",
+    "music":"Music"
 }
