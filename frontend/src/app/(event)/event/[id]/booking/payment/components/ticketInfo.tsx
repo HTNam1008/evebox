@@ -3,9 +3,11 @@
 /* Package System */
 import Image from 'next/image';
 import { useState } from 'react';
+// import { useTranslations } from 'next-intl';
 
 /* Package Application */
 import QRPaymentDialog from "./dialogs/QRPaymenDialog";
+import { useI18n } from '@/app/providers/I18nProvider';
 interface EventProps {
     id: number;
     title: string;
@@ -27,6 +29,8 @@ interface TicketInformationProps {
 
 
 export default function TicketInformation({ event, totalTickets, totalAmount, ticketTypeName, ticketPrice }: TicketInformationProps) {
+    // const t = useTranslations("common");
+    const { locale } = useI18n();
     const [promoCode, setPromoCode] = useState('');
     const [isQRDialogOpen, setIsQRDialogOpen] = useState(false);
 
@@ -57,7 +61,12 @@ export default function TicketInformation({ event, totalTickets, totalAmount, ti
                             </p>
                             <p className='d-flex justify-content-start'>
                                 <i className="bi bi-calendar2-event mr-2"></i>
-                                {event.startDate}
+                                {new Date(event.startDate).toLocaleString(locale === "vi" ? 'vi-VN' : 'en-US', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                })}
                             </p>
                         </div>
                     ) : (
@@ -99,12 +108,12 @@ export default function TicketInformation({ event, totalTickets, totalAmount, ti
                         <p className='fw-bold'>Mã khuyến mãi</p>
                     </div>
                     <div className="col-md-12 flex flex-row">
-                        <input 
-                            value={promoCode} 
+                        <input
+                            value={promoCode}
                             onChange={(e) => setPromoCode(e.target.value)}
                             type="text"
-                            className='form-control mr-4 mt-4 h-12 w-[60%]' 
-                            placeholder='MÃ GIẢM GIÁ' 
+                            className='form-control mr-4 mt-4 h-12 w-[60%]'
+                            placeholder='MÃ GIẢM GIÁ'
                         />
                         <button disabled={promoCode === ''} className={`btn mt-4 h-12 w-[40%] ${promoCode !== '' ? 'btn-primary' : 'btn-disabled bg-[#dedede]'}`}>Áp dụng</button>
                     </div>
@@ -121,15 +130,15 @@ export default function TicketInformation({ event, totalTickets, totalAmount, ti
                 <hr className="custom-hr" />
                 <div className='row pt-2 pb-3'>
                     <div className="col-md-8 d-flex justify-content-start">
-                        <p style={{color: '#0C4762'}} className='fw-bold'>Tổng tiền</p>
+                        <p style={{ color: '#0C4762' }} className='fw-bold'>Tổng tiền</p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
-                        <p style={{color: '#0C4762'}} className='fw-bold'>{totalAmount.toLocaleString("vi-VN")}đ</p>
+                        <p style={{ color: '#0C4762' }} className='fw-bold'>{totalAmount.toLocaleString("vi-VN")}đ</p>
                     </div>
                 </div>
                 <div className='row mt-2 mb-4'>
-                    <p>Bằng việc tiến hành đặt mua</p><br/>
-                    <p>Bạn đã đồng ý với các <a href='#' style={{color: '#0C4762',textDecoration:'underline'}}>Điều Kiện Giao Dịch Chung</a></p>
+                    <p>Bằng việc tiến hành đặt mua</p><br />
+                    <p>Bạn đã đồng ý với các <a href='#' style={{ color: '#0C4762', textDecoration: 'underline' }}>Điều Kiện Giao Dịch Chung</a></p>
                 </div>
                 <div className='row'>
                     <button onClick={handleOpenQRDialog} className='h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'>Thanh toán</button>

@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 /* Package Application */
 // import CollapsibleDescription from './collapsibleDescriptionProp';
@@ -38,6 +39,7 @@ export default function TicketInfor({
     selectedTicketTypeName,
     selectedTicketPrice,
 }: TicketInforProps) {
+    const t = useTranslations('common');
     const router = useRouter();
 
     const handleContinue = () => {
@@ -102,8 +104,8 @@ export default function TicketInfor({
                         onClick={handleContinue}
                     >
                         {hasSelectedTickets
-                            ? `Tiếp tục - ${totalAmount.toLocaleString()}đ`
-                            : 'Vui lòng chọn vé'}
+                            ? `${t("continue") ?? "Tiếp tục"} - ${totalAmount.toLocaleString()}đ`
+                            : `${t("pleaseChooseTicket") ?? "Vui lòng chọn vé"}`}
                     </button>
                 </div>
             </div>

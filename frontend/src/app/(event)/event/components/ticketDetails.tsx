@@ -74,7 +74,7 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
                               {ticket.status === "sold_out" ? (
                                 <>
                                   <p className="price !text-gray-700 p-2">{ticket.price.toLocaleString("vi-VN")}đ</p> 
-                                  <button type="button" className="btn-sold-out">Hết vé</button>
+                                  <button type="button" className="btn-sold-out">{t("soldOutTicket") ?? "Hết vé"}</button>
                                 </>
                               ) : (
                                 <p className="price mb-0 !border !border-[#9ef5cf] rounded-lg p-2">{ticket.price.toLocaleString("vi-VN")}đ</p> 

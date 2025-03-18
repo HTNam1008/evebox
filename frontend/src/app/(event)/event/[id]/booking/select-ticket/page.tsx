@@ -4,6 +4,7 @@
 /* Package System */
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'tailwindcss/tailwind.css';
@@ -22,6 +23,8 @@ import { EventDetail } from '../../../libs/event.interface';
 import { fetchEventDetail } from '@/app/(event)/libs/server/fetchEventDetail';
 
 export default function SelectTicketPage() {
+    const t = useTranslations("common");
+
     const [selectedTickets, setSelectedTickets] = useState<{ [key: string]: number }>({});
     const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
     const [totalAmount, setTotalAmount] = useState<number>(0);
@@ -45,17 +48,17 @@ export default function SelectTicketPage() {
                 }
                 else {
                     setEvent(null);
-                    console.error("Không tìm thấy dữ liệu sự kiện");
+                    console.error(t("notFoundEvent") ?? "Không tìm thấy sự kiện");
                 }
             } catch (error) {
-                console.error("Lỗi khi lấy dữ liệu sự kiện:", error);
+                console.error(`${t("errorFoundEvent") ?? "Lỗi khi lấy dữ liệu sự kiện"}`, error);
             } finally {
                 setIsLoadingEvent(false);
             }
         };
 
         fetchEventData();
-    }, [eventId]);
+    }, [eventId, t]);
 
     const [seatMapData, setSeatMapData] = useState<SeatMap | ShowingData | null>(null);
     const [isLoadingSeatmap, setIsLoadingSeatmap] = useState(true);
@@ -74,10 +77,10 @@ export default function SelectTicketPage() {
                         setSeatMapData(data.data);
                         setTicketType(data?.data?.TicketType || []);
                     } else {
-                        setSeatmapError("Không tìm thấy dữ liệu showing");
+                        setSeatmapError(t("notFoundShowing") ?? "Không tìm thấy suất chiếu");
                     }
                 })
-                .catch(() => setSeatmapError("Lỗi khi tải dữ liệu showing"))
+                .catch(() => setSeatmapError(t("errorFoundShowing") ?? "Lỗi khi tải dữ liệu suất chiếu"))
                 .finally(() => setIsLoadingSeatmap(false));
         }
         else {
@@ -88,7 +91,7 @@ export default function SelectTicketPage() {
 
                         return fetchShowingData(showingId);
                     } else {
-                        setSeatmapError("Không tìm thấy dữ liệu sơ đồ chỗ ngồi");
+                        setSeatmapError(t("notFoundSeatmap") ?? "Không tìm thấy sơ đồ chỗ ngồi");
                         return null;
                     }
                 })
@@ -97,10 +100,10 @@ export default function SelectTicketPage() {
                         setTicketType(showingResponse.data.TicketType);
                     }
                 })
-                .catch(() => setSeatmapError("Lỗi khi tải dữ liệu sơ đồ chỗ ngồi"))
+                .catch(() => setSeatmapError(t("errorFoundSeatmap") ?? "Lỗi khi tải dữ liệu sơ đồ chỗ ngồi"))
                 .finally(() => setIsLoadingSeatmap(false));
         }
-    }, [showingId]);
+    }, [showingId, t]);
 
     const isShowingData = (data: unknown): data is ShowingData => {
         return !!(data && typeof data === "object" && "TicketType" in data);
@@ -146,7 +149,7 @@ export default function SelectTicketPage() {
 
     return (
         <div>
-            <Navigation title="Chọn vé" />
+            <Navigation title={t("chooseTicket") ?? "Chọn vé"} />
             {(!isLoadingEvent && event) ? (
                 <TicketInfor
                     event={event}

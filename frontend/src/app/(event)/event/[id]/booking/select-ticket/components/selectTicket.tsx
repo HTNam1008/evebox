@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
+import { useTranslations } from 'next-intl';
 
 /* Package Application */
 import AlertDialog from '@/app/(showing)/showing/components/alertDialog';
@@ -29,12 +30,13 @@ export default function SelectTicket({
     selectedTicket,
     setSelectedTicket
 }: SelectTicketProps) {
+    const t = useTranslations("common");
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
 
     const handleIncrease = (id: string) => {
         if (selectedTicket && selectedTicket !== id) {
-            setAlertMessage("Bạn chỉ được mua 1 loại vé duy nhất.");
+            setAlertMessage(t("onlyOneTicketType") ?? "Bạn chỉ được mua 1 loại vé duy nhất.");
             setAlertOpen(true);
             return;
         }
@@ -103,7 +105,7 @@ export default function SelectTicket({
                                             >+</button>
                                         </div>
                                     ) : (
-                                        <p className="text-red-500 mt-2 font-semibold">Hết vé</p>
+                                        <p className="text-red-500 mt-2 font-semibold">{t("soldOutTicket") ?? "Hết vé"}</p>
                                     )}
                                 </div>
                             </div>

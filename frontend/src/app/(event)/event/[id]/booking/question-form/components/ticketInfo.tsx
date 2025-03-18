@@ -1,9 +1,12 @@
 'use client';
 
+/* Package System */
 import { useState } from 'react';
 import Image from 'next/image';
 import React from "react";
 import { useRouter } from "next/navigation";
+
+/* Package Application */
 import ConfirmDialog from './dialogs/confirmDialog';
 
 interface EventProps {
