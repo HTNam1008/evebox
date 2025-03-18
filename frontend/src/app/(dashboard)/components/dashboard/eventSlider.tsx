@@ -33,6 +33,10 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
+  const uniqueEvents = events.filter(
+    (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+  );
+
   
   const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(null);
   const navigation = swiperInstance?.params.navigation as NavigationOptionsTyped;
@@ -54,7 +58,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
         <h2 className="text-xl md:text-2xl font-bold">
-          {t(`${title}` || "")}  {subtitle && <span className="text-teal-400"> {t(`${subtitle}`)}</span>}
+          {t(`${title || ""}`) ?? title}  {subtitle && <span className="text-teal-400"> {t(`${subtitle || ""}`) ?? subtitle}</span>}
         </h2>
       </div>
 
@@ -75,7 +79,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
         }}
         className="mySwiper"
       >
-        {events.map((event) => (
+        {uniqueEvents.map((event) => (
           <SwiperSlide key={event.id} className="h-full">
             <Link href={`/event/${event.id}`}>
               <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow flex flex-col h-full">
@@ -98,15 +102,19 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
                   <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
                     <time className="text-left text-teal-500">
                       <span>
-                        {new Date(event.startDate).toLocaleDateString()}
+                        {new Date(event.startTime).toLocaleDateString()}
                       </span>
                     </time>
-                    <span className="rounded-lg bg-emerald-200 px-2 font-medium text-sky-950 text-center md:text-left">
-                      {event.status === 'free'
+                    <span className={`rounded-lg px-2 font-medium text-sky-950 text-center md:text-left ${event.status === 'event_over' ? 'bg-red-300 ' : 'bg-emerald-200'}`}>
+                      {/* {event.status === 'available'
                         ? 'Miễn phí'
                         : 'Từ ' +
                         event.minTicketPrice.toLocaleString('vi-VN') +
-                        'đ'}
+                        'đ'} */}
+                      {event.status === 'available' ? 
+                        'Từ ' + event.minTicketPrice?.toLocaleString('vi-VN') + 'đ' :
+                        event.status === 'event_over' ? 'Đã kết thúc' : 'Chưa có thông tin vé'
+                      }
                     </span>
                   </div>
                 </div>

@@ -47,7 +47,7 @@
     "onlyOnEve":"Sự kiện",
     "specialEvent":"Đặc biệt",
     "trendingEvent":"Xu hướng",
-    "onlyOneveEvent":"Đặc sắc",
+    "onlyOnEveEvent":"Đặc sắc",
     "anotherEvents":"Các sự kiện khác",
     "mayLike":"Bạn có thể thích",
     "navigatorSentence1":"Vui lòng truy cập",
@@ -67,5 +67,11 @@
     "notFoundShowing":"Không tìm thấy dữ liệu suất chiếu",
     "errorFoundShowing":"Lỗi khi lấy dữ liệu suất chiếu",
     "notFoundSeatmap":"Không tìm thấy dữ liệu sơ đồ chỗ ngồi",
-    "errorFoundSeatmap":"Lỗi khi lấy dữ liệu sơ đồ chỗ ngồi"
+    "errorFoundSeatmap":"Lỗi khi lấy dữ liệu sơ đồ chỗ ngồi",
+    "theaterstandard":"Sân khấu & Nghệ thuật",
+    "other":"Khác",
+    "others":"Thể loại khác",
+    "theatersandart":"Sân khấu & Nghệ thuật",
+    "music":"Âm nhạc",
+    "ticketPrice":"Giá vé"
 }

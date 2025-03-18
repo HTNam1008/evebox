@@ -46,6 +46,7 @@ export interface SeatMap {
   createdAt: Date;
   viewBox: string;
   status: number;
+  hasSeat: boolean;
   Section?: Section[];
 }
 

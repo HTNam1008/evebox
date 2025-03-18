@@ -1,10 +1,11 @@
 import { Controller, Get, Query, Res, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { getPaymentMethodResponseDto } from './getPaymentMethod-response.dto';
 import { getPaymentMethodService } from './getPaymentMethod.service';
 
+@ApiTags('Payment')
 @Controller('api/payment')
 export class getPaymentMethodController {
   constructor(private readonly getPaymentMethodService: getPaymentMethodService) {}

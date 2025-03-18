@@ -19,7 +19,7 @@ export class UpdateWeeklyService {
   // @Cron('14 22 * * 4')
   async handleMondayJob() {
     this.logger.log('Running database update task on Monday...');
-    
+    return;
     // Update event_weekly
     for (let page = 1; page <= 20; page++) {
       await this.eventWeeklyRepository.fetchEventsFromTicketBox(page,"music");

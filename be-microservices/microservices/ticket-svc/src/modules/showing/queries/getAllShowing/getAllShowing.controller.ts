@@ -1,10 +1,11 @@
 import { Controller, Get, Res, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { getAllShowingService } from './getAllShowing.service';
 import { AllShowingsResponseDto } from './getAllShowing-response.dto';
 
+@ApiTags('Showing')
 @Controller('api/showing')
 export class getAllShowingController {
   constructor(private readonly getAllShowingService: getAllShowingService) {}

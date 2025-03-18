@@ -1,5 +1,6 @@
 'use client';
 
+import { Divider } from '@nextui-org/react';
 //Package System
 import { Check } from 'lucide-react';
 
@@ -16,7 +17,7 @@ export default function Navigation({ title, step }: { title: string, step: numbe
 
     return (
         <div className="flex flex-col items-center justify-center p-10 relative">
-            <h1 className="text-3xl font-semibold mb-6">{title}</h1>
+            <span className="text-3xl font-semibold mb-6">{title}</span>
 
             {/* Stepper */}
             <div className="w-full flex justify-center">
@@ -35,7 +36,7 @@ export default function Navigation({ title, step }: { title: string, step: numbe
 
                                 {/* Title + underline */}
                                 <div className="relative flex flex-col items-center">
-                                    <h3 className="text-xs font-medium leading-tight mb-2">{s.label}</h3>
+                                    <span className="text-xs font-medium leading-tight mb-2">{s.label}</span>
 
                                     {isActive && (
                                         <div className="absolute left-0 bottom-[-6px] w-full h-1 bg-[#51DACF]"></div>
@@ -62,6 +63,8 @@ export default function Navigation({ title, step }: { title: string, step: numbe
                     </div>
                 </ol>
             </div>
+
+            <Divider />
         </div>
     );
 }

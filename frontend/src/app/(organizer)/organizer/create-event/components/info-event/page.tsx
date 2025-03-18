@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 /* Package Application */
 import NoteDialog from '../dialogs/noteDialog'
-import FormInformationEventClient from './formInfoEvent';
+import FormInformationEventClient from './components/formInfoEvent';
 import TimeAndTypeTickets from '../time-type/page';
 import Navigation from '../common/navigation';
 

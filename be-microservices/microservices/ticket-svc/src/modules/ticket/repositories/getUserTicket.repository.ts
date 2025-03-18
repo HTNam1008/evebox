@@ -7,48 +7,59 @@ export class getUserTicketRepository {
   constructor(private readonly prisma: PrismaService) {}
   async getUserTicket(userId: string){
     try{
-      return await this.prisma.ticket.findMany({
+      const userTicket = await this.prisma.ticket.findMany({
         where: {
           userId: userId
         },
         select: {
           id: true,
-          seatId: true,
           showingId: true,
-          ticketTypeId: true,
           status: true,
           price: true,
-          userId: true,
-          purchasedAt: true,
-          qrCode: true,
-          Showing: {
-              select:{
-              startTime: true,
-              endTime: true,
-              Events: {
-                  select: {
-                  title: true,
-                  description: true,
-                },
-              },
-            },
-          },
+          type: true,
           FormResponse: {
             select: {
-              answers: {
+              FormAnswer: {
                 select: {
-                  formInput:{
-                    select:{
-                      fieldName: true,
+                  FormInput: {
+                    select: {
+                      fieldName: true
                     }
                   },
                   value: true,
                 }
               }
             }
+          },
+          Showing: {
+            select: {
+              startTime: true,
+              endTime: true,
+              Events: {
+                select: {
+                  title: true,
+                  description: true,
+                }
+              }
+            }
+          },
+          PaymentInfo: {
+            select: {
+              paidAt: true,
+            }
+          },
+          TicketQRCode: {
+            select: {
+              qrCode: true,
+              ticketTypeId: true,
+              seatId: true,
+            }
           }
         }
       });
+      if(!userTicket){
+        return null;
+      }
     }
     catch(e){
       console.error(e);

@@ -47,7 +47,7 @@
     "onlyOnEve":"Only on",
     "specialEvent":"Event",
     "trendingEvent":"Event",
-    "onlyOneveEvent":"Event",
+    "onlyOnEveEvent":"Event",
     "anotherEvents":"Another events",
     "mayLike":"You may like",
     "navigatorSentence1":"Go to ",
@@ -67,5 +67,11 @@
     "notFoundShowing":"No showing data found",
     "errorFoundShowing":"Error when getting showing data",
     "notFoundSeatmap":"No seatmap data found",
-    "errorFoundSeatmap":"Error when getting seatmap data"
+    "errorFoundSeatmap":"Error when getting seatmap data",
+    "theaterstandard":"Theater standard",
+    "other":"Other",
+    "others":"Other categories",
+    "theatersandart":"Theater & Art",
+    "music":"Music",
+    "ticketPrice":"Ticket price"
 }

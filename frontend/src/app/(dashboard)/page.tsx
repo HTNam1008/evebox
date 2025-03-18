@@ -8,7 +8,6 @@ import '@/styles/admin/pages/Dashboard.css';
 import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
-import mapCategoryName from './libs/functions/mapCategoryName';
 import { CategorySpecial } from '@/types/model/frontDisplay';
 import { fetchEvents } from './libs/server/fetchEvents';
 import { fetchRecommendEvents } from './libs/server/fetchRecommendEvents';
@@ -47,12 +46,12 @@ const Dashboard = async () => {
                             <EventSlider title="trending" subtitle="trendingEvent" events={events.trendingEvents} />
                         </div>
                         <div className="mt-8">
-                            <EventSlider title="onlyOnEve" subtitle="onlyOneveEvent" events={events.onlyOnEve} showViewMore />
+                            <EventSlider title="onlyOnEve" subtitle="onlyOnEveEvent" events={events.onlyOnEve} showViewMore />
                         </div>
 
                         {events.categorySpecial?.map((category, index) => (
                             <div key={index} className="mt-8">
-                                <EventSlider title={mapCategoryName(category.category.name)} events={category.events} />
+                                <EventSlider title={category.category.name} events={category.events} />
                             </div>
                         ))}
                     </div>

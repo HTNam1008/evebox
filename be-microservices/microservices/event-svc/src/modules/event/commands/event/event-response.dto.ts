@@ -1,7 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { ImagesResponseDto } from "src/modules/images/commands/images/images-response.dto";
-import { CategoriesResponseDto } from "../categories/categories-response.dto";
-import { ShowingResponseDto } from "src/modules/showing/commands/showing/showing-response.dto";
 
 export class EventDto {
   @ApiProperty({ example: 22911, description: 'Event ID' })
