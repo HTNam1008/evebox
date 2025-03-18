@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import 'tailwindcss/tailwind.css';
-import SidebarOrganizer from '../events/[id]/components/sidebarOrganizer';
+import Sidebar from "../components/sidebar";
 import { Search } from 'lucide-react';
 import { FaEdit, FaTrash } from "react-icons/fa";
 
@@ -32,7 +32,7 @@ export default function Report() {
         <main>
             <div className="flex min-h-screen bg-gray-100">
                 <div className="w-64 bg-gray-900 text-white">
-                    <SidebarOrganizer />
+                    <Sidebar/>
                 </div>
                 <div className="flex-1 p-6">
                     <h1 className=" text-2xl font-bold text-[#0C4762]">Quản lý báo cáo</h1>

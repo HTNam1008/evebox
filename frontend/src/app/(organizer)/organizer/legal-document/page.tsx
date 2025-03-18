@@ -1,5 +1,5 @@
 import 'tailwindcss/tailwind.css';
-import SidebarOrganizer from '../events/[id]/components/sidebarOrganizer';
+import Sidebar from '../components/sidebar';
 import Link from 'next/link';
 
 export default function Event() {
@@ -8,7 +8,7 @@ export default function Event() {
         <main>
             <div className="flex min-h-screen bg-gray-100">
                 <div className="w-64 bg-gray-900 text-white">
-                    <SidebarOrganizer />
+                    <Sidebar />
                 </div>
                 <div className="flex-1 p-6">
                     <h1 className="text-2xl font-bold text-[#0C4762]">Điều khoản cho Ban tổ chức</h1>

@@ -1,5 +1,6 @@
 "use client";
 import { BarChart3, Users, Package, LayoutGrid, Edit } from "lucide-react";
+import Link from "next/link";
 
 interface Event {
     id: number;
@@ -32,26 +33,26 @@ export default function EventCard({ event }: { event: Event }) {
             </div>
             <hr className="border-t border-white opacity-30 my-4" />
             <div className="flex justify-center space-x-14 text-center">
-                <button className="flex flex-col items-center">
+                <Link href={`/organizer/events/${event.id}/summary-revenue`} className="flex flex-col items-center">
                     <BarChart3 size={18} />
                     <span className="text-sm mt-1">Tổng quan</span>
-                </button>
-                <button className="flex flex-col items-center">
+                </Link>
+                <Link href={`/organizer/events/${event.id}/member`} className="flex flex-col items-center">
                     <Users size={18} />
                     <span className="text-sm mt-1">Thành viên</span>
-                </button>
-                <button className="flex flex-col items-center">
+                </Link>
+                <Link href={`/organizer/events/${event.id}/orders`} className="flex flex-col items-center">
                     <Package size={18} />
                     <span className="text-sm mt-1">Đơn hàng</span>
-                </button>
-                <button className="flex flex-col items-center">
+                </Link>
+                <Link href={`/organizer/events/${event.id}/seating`} className="flex flex-col items-center">
                     <LayoutGrid size={18} />
                     <span className="text-sm mt-1">Sơ đồ ghế</span>
-                </button>
-                <button className="flex flex-col items-center">
+                </Link>
+                <Link href={`/organizer/events/${event.id}/edit`} className="flex flex-col items-center">
                     <Edit size={18} />
                     <span className="text-sm mt-1">Chỉnh sửa</span>
-                </button>
+                </Link>
             </div>
         </div>
     );
