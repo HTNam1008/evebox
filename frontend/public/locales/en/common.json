@@ -60,5 +60,9 @@
     "other":"Other",
     "others":"Other categories",
     "theatersandart":"Theater & Art",
-    "music":"Music"
+    "music":"Music",
+    "ticketPrice":"Ticket price",
+    "chooseTicket":"Choose ticket",
+    "pleaseChooseTicket":"Please choose ticket",
+    "continue":"Continue"
 }

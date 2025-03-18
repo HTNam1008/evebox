@@ -6,7 +6,7 @@ import { SeatMapResponse } from "@/types/model/seatmap";
 export async function fetchSeatMap(showingId: string): Promise<SeatMapResponse | null> {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/showing/seatmap?showingId=${showingId}`,
+      `${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/showing/seatmap?showingId=${showingId}`,
       {
         method: "GET",
         headers: {

@@ -60,5 +60,9 @@
     "other":"Khác",
     "others":"Thể loại khác",
     "theatersandart":"Sân khấu & Nghệ thuật",
-    "music":"Âm nhạc"
+    "music":"Âm nhạc",
+    "ticketPrice":"Giá vé",
+    "chooseTicket":"Chọn vé",
+    "pleaseChooseTicket":"Vui lòng chọn vé",
+    "continue":"Tiếp tục"
 }

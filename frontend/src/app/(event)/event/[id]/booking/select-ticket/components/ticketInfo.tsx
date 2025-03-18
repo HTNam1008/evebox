@@ -9,13 +9,15 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 /* Package Application */
+// import { EventDetail } from '@/app/(event)/event/libs/event.interface';
 // import CollapsibleDescription from './collapsibleDescriptionProp';
 
 interface EventProps {
     id: number;
     title: string;
     description: string;
-    startDate: string;
+    // startDate: string;
+    startTime: string;
     venue: string;
     Images_Events_imgPosterIdToImages?: { imageUrl: string };
     locationsString: string;
@@ -75,7 +77,7 @@ export default function TicketInfor({
                     <div className="text-gray-500 flex items-center space-x-2 mt-4">
                         <Calendar size={18} />
                         <span>
-                            {new Date(event.startDate).toLocaleString('vi-VN', {
+                            {new Date(event.startTime)?.toLocaleString('vi-VN', {
                                 weekday: 'long',
                                 year: 'numeric',
                                 month: 'long',
@@ -102,7 +104,7 @@ export default function TicketInfor({
                         onClick={handleContinue}
                     >
                         {hasSelectedTickets
-                            ? `Tiếp tục - ${totalAmount.toLocaleString()}đ`
+                            ? `Tiếp tục - ${totalAmount?.toLocaleString()}đ`
                             : 'Vui lòng chọn vé'}
                     </button>
                 </div>

@@ -67,7 +67,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                     <h5 className="card-title title-box">{t("dateTime") || "Fallback Text"}</h5>
                                     <p className="card-text m-0 text-body-secondary">
                                         <i className="bi bi-calendar2-event mr-2"></i>
-                                        {new Date(event.startDate).toLocaleString( locale === "vi" ? 'vi-VN' : 'en-US', {
+                                        {new Date(event.startTime).toLocaleString( locale === "vi" ? 'vi-VN' : 'en-US', {
                                             weekday: 'long',
                                             year: 'numeric',
                                             month: 'long',
@@ -94,7 +94,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                         <h5 className="card-title title-box text-center w-100">
                                            {t("priceTitle") || "Fallback Text"}
                                             <span className="ml-2 text-teal-400" style={{ cursor: "pointer" }}>
-                                                {event.minTicketPrice.toLocaleString('vi-VN')}đ
+                                                {event.minTicketPrice?.toLocaleString('vi-VN')}đ
                                                 {/* 350.000đ */}
                                                 <i className="bi bi-chevron-right ml-1" style={{ fontSize: 18 }} />
                                             </span>

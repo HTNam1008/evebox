@@ -35,9 +35,10 @@ export interface EventDetail {
   id: number;
   title: string;
   description: string;
-  startDate: string;
+  // startDate: string;
+  startTime: string;
   venue: string;
-  showing: Showing[];
+  Showing: Showing[];
   minTicketPrice: number;
   Images_Events_imgPosterIdToImages?: { imageUrl: string };
   locationsString: string;

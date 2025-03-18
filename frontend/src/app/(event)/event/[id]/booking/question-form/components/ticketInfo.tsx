@@ -10,7 +10,8 @@ interface EventProps {
     id: number;
     title: string;
     description: string;
-    startDate: string;
+    // startDate: string;
+    startTime: string;
     venue: string;
     Images_Events_imgPosterIdToImages?: { imageUrl: string };
     locationsString: string;
@@ -55,7 +56,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                             </p>
                             <p className='d-flex justify-content-start'>
                                 <i className="bi bi-calendar2-event mr-2"></i>
-                                {new Date(event.startDate).toLocaleString('vi-VN', {
+                                {new Date(event?.startTime).toLocaleString('vi-VN', {
                                     weekday: 'long',
                                     year: 'numeric',
                                     month: 'long',
@@ -105,7 +106,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                         <p>Tạm tính</p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
-                        <p>{totalAmount.toLocaleString("vi-VN")}đ</p>
+                        <p>{totalAmount?.toLocaleString("vi-VN")}đ</p>
                     </div>
                 </div>
                 <div className='row mt-2 mb-4'>
