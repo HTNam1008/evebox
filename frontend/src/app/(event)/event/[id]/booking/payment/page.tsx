@@ -11,13 +11,14 @@ import PaymentMethod from "./components/paymentMethod";
 import Navigation from "../components/navigation";
 import TicketInformation from "./components/ticketInfo";
 import CountdownTimer from "../components/countdownTimer";
+import { TicketType } from "../../../libs/event.interface";
 
 const PaymentPage = () => {
   const [event, setEvent] = useState(null);
   const [totalTickets, setTotalTickets] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [ticketTypeName, setTicketTypeName] = useState('');
-  const [ticketPrice, setTicketPrice] = useState(0);
+  const [ticketType, setTicketType] = useState<TicketType | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<string>("");
 
   useEffect(() => {
     fetchEventInfo();
@@ -27,14 +28,12 @@ const PaymentPage = () => {
     const storedEvent = localStorage.getItem('event');
     const storedTotalTickets = localStorage.getItem('totalTickets');
     const storedTotalAmount = localStorage.getItem('totalAmount');
-    const storedTicketTypeName = localStorage.getItem('selectedTicketTypeName');
-    const storedTicketPrice = localStorage.getItem('selectedTicketPrice');
+    const storedTicketType = localStorage.getItem('selectedTicketType');
 
     if (storedEvent) setEvent(JSON.parse(storedEvent));
     if (storedTotalTickets) setTotalTickets(Number(storedTotalTickets));
     if (storedTotalAmount) setTotalAmount(Number(storedTotalAmount));
-    if (storedTicketTypeName) setTicketTypeName(storedTicketTypeName);
-    if (storedTicketPrice) setTicketPrice(Number(storedTicketPrice));
+    if (storedTicketType) setTicketType(JSON.parse(storedTicketType));
   }
 
   return (
@@ -47,8 +46,8 @@ const PaymentPage = () => {
 
       <div className="px-32 py-0">
         <div className="row align-items-start mt-4">
-          <PaymentMethod />
-          <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} ticketTypeName={ticketTypeName} ticketPrice={ticketPrice} />
+          <PaymentMethod onMethodSelected={(method) => setSelectedMethod(method)} />
+          <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} ticketType={ticketType} paymentMethod={selectedMethod} />
         </div>
       </div>
     </div>

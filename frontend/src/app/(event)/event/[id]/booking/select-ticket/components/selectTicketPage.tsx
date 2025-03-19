@@ -38,9 +38,12 @@ export default function SelectTicketPage({ showingId, serverEvent, seatMapId }: 
     const [seatMapData, setSeatMapData] = useState<SeatMap | ShowingData | null>(null);
     const [isLoadingSeatmap, setIsLoadingSeatmap] = useState(true);
     const [seatmapError, setSeatmapError] = useState<string | "">("");
+    const [selectedSeatIds, setSelectedSeatIds] = useState<number[]>([]);
 
     useEffect(() => {
         if (!showingId) return;
+
+        localStorage.setItem('showingId', showingId);
 
         setIsLoadingSeatmap(true);
         setSeatmapError("");
@@ -120,6 +123,10 @@ export default function SelectTicketPage({ showingId, serverEvent, seatMapId }: 
                 [ticketTypeId]: isSelected ? currentCount + 1 : Math.max(currentCount - 1, 0)
             };
         });
+
+        setSelectedSeatIds((prev) =>
+            isSelected ? [...prev, seat.id] : prev.filter((id) => id !== seat.id)
+        );
     };
 
     return (
@@ -131,8 +138,8 @@ export default function SelectTicketPage({ showingId, serverEvent, seatMapId }: 
                     totalTickets={totalTickets}
                     totalAmount={totalAmount}
                     hasSelectedTickets={totalTickets > 0}
-                    selectedTicketTypeName={selectedTicketType?.name || ""}
-                    selectedTicketPrice={selectedTicketType?.price || 0}
+                    selectedTicketType={selectedTicketType}
+                    selectedSeatIds={selectedSeatIds}
                 />
             ) : (
                 <Loading />

@@ -12,6 +12,7 @@ import { useTranslations } from 'next-intl';
 /* Package Application */
 // import { EventDetail } from '@/app/(event)/event/libs/event.interface';
 // import CollapsibleDescription from './collapsibleDescriptionProp';
+import { TicketType } from '@/app/(event)/event/libs/event.interface';
 
 interface EventProps {
     id: number;
@@ -29,8 +30,8 @@ interface TicketInforProps {
     totalTickets: number;
     totalAmount: number;
     hasSelectedTickets: boolean;
-    selectedTicketTypeName?: string;
-    selectedTicketPrice?: number;
+    selectedTicketType?: TicketType;
+    selectedSeatIds?: number[];
 }
 
 export default function TicketInfor({
@@ -38,8 +39,8 @@ export default function TicketInfor({
     totalTickets,
     totalAmount,
     hasSelectedTickets,
-    selectedTicketTypeName,
-    selectedTicketPrice,
+    selectedTicketType,
+    selectedSeatIds,
 }: TicketInforProps) {
     const t = useTranslations('common');
     const router = useRouter();
@@ -49,8 +50,9 @@ export default function TicketInfor({
         localStorage.setItem('totalTickets', totalTickets.toString());
         localStorage.setItem('totalAmount', totalAmount.toString());
         localStorage.setItem('hasSelectedTickets', hasSelectedTickets.toString());
-        localStorage.setItem('selectedTicketTypeName', selectedTicketTypeName || '');
-        localStorage.setItem('selectedTicketPrice', selectedTicketPrice?.toString() || '');
+        localStorage.setItem('selectedTicketType', JSON.stringify(selectedTicketType));
+        localStorage.setItem('selectedSeatIds', JSON.stringify(selectedSeatIds));
+        localStorage.setItem('ticketTypeId', selectedTicketType?.id.toString() || '');
 
         // Điều hướng đến trang tiếp theo
         router.push(`/event/${event.id}/booking/question-form`);

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 
 /* Package Application */
 import ConfirmDialog from './dialogs/confirmDialog';
+import { TicketType } from '@/app/(event)/event/libs/event.interface';
 
 interface EventProps {
     id: number;
@@ -25,11 +26,10 @@ interface TicketInformationProps {
     totalTickets: number;
     totalAmount: number;
     isFormValid: boolean;
-    ticketTypeName?: string;
-    ticketPrice?: number;
+    ticketType?: TicketType | null;
 }
 
-export default function TicketInformation({ event, totalTickets, totalAmount, isFormValid, ticketTypeName, ticketPrice }: TicketInformationProps) {
+export default function TicketInformation({ event, totalTickets, totalAmount, isFormValid, ticketType }: TicketInformationProps) {
     const [openDialog, setOpenDialog] = useState(false);
     const router = useRouter();
     const handlePayment = () => {
@@ -95,8 +95,8 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                 <div className='row'>
                     <div className="col-md-8 d-flex justify-content-start">
                         <p className='text-start'>
-                            <span style={{ display: "block" }}>{ticketTypeName}</span>
-                            <span style={{ display: "block" }}>{ticketPrice?.toLocaleString("vi-VN")}</span>
+                            <span style={{ display: "block" }}>{ticketType?.name}</span>
+                            <span style={{ display: "block" }}>{ticketType?.price?.toLocaleString("vi-VN")}</span>
                         </p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
