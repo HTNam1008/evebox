@@ -55,7 +55,7 @@ export class payOSCheckoutRepository {
       }
     });
     if(payOSInfo){
-      return payOSInfo[0].orderCode+1 || Date.now();
+      return payOSInfo[0]?.orderCode+1 || (Date.now() % 1000000);
     }
   }
   async getAmount(payOSCheckoutDto: PayOSCheckoutDto){
