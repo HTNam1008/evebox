@@ -14,7 +14,11 @@ interface PaymentMethod {
     status: string;
 }
 
-export default function PaymentMethod() {
+interface PaymentMethodProps {
+    onMethodSelected: (method: string) => void;
+}
+
+export default function PaymentMethod( { onMethodSelected }: PaymentMethodProps ) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const [selectedMethod, setSelectedMethod] = useState("");
@@ -60,6 +64,11 @@ export default function PaymentMethod() {
         fetchPaymentMethods();
     }, []);
 
+    const handleSelectMethod = (method: string) => {
+        setSelectedMethod(method);
+        onMethodSelected(method);
+    }
+
     return (
         <>
             <div className="col-7">
@@ -89,7 +98,7 @@ export default function PaymentMethod() {
                                     key={method.paymentMethod}
                                     className={`d-flex align-items-center h-14 justify-content-between border rounded-lg pl-3 pr-3 mb-2 cursor-pointer transition-all duration-300 
                                 ${selectedMethod === method.paymentMethod ? 'border-2 border-black shadow-[4px_4px_0px_0px_#0022BA]' : 'border-2 border-gray-300'}`}
-                                    onClick={() => setSelectedMethod(method.paymentMethod)}
+                                    onClick={() => handleSelectMethod(method.paymentMethod)}
                                 >
                                     <div className="flex items-center">
                                         <input
@@ -97,7 +106,7 @@ export default function PaymentMethod() {
                                             name="paymentMethod"
                                             value={method.paymentMethod}
                                             checked={selectedMethod === method.paymentMethod}
-                                            onChange={() => setSelectedMethod(method.paymentMethod)}
+                                            onChange={() => handleSelectMethod(method.paymentMethod)}
                                             className="me-2"
                                         />
                                         <span className="fw-bold">{method.paymentMethod}</span>

@@ -4,15 +4,19 @@
 import Image from 'next/image';
 import { useState } from 'react';
 // import { useTranslations } from 'next-intl';
+import { useSession } from 'next-auth/react';
 
 /* Package Application */
-import QRPaymentDialog from "./dialogs/QRPaymenDialog";
 import { useI18n } from '@/app/providers/I18nProvider';
+import AlertDialog from '@/app/(showing)/showing/components/alertDialog';
+import { TicketType } from '@/app/(event)/event/libs/event.interface';
+
 interface EventProps {
     id: number;
     title: string;
     description: string;
-    startDate: string;
+    // startDate: string;
+    startTime: string;
     venue: string;
     Images_Events_imgPosterIdToImages?: { imageUrl: string };
     locationsString: string;
@@ -22,21 +26,62 @@ interface TicketInformationProps {
     event: EventProps | null;
     totalTickets: number;
     totalAmount: number;
-    ticketTypeName?: string;
-    ticketPrice?: number;
+    ticketType?: TicketType | null;
+    paymentMethod?: string;
 }
 
 
 
-export default function TicketInformation({ event, totalTickets, totalAmount, ticketTypeName, ticketPrice }: TicketInformationProps) {
+export default function TicketInformation({ event, totalTickets, totalAmount, ticketType, paymentMethod }: TicketInformationProps) {
     // const t = useTranslations("common");
     const { locale } = useI18n();
     const [promoCode, setPromoCode] = useState('');
-    const [isQRDialogOpen, setIsQRDialogOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const { data: session } = useSession();
+    const token = session?.user?.accessToken;
 
-    const handleOpenQRDialog = () => {
-        setIsQRDialogOpen(true);
+    const handleOpenDialog = () => {
+        setIsOpen(true);
     };
+
+    const handlePayment = async () => {
+        if (paymentMethod === '') {
+            handleOpenDialog();
+            return;
+        }
+        if (paymentMethod === "PAYOS") {
+            const showingId = localStorage.getItem('showingId');
+            const selectedSeatIds = JSON.parse(localStorage.getItem('selectedSeatIds') || '[]') as number[];
+            console.log("🚀 ~ handlePayment ~ selectedSeatIds:", selectedSeatIds)
+            
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/payment/payos-checkout`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        seatId: selectedSeatIds,
+                        showingId: showingId,
+                        ticketTypeId: ticketType?.id,
+                        quantity: totalTickets,
+                        paymentSuccessUrl: `${window.location.href}/payment-success`,
+                        paymentCancelUrl: window.location.href
+                    }),
+                })
+
+                const data = await res.json();
+                if (res.ok && data?.data?.paymentLink) {
+                    window.location.href = data.data.paymentLink;
+                } else {
+                    alert(data.message || "Có lỗi xảy ra khi tạo link thanh toán");
+                }
+            } catch (error) {
+                console.error("Lỗi khi thanh toán với PayOS:", error);
+            }
+        }
+    }
 
     return (
         <div className="col-5 border-start" style={{ borderLeft: '1px solid #ddd' }}>
@@ -61,7 +106,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount, ti
                             </p>
                             <p className='d-flex justify-content-start'>
                                 <i className="bi bi-calendar2-event mr-2"></i>
-                                {new Date(event.startDate).toLocaleString(locale === "vi" ? 'vi-VN' : 'en-US', {
+                                {new Date(event.startTime).toLocaleString(locale === "vi" ? 'vi-VN' : 'en-US', {
                                     weekday: 'long',
                                     year: 'numeric',
                                     month: 'long',
@@ -94,8 +139,8 @@ export default function TicketInformation({ event, totalTickets, totalAmount, ti
                 <div className='row'>
                     <div className="col-md-8 d-flex justify-content-start">
                         <p className='text-start'>
-                            <span style={{ display: "block" }}>{ticketTypeName}</span>
-                            <span style={{ display: "block" }}>{ticketPrice?.toLocaleString("vi-VN")}đ</span>
+                            <span style={{ display: "block" }}>{ticketType?.name}</span>
+                            <span style={{ display: "block" }}>{ticketType?.price?.toLocaleString("vi-VN")}đ</span>
                         </p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
@@ -141,10 +186,10 @@ export default function TicketInformation({ event, totalTickets, totalAmount, ti
                     <p>Bạn đã đồng ý với các <a href='#' style={{ color: '#0C4762', textDecoration: 'underline' }}>Điều Kiện Giao Dịch Chung</a></p>
                 </div>
                 <div className='row'>
-                    <button onClick={handleOpenQRDialog} className='h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'>Thanh toán</button>
+                    <button onClick={handlePayment} className='h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'>Thanh toán</button>
                 </div>
             </div>
-            <QRPaymentDialog open={isQRDialogOpen} onClose={() => setIsQRDialogOpen(false)} amount={totalAmount} qrImage="/images/sample-qr.png" />
+            <AlertDialog open={isOpen} onClose={() => setIsOpen(false)} message='Vui lòng chọn phương thức thanh toán' />
         </div>
     )
 }
