@@ -7,13 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import { useRef } from "react";
 
-interface DateTimePickerProps {
-    label: string;
-    selectedDate: Date | null;
-    setSelectedDate: (date: Date | null) => void;
-    popperPlacement?: "bottom-start" | "bottom-end";
-    required?: boolean;
-}
+import { DateTimePickerProps } from "../../../libs/interface/comform.interface";
 
 export default function DateTimePicker({
     label,

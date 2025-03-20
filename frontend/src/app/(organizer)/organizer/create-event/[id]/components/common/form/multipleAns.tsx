@@ -1,12 +1,5 @@
 import { Trash2 } from "lucide-react";
-
-interface InputItemProps {
-    value: string;
-    checked: boolean;
-    onChange: (value: string) => void;
-    onToggle: () => void; // Thêm hàm toggle checked
-    onDelete: () => void;
-}
+import { InputItemProps } from "../../../libs/interface/comform.interface";
 
 const MultipleAnswer: React.FC<InputItemProps> = ({ value, checked, onChange, onToggle, onDelete }) => {
     return (

@@ -29,6 +29,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
     const [street, setStreet] = useState("");
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
     const [imageErrors, setImageErrors] = useState<{ [key: string]: string }>({});
+    const [imageLogoErrors, setImageLogoErrors] = useState<{ [key: string]: string }>({});
 
     const provinces = ["Hồ Chí Minh", "Hà Nội", "Đà Nẵng"]
     const districts = ["Quận 1", "Quận 3", "Quận 7"];
@@ -70,6 +71,10 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         handleImageUpload(event, type, setImageErrors, setLogo, setBackground, setLogoOrg);
     };
 
+    const handleUploadLogo = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+        handleImageUpload(event, type, setImageLogoErrors, setLogo, setBackground, setLogoOrg);
+    };
+
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, field: string) => {
         const value = e.target.value;
 
@@ -109,9 +114,16 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         if (!eventName.trim()) newErrors.eventName = true;
         if (!nameOrg.trim()) newErrors.nameOrg = true;
         if (!infoOrg.trim()) newErrors.infoOrg = true;
+
+
         if (!background) {
             setImageErrors((prev) => ({ ...prev, background: "Vui lòng tải lên ảnh nền sự kiện" }));
             toast.error("Vui lòng tải lên ảnh nền sự kiện!", { duration: 5000 });
+        }
+
+        if(!logoOrg) {
+            setImageLogoErrors((prev) => ({ ...prev, background: "Vui lòng tải lên logo ban tổ chức" }));
+            toast.error("Vui lòng tải lên logo ban tổ chức!", { duration: 5000 });
         }
 
         if (eventTypeSelected === "offline"){
@@ -192,10 +204,10 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                         logoOrg={logoOrg}
                         nameOrg={nameOrg}
                         infoOrg={infoOrg}
-                        handleUpload={handleUpload}
+                        handleUpload={handleUploadLogo}
                         handleInputChange={handleInputChange}
                         errors={errors}
-                        imageErrors={imageErrors}
+                        imageLogoErrors={imageLogoErrors}
                     />
                 </form>
             </div>

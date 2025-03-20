@@ -1,15 +1,7 @@
 "use client";
 
 import React from "react";
-
-interface RadioOptionProps {
-    value: string;
-    selectedValue: string;
-    onChange: (value: string) => void;
-    icon?: React.ReactNode;
-    title: string;
-    description: string;
-}
+import { RadioOptionProps } from "../../../libs/interface/comform.interface";
 
 const RadioOption: React.FC<RadioOptionProps> = ({ value, selectedValue, onChange, icon, title, description }) => {
     return (

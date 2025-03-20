@@ -1,12 +1,5 @@
 import { Trash2 } from "lucide-react";
-
-interface InputItemProps {
-    value: string;
-    checked: boolean;
-    onChange: (value: string) => void;
-    onToggle: () => void;
-    onDelete: () => void;
-}
+import { InputItemProps } from "../../../libs/interface/comform.interface";
 
 const OneAnswer: React.FC<InputItemProps> = ({ value, checked, onChange, onToggle, onDelete }) => {
     return (

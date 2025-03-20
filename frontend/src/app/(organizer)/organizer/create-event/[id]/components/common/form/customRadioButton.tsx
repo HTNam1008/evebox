@@ -1,11 +1,5 @@
 import React from "react";
-
-interface CustomRadioButtonProps {
-    value: string;
-    selectedValue: string;
-    onChange: (value: string) => void;
-    label: string;
-}
+import { CustomRadioButtonProps } from "../../../libs/interface/comform.interface";
 
 const CustomRadioButton: React.FC<CustomRadioButtonProps> = ({ value, selectedValue, onChange, label }) => {
     return (

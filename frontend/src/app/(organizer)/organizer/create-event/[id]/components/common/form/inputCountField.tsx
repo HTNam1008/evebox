@@ -1,14 +1,6 @@
 import React from "react";
+import { InputFieldProps } from "../../../libs/interface/comform.interface";
 
-interface InputFieldProps {
-    label: string;
-    placeholder: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    error?: boolean;
-    maxLength?: number;
-    required?: boolean;
-}
 
 const InputCountField: React.FC<InputFieldProps> = ({
     label,

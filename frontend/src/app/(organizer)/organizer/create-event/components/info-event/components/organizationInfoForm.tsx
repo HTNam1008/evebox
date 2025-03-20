@@ -10,7 +10,7 @@ const OrganizationInfoForm: React.FC<OrganizationInfoFormProps> = ({
     handleUpload,
     handleInputChange,
     errors,
-    imageErrors,
+    imageLogoErrors,
 }) => {
     return (
         <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mb-8" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
@@ -27,7 +27,7 @@ const OrganizationInfoForm: React.FC<OrganizationInfoFormProps> = ({
                             placeholderText="Thêm logo ban tổ chức"
                             dimensions="(275x275)"
                             height="h-56"
-                            error={imageErrors.logoOrg}
+                            error={imageLogoErrors.logoOrg}
                         />
                     </div>
 

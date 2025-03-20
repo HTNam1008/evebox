@@ -1,14 +1,6 @@
 import React from "react";
 import { ChevronDown } from "lucide-react";
-
-interface SelectFieldProps {
-    label: string;
-    options: string[];
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    error?: boolean;
-    required?: boolean;
-}
+import { SelectFieldProps } from "../../../libs/interface/comform.interface";
 
 const SelectField: React.FC<SelectFieldProps> = ({
     label,

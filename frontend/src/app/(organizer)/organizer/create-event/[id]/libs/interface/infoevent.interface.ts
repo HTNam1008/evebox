@@ -5,7 +5,7 @@ export interface OrganizationInfoFormProps {
     handleUpload: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void;
     errors: { [key: string]: boolean };
-    imageErrors: { [key: string]: string };
+    imageLogoErrors: { [key: string]: string };
 }
 
 export interface EventLocationInputProps { 

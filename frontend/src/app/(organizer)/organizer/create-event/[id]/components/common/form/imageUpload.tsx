@@ -1,14 +1,6 @@
 import Image from "next/image";
 import { ImagePlus } from "lucide-react";
-
-interface ImageUploadProps {
-    image: string | null;
-    onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    placeholderText: string;
-    dimensions: string;
-    height: string;
-    error?: string;
-}
+import { ImageUploadProps } from "../../../libs/interface/comform.interface";
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
     image,
