@@ -169,8 +169,8 @@ export class payOSCheckoutRepository {
           return 0;
         }
         amount += ticketType.price;
-        return amount;
       }
+      return amount;
     }
     catch(error){
       console.error(error);
