@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 /* Package Application */
-import InformationEventClient from '../../../components/info-event/page';
+import InformationEventClient from '../info-event/page';
 import TimeAndTypeTickets from '../time-type/page';
 import Setting from '../info-setting/page';
 import CreateQuestions from '../info-regis/page';
@@ -19,7 +19,7 @@ export default function EventStep({ eventId }: { eventId: string }) {
 
     useEffect(() => {
         const validSteps = ["info", "showing", "setting", "questions", "payment"];
-        if (!validSteps.includes(step)) {
+        if (step && !validSteps.includes(step)) {
             router.replace("/organizer/create-event?step=info");
         }
     }, [step, router]);

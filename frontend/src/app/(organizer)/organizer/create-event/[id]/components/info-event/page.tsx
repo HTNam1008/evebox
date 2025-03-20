@@ -11,9 +11,9 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 /* Package Application */
-import NoteDialog from '../../[id]/components/dialogs/noteDialog';
+import NoteDialog from '../dialogs/noteDialog';
 import FormInformationEventClient from './components/formInfoEvent';
-import Navigation from '../../[id]/components/common/navigation';
+import Navigation from '../common/navigation';
 
 export default function InformationEventClient() {
     const router = useRouter();

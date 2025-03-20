@@ -3,7 +3,7 @@ import 'tailwindcss/tailwind.css';
 
 /* Package Application */
 import Sidebar from './[id]/components/common/sidebar';
-import InformationEventClient from './components/info-event/page';
+import InformationEventClient from './[id]/components/info-event/page';
 
 export default function Page() {
     return (

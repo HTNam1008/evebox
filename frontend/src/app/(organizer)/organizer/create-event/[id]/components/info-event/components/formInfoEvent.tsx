@@ -7,9 +7,9 @@ import { toast } from "react-hot-toast";
 import { useEffect } from "react";
 
 /* Package Application */
-import SelectField from "../../../[id]/components/common/form/selectField";
+import SelectField from "../../common/form/selectField";
 import TextEditor from "./textEditor";
-import { handleImageUpload } from "../../../[id]/libs/functions/imageUploadUtils";
+import { handleImageUpload } from "../../../libs/functions/imageUploadUtils";
 import OrganizationInfoForm from "./organizationInfoForm";
 import EventLocationInput from "./eventLocationInput";
 import EventImageUpload from "./eventImageUpload";

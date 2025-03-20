@@ -1,7 +1,7 @@
 import React from 'react';
-import InputField from '../../../[id]/components/common/form/inputCountField';
-import SelectField from '../../../[id]/components/common/form/selectField';
-import { EventLocationInputProps } from '../../../[id]/libs/interface/infoevent.interface';
+import InputField from '../../common/form/inputCountField';
+import SelectField from '../../common/form/selectField';
+import { EventLocationInputProps } from '../../../libs/interface/infoevent.interface';
 
 const EventLocationInput: React.FC<EventLocationInputProps > = ({ 
     eventTypeSelected, 

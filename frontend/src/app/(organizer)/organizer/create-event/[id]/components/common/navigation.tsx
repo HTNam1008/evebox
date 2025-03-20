@@ -1,19 +1,29 @@
 'use client';
 
-
 //Package System
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Check } from 'lucide-react';
 
 //Package App
 
 export default function Navigation({ step }: { step: number }) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const eventId = searchParams.get('eventId') || '';
+
     const steps = [
-        { number: 1, label: "Thông tin sự kiện", active: true },
-        { number: 2, label: "Thời gian & loại vé", active: false },
-        { number: 3, label: "Cài đặt", active: false },
-        { number: 4, label: "Thông tin đăng ký", active: false },
-        { number: 5, label: "Thông tin thanh toán", active: false },
+        { number: 1, label: "Thông tin sự kiện", key: "info" },
+        { number: 2, label: "Thời gian & loại vé", key: "showing" },
+        { number: 3, label: "Cài đặt", key: "setting" },
+        { number: 4, label: "Thông tin đăng ký", key: "questions" },
+        { number: 5, label: "Thông tin thanh toán", key: "payment" },
     ];
+
+    const handleStepClick = (targetStep: number, stepKey: string) => {
+        if (targetStep <= step) {
+            router.push(`/organizer/create-event/${eventId}?step=${stepKey}`);
+        }
+    };
 
     return (
         <>
@@ -22,7 +32,9 @@ export default function Navigation({ step }: { step: number }) {
                 const isCompleted = s.number < step; // Bước đã hoàn thành
                 const isActive = s.number === step; // Kiểm tra bước hiện tại
                 return (
-                    <li key={index} className={`flex items-center space-x-2.5 ${isActive ? 'text-black-600' : 'text-gray-500'}`}>
+                    <li key={index} className={`flex items-center space-x-2.5 ${isActive ? 'text-black-600' : 'text-gray-500'}`}
+                        onClick={() => handleStepClick(s.number, s.key)}
+                    >
                         <span className={`text-xs mb-2 flex items-center justify-center w-8 h-8 border rounded-full 
                                     ${isActive ? 'border-[#51DACF] bg-[#51DACF] text-white' : 'border-gray-500'}
                                     ${isCompleted ? 'border-green-500 bg-green-100 text-green-600' : ''}`}>
