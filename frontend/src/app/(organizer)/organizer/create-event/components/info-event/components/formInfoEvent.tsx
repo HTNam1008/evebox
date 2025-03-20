@@ -105,16 +105,19 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         e.preventDefault();
         const newErrors: { [key: string]: boolean } = {};
 
-        if (!province) newErrors.province = true;
-        if (!typeEvent) newErrors.typeEvent = true;
-        if (!eventAddress.trim()) newErrors.eventAddress = true;
+        if (!typeEvent) newErrors.typeEvent = true; 
         if (!eventName.trim()) newErrors.eventName = true;
-        if (!street.trim()) newErrors.street = true;
         if (!nameOrg.trim()) newErrors.nameOrg = true;
         if (!infoOrg.trim()) newErrors.infoOrg = true;
         if (!background) {
             setImageErrors((prev) => ({ ...prev, background: "Vui lòng tải lên ảnh nền sự kiện" }));
             toast.error("Vui lòng tải lên ảnh nền sự kiện!", { duration: 5000 });
+        }
+
+        if (eventTypeSelected === "offline"){
+            if (!eventAddress.trim()) newErrors.eventAddress = true;
+            if (!province) newErrors.province = true;
+            if (!street.trim()) newErrors.street = true;
         }
 
         setErrors(newErrors);
