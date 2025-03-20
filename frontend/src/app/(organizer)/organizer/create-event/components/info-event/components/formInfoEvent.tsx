@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
+import { useEffect } from "react";
 
 /* Package Application */
 import SelectField from "../../../[id]/components/common/form/selectField";
@@ -31,6 +32,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
     const [imageErrors, setImageErrors] = useState<{ [key: string]: string }>({});
     const [imageLogoErrors, setImageLogoErrors] = useState<{ [key: string]: string }>({});
 
+    //********Call api**********
     const provinces = ["Hồ Chí Minh", "Hà Nội", "Đà Nẵng"]
     const districts = ["Quận 1", "Quận 3", "Quận 7"];
     const typeEvents = ["Nhạc sống", "Sân khấu & Nghệ thuật", "Thể thao", "Khác"];
@@ -66,6 +68,29 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                 <p>[TnC] sự kiện</p>
                 <p>Lưu ý về điều khoản trẻ em</p>
                 <p>Lưu ý về điều khoản VAT</p>`);
+
+    //Lấy nội dung đã lưu trong LocalStorage
+    useEffect(() => {
+        const savedEvent = localStorage.getItem("event_1"); //Nếu không phải gán cứng thì sẽ là event_id
+
+        if (savedEvent) {
+            const eventData = JSON.parse(savedEvent);
+            setEventName(eventData.eventName);
+            setNameOrg(eventData.nameOrg);
+            setInfoOrg(eventData.infoOrg);
+            setEventTypeSelected(eventData.eventTypeSelected);
+            setEventAddress(eventData.eventAddress);
+            setProvince(eventData.province);
+            setDistrict(eventData.district);
+            setWard(eventData.ward);
+            setStreet(eventData.street);
+            setTypeEvent(eventData.typeEvent);
+            setPost(eventData.post);
+            setLogo(eventData.logo);
+            setBackground(eventData.background);
+            setLogoOrg(eventData.logoOrg);
+        }
+    }, []);
 
     const handleUpload = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
         handleImageUpload(event, type, setImageErrors, setLogo, setBackground, setLogoOrg);
@@ -110,7 +135,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         e.preventDefault();
         const newErrors: { [key: string]: boolean } = {};
 
-        if (!typeEvent) newErrors.typeEvent = true; 
+        if (!typeEvent) newErrors.typeEvent = true;
         if (!eventName.trim()) newErrors.eventName = true;
         if (!nameOrg.trim()) newErrors.nameOrg = true;
         if (!infoOrg.trim()) newErrors.infoOrg = true;
@@ -121,12 +146,12 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
             toast.error("Vui lòng tải lên ảnh nền sự kiện!", { duration: 5000 });
         }
 
-        if(!logoOrg) {
+        if (!logoOrg) {
             setImageLogoErrors((prev) => ({ ...prev, background: "Vui lòng tải lên logo ban tổ chức" }));
             toast.error("Vui lòng tải lên logo ban tổ chức!", { duration: 5000 });
         }
 
-        if (eventTypeSelected === "offline"){
+        if (eventTypeSelected === "offline") {
             if (!eventAddress.trim()) newErrors.eventAddress = true;
             if (!province) newErrors.province = true;
             if (!street.trim()) newErrors.street = true;
@@ -134,11 +159,32 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
 
         setErrors(newErrors);
 
+        // Lưu dữ liệu vào LocalStorage
+        const eventData = {
+            id: 1,  // ID đang tạm thời gán cứng
+            eventName,
+            nameOrg,
+            infoOrg,
+            eventTypeSelected,
+            eventAddress,
+            province,
+            district,
+            ward,
+            street,
+            typeEvent,
+            post,
+            logo,
+            background,
+            logoOrg,
+        };
+
+        localStorage.setItem("event_1", JSON.stringify(eventData));
+
         if (Object.keys(newErrors).length === 0) {
-            
+
             if (btnValidate === "Save") {
                 alert("Form hợp lệ!");
-            } else if (btnValidate === "Continue"){
+            } else if (btnValidate === "Continue") {
                 alert("Form hợp lệ! Gửi dữ liệu...");
                 onNextStep();
             }
