@@ -11,7 +11,7 @@ import { toast } from "react-hot-toast";
 import DateTimePicker from "../../common/form/dateTimePicker";
 import CreateTypeTicketDailog from "../../dialogs/createTicketsDailog";
 
-export default function FormTimeTypeTicketClient() {
+export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
     const [month, setMonth] = useState("");
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
@@ -43,35 +43,35 @@ export default function FormTimeTypeTicketClient() {
     };
 
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
+        if (event) event.preventDefault(); 
+        
         if (!month || !startDate || !endDate) {
             setErrors({
                 month: !month,
                 startDate: !startDate,
                 endDate: !endDate,
             });
+            toast.error("Vui lòng chọn đầy đủ thông tin!");
             return;
         }
-
-        // Gửi dữ liệu lên Server Action
-        const response = await fetch("/api/save-time", {
-            method: "POST",
-            body: JSON.stringify({ month, startDate, endDate }),
-            headers: { "Content-Type": "application/json" },
-        });
-
-        if (response.ok) {
-            alert("Dữ liệu đã được lưu!");
-        } else {
-            alert("Lỗi khi lưu dữ liệu.");
+    
+        // Nếu nút là "Save"
+        if (btnValidate2 === "Save") {
+            alert("Form hợp lệ!");
+        } 
+        // Nếu nút là "Continue"
+        else if (btnValidate2 === "Continue") {
+            alert("Form hợp lệ! Chuyển sang bước tiếp theo...");
+            onNextStep();
         }
-    };
+    };    
 
     return (
         <>
             <Toaster position="top-center" />
 
-            <form className="w-full max-w-4xl mx-auto">
+            <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="ticket-form">
                 <div className="relative flex items-center">
                     <label className="text-xl font-bold mr-4">Thời gian</label>
                     <div className="relative ml-auto">
@@ -143,24 +143,13 @@ export default function FormTimeTypeTicketClient() {
 
                 <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
 
-                <div className="flex justify-center">
+                <div className="flex justify-center mb-6">
                     <button
                         type="button"
                         className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
                     >
                         <CirclePlus size={20} /> Tạo suất diễn
                     </button>                    
-                </div>
-
-
-                <div className="flex justify-center">
-                    <button
-                        type="button"
-                        onClick={handleSubmit}
-                        className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4 mb-4"
-                    >
-                        Lưu thông tin
-                    </button>
                 </div>
             </form>
         </>

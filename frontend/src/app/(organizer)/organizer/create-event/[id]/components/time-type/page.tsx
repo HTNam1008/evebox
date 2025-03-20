@@ -15,6 +15,15 @@ import { TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface'
 export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps) {
     const router = useRouter();
     const [step] = useState(2);
+    const [btnValidate2, setBtnValidte2] = useState("");
+
+    const handleSave = () => {
+        setBtnValidte2("Save");
+    }
+
+    const handleContinue = () => {
+        setBtnValidte2("Continue");
+    }
 
     const handleNextStep = () => {
         router.push(`/organizer/create-event/${eventId}?step=setting`);
@@ -28,14 +37,16 @@ export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps)
                     <ol className="flex space-x-6">
                         <Navigation step={step} />
                         <div className="flex gap-4 mt-4 mb-6">
-                            <button className="text-xs w-18 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all">
+                            <button className="text-xs w-18 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all"
+                                type="submit" form="ticket-form" onClick={handleSave}
+                            >
                                 Lưu
                             </button>
                         </div>
 
                         <div className="flex gap-4 mt-4 mb-6">
                             <button className="text-xs w-30 border-2 border-[#51DACF] text-[#0C4762] font-bold py-2 px-4 rounded bg-[#51DACF] hover:bg-[#0C4762] hover:border-[#0C4762] hover:text-white transition-all"
-                                onClick={handleNextStep}>
+                                type="submit" form="ticket-form" onClick={handleContinue}>
                                 Tiếp tục
                             </button>
                         </div>
@@ -46,7 +57,7 @@ export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps)
             </div>
 
             <div className="flex justify-center">
-                <FormTimeTypeTicketClient />
+                <FormTimeTypeTicketClient onNextStep={handleNextStep} btnValidate2={btnValidate2} />
             </div>
         </>
     );
