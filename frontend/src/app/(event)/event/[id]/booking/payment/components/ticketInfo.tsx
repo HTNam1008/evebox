@@ -52,7 +52,6 @@ export default function TicketInformation({ event, totalTickets, totalAmount, ti
         if (paymentMethod === "PAYOS") {
             const showingId = localStorage.getItem('showingId');
             const selectedSeatIds = JSON.parse(localStorage.getItem('selectedSeatIds') || '[]') as number[];
-            console.log("🚀 ~ handlePayment ~ selectedSeatIds:", selectedSeatIds)
             
             try {
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/payment/payos-checkout`, {
