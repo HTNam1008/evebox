@@ -112,7 +112,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
                         event.minTicketPrice.toLocaleString('vi-VN') +
                         'đ'} */}
                       {event.status === 'available' ? 
-                        'Từ ' + event.minTicketPrice.toLocaleString('vi-VN') + 'đ' :
+                        'Từ ' + event.minTicketPrice?.toLocaleString('vi-VN') + 'đ' :
                         event.status === 'event_over' ? 'Đã kết thúc' : 'Chưa có thông tin vé'
                       }
                     </span>

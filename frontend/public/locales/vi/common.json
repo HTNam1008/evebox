@@ -56,9 +56,22 @@
     "comment":"Bình luận",
     "share":"Chia sẻ",
     "commentHint":"Nhập bình luận của bạn",
+    "notify":"Thông báo",
+    "soldOutTicket":"Hết vé",
+    "onlyOneTicketType":"Bạn chỉ được mua 1 loại vé duy nhất.",
+    "continue":"Tiếp tục",
+    "pleaseChooseTicket":"Vui lòng chọn vé",
+    "chooseTicket":"Chọn vé",
+    "notFoundEvent":"Không tìm thấy dữ liệu sự kiện",
+    "errorFoundEvent":"Lỗi khi lấy dữ liệu sự kiện",
+    "notFoundShowing":"Không tìm thấy dữ liệu suất chiếu",
+    "errorFoundShowing":"Lỗi khi lấy dữ liệu suất chiếu",
+    "notFoundSeatmap":"Không tìm thấy dữ liệu sơ đồ chỗ ngồi",
+    "errorFoundSeatmap":"Lỗi khi lấy dữ liệu sơ đồ chỗ ngồi",
     "theaterstandard":"Sân khấu & Nghệ thuật",
     "other":"Khác",
     "others":"Thể loại khác",
     "theatersandart":"Sân khấu & Nghệ thuật",
-    "music":"Âm nhạc"
+    "music":"Âm nhạc",
+    "ticketPrice":"Giá vé"
 }

@@ -20,7 +20,7 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
     <>
       <div className="flex justify-center mt-8 ml-2" id="info-ticket">
         <div className="w-full md:w-5/6">
-          <h2 className="text-xl md:text-2xl font-bold">{t("ticketInfo") || "Fallback Text"}</h2>
+          <h2 className="text-xl md:text-2xl font-bold">{t("ticketInfo") || "Thông tin vé"}</h2>
           <div className="card mt-3">
             <ul className="list-group list-group-flush">
               {showings.map((showing) => (
@@ -49,12 +49,12 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
 
                     {/* Button: Show Availability */}
                     {showing.status === "sold_out" ? (
-                      <button type="button" className="btn-sold-out">{t('soldOut')}</button>
+                      <button type="button" className="btn-sold-out cursor-none">{t('soldOut')}</button>
                     ) : (
                       <button 
                         type="button"
                         className="btn-buy"
-                        onClick={() => router.push(`/event/${showing.eventId}/booking/select-ticket?showingId=${showing.id}&eventId=${showing.eventId}`)}
+                        onClick={() => router.push(`/event/${showing.eventId}/booking/select-ticket?showingId=${showing.id}&eventId=${showing.eventId}${(showing.seatMapId && showing.seatMapId !== 0) ? `&seatMapId=${showing.seatMapId}` : ""}`)}
                       >
                         {t('bookNow')}
                       </button>
@@ -73,11 +73,11 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
                             <div className="d-flex flex-column align-items-end">
                               {ticket.status === "sold_out" ? (
                                 <>
-                                  <p className="price !text-gray-700 p-2">{ticket.price.toLocaleString("vi-VN")}đ</p> 
+                                  <p className="price !text-gray-700 p-2">{ticket.price?.toLocaleString("vi-VN")}đ</p> 
                                   <button type="button" className="btn-sold-out">Hết vé</button>
                                 </>
                               ) : (
-                                <p className="price mb-0 !border !border-[#9ef5cf] rounded-lg p-2">{ticket.price.toLocaleString("vi-VN")}đ</p> 
+                                <p className="price mb-0 !border !border-[#9ef5cf] rounded-lg p-2">{ticket.price?.toLocaleString("vi-VN")}đ</p> 
                               )}
                             </div>
                           </div>

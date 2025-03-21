@@ -14,14 +14,14 @@ import QuestionList from './components/questionList';
 import TicketInformation from './components/ticketInfo';
 import Navigation from '../components/navigation';
 import CountdownTimer from '../components/countdownTimer';
+import { TicketType } from '../../../libs/event.interface';
 
 
 export default function QuestionForm() {
     const [event, setEvent] = useState(null);
     const [totalTickets, setTotalTickets] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
-    const [ticketTypeName, setTicketTypeName] = useState('');
-    const [ticketPrice, setTicketPrice] = useState(0);
+    const [ticketType, setTicketType] = useState<TicketType | null>(null);
     const [isFormValid, setIsFormValid] = useState(false);
     // const [hasSelectedTickets, setHasSelectedTickets] = useState(false);
 
@@ -30,15 +30,13 @@ export default function QuestionForm() {
         const storedEvent = localStorage.getItem('event');
         const storedTotalTickets = localStorage.getItem('totalTickets');
         const storedTotalAmount = localStorage.getItem('totalAmount');
-        const storedTicketTypeName = localStorage.getItem('selectedTicketTypeName');
-        const storedTicketPrice = localStorage.getItem('selectedTicketPrice');
+        const storeTicketType = localStorage.getItem('selectedTicketType');
         // const storedHasSelectedTickets = localStorage.getItem('hasSelectedTickets');
 
         if (storedEvent) setEvent(JSON.parse(storedEvent)); // Chuyển JSON string thành object
         if (storedTotalTickets) setTotalTickets(Number(storedTotalTickets));
         if (storedTotalAmount) setTotalAmount(Number(storedTotalAmount));
-        if (storedTicketTypeName) setTicketTypeName(storedTicketTypeName);
-        if (storedTicketPrice) setTicketPrice(Number(storedTicketPrice));
+        if (storeTicketType) setTicketType(JSON.parse(storeTicketType));
         // if (storedHasSelectedTickets) setHasSelectedTickets(storedHasSelectedTickets === 'true');
     }, []);
 
@@ -53,7 +51,7 @@ export default function QuestionForm() {
             <div className="px-32 py-0">
                 <div className="row align-items-start mt-4">
                     <QuestionList onValidationChange={setIsFormValid} />
-                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} isFormValid={isFormValid} ticketTypeName={ticketTypeName} ticketPrice={ticketPrice} />
+                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} isFormValid={isFormValid} ticketType={ticketType} />
                 </div>
             </div>
         </div>

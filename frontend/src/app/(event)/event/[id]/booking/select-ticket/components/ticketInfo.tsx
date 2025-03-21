@@ -7,15 +7,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 /* Package Application */
+// import { EventDetail } from '@/app/(event)/event/libs/event.interface';
 // import CollapsibleDescription from './collapsibleDescriptionProp';
+import { TicketType } from '@/app/(event)/event/libs/event.interface';
 
 interface EventProps {
     id: number;
     title: string;
     description: string;
-    startDate: string;
+    // startDate: string;
+    startTime: string;
     venue: string;
     Images_Events_imgPosterIdToImages?: { imageUrl: string };
     locationsString: string;
@@ -26,8 +30,8 @@ interface TicketInforProps {
     totalTickets: number;
     totalAmount: number;
     hasSelectedTickets: boolean;
-    selectedTicketTypeName?: string;
-    selectedTicketPrice?: number;
+    selectedTicketType?: TicketType;
+    selectedSeatIds?: number[];
 }
 
 export default function TicketInfor({
@@ -35,9 +39,10 @@ export default function TicketInfor({
     totalTickets,
     totalAmount,
     hasSelectedTickets,
-    selectedTicketTypeName,
-    selectedTicketPrice,
+    selectedTicketType,
+    selectedSeatIds,
 }: TicketInforProps) {
+    const t = useTranslations('common');
     const router = useRouter();
 
     const handleContinue = () => {
@@ -45,8 +50,9 @@ export default function TicketInfor({
         localStorage.setItem('totalTickets', totalTickets.toString());
         localStorage.setItem('totalAmount', totalAmount.toString());
         localStorage.setItem('hasSelectedTickets', hasSelectedTickets.toString());
-        localStorage.setItem('selectedTicketTypeName', selectedTicketTypeName || '');
-        localStorage.setItem('selectedTicketPrice', selectedTicketPrice?.toString() || '');
+        localStorage.setItem('selectedTicketType', JSON.stringify(selectedTicketType));
+        localStorage.setItem('selectedSeatIds', JSON.stringify(selectedSeatIds));
+        localStorage.setItem('ticketTypeId', selectedTicketType?.id.toString() || '');
 
         // Điều hướng đến trang tiếp theo
         router.push(`/event/${event.id}/booking/question-form`);
@@ -75,7 +81,7 @@ export default function TicketInfor({
                     <div className="text-gray-500 flex items-center space-x-2 mt-4">
                         <Calendar size={18} />
                         <span>
-                            {new Date(event.startDate).toLocaleString('vi-VN', {
+                            {new Date(event.startTime)?.toLocaleString('vi-VN', {
                                 weekday: 'long',
                                 year: 'numeric',
                                 month: 'long',
@@ -102,8 +108,8 @@ export default function TicketInfor({
                         onClick={handleContinue}
                     >
                         {hasSelectedTickets
-                            ? `Tiếp tục - ${totalAmount.toLocaleString()}đ`
-                            : 'Vui lòng chọn vé'}
+                            ? `${t("continue") ?? "Tiếp tục"} - ${totalAmount.toLocaleString()}đ`
+                            : `${t("pleaseChooseTicket") ?? "Vui lòng chọn vé"}`}
                     </button>
                 </div>
             </div>
