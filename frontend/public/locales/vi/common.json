@@ -32,7 +32,7 @@
     "backBtn":"Quay lại",
     "mapRedirect": "Xem bản đồ",
     "dateTime":"Ngày & giờ",
-    "addCalender":"Thêm vào lịch",
+    "addCalendar":"Thêm vào lịch",
     "priceTitle":"Giá từ",
     "bookNow":"Mua vé ngay",
     "desciption":"Mô tả",
@@ -73,5 +73,9 @@
     "others":"Thể loại khác",
     "theatersandart":"Sân khấu & Nghệ thuật",
     "music":"Âm nhạc",
-    "ticketPrice":"Giá vé"
+    "ticketPrice":"Giá vé",
+    "loading":"Đang tải",
+    "questionForm":"Bảng câu hỏi",
+    "emailWillBeSent":"Vé điện tử sẽ được gửi đến địa chỉ email của bạn, vui lòng đảm bảo địa chỉ email của bạn là chính xác.",
+    "alertFillFullInfo":"Vui lòng điền đầy đủ thông tin để tiếp tục"
 }

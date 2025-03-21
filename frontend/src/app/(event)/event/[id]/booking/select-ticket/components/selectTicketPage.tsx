@@ -131,7 +131,7 @@ export default function SelectTicketPage({ showingId, serverEvent, seatMapId }: 
 
     return (
         <div>
-            <Navigation title={`${t("chooseTicket") ?? "Chọn vé"}`} />
+            <Navigation title={`${t("chooseTicket") || "Chọn vé"}`} />
             {(event) ? (
                 <TicketInfor
                     event={event}
@@ -140,6 +140,7 @@ export default function SelectTicketPage({ showingId, serverEvent, seatMapId }: 
                     hasSelectedTickets={totalTickets > 0}
                     selectedTicketType={selectedTicketType}
                     selectedSeatIds={selectedSeatIds}
+                    showingId={showingId}
                 />
             ) : (
                 <Loading />

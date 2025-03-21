@@ -32,7 +32,7 @@
     "backBtn":"Back",
     "mapRedirect": "See map",
     "dateTime":"Date & time",
-    "addCalender":"Add to calendar",
+    "addCalendar":"Add to calendar",
     "priceTitle":"From",
     "bookNow":"Buy now",
     "desciption":"Description",
@@ -73,5 +73,9 @@
     "others":"Other categories",
     "theatersandart":"Theater & Art",
     "music":"Music",
-    "ticketPrice":"Ticket price"
+    "ticketPrice":"Ticket price",
+    "loading":"Loading",
+    "questionForm":"Question form",
+    "emailWillBeSent":"E-tickets will be sent to your email address, please make sure your email address is correct.",
+    "alertFillFullInfo":"Please fill in all information to continue"
 }
