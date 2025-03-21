@@ -11,6 +11,7 @@ export interface DateTimePickerProps {
     setSelectedDate: (date: Date | null) => void;
     popperPlacement?: "bottom-start" | "bottom-end";
     required?: boolean;
+    validateDate?: (date: Date | null) => boolean;
 }
 
 export interface ImageUploadProps {

@@ -25,13 +25,14 @@ interface Props {
 export default function CreateTypeTicketDailog({ open, onClose, startDate, endDate, setStartDate, setEndDate }: Props) {
     const [ticketName, setTicketName] = useState("");
     const [ticketPrice, setTicketPrice] = useState("");
-    const [ticketNum, setTicketNum] = useState("");
-    const [ticketNumMin, setTicketNumMin] = useState("");
-    const [ticketNumMax, setTicketNumMax] = useState("");
+    const [ticketNum, setTicketNum] = useState("10");
+    const [ticketNumMin, setTicketNumMin] = useState("1");
+    const [ticketNumMax, setTicketNumMax] = useState("10");
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
     const [infoTicket, setInfoTicket] = useState("");
     const [imageTicket, setImageTicket] = useState<string | null>(null);
     const [imageErrors, setImageErrors] = useState<{ [key: string]: string }>({});
+    const [isFree, setIsFree] = useState(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
         const value = e.target.value;
@@ -98,22 +99,36 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                         <div className="flex flex-wrap -mx-3 mb-6">
                             {/* Giá vé */}
                             <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
-                                <InputField
-                                    label="Giá vé"
-                                    value={ticketPrice}
-                                    placeholder="0"
-                                    error={errors.ticketPrice}
-                                    required
-                                />
+                                <label className="block text-sm font-bold mb-2">
+                                    <span className="text-red-500">* </span> Giá vé
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        className={`w-full p-2 border rounded-md text-lg ${
+                                            isFree ? 'bg-red-100 text-red-500 border-red-500 cursor-not-allowed' : 'border-gray-300'
+                                          }`}
+                                        type="text"
+                                        value={ticketPrice}
+                                        placeholder="0"
+                                        onChange={(e) => setTicketPrice(e.target.value)}
+                                        disabled={isFree}
+                                    />
+                                </div>
+                                <p className="text-red-500 text-sm mt-1">Vui lòng nhập giá vé</p>
                             </div>
 
                             {/* Vé miễn phí */}
                             <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0 flex items-center">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
-                                        type="radio"
-                                        name="fee"
-                                        className="peer hidden"
+                                        type="radio" name="fee" className="peer hidden"
+                                        checked={isFree}
+                                        onChange={() => {
+                                            setIsFree(!isFree);
+                                            if (isFree) {
+                                                setTicketPrice(""); // Reset giá vé khi bỏ chọn miễn phí
+                                            }
+                                        }}
                                     />
                                     <div className="w-4 h-4 rounded-full border border-black bg-white flex items-center justify-center peer-checked:bg-[#9EF5CF] peer-focus:border-green-700">
                                         <div className="w-2 h-2 rounded-full bg-white"></div>
@@ -128,9 +143,10 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 <InputField
                                     label="Tổng số lượng vé"
                                     value={ticketNum}
-                                    placeholder="10"
+                                    placeholder=""
                                     error={errors.ticketNum}
                                     required
+                                    onChange={(e) => handleInputChange(e, "ticketNum")}
                                 />
                             </div>
 
@@ -139,9 +155,10 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 <InputField
                                     label="Số vé tối thiểu của một đơn hàng"
                                     value={ticketNumMin}
-                                    placeholder="1"
+                                    placeholder=""
                                     error={errors.ticketNumMin}
                                     required
+                                    onChange={(e) => handleInputChange(e, "ticketNumMin")}
                                 />
                             </div>
 
@@ -150,10 +167,10 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 <InputField
                                     label="Số vé tối đa của một đơn hàng"
                                     value={ticketNumMax}
-                                    placeholder="10"
+                                    placeholder=""
                                     error={errors.ticketNumMax}
                                     required
-                                    onChange={(e) => setTicketNum(e.target.value)}
+                                    onChange={(e) => handleInputChange(e, "ticketNumMax")}
                                 />
                             </div>
                         </div>

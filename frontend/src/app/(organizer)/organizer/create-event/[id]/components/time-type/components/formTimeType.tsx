@@ -20,6 +20,14 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     const months = ["Tất cả", "Tháng 1", "Tháng 2", "Tháng 3"];
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
+    const validateStartDate = (date: Date | null) => {
+        return !date || !endDate || date <= endDate; // Thời gian bắt đầu không được lớn hơn thời gian kết thúc
+    };
+
+    const validateEndDate = (date: Date | null) => {
+        return !date || !startDate || date >= startDate; // Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu
+    };
+
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, field: string) => {
         const value = e.target.value;
         if (field === "month") setMonth(value);
@@ -45,7 +53,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
 
     const handleSubmit = () => {
         if (event) event.preventDefault(); 
-        
+
         if (!month || !startDate || !endDate) {
             setErrors({
                 month: !month,
@@ -108,6 +116,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                 selectedDate={startDate}
                                 setSelectedDate={setStartDate}
                                 popperPlacement="bottom-end"
+                                validateDate={validateStartDate}
                             />
                         </div>
 
@@ -118,6 +127,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                 selectedDate={endDate}
                                 setSelectedDate={setEndDate}
                                 popperPlacement="bottom-start"
+                                validateDate={validateEndDate}
                             />
                         </div>
                     </div>

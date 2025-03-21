@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import { useRef } from "react";
+import { useState } from "react";
 
 import { DateTimePickerProps } from "../../../libs/interface/comform.interface";
 
@@ -15,8 +16,19 @@ export default function DateTimePicker({
     setSelectedDate,
     popperPlacement = "bottom-start",
     required = false,
+    validateDate,
 }: DateTimePickerProps) {
     const datePickerRef = useRef<DatePicker | null>(null);
+    const [error, setError] = useState<string>("");
+
+    const handleChange = (date: Date | null) => {
+        if (validateDate && !validateDate(date)) {
+            setError("Thời gian không hợp lệ. Vui lòng chọn lại!");
+        } else {
+            setError("");
+            setSelectedDate(date);
+        }
+    };
 
     return (
         <>
@@ -39,14 +51,17 @@ export default function DateTimePicker({
                 />
                 <DatePicker
                     selected={selectedDate}
-                    onChange={(date) => setSelectedDate(date)}
+                    onChange={handleChange}
                     showTimeSelect
                     dateFormat="dd-MM-yyyy HH:mm"
                     ref={datePickerRef}
                     className="hidden"
                     popperPlacement={popperPlacement}
                 />
+
+                {error && <p className="text-red-500 text-sm mt-1 ml-1">{error}</p>}
             </div>
+
         </>
     );
 }
