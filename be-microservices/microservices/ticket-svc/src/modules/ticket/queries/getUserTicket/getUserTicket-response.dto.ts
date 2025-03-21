@@ -72,8 +72,8 @@ export class UserTicketDto {
   @ApiProperty( {type: PaymentInfoDto, description: 'The payment info of the ticket' })
   PaymentInfo?: PaymentInfoDto;
 
-  @ApiProperty( {type: TicketQRCodeDto, description: 'The qr code of the ticket' })
-  TicketQRCode?: TicketQRCodeDto;
+  @ApiProperty( {type: [TicketQRCodeDto], description: 'The qr code of the ticket' })
+  TicketQRCode?: TicketQRCodeDto[];
 
   @ApiProperty( {type: UserShowingDto, description: 'The showing of the ticket' })
   Showing?: UserShowingDto;
@@ -89,6 +89,6 @@ export class GetUserTicketResponseDto {
   @ApiProperty({ example: 'Get redis seat successfully', description: 'message' })
   message: string;
 
-  @ApiProperty({ type: UserTicketDto, description: 'The ticket data' })
+  @ApiProperty({ type: [UserTicketDto], description: 'The ticket data' })
   data: UserTicketDto[];
 }
