@@ -1,7 +1,7 @@
 "use client";
 
 /* Package System */
-import { ChevronDown, ChevronUp, CirclePlus } from "lucide-react";
+import { ChevronDown, ChevronUp, CirclePlus, PencilLine, Ticket, Trash2 } from "lucide-react";
 import { useState } from 'react';
 import "react-datepicker/dist/react-datepicker.css";
 import { Toaster } from "react-hot-toast";
@@ -19,6 +19,14 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
 
     const months = ["Tất cả", "Tháng 1", "Tháng 2", "Tháng 3"];
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+
+    //Lưu danh sách vé
+    const [ticketList, setTicketList] = useState<{ name: string }[]>([]);
+
+    //Cập nhật danh sách vé sau khi tạo
+    const addTicket = (ticket: { name: string }) => {
+        setTicketList([...ticketList, ticket]);
+    }
 
     const validateStartDate = (date: Date | null) => {
         return !date || !endDate || date <= endDate; // Thời gian bắt đầu không được lớn hơn thời gian kết thúc
@@ -50,9 +58,8 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
         return true;
     };
 
-
     const handleSubmit = () => {
-        if (event) event.preventDefault(); 
+        if (event) event.preventDefault();
 
         if (!month || !startDate || !endDate) {
             setErrors({
@@ -63,17 +70,17 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
             toast.error("Vui lòng chọn đầy đủ thông tin!");
             return;
         }
-    
+
         // Nếu nút là "Save"
         if (btnValidate2 === "Save") {
             alert("Form hợp lệ!");
-        } 
+        }
         // Nếu nút là "Continue"
         else if (btnValidate2 === "Continue") {
             alert("Form hợp lệ! Chuyển sang bước tiếp theo...");
             onNextStep();
         }
-    };    
+    };
 
     return (
         <>
@@ -136,17 +143,41 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                         <span className="text-red-500">* </span>Loại vé
                     </label>
 
-                    <div className="flex justify-center">
+                    {/* Hiển thị các loại vé đã tạo */}
+                    <div className="type_ticket ">
+                        {ticketList.map((ticket, index) => (
+                            <div key={index} className="flex items-center justify-between gap-2 p-6 lg:p-8 h-12 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
+                                <Ticket size={20} />
+                                <span>{ticket.name}</span>
+                                <div className="ml-auto flex items-center gap-2">
+                                    <PencilLine className="p-2 bg-white text-black rounded w-8 h-8 cursor-pointer" />
+                                    <Trash2 className="p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="flex justify-center mt-4">
                         <button type="button" className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
-                        onClick={() => {
-                            if (validateTimeSelection()) {
-                                setShowDialog(true);
-                            }
-                        }}>
+                            onClick={() => {
+                                if (validateTimeSelection()) {
+                                    setShowDialog(true);
+                                }
+                            }}>
                             <CirclePlus size={20} /> Tạo loại vé mới
                         </button>
 
-                        {showDialog && <CreateTypeTicketDailog open={showDialog} onClose={() => setShowDialog(false)} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>}
+                        {showDialog &&
+                            <CreateTypeTicketDailog
+                                open={showDialog}
+                                onClose={() =>
+                                    setShowDialog(false)}
+                                startDate={startDate}
+                                endDate={endDate}
+                                setStartDate={setStartDate}
+                                setEndDate={setEndDate}
+                                addTicket={addTicket}
+                            />}
                     </div>
 
                 </div>
@@ -159,7 +190,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                         className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
                     >
                         <CirclePlus size={20} /> Tạo suất diễn
-                    </button>                    
+                    </button>
                 </div>
             </form>
         </>

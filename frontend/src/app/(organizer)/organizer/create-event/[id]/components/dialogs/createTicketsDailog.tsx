@@ -7,22 +7,13 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 /* Package Application */
-// import SelectField from "../common/form/selectField";
 import DateTimePicker from "../common/form/dateTimePicker";
 import InputCountField from "../common/form/inputCountField";
 import ImageUpload from "../common/form/imageUpload";
-import InputField from "../common/form/inputField";
+import InputNumberField from "../common/form/inputNumberField";
+import { CreateTypeTicketDailogProps } from "../../libs/interface/dialog.interface";
 
-interface Props {
-    open: boolean;
-    onClose: () => void;
-    startDate: Date | null;
-    endDate: Date | null;
-    setStartDate: (date: Date | null) => void;
-    setEndDate: (date: Date | null) => void;
-}
-
-export default function CreateTypeTicketDailog({ open, onClose, startDate, endDate, setStartDate, setEndDate }: Props) {
+export default function CreateTypeTicketDailog({ open, onClose, startDate, endDate, setStartDate, setEndDate, addTicket }: CreateTypeTicketDailogProps) {
     const [ticketName, setTicketName] = useState("");
     const [ticketPrice, setTicketPrice] = useState("");
     const [ticketNum, setTicketNum] = useState("10");
@@ -69,6 +60,23 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
         }
     };
 
+    //Lưu vé
+    const handleSaveTicket = (e: React.FormEvent) => {
+        e.preventDefault();
+        const newErrors: { [key: string]: boolean } = {};
+
+        if (!ticketName) newErrors.ticketName = true;
+        if (!ticketPrice) newErrors.ticketPrice = true;
+
+        setErrors(newErrors);
+
+        //Nếu có error thì không được đóng form
+        if (Object.keys(newErrors).length > 0) return;
+
+        addTicket({ name: ticketName });
+        onClose();
+    }
+
     return (
         <>
             <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
@@ -96,6 +104,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                             </div>
                         </div>
 
+
                         <div className="flex flex-wrap -mx-3 mb-6">
                             {/* Giá vé */}
                             <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
@@ -104,34 +113,38 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className={`w-full p-2 border rounded-md text-lg ${
-                                            isFree ? 'bg-red-100 text-red-500 border-red-500 cursor-not-allowed' : 'border-gray-300'
-                                          }`}
-                                        type="text"
-                                        value={ticketPrice}
+                                        className={`w-full p-2 border rounded-md text-sm 
+                                            ${isFree ? 'bg-red-100 text-red-500 border-red-500 cursor-not-allowed' : 'border-gray-300'}`}
+                                        type="number"
+                                        value={isFree ? "0" : ticketPrice}
                                         placeholder="0"
-                                        onChange={(e) => setTicketPrice(e.target.value)}
+                                        onChange={(e) => {
+                                            setTicketPrice(e.target.value);
+                                            if (errors.ticketPrice) {
+                                                setErrors((prev) => ({ ...prev, ticketPrice: false }));
+                                            }
+                                        }}
                                         disabled={isFree}
                                     />
                                 </div>
-                                <p className="text-red-500 text-sm mt-1">Vui lòng nhập giá vé</p>
+                                {errors.ticketPrice && <p className="text-red-500 text-sm mt-1">Vui lòng nhập giá vé</p>}
                             </div>
 
                             {/* Vé miễn phí */}
                             <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0 flex items-center">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
-                                        type="radio" name="fee" className="peer hidden"
+                                        type="checkbox" name="fee" className="peer hidden"
                                         checked={isFree}
                                         onChange={() => {
-                                            setIsFree(!isFree);
-                                            if (isFree) {
-                                                setTicketPrice(""); // Reset giá vé khi bỏ chọn miễn phí
-                                            }
+                                            const newValue = !isFree;
+                                            setIsFree(newValue);
+                                            setTicketPrice(newValue ? "0" : "");
                                         }}
                                     />
-                                    <div className="w-4 h-4 rounded-full border border-black bg-white flex items-center justify-center peer-checked:bg-[#9EF5CF] peer-focus:border-green-700">
-                                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                                    <div className={`w-4 h-4 rounded-full border border-black flex items-center justify-center 
+                                                    ${isFree ? "bg-[#9EF5CF] border-green-700" : "bg-white "}`}>
+                                        {isFree && <div className="w-2 h-2 rounded-full bg-white"></div>}
                                     </div>
                                     <span className="text-center">Miễn phí</span>
                                 </label>
@@ -140,7 +153,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
 
                             {/* Tổng só lượng vé */}
                             <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
-                                <InputField
+                                <InputNumberField
                                     label="Tổng số lượng vé"
                                     value={ticketNum}
                                     placeholder=""
@@ -152,7 +165,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
 
                             {/* Số vé tối thiểu của một đơn hàng */}
                             <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                                <InputField
+                                <InputNumberField
                                     label="Số vé tối thiểu của một đơn hàng"
                                     value={ticketNumMin}
                                     placeholder=""
@@ -164,7 +177,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
 
                             {/* Số vé tối đa của một đơn hàng */}
                             <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                                <InputField
+                                <InputNumberField
                                     label="Số vé tối đa của một đơn hàng"
                                     value={ticketNumMax}
                                     placeholder=""
@@ -238,7 +251,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
 
                         <div className="flex gap-4 mt-4 mb-4">
                             <button
-                                onClick={onClose}
+                                onClick={handleSaveTicket}
                                 className="w-full border-2 border-[#51DACF] text-[#0C4762] font-bold py-2 px-4 rounded bg-[#51DACF] hover:bg-[#0C4762] hover:border-[#0C4762] hover:text-white transition-all"
                             >
                                 Lưu
