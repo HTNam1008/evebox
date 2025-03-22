@@ -10,6 +10,8 @@ import 'swiper/css/navigation';
 import '@/styles/admin/pages/Dashboard.css';
 import Image from "next/image";
 import { SearchEventsResponse } from '@/types/model/searchEvents';
+import DatePicker from '../../components/dashboard/datePicker';
+import { CalendarDate, RangeValue } from '@nextui-org/react';
 
 // import EventSlider from '../../components/dashboard/eventSlider';
 
@@ -20,23 +22,17 @@ interface SearchClientProps {
 export default function SearchClient({ events }: SearchClientProps) {
     const [isEventTypeOpen, setIsEventTypeOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-    const [isWeekDayOpen, setIsWeekDayOpen] = useState(false);
-    const [selectedWeekDay, setSelectedWeekDay] = useState<string | null>(null);
+    const [, setDateRange] = useState<RangeValue<CalendarDate> | null>(null);
 
     const options = ["Âm nhạc", "Kịch", "Học thuật", "Thể thao", "Workshop", "Hòa nhạc"];
-    const weekdays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
     
     const dropdownEventRef = useRef<HTMLDivElement | null>(null);
-    const dropdownWeekDayRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as Node;
             if (dropdownEventRef.current && !dropdownEventRef.current.contains(target)) {
                 setIsEventTypeOpen(false);
-            }
-            if (dropdownWeekDayRef.current && !dropdownWeekDayRef.current.contains(target)) {
-                setIsWeekDayOpen(false);
             }
         };
 
@@ -59,46 +55,20 @@ export default function SearchClient({ events }: SearchClientProps) {
                 <div className="w-full md:w-5/6">
                     {/* Section Header */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                        <h2 className="text-xl md:text-2xl font-bold whitespace-nowrap">Kết quả tìm kiếm:</h2>
+                        <h2 className="text-xl md:text-2xl font-bold whitespace-nowrap">Kết quả tìm kiếm</h2>
 
                         {/* Bộ lọc */}
-                        <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+                        <div className="flex flex-wrap items-center gap-8 w-full md:w-auto">
                             {/* Bộ lọc: Ngày trong tuần */}
-                            <div className="relative w-full md:w-40 flex-shrink-0" ref={dropdownWeekDayRef}>
-                                <button
-                                    onClick={() => setIsWeekDayOpen(!isWeekDayOpen)}
-                                    className="w-full bg-white border border-gray-300 rounded p-2 flex justify-between items-center text-gray-500"
-                                >
-                                    <span>
-                                        {selectedWeekDay ? selectedWeekDay : "Ngày trong tuần"}
-                                    </span>
-                                    <ChevronDown size={16} className="text-gray-500" />
-                                </button>
-
-                                {/* Dropdown multi-select */}
-                                {isWeekDayOpen && (
-                                    <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg text-[#0C4762] small-text">
-                                    {weekdays.map((weekday) => (
-                                      <div
-                                        key={weekday}
-                                        className="p-2 hover:bg-[#0C4762] hover:bg-opacity-[0.31] cursor-pointer"
-                                        onClick={() => {
-                                          setSelectedWeekDay(weekday);
-                                          setIsWeekDayOpen(false);
-                                        }}
-                                      >
-                                        {weekday}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
+                            <div className="relative w-full md:w-60 flex-shrink-0 bg-white border border-gray-200 rounded-lg p-2 shadow-md hover:bg-gray-50 transition-colors">
+                            <DatePicker onDateRangeChange={setDateRange} />
                             </div>
 
                             {/* Bộ lọc: Loại sự kiện */}
-                            <div className="relative w-full md:w-40 flex-shrink-0" ref={dropdownEventRef}>
+                            <div  className="relative w-full md:w-60 flex-shrink-0 bg-white border border-gray-200 p-2 rounded-lg shadow-md transition-colors hover:bg-gray-50" ref={dropdownEventRef}>
                                 <button
                                     onClick={() => setIsEventTypeOpen(!isEventTypeOpen)}
-                                    className="w-full bg-white border border-gray-300 rounded p-2 flex justify-between items-center text-gray-500"
+                                    className="w-full bg-white border border-gray-100 rounded p-2 flex justify-between items-center  text-gray-500"
                                     style={{
                                         whiteSpace: "nowrap",
                                         overflow: "hidden",
