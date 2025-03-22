@@ -1,9 +1,16 @@
 import SearchClient from "./components/searchClient";
+import { fetchSearchEvents } from "@/app/(dashboard)/libs/server/fetchSearchEvents";
 
-// Server Component
-export default async function Search() {
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    const events = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-    
-    return <SearchClient events={events} />;
+// interface SearchProps {
+//   searchParams: { q?: string };   // Notice: use `q` if your query param is `q` or adjust accordingly
+// }
+
+export default async function Search({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const searchTitle = (await searchParams).q;  // Use `q` or match exactly with the query parameter you used in the Link
+  const events = searchTitle
+    ? await fetchSearchEvents(searchTitle)
+    : [];
+
+  console.log("Event-------",events);
+  return <SearchClient events={events} />;
 }

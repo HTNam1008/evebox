@@ -17,7 +17,7 @@ import { fetchProvinces } from '@/app/(dashboard)/libs/server/fetchProvinces';
 
 export default function SearchControls() {
     const [searchText, setSearchText] = useState('');
-    const [dateRange, setDateRange] = useState<RangeValue<CalendarDate> | null>(null);
+    const [, setDateRange] = useState<RangeValue<CalendarDate> | null>(null);
     const [isEventTypeOpen, setIsEventTypeOpen] = useState(false);
     const [isLocationOpen, setIsLocationOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -149,10 +149,10 @@ export default function SearchControls() {
                             pathname: "/search",
                             query: {
                                 q: searchText || undefined,
-                                types: selectedOptions.length > 0 ? selectedOptions.join(',') : undefined,
-                                location: selectedLocation || undefined,
-                                startDate: dateRange?.start?.toString() || undefined,
-                                endDate: dateRange?.end?.toString() || undefined
+                                // types: selectedOptions.length > 0 ? selectedOptions.join(',') : undefined,
+                                // location: selectedLocation || undefined,
+                                // startDate: dateRange?.start?.toString() || undefined,
+                                // endDate: dateRange?.end?.toString() || undefined
                             }
                         }}>
                             <button className="w-full md:w-14 h-10 bg-teal-400 hover:bg-teal-300 rounded flex items-center justify-center">

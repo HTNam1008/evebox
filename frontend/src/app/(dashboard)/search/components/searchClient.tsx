@@ -3,17 +3,21 @@
 import { ChevronDown } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import RangeSlider from './range-slider';
+import Link from 'next/link';
 import 'tailwindcss/tailwind.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import '@/styles/admin/pages/Dashboard.css';
+import Image from "next/image";
+import { SearchEventsResponse } from '@/types/model/searchEvents';
+
 // import EventSlider from '../../components/dashboard/eventSlider';
 
 interface SearchClientProps {
-    events: number[];
+    events: SearchEventsResponse;
 }
 
-export default function SearchClient({ }: SearchClientProps) {
+export default function SearchClient({ events }: SearchClientProps) {
     const [isEventTypeOpen, setIsEventTypeOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [isWeekDayOpen, setIsWeekDayOpen] = useState(false);
@@ -137,46 +141,54 @@ export default function SearchClient({ }: SearchClientProps) {
                         </div>
                     </div>
                     {/* Event Cards Grid */}
-                    {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
-                        {events.map((_, index) => (
-                            <div key={index} className="bg-[#0C4762] rounded-lg overflow-hidden shadow-lg border-2 hover:shadow-md transition-shadow">
-                                <div className="flex items-center justify-center aspect-[13/9] overflow-hidden">
-                                    <img
-                                        src="/images/dashboard/card_pic.png"
-                                        alt="Event"
-                                        className="object-cover hover:scale-105 transition-transform duration-300 padding-30"
-                                    />
-                                </div>
-                                <div className="p-3">
-                                    <h3 className="font-bold text-left text-base mb-3 line-clamp-2 leading-tight text-white">
-                                        Nhớ Trịnh Công Sơn 3 - Quang Dũng - Cẩm Vân - Khắc Triệu - Cece Trường
-                                    </h3>
-                                    <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
-                                        <time className="text-left text-teal-500">
-                                            <span>20:00 - 23:00</span>
-                                            <br />
-                                            <span>25 tháng 10, 2024</span>
-                                        </time>
-                                        <span
-                                            className={`rounded-lg bg-emerald-200 px-2 text-sky-950 text-center md:text-left`}
-                                        >
-                                            {index % 2 === 0 ? "Miễn phí" : "950.000đ"}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div> */}
-                    {/* <EventSlider events={events} title={''} />
-                    <EventSlider events={events} title={''} />
-                    <EventSlider events={events} title={''} />
-                    <EventSlider events={events} title={''} /> */}
-                    {/* Load More Button */}
-                    <div className="flex justify-center mt-8 mb-8">
-                        <button className="px-6 py-2 bg-teal-400 text-sky-950 rounded-md hover:bg-teal-300 transition-colors">
-                            Xem thêm...
-                        </button>
+                    {events.data.length === 0 ? (
+              <p className="text-center text-gray-500 mt-10">
+                Không tìm thấy sự kiện nào phù hợp.
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {events.data.map((event) => (
+                  <Link key={event.id} href={`/event/${event.id}`}>
+                    <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow flex flex-col h-full hover:shadow-xl cursor-pointer">
+                      <div className="flex items-center justify-center p-2 w-full h-auto overflow-hidden">
+                        <Image
+                          src={
+                            event.Images_Events_imgPosterIdToImages?.imageUrl ||
+                            "/images/dashboard/card_pic.png"
+                          }
+                          alt={event.title}
+                          className="w-full aspect-video object-cover rounded-lg hover:scale-110 transition-transform duration-300"
+                          width={140}
+                          height={100}
+                        />
+                      </div>
+                      <div className="p-3 flex flex-col flex-grow">
+                        <h3 className="font-bold text-left text-sm mb-2 text-white line-clamp-2 min-h-[36px] leading-tight">
+                          {event.title}
+                        </h3>
+                        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
+                          <span
+                            className={`rounded-lg px-2 font-medium text-sky-950 text-center md:text-left ${
+                              event.status === "event_over"
+                                ? "bg-red-300"
+                                : "bg-emerald-200"
+                            }`}
+                          >
+                            {event.status === "available"
+                              ? "Từ " +
+                                event.minTicketPrice?.toLocaleString("vi-VN") +
+                                "đ"
+                              : event.status === "event_over"
+                              ? "Đã kết thúc"
+                              : "Chưa có thông tin vé"}
+                          </span>
+                        </div>
+                      </div>
                     </div>
+                  </Link>
+                ))}
+              </div>
+            )}
                 </div>
             </div>
         </main>
