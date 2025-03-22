@@ -3,10 +3,10 @@
 /* Pacakage System */
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from "next-intl";
 
 /* Package Application */
 import { EventDetail } from '../libs/event.interface';
-import { useTranslations } from "next-intl";
 import { useI18n } from "../../../providers/I18nProvider";
 
 const extractFirstParagraph = (html: string) => {
@@ -64,7 +64,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                         <div className="col-lg-5 col-md-12 p-0 d-flex justify-content-end align-items-center" style={{ zIndex: 2 }}>
                             <div className="card" style={{ width: '385px' }}>
                                 <div className="card-body px-4 mt-2 mb-3">
-                                    <h5 className="card-title title-box">{t("dateTime") || "Fallback Text"}</h5>
+                                    <h5 className="card-title title-box">{t("dateTime") || "Thời gian"}</h5>
                                     <p className="card-text m-0 text-body-secondary">
                                         <i className="bi bi-calendar2-event mr-2"></i>
                                         {new Date(event.startTime).toLocaleString( locale === "vi" ? 'vi-VN' : 'en-US', {
@@ -80,9 +80,9 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                             + 4 ngày khác
                                         </button> */}
                                     </p>
-                                    <p className="card-text text-add p-0">{t("addCalender") || "Fallback Text"}</p>
+                                    <p className="card-text text-add p-0">{t("addCalendar") || "Thêm vào lịch"}</p>
 
-                                    <h5 className="card-title mt-2 title-box">{t("priceTitle") || "Fallback Text"}</h5>
+                                    <h5 className="card-title mt-2 title-box">{t("locationTitle") || "Địa điểm"}</h5>
                                     <p className="card-text text-body-secondary mb-2" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
                                         <i className="bi bi-geo-alt-fill mr-2"></i>
                                         {event.venue}

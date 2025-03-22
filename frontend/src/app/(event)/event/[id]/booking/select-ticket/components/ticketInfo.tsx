@@ -8,11 +8,14 @@ import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 
 /* Package Application */
 // import { EventDetail } from '@/app/(event)/event/libs/event.interface';
 // import CollapsibleDescription from './collapsibleDescriptionProp';
 import { TicketType } from '@/app/(event)/event/libs/event.interface';
+import { useI18n } from '@/app/providers/I18nProvider';
 
 interface EventProps {
     id: number;
@@ -32,6 +35,7 @@ interface TicketInforProps {
     hasSelectedTickets: boolean;
     selectedTicketType?: TicketType;
     selectedSeatIds?: number[];
+    showingId?: string;
 }
 
 export default function TicketInfor({
@@ -41,21 +45,70 @@ export default function TicketInfor({
     hasSelectedTickets,
     selectedTicketType,
     selectedSeatIds,
+    showingId,
 }: TicketInforProps) {
     const t = useTranslations('common');
+    const { locale } = useI18n();
     const router = useRouter();
 
-    const handleContinue = () => {
-        localStorage.setItem('event', JSON.stringify(event));
-        localStorage.setItem('totalTickets', totalTickets.toString());
-        localStorage.setItem('totalAmount', totalAmount.toString());
-        localStorage.setItem('hasSelectedTickets', hasSelectedTickets.toString());
-        localStorage.setItem('selectedTicketType', JSON.stringify(selectedTicketType));
-        localStorage.setItem('selectedSeatIds', JSON.stringify(selectedSeatIds));
-        localStorage.setItem('ticketTypeId', selectedTicketType?.id.toString() || '');
+    const { data: session } = useSession();
+    const [isLoading, setIsLoading] = useState(false);
 
-        // Điều hướng đến trang tiếp theo
-        router.push(`/event/${event.id}/booking/question-form`);
+    const handleContinue = async () => {
+        const payload = {
+            showingId: showingId,
+            tickettypeId: selectedTicketType?.id,
+            quantity: totalTickets,
+            seatInfo: selectedSeatIds?.map((id) => ({ seatId: id })) || [],
+        };
+
+        setIsLoading(true);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/ticket/selectSeat`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session?.user?.accessToken}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.message || 'Không thể giữ ghế, vui lòng thử lại.');
+                return;
+            }
+
+            localStorage.setItem('event', JSON.stringify(event));
+            localStorage.setItem('totalTickets', totalTickets.toString());
+            localStorage.setItem('totalAmount', totalAmount.toString());
+            localStorage.setItem('hasSelectedTickets', hasSelectedTickets.toString());
+            localStorage.setItem('selectedTicketType', JSON.stringify(selectedTicketType));
+            localStorage.setItem('selectedSeatIds', JSON.stringify(selectedSeatIds));
+            localStorage.setItem('ticketTypeId', selectedTicketType?.id.toString() || '');
+            localStorage.setItem('showingId', showingId || '');
+
+            // Điều hướng đến trang tiếp theo
+            router.push(`/event/${event.id}/booking/question-form`);
+        } catch (error) {
+            console.error('Lỗi khi gọi API lock-seat:', error);
+            alert('Lỗi hệ thống khi giữ ghế. Vui lòng thử lại.');
+        } finally {
+            setIsLoading(false);
+        }
+
+        // localStorage.setItem('event', JSON.stringify(event));
+        // localStorage.setItem('totalTickets', totalTickets.toString());
+        // localStorage.setItem('totalAmount', totalAmount.toString());
+        // localStorage.setItem('hasSelectedTickets', hasSelectedTickets.toString());
+        // localStorage.setItem('selectedTicketType', JSON.stringify(selectedTicketType));
+        // localStorage.setItem('selectedSeatIds', JSON.stringify(selectedSeatIds));
+        // localStorage.setItem('ticketTypeId', selectedTicketType?.id.toString() || '');
+        // localStorage.setItem('showingId', showingId || '');
+
+
+        // // Điều hướng đến trang tiếp theo
+        // router.push(`/event/${event.id}/booking/question-form`);
     };
 
     return (
@@ -81,7 +134,7 @@ export default function TicketInfor({
                     <div className="text-gray-500 flex items-center space-x-2 mt-4">
                         <Calendar size={18} />
                         <span>
-                            {new Date(event.startTime)?.toLocaleString('vi-VN', {
+                            {new Date(event.startTime).toLocaleString(locale === "vi" ? 'vi-VN' : 'en-US', {
                                 weekday: 'long',
                                 year: 'numeric',
                                 month: 'long',
@@ -107,9 +160,18 @@ export default function TicketInfor({
                         disabled={!hasSelectedTickets}
                         onClick={handleContinue}
                     >
-                        {hasSelectedTickets
+                        {!isLoading ? (
+                            hasSelectedTickets
+                                ? `${t("continue") ?? "Tiếp tục"} - ${totalAmount.toLocaleString()}đ`
+                                : `${t("pleaseChooseTicket") ?? "Vui lòng chọn vé"}`
+                        ) : (
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        )}
+                        {/* {hasSelectedTickets
                             ? `${t("continue") ?? "Tiếp tục"} - ${totalAmount.toLocaleString()}đ`
-                            : `${t("pleaseChooseTicket") ?? "Vui lòng chọn vé"}`}
+                            : `${t("pleaseChooseTicket") ?? "Vui lòng chọn vé"}`} */}
                     </button>
                 </div>
             </div>

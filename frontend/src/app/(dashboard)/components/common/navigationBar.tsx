@@ -1,15 +1,18 @@
 "use client";
 
+/* Package System */
 import { Menu, ChevronDown, User2Icon } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+
+/* Package Application */
 import Sidebar from "./sidebar";
 import apiClient from "@/services/apiClient";
-import { useSession } from "next-auth/react";
 import { UserInfo, UserInfoResponse } from "@/types/model/userInfo";
-import Image from "next/image";
 import LanguageSwitcher from "../common/languageSwitcher";
-import { useTranslations } from "next-intl";
 import { useI18n } from "../../../providers/I18nProvider";
 
 const NavigationBar = () => {
@@ -20,7 +23,7 @@ const NavigationBar = () => {
   const { data: session } = useSession();
   const { locale } = useI18n(); // Get current locale
   const t = useTranslations("common");
-  
+
   useEffect(() => {
     // Fetch user info when the component mounts
     const fetchUserInfo = async () => {
@@ -28,6 +31,9 @@ const NavigationBar = () => {
       try {
         const response = await apiClient.get<UserInfoResponse>("/api/user/me"); // Assuming your API route is /api/me
         setUserInfo(response.data.data);
+        if (response?.data?.data?.name) {
+          localStorage.setItem("name", response.data.data.name);
+        }
       } catch (error) {
         console.error("Error fetching user info:", error);
       } finally {
@@ -56,13 +62,13 @@ const NavigationBar = () => {
             </button>
             <Link href={"/"} className="flex items-center gap-2">
               <div className="w-18 h-9 rounded">
-              <Image
-  src="/images/dashboard/logo-icon.png"
-  alt="logo"
-  width={30} // Adjust as needed
-  height={30} // Adjust as needed
-  priority // Ensures the logo loads fast
-/>
+                <Image
+                  src="/images/dashboard/logo-icon.png"
+                  alt="logo"
+                  width={30} // Adjust as needed
+                  height={30} // Adjust as needed
+                  priority // Ensures the logo loads fast
+                />
 
               </div>
               <span className="text-white font-bold text-xl hidden sm:inline">
@@ -78,18 +84,18 @@ const NavigationBar = () => {
                 onClick={() => setIsLangOpen(!isLangOpen)}
               // eslint-disable-next-line react/jsx-no-comment-textnodes
               >
-                <Image  src={locale === "vi" ? "/images/dashboard/vietnam-icon.png" : "/images/dashboard/english-icon.png"} alt="flag" width={28} height={28}/>
+                <Image src={locale === "vi" ? "/images/dashboard/vietnam-icon.png" : "/images/dashboard/english-icon.png"} alt="flag" width={28} height={28} />
                 <span className="hidden sm:inline">{t("langCode") || "Fallback Text"}</span>
                 <ChevronDown size={16} className="hidden sm:block" />
               </button>
 
               {isLangOpen && (
-                 <LanguageSwitcher/> 
+                <LanguageSwitcher />
               )}
             </div>
 
             {isLoading ? (
-              <span className="text-white">Đang tải...</span>
+              <span className="text-white">{t("loading") ?? 'Đang tải'}</span>
             ) : userInfo ? (
               <div className="flex items-center">
                 <h3 className="mr-2">
@@ -103,13 +109,13 @@ const NavigationBar = () => {
               <div>
                 <Link href="/login" style={{ textDecoration: "none" }}>
                   <button className="text-white hover:text-teal-100 text-sm sm:text-base">
-                  {t("login") || "Fallback Text"}
+                    {t("login") || "Fallback Text"}
                   </button>
                 </Link>
 
                 <Link href="/register" style={{ textDecoration: "none" }}>
                   <button className="ml-4 bg-teal-200 text-teal-950 px-3 sm:px-4 py-2 rounded-md hover:bg-teal-50 text-sm sm:text-base">
-                  {t("register") || "Fallback Text"}
+                    {t("register") || "Fallback Text"}
                   </button>
                 </Link>
               </div>
