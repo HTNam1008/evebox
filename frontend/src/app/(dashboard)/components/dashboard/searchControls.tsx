@@ -12,6 +12,8 @@ import { useTranslations } from "next-intl";
 import DatePicker from './datePicker';
 import axios from 'axios';
 import { Category } from '@/types/model/frontDisplay';
+import mapCategoryName from '@/app/(dashboard)/libs/functions/mapCategoryName'; 
+import { fetchProvinces } from '@/app/(dashboard)/libs/server/fetchProvinces';
 
 export default function SearchControls() {
     const [searchText, setSearchText] = useState('');
@@ -21,7 +23,7 @@ export default function SearchControls() {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [categories, setCategories] = useState<Category[]>([]); 
     const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
-    const locations = ["Hà Nội", "TP.HCM", "Đà Nẵng"];
+    const [locations, setLocations] = useState<{ name: string; code: number }[]>([]);
     const dropdownEventRef = useRef(null);
     const dropdownLocationRef = useRef(null);
     const t = useTranslations("common");
@@ -38,6 +40,14 @@ export default function SearchControls() {
         };
         fetchCategories();
     }, []);
+
+    useEffect(() => {
+        const loadLocations = async () => {
+          const data = await fetchProvinces();
+          setLocations(data);
+        };
+        loadLocations();
+      }, []);
 
     const toggleOption = (option: string) => {
         if (selectedOptions.includes(option)) {
@@ -90,7 +100,7 @@ export default function SearchControls() {
                                                 onChange={() => toggleOption(option.name)}
                                                 className="mr-2"
                                             />
-                                            {option.name}
+                                             {mapCategoryName(option.name)}
                                         </label>
                                     ))}
                                 </div>
@@ -112,19 +122,18 @@ export default function SearchControls() {
 
                             {/* Dropdown menu */}
                             {isLocationOpen && (
-                                <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg text-[#0C4762] small-text">
-                                    {locations.map((location) => (
-                                        <div
-                                            key={location}
-                                            className="p-2 hover:bg-[#0C4762] hover:bg-opacity-[0.31] cursor-pointer"
-                                            onClick={() => {
-                                                setSelectedLocation(location);
-                                                setIsLocationOpen(false);
-                                            }}
-                                        >
-                                            {location}
-                                        </div>
-                                    ))}
+                                <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg text-[#0C4762] small-text max-h-64 overflow-y-auto">                                    {locations.map((location) => (
+                    <div
+                      key={location.code}
+                      className="p-2 hover:bg-[#0C4762] hover:bg-opacity-[0.31] cursor-pointer"
+                      onClick={() => {
+                        setSelectedLocation(location.name);
+                        setIsLocationOpen(false);
+                      }}
+                    >
+                      {location.name}
+                    </div>
+                  ))}
                                 </div>
                             )}
                         </div>
