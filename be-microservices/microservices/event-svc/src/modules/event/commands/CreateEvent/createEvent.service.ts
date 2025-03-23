@@ -5,6 +5,7 @@ import { CreateEventRepository } from '../../repositories/createEvent.repository
 import { CreateEventDto } from './createEvent.dto';
 import { ImagesService } from 'src/modules/images/commands/images/images.service';
 import { LocationService } from 'src/modules/location/commands/location.service';
+import { EventDto } from './createEvent-response.dto';
 
 @Injectable()
 export class CreateEventService {
@@ -14,7 +15,7 @@ export class CreateEventService {
     private readonly locationService: LocationService,
   ) {}
 
-  async execute(dto: CreateEventDto, organizerId: string, imgLogo: Express.Multer.File, imgPoster: Express.Multer.File): Promise<Result<any, Error>> {
+  async execute(dto: CreateEventDto, organizerId: string, imgLogo: Express.Multer.File, imgPoster: Express.Multer.File): Promise<Result<EventDto, Error>> {
     try {
       const categories = dto.categoryIds;
       console.log(categories);

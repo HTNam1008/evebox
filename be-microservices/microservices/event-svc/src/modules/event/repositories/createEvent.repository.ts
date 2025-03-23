@@ -4,12 +4,13 @@ import { Result, Ok, Err } from 'oxide.ts';
 import { Categories } from '../domain/entities/categories.entity';
 import { CreateEventDto } from '../commands/CreateEvent/createEvent.dto';
 import e from 'express';
+import { EventDto } from '../commands/CreateEvent/createEvent-response.dto';
 
 @Injectable()
 export class CreateEventRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createEvent(dto: CreateEventDto, locationId: number, orgId: string, imgLogoId: number, imgPosterId: number): Promise<Result<any, Error>> {
+  async createEvent(dto: CreateEventDto, locationId: number, orgId: string, imgLogoId: number, imgPosterId: number): Promise<Result<EventDto, Error>> {
     try{
       const event = await this.prisma.events.create({
         data: {
@@ -31,7 +32,26 @@ export class CreateEventRepository {
         }
       });
       if (event) {
-        return Ok(event);
+        const eventDto: EventDto = {
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          locationId: event.locationId,
+          organizerId: event.organizerId,
+          venue: event.venue,
+          imgLogoId: event.imgLogoId,
+          imgPosterId: event.imgPosterId,
+          createAt: event.createdAt,
+          orgDescription: event.orgDescription,
+          orgName: event.orgName,
+          isOnlyOnEve: event.isOnlyOnEve,
+          isSpecial: event.isSpecial,
+          lastScore: event.lastScore.toNumber(),
+          totalClicks: event.totalClicks,
+          weekClicks: event.weekClicks,
+          isApproved: event.isApproved,
+        };
+        return Ok(eventDto);
       }
       return Err(new Error('Failed to create event'));
     } catch (error) {
