@@ -2,31 +2,33 @@ import { Controller, Get, Request, Res, HttpStatus, Post, Body, UseGuards, UseIn
 import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
-import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { CreateShowingService } from './createShowing.service';
-import { CreateShowingDto } from './createShowing.dto';
-import { CreateShowingResponseDto } from './createShowing-response.dto';
+import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { CreateTicketTypeService } from './createTicketType.service';
+import { CreateTicketTypeResponseDto } from './createTicketType-response.dto';
+import { create } from 'domain';
+import { CreateTicketTypeDto } from './createTicketType.dto';
 
-@ApiTags('Showing')
-@Controller('api/showing')
-export class CreateShowingController {
-  constructor(private readonly createShowingService: CreateShowingService) {}
+@ApiTags('TicketType')
+@Controller('api/ticketType')
+export class CreateTicketTypeController {
+  constructor(private readonly createTicketTypeService: CreateTicketTypeService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('/create/:eventId')
-  @ApiOperation({ summary: 'Create a new showing' })
-  @ApiResponse({ status: 201, description: 'Showing created successfully', type: CreateShowingResponseDto })
+  @Post('/create/:showingId')
+  @ApiOperation({ summary: 'Create a new ticket type' })
+  @ApiResponse({ status: 201, description: 'Ticket type created successfully', type: CreateTicketTypeResponseDto })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
+  @UseInterceptors(FileInterceptor('file'))
   async createEvent(
-    @Body() CreateShowingDto: CreateShowingDto,
-    @Request() req, 
-    @Param('eventId') eventId: number,
+    @Body() createTicketTypeDto: CreateTicketTypeDto,
+    @Param('showingId') showingId: string,
     @Res() res: Response,
+    @UploadedFiles() file?: Express.Multer.File,
   ) {
     try{
-      const result = await this.createShowingService.createShowing(CreateShowingDto, eventId);
+      const result = await this.createTicketTypeService.createTicketType(createTicketTypeDto, showingId, file);
       
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({

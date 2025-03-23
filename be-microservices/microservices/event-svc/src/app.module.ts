@@ -12,6 +12,7 @@ import { CloudinaryModule } from './infrastructure/adapters/cloudinary/cloudinar
 import { ImagesModule } from './modules/images/images.module';
 import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
 import { ShowingModule } from './modules/showing/showing.module';
+import { TicketTypeModule } from './modules/ticketType/ticketType.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ShowingModule } from './modules/showing/showing.module';
     LocationModule,
     ImagesModule,
     ShowingModule,
+    TicketTypeModule,
   ],
 })
 
