@@ -15,14 +15,13 @@ model User {
   password      String         @db.VarChar(255)
   role_id       Int?
   created_at    DateTime       @default(now())
+  FormResponse  FormResponse[]
   refreshTokens RefreshToken[]
   userProvince  UserProvince[]
-  FormResponse   FormResponse[]
   role          Role?          @relation(fields: [role_id], references: [id])
 
   @@map("users")
 }
-
 
 model Role {
   id        Int    @id
@@ -36,8 +35,8 @@ model Province {
   id           Int            @id @default(autoincrement())
   name         String         @db.VarChar(100)
   created_at   DateTime       @default(now())
+  districts    districts[]
   userProvince UserProvince[]
-  districts      districts[]
 
   @@map("province")
 }
@@ -105,7 +104,6 @@ model locations {
   districts  districts @relation(fields: [districtId], references: [id], onDelete: Cascade)
 }
 
-
 model Form {
   id           Int            @id @default(autoincrement())
   name         String         @db.VarChar(255)
@@ -145,7 +143,7 @@ model FormResponse {
   FormAnswer FormAnswer[]
   Form       Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
   Showing    Showing?     @relation(fields: [showingId], references: [id], onDelete: Cascade)
-  user       User        @relation(fields: [userId], references: [email], onDelete: Cascade)
+  user       User         @relation(fields: [userId], references: [email], onDelete: Cascade)
   Ticket     Ticket[]
 }
 

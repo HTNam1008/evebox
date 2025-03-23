@@ -1,18 +1,44 @@
 'use client'
 import { useState, useEffect } from "react";
 
-export default function QuestionList({ onValidationChange }: { onValidationChange: (isValid: boolean) => void }) {
-    const [phone, setPhone] = useState("");
-    const [email, setEmail] = useState("");
-    const [address, setAddress] = useState("");
-    const [agree, setAgree] = useState(false);
-    const [isValid, setIsValid] = useState(false);
+interface FormInput {
+    id: number;
+    formId: number;
+    fieldName: string;
+    type: string;
+    required: boolean;
+    regex: string | null;
+    options: { optionText: string }[] | null;
+}
+
+interface QuestionListProps {
+    formInputs: FormInput[];
+    onValidationChange: (isValid: boolean) => void;
+    onFormChange: (answers: { [formInputId: number]: string }) => void;
+}
+
+export default function QuestionList({
+    formInputs,
+    onValidationChange,
+    onFormChange
+}: QuestionListProps) {
+    const [answers, setAnswers] = useState<{ [formInputId: number]: string }>({});
 
     useEffect(() => {
-        const isFormValid = phone.trim() !== "" && email.trim() !== "" && address.trim() !== "" && agree;
-        setIsValid(isFormValid);
-        onValidationChange(isFormValid); // Truyền trạng thái form lên component cha
-    }, [phone, email, address, agree, onValidationChange]);
+        const allRequiredAnswered = formInputs.every((input) =>
+            input.required ? answers[input.id]?.trim() : true
+        );
+        onFormChange(answers);
+        onValidationChange(allRequiredAnswered);
+    }, [answers, formInputs, onValidationChange, onFormChange]);
+
+    const handleChange = (id: number, value: string) => {
+        setAnswers((prev) => ({
+            ...prev,
+            [id]: value,
+        }));
+    };
+
 
     return (
         <div className="col-7">
@@ -24,79 +50,51 @@ export default function QuestionList({ onValidationChange }: { onValidationChang
                         của bạn là chính xác.
                     </div>
 
-                    {!isValid && (
-                        <div className="alert alert-danger">
-                            <i className="bi bi-exclamation-triangle-fill mr-2"></i>
-                            Vui lòng điền đầy đủ thông tin để tiếp tục
-                        </div>
+                    {formInputs.length > 0 ? (
+                        formInputs.map((input) => (
+                            <div className="col-md-12" key={input.id}>
+                                <label htmlFor={`input-${input.id}`} className="form-label d-flex justify-content-start">
+                                    <b>{input.required && <span className="red-star">*</span>} {input.fieldName}</b>
+                                </label>
+                                {input.type === "2" ? (
+                                    // Nếu type là "2" thì render radio
+                                    <div className="form-check d-flex justify-content-start">
+                                        {input.options && input.options.length > 0 ? (
+                                            <>
+                                                <input
+                                                    className="form-check-input mr-2"
+                                                    type="radio"
+                                                    id={`input-${input.id}`}
+                                                    checked={answers[input.id] === input.options[0].optionText}
+                                                    onChange={() => input.options && handleChange(input.id, input.options[0].optionText)}
+                                                    required={input.required}
+                                                />
+                                                <label className="form-check-label" htmlFor={`input-${input.id}`}>
+                                                    {input.options[0].optionText}
+                                                </label>
+                                            </>
+                                        ) : (
+                                            <span>Không có lựa chọn</span>
+                                        )}
+                                    </div>
+                                ) : (
+                                    // Các trường còn lại, sử dụng input với type tương ứng
+                                    <input
+                                        type={input.type} // "text", "email", "phone",…
+                                        className="form-control custom-input"
+                                        id={`input-${input.id}`}
+                                        placeholder="Điền câu trả lời của bạn"
+                                        value={answers[input.id] || ""}
+                                        onChange={(e) => handleChange(input.id, e.target.value)}
+                                        required={input.required}
+                                    />
+                                )}
+                                <div className="valid-feedback">Looks good!</div>
+                            </div>
+                        ))
+                    ) : (
+                        <p>Đang tải câu hỏi từ chương trình</p>
                     )}
-
-                    <div className="col-md-12">
-                        <label htmlFor="phone" className="form-label d-flex justify-content-start">
-                            <b><span className='red-star'>*</span> Số điện thoại của bạn</b>
-                        </label>
-                        <input
-                            type="text"
-                            className="form-control custom-input"
-                            id="phone"
-                            placeholder="Điền câu trả lời của bạn"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            required
-                        />
-                        <div className="valid-feedback">Looks good!</div>
-                    </div>
-                    <div className="col-md-12">
-                        <label htmlFor="mail" className="form-label d-flex justify-content-start">
-                            <b><span className='red-star'>*</span> Email của bạn</b>
-                        </label>
-                        <input
-                            type="email"
-                            className="form-control custom-input"
-                            id="mail"
-                            placeholder="Điền câu trả lời của bạn"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <div className="valid-feedback">Looks good!</div>
-                    </div>
-                    <div className="col-md-12">
-                        <label htmlFor="address" className="form-label d-flex justify-content-start">
-                            <b><span className='red-star'>*</span> Địa điểm nhận quà (nếu có)</b>
-                        </label>
-                        <input
-                            type="text"
-                            className="form-control custom-input"
-                            id="address"
-                            placeholder="Điền câu trả lời của bạn"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            required
-                        />
-                        <div className="valid-feedback">Looks good!</div>
-                    </div>
-                    <div className="col-12 text-start">
-                        <label htmlFor="address" className="form-label">
-                            <b><span className='red-star'>*</span> Vui lòng kiểm tra lại ĐỊA ĐIỂM của sự kiện trước khi thanh toán</b>
-                        </label>
-                        <div className="form-check d-flex justify-content-start">
-                            <input
-                                className="form-check-input mr-2"
-                                type="radio"
-                                id="checkAgree"
-                                defaultValue=""
-                                style={{ border: '1px solid black' }}
-                                checked={agree}
-                                onChange={() => setAgree(!agree)}
-                                required
-                            />
-                            <label className="form-check-label" htmlFor="checkAgree">
-                                Tôi đồng ý
-                            </label>
-                            <div className="invalid-feedback">You must agree before submitting.</div>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>
