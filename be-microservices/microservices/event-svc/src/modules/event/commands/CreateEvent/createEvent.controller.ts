@@ -5,6 +5,7 @@ import { CreateEventService } from './createEvent.service';
 import { CreateEventDto } from './createEvent.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { EventResponse } from './createEvent-response.dto';
 
 @ApiTags('Event')
 @Controller('api/event')
@@ -14,7 +15,7 @@ export class CreateEventController {
   @UseGuards(JwtAuthGuard)
   @Post('/')
   @ApiOperation({ summary: 'Create a new event' })
-  @ApiResponse({ status: HttpStatus.CREATED, description: 'Event created successfully' })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'Event created successfully', type: EventResponse })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })
   @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Internal server error' })
   @UseInterceptors(FileFieldsInterceptor([
