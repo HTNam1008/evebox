@@ -7,6 +7,10 @@ export class ImagesRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(imageUrl: string, userId?: string): Promise<Images> {
+    const image = await this.prisma.images.findFirst({ where: { imageUrl } });
+    if (image) {
+      return image;
+    }
     return this.prisma.images.create({ data: { imageUrl, userId } });
   }
 
