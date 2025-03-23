@@ -24,6 +24,40 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
     const [imageTicket, setImageTicket] = useState<string | null>(null);
     const [imageErrors, setImageErrors] = useState<{ [key: string]: string }>({});
     const [isFree, setIsFree] = useState(false);
+    
+    const [dateErrors, setDateErrors] = useState<{ startDate?: string, endDate?: string }>({});
+
+    const validateStartDate = (date: Date | null) => {
+        if (!date || !endDate) return true;
+        if (date > endDate) {
+            setDateErrors((prev) => ({ ...prev, startDate: "Thời gian bắt đầu bán vé phải nhỏ hơn hạn cuối bán vé" }));
+            return false;
+        }
+        setDateErrors((prev) => ({ ...prev, startDate: undefined }));
+        return true;
+    };
+
+    const validateEndDate = (date: Date | null) => {
+        if (!date || !startDate) return true;
+
+        if (date < startDate) {
+            setEndDate(null);
+            setDateErrors((prev) => ({ ...prev, startDate: "Thời gian bắt đầu bán vé phải nhỏ hơn hạn cuối bán vé" }));
+            setDateErrors((prev) => ({ ...prev, endDate: "Hạn cuối bán vé phải lớn hơn thời gian hiện bắt đầu" }));
+            return false;
+        }
+
+        if (endDate && date > endDate) {
+            setDateErrors((prev) => ({ ...prev, endDate: "Hạn cuối bán vé phải nhỏ hơn thời gian sự kiện kết thúc" }));
+            return false;
+        }
+
+        setDateErrors((prev) => ({ ...prev, endDate: undefined }));
+        setDateErrors((prev) => ({ ...prev, startDate: undefined }));
+
+        return true;
+    };
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
         const value = e.target.value;
@@ -76,13 +110,13 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
         addTicket({
             name: ticketName,
             price: ticketPrice,
-            total: ticketNum, 
-            min: ticketNumMin, 
-            max: ticketNumMax, 
+            total: ticketNum,
+            min: ticketNumMin,
+            max: ticketNumMax,
             startDate,
             endDate,
-            setStartDate, 
-            setEndDate, 
+            setStartDate,
+            setEndDate,
             information: infoTicket,
             image: imageTicket,
             free: isFree,
@@ -209,8 +243,10 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                     selectedDate={startDate}
                                     setSelectedDate={setStartDate}
                                     popperPlacement="bottom-end"
+                                    validateDate={validateStartDate}
                                     required
                                 />
+                                 {dateErrors.startDate && <p className="text-red-500 text-sm ml-1">{dateErrors.startDate}</p>}
                             </div>
 
                             {/* Thời gian kết thúc */}
@@ -220,8 +256,10 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                     selectedDate={endDate}
                                     setSelectedDate={setEndDate}
                                     popperPlacement="bottom-start"
+                                    validateDate={validateEndDate}
                                     required
                                 />
+                                 {dateErrors.endDate && <p className="text-red-500 text-sm ml-1">{dateErrors.endDate}</p>}
                             </div>
                         </div>
 
