@@ -1,0 +1,94 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
+import { Result, Ok, Err } from 'oxide.ts';
+import { UpdateEventDto } from '../commands/UpdateEvent/updateEvent.dto';
+import { EventDto } from '../commands/UpdateEvent/updateEvent-response.dto';
+
+@Injectable()
+export class UpdateEventRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async updateEvent(
+    dto: UpdateEventDto,
+    locationId?: number,
+    imgLogoId?: number,
+    imgPosterId?: number
+  ): Promise<Result<EventDto, Error>> {
+    try {
+      // Build update data dynamically based on provided fields
+      const updateData: any = {};
+      if (dto.title) updateData.title = dto.title;
+      if (dto.description) updateData.description = dto.description;
+      if (locationId) updateData.locationId = locationId;
+      if (dto.venue) updateData.venue = dto.venue;
+      if (imgLogoId) updateData.imgLogoId = imgLogoId;
+      if (imgPosterId) updateData.imgPosterId = imgPosterId;
+      if (dto.orgName) updateData.orgName = dto.orgName;
+      if (dto.orgDescription) updateData.orgDescription = dto.orgDescription;
+      // Add additional fields as needed, e.g., updating timestamps
+      updateData.updatedAt = new Date();
+
+      const event = await this.prisma.events.update({
+        where: { id: dto.id },
+        data: updateData,
+      });
+
+      if (event) {
+        const eventDto: EventDto = {
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          locationId: event.locationId,
+          organizerId: event.organizerId,
+          venue: event.venue,
+          imgLogoId: event.imgLogoId,
+          imgPosterId: event.imgPosterId,
+          createAt: event.createdAt,
+          isOnlyOnEve: event.isOnlyOnEve,
+          isSpecial: event.isSpecial,
+          lastScore: event.lastScore.toNumber(),
+          totalClicks: event.totalClicks,
+          weekClicks: event.weekClicks,
+          isApproved: event.isApproved,
+          orgName: event.orgName,
+          orgDescription: event.orgDescription,
+        };
+        return Ok(eventDto);
+      }
+      return Err(new Error('Failed to update event'));
+    } catch (error) {
+      return Err(new Error('Failed to update event'));
+    }
+  }
+
+  async updateEventCategory(eventId: number, categoryIds: number[]): Promise<Result<any, Error>> {
+    try {
+      // Remove all existing event categories
+      await this.prisma.eventCategories.deleteMany({
+        where: { eventId }
+      });
+      // If new categories are provided, add them
+      if (categoryIds.length > 0) {
+        const categories = await this.prisma.categories.findMany({
+          where: {
+            id: { in: categoryIds }
+          }
+        });
+        if (categories.length === 0) {
+          return Err(new Error('Categories not found'));
+        }
+        const eventCategory = categories.map(category => ({
+          eventId,
+          categoryId: category.id
+        }));
+        await this.prisma.eventCategories.createMany({
+          data: eventCategory
+        });
+        return Ok(eventCategory);
+      }
+      return Ok([]);
+    } catch (error) {
+      return Err(new Error('Failed to update event category'));
+    }
+  }
+}
