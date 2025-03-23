@@ -9,9 +9,10 @@ import { toast } from "react-hot-toast";
 
 /* Package Application */
 import DateTimePicker from "../../common/form/dateTimePicker";
-import CreateTypeTicketDailog from "../../dialogs/createTicketsDailog";
-import EditTicketDailog from "../../dialogs/editTicketDailog";
+import CreateTypeTicketDailog from "./dialogs/createTicketsDailog";
+import EditTicketDailog from "./dialogs/editTicketDailog";
 import { TicketProps } from "../../../libs/interface/dialog.interface";
+import ConfirmDeleteTicketDialog from "./dialogs/confirmDeleteTicket";
 
 export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
     const [month, setMonth] = useState("");
@@ -19,6 +20,8 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [showDialog, setShowDialog] = useState(false);
     const [showEditDialog, setShowEditDialog] = useState(false);
+    const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
+    const [selectedTicketIndex, setSelectedTicketIndex] = useState<number | null>(null);
 
     const months = ["Tất cả", "Tháng 1", "Tháng 2", "Tháng 3"];
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
@@ -40,6 +43,12 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
             setTicketList(updatedList);
             setEditIndex(null); // Reset index sau khi cập nhật
         }
+    };
+
+    //Xóa vé
+    const handleDeleteTicket = (index: number) => {
+        const updatedTickets = ticketList.filter((_, i) => i !== index);
+        setTicketList(updatedTickets);
     };
 
 
@@ -184,7 +193,23 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                             updateTicket={updateTicket}
                                         />}
 
-                                    <Trash2 className="p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer" />
+                                    <Trash2 className="p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer"
+                                         onClick={() => {
+                                            setSelectedTicketIndex(index); // Cập nhật index vé cần xóa
+                                            setShowConfirmDeleteDialog(true);
+                                        }}
+                                    />
+
+                                    {showConfirmDeleteDialog && selectedTicketIndex !== null &&
+                                        (<ConfirmDeleteTicketDialog
+                                            open={showConfirmDeleteDialog}
+                                            onClose={() =>
+                                                setShowConfirmDeleteDialog(false)}
+                                            onConfirm={() => {
+                                                handleDeleteTicket(selectedTicketIndex);
+                                                setShowConfirmDeleteDialog(false);
+                                            }}
+                                        />)}
                                 </div>
                             </div>
                         ))}

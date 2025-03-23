@@ -7,11 +7,11 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 /* Package Application */
-import DateTimePicker from "../common/form/dateTimePicker";
-import InputCountField from "../common/form/inputCountField";
-import ImageUpload from "../common/form/imageUpload";
-import InputNumberField from "../common/form/inputNumberField";
-import { CreateTypeTicketDailogProps } from "../../libs/interface/dialog.interface";
+import DateTimePicker from "../../../common/form/dateTimePicker";
+import InputCountField from "../../../common/form/inputCountField";
+import ImageUpload from "../../../common/form/imageUpload";
+import InputNumberField from "../../../common/form/inputNumberField";
+import { CreateTypeTicketDailogProps } from "../../../../libs/interface/dialog.interface";
 
 export default function CreateTypeTicketDailog({ open, onClose, startDate, endDate, setStartDate, setEndDate, addTicket }: CreateTypeTicketDailogProps) {
     const [ticketName, setTicketName] = useState("");

@@ -3,6 +3,12 @@ export interface NoteDialogProps {
     onClose: () => void;
 }
 
+export interface ConfirmDialogProps {
+    open: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+}
+
 export interface TicketProps {
     name:string;
     price: string;
