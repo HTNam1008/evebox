@@ -27,16 +27,16 @@ export class TicketTypeRepository {
           showingId: showing.id,
           description: dto.description,
           color: dto.color,
-          isFree: dto.isFree,
-          price: dto.originalPrice,
-          originalPrice: dto.originalPrice,
+          isFree: false,
+          price: dto.originalPrice >> 0,
+          originalPrice: dto.originalPrice >> 0,
           startTime: dto.startTime,
           endTime: dto.endTime,
-          position: dto.position,
-          quantity: dto.quantity || 0,
-          maxQtyPerOrder: dto.maxQtyPerOrder,
-          minQtyPerOrder: dto.minQtyPerOrder,
-          isHidden: dto.isHidden || false,
+          position: dto.position >> 0,
+          quantity: dto.quantity >> 0 || 0,
+          maxQtyPerOrder: dto.maxQtyPerOrder >> 0,
+          minQtyPerOrder: dto.minQtyPerOrder  >> 0,
+          isHidden: false,
           imageUrl: imageUrl
         }
       });
@@ -45,6 +45,7 @@ export class TicketTypeRepository {
       }
       return Err(new Error('Failed to create ticket type'));
     }catch (error) {
+      console.log(error);
       return Err(new Error('Failed to create ticket type'));
     }
   }

@@ -56,7 +56,7 @@ export class CreateTicketTypeDto {
     description: 'Img Ticket File',
     example: 'logo.png'
   })
-  img: Express.Multer.File;
+  file?: Express.Multer.File;
 
   @ApiProperty({ example: true, description: 'Ticket is active'})
   @IsBoolean({message: 'Ticket is active must be a boolean'})

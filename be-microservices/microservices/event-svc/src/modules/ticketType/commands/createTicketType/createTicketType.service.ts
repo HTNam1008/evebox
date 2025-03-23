@@ -14,11 +14,15 @@ export class CreateTicketTypeService {
       if (!showingId) {
         return Err(new Error('Showing not found'));
       }
-      const imgLogoResult = await this.imagesService.uploadImage(imageFile.buffer, imageFile.originalname, "show" + showingId);
-      if (imgLogoResult.isErr()) {
-        return Err(new Error('Failed to upload logo image'));
+      
+      let imageUrl = '';
+      if(imageFile) {
+        const imgLogoResult = await this.imagesService.uploadImage(imageFile.buffer, imageFile.originalname, "show" + showingId);
+        if (imgLogoResult.isErr()) {
+          return Err(new Error('Failed to upload logo image'));
+        }
+        imageUrl = imgLogoResult.unwrap().imageUrl;
       }
-      const imageUrl = imgLogoResult.unwrap().imageUrl;
 
       const result = await this.createTicketTypeRepository.createTicketType(dto, showingId, imageUrl);
       if (result.isOk()) {
@@ -26,6 +30,7 @@ export class CreateTicketTypeService {
       }
       return Err(result.unwrapErr());
     } catch (error) {
+      console.log(error);
       return Err(new Error('Failed to create ticket type'));
     }
   }

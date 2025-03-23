@@ -1,4 +1,4 @@
-import { Controller, Get, Request, Res, HttpStatus, Post, Body, UseGuards, UseInterceptors, UploadedFiles, Param } from '@nestjs/common';
+import { Controller, Get, Request, Res, HttpStatus, Post, Body, UseGuards, UseInterceptors, UploadedFiles, Param, UploadedFile } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
@@ -25,7 +25,7 @@ export class CreateTicketTypeController {
     @Body() createTicketTypeDto: CreateTicketTypeDto,
     @Param('showingId') showingId: string,
     @Res() res: Response,
-    @UploadedFiles() file?: Express.Multer.File,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     try{
       const result = await this.createTicketTypeService.createTicketType(createTicketTypeDto, showingId, file);
