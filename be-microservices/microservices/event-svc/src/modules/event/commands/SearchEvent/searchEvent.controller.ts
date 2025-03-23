@@ -20,8 +20,10 @@ export class SearchEventController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Invalid input',
   })
-  async search(@Query('title') title: string, @Res() res: Response) {
-    const result = await this.searchService.execute(title);
+  async search(@Query('title') title: string, @Query('type') type: string, @Query('startDate') startDate: string,
+  @Query('endDate') endDate: string, @Res() res: Response) {
+    const typeArray = type ? type.split(',').map((item) => item.trim()) : [];
+    const result = await this.searchService.execute(title,typeArray,startDate,endDate);
 
     if (result.isErr()) {
       const error = result.unwrapErr();
