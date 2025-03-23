@@ -1,7 +1,24 @@
-export async function fetchSearchEvents(title: string) {
+interface FetchSearchEventsParams {
+  title: string;
+  type?: string;       // comma-separated category names
+  startDate?: string;  // in YYYY-MM-DD format
+  endDate?: string;    // in YYYY-MM-DD format
+}
+
+export async function fetchSearchEvents({
+  title,
+  type,
+  startDate,
+  endDate,
+}: FetchSearchEventsParams) {
   try {
+    const params = new URLSearchParams();
+    params.append("title", title);
+    if (type) params.append("type", type);
+    if (startDate) params.append("startDate", startDate);
+    if (endDate) params.append("endDate", endDate);
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/event/search?title=${title}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/event/search?${params.toString()}`,
       {
         method: "GET",
         headers: {

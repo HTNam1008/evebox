@@ -5,10 +5,19 @@ import { fetchSearchEvents } from "@/app/(dashboard)/libs/server/fetchSearchEven
 //   searchParams: { q?: string };   // Notice: use `q` if your query param is `q` or adjust accordingly
 // }
 
-export default async function Search({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const searchTitle = (await searchParams).q;  // Use `q` or match exactly with the query parameter you used in the Link
+export default async function Search({ searchParams }: { searchParams: Promise<{ q?: string,types?: string;startDate?: string; endDate?: string; }> }) {
+  const searchTitle = (await searchParams).q || "";
+  const type = (await searchParams).types || "";
+  const startDate = (await searchParams).startDate;
+  const endDate = (await searchParams).endDate;
+
   const events = searchTitle
-    ? await fetchSearchEvents(searchTitle)
+    ? await fetchSearchEvents({
+        title: searchTitle,
+        type,
+        startDate,
+        endDate,
+      })
     : [];
 
   console.log("Event-------",events);

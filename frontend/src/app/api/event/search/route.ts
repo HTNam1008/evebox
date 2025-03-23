@@ -7,6 +7,9 @@ export async function GET(request: Request): Promise<NextResponse<SearchEventsRe
   try {
     const { searchParams } = new URL(request.url);
     const title = searchParams.get('title');
+    const type = searchParams.get('type'); 
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
 
     if (!title) {
       return NextResponse.json(
@@ -15,11 +18,22 @@ export async function GET(request: Request): Promise<NextResponse<SearchEventsRe
       );
     }
 
+    const params: Record<string, string> = { title };
+
+    if (type) {
+      params.type = type;
+    }
+    if (startDate) {
+      params.startDate = startDate;
+    }
+    if (endDate) {
+      params.endDate = endDate;
+    }
+
     // Type cho response từ backend
     const response = await apiClient.get<SearchEventsResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/event/search`, {
-        params: { title: title },
-      }
+      `${process.env.NEXT_PUBLIC_API_URL}/api/event/search`, 
+        { params }
     );
    
 
