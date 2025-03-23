@@ -10,23 +10,38 @@ import { toast } from "react-hot-toast";
 /* Package Application */
 import DateTimePicker from "../../common/form/dateTimePicker";
 import CreateTypeTicketDailog from "../../dialogs/createTicketsDailog";
+import EditTicketDailog from "../../dialogs/editTicketDailog";
+import { TicketProps } from "../../../libs/interface/dialog.interface";
 
 export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
     const [month, setMonth] = useState("");
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [showDialog, setShowDialog] = useState(false);
+    const [showEditDialog, setShowEditDialog] = useState(false);
 
     const months = ["Tất cả", "Tháng 1", "Tháng 2", "Tháng 3"];
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
     //Lưu danh sách vé
-    const [ticketList, setTicketList] = useState<{ name: string }[]>([]);
+    const [ticketList, setTicketList] = useState<TicketProps[]>([]);
 
     //Cập nhật danh sách vé sau khi tạo
-    const addTicket = (ticket: { name: string }) => {
+    const addTicket = (ticket: TicketProps) => {
         setTicketList([...ticketList, ticket]);
     }
+
+    //Chỉnh sửa vé đã tạo
+    const [editIndex, setEditIndex] = useState<number | null>(null);
+    const updateTicket = (updatedTicket: TicketProps) => {
+        if (editIndex !== null) {
+            const updatedList = [...ticketList];
+            updatedList[editIndex] = updatedTicket;
+            setTicketList(updatedList);
+            setEditIndex(null); // Reset index sau khi cập nhật
+        }
+    };
+
 
     const validateStartDate = (date: Date | null) => {
         return !date || !endDate || date <= endDate; // Thời gian bắt đầu không được lớn hơn thời gian kết thúc
@@ -148,9 +163,27 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                         {ticketList.map((ticket, index) => (
                             <div key={index} className="flex items-center justify-between gap-2 p-6 lg:p-8 h-12 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                                 <Ticket size={20} />
+
                                 <span>{ticket.name}</span>
+
                                 <div className="ml-auto flex items-center gap-2">
-                                    <PencilLine className="p-2 bg-white text-black rounded w-8 h-8 cursor-pointer" />
+                                    <PencilLine className="p-2 bg-white text-black rounded w-8 h-8 cursor-pointer"
+                                        onClick={() => {
+                                            setEditIndex(index);  // Lưu index của vé cần chỉnh sửa
+                                            setShowEditDialog(true);  // Mở edt dialog
+                                        }}
+                                    />
+
+                                    {showEditDialog && editIndex !== null &&
+                                        <EditTicketDailog
+                                            open={showEditDialog}
+                                            onClose={() =>
+                                                setShowEditDialog(false)}
+                                            endDateEvent={endDate}
+                                            ticket={ticketList[editIndex]}
+                                            updateTicket={updateTicket}
+                                        />}
+
                                     <Trash2 className="p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer" />
                                 </div>
                             </div>

@@ -11,28 +11,61 @@ import DateTimePicker from "../common/form/dateTimePicker";
 import InputCountField from "../common/form/inputCountField";
 import ImageUpload from "../common/form/imageUpload";
 import InputNumberField from "../common/form/inputNumberField";
-import { CreateTypeTicketDailogProps } from "../../libs/interface/dialog.interface";
+import { EditTypeTicketDailogProps } from "../../libs/interface/dialog.interface";
 
-export default function CreateTypeTicketDailog({ open, onClose, startDate, endDate, setStartDate, setEndDate, addTicket }: CreateTypeTicketDailogProps) {
-    const [ticketName, setTicketName] = useState("");
-    const [ticketPrice, setTicketPrice] = useState("");
-    const [ticketNum, setTicketNum] = useState("10");
-    const [ticketNumMin, setTicketNumMin] = useState("1");
-    const [ticketNumMax, setTicketNumMax] = useState("10");
+export default function EditTicketDailog({ open, onClose, endDateEvent, ticket, updateTicket }: EditTypeTicketDailogProps) {
+    const [startDate, setStartDate] = useState<Date | null>(ticket.startDate || null);
+    const [endDate, setEndDate] = useState<Date | null>(ticket.endDate || null);
+    const [dateErrors, setDateErrors] = useState<{ startDate?: string, endDate?: string }>({});
+
+    const validateStartDate = (date: Date | null) => {
+        if (!date || !endDate) return true;
+        if (date > endDate) {
+            setDateErrors((prev) => ({ ...prev, startDate: "Thời gian bắt đầu bán vé phải nhỏ hơn hạn cuối bán vé" }));
+            return false;
+        }
+        setDateErrors((prev) => ({ ...prev, startDate: undefined }));
+        return true;
+    };
+
+    const validateEndDate = (date: Date | null) => {
+        if (!date || !startDate) return true;
+
+        if (date < startDate) {
+            setEndDate(null);
+            setDateErrors((prev) => ({ ...prev, startDate: "Thời gian bắt đầu bán vé phải nhỏ hơn hạn cuối bán vé" }));
+            setDateErrors((prev) => ({ ...prev, endDate: "Hạn cuối bán vé phải lớn hơn thời gian hiện bắt đầu" }));
+            return false;
+        }
+
+        if (endDateEvent && date > endDateEvent) {
+            setDateErrors((prev) => ({ ...prev, endDate: "Hạn cuối bán vé phải nhỏ hơn thời gian sự kiện kết thúc" }));
+            return false;
+        }
+
+        setDateErrors((prev) => ({ ...prev, endDate: undefined }));
+        setDateErrors((prev) => ({ ...prev, startDate: undefined }));
+
+        return true;
+    };
+
+
+    const [ticketData, setTicketData] = useState({
+        name: ticket.name,
+        price: ticket.price,
+        total: ticket.total,
+        min: ticket.min,
+        max: ticket.max,
+        info: ticket.information,
+        image: ticket.image,
+        isFree: ticket.free,
+    });
+
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
-    const [infoTicket, setInfoTicket] = useState("");
-    const [imageTicket, setImageTicket] = useState<string | null>(null);
     const [imageErrors, setImageErrors] = useState<{ [key: string]: string }>({});
-    const [isFree, setIsFree] = useState(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
-        const value = e.target.value;
-        if (field === "ticketName") setTicketName(value);
-        if (field === "ticketPrice") setTicketPrice(value);
-        if (field === "ticketNum") setTicketNum(value);
-        if (field === "ticketNumMin") setTicketNumMin(value);
-        if (field === "ticketNumMax") setTicketNumMax(value);
-        if (field === "infoOrg") setInfoTicket(value);
+        setTicketData((prev) => ({ ...prev, [field]: e.target.value }));
 
         if (errors[field]) {
             setErrors((prev) => ({ ...prev, [field]: false }));
@@ -53,7 +86,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImageErrors((prev) => ({ ...prev, [type]: "" }));
-                setImageTicket(reader.result as string);
+                setTicketData((prev) => ({ ...prev, image: reader.result as string }));
             };
 
             reader.readAsDataURL(file);
@@ -65,28 +98,32 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
         e.preventDefault();
         const newErrors: { [key: string]: boolean } = {};
 
-        if (!ticketName) newErrors.ticketName = true;
-        if (!ticketPrice) newErrors.ticketPrice = true;
+        if (!ticketData.name) newErrors.name = true;
+        if (!ticketData.price && !ticketData.isFree) newErrors.price = true;
+
+        const isStartValid = validateStartDate(startDate);
+        const isEndValid = validateEndDate(endDate);
 
         setErrors(newErrors);
 
         //Nếu có error thì không được đóng form
-        if (Object.keys(newErrors).length > 0) return;
+        if (Object.keys(newErrors).length > 0 || !isStartValid || !isEndValid) return;
 
-        addTicket({
-            name: ticketName,
-            price: ticketPrice,
-            total: ticketNum, 
-            min: ticketNumMin, 
-            max: ticketNumMax, 
+        updateTicket({
+            name: ticketData.name,
+            price: ticketData.price,
+            total: ticketData.total,
+            min: ticketData.min,
+            max: ticketData.max,
             startDate,
             endDate,
-            setStartDate, 
-            setEndDate, 
-            information: infoTicket,
-            image: imageTicket,
-            free: isFree,
+            setStartDate,
+            setEndDate,
+            information: ticketData.info,
+            image: ticketData.image,
+            free: ticketData.isFree,
         });
+
         onClose();
     }
 
@@ -108,9 +145,9 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 <InputCountField
                                     label="Tên vé"
                                     placeholder="Tên vé"
-                                    value={ticketName}
-                                    onChange={(e) => handleInputChange(e, "ticketName")}
-                                    error={errors.ticketName}
+                                    value={ticketData.name}
+                                    onChange={(e) => handleInputChange(e, "name")}
+                                    error={errors.name}
                                     maxLength={50}
                                     required
                                 />
@@ -127,17 +164,18 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 <div className="relative">
                                     <input
                                         className={`w-full p-2 border rounded-md text-sm 
-                                            ${isFree ? 'bg-red-100 text-red-500 border-red-500 cursor-not-allowed' : 'border-gray-300'}`}
+                                            ${ticketData.isFree ? 'bg-red-100 text-red-500 border-red-500 cursor-not-allowed' : 'border-gray-300'}`}
                                         type="number"
-                                        value={isFree ? "0" : ticketPrice}
+                                        value={ticketData.isFree ? "0" : ticket.price}
                                         placeholder="0"
                                         onChange={(e) => {
-                                            setTicketPrice(e.target.value);
-                                            if (errors.ticketPrice) {
-                                                setErrors((prev) => ({ ...prev, ticketPrice: false }));
+                                            ticketData.price = e.target.value;
+
+                                            if (errors.price) {
+                                                setErrors((prev) => ({ ...prev, price: false }));
                                             }
                                         }}
-                                        disabled={isFree}
+                                        disabled={ticketData.isFree}
                                     />
                                 </div>
                                 {errors.ticketPrice && <p className="text-red-500 text-sm mt-1">Vui lòng nhập giá vé</p>}
@@ -148,16 +186,12 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="checkbox" name="fee" className="peer hidden"
-                                        checked={isFree}
-                                        onChange={() => {
-                                            const newValue = !isFree;
-                                            setIsFree(newValue);
-                                            setTicketPrice(newValue ? "0" : "");
-                                        }}
+                                        checked={ticketData.isFree}
+                                        onChange={() => setTicketData((prev) => ({ ...prev, isFree: !prev.isFree, price: "0" }))}
                                     />
                                     <div className={`w-4 h-4 rounded-full border border-black flex items-center justify-center 
-                                                    ${isFree ? "bg-[#9EF5CF] border-green-700" : "bg-white "}`}>
-                                        {isFree && <div className="w-2 h-2 rounded-full bg-white"></div>}
+                                                    ${ticketData.isFree ? "bg-[#9EF5CF] border-green-700" : "bg-white "}`}>
+                                        {ticketData.isFree && <div className="w-2 h-2 rounded-full bg-white"></div>}
                                     </div>
                                     <span className="text-center">Miễn phí</span>
                                 </label>
@@ -168,11 +202,11 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                             <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
                                 <InputNumberField
                                     label="Tổng số lượng vé"
-                                    value={ticketNum}
+                                    value={ticketData.total}
                                     placeholder=""
-                                    error={errors.ticketNum}
+                                    error={errors.total}
                                     required
-                                    onChange={(e) => handleInputChange(e, "ticketNum")}
+                                    onChange={(e) => handleInputChange(e, "total")}
                                 />
                             </div>
 
@@ -180,11 +214,11 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                             <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
                                 <InputNumberField
                                     label="Số vé tối thiểu của một đơn hàng"
-                                    value={ticketNumMin}
+                                    value={ticketData.min}
                                     placeholder=""
-                                    error={errors.ticketNumMin}
+                                    error={errors.min}
                                     required
-                                    onChange={(e) => handleInputChange(e, "ticketNumMin")}
+                                    onChange={(e) => handleInputChange(e, "min")}
                                 />
                             </div>
 
@@ -192,11 +226,11 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                             <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
                                 <InputNumberField
                                     label="Số vé tối đa của một đơn hàng"
-                                    value={ticketNumMax}
+                                    value={ticketData.max}
                                     placeholder=""
-                                    error={errors.ticketNumMax}
+                                    error={errors.max}
                                     required
-                                    onChange={(e) => handleInputChange(e, "ticketNumMax")}
+                                    onChange={(e) => handleInputChange(e, "max")}
                                 />
                             </div>
                         </div>
@@ -209,8 +243,10 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                     selectedDate={startDate}
                                     setSelectedDate={setStartDate}
                                     popperPlacement="bottom-end"
+                                    validateDate={validateStartDate}
                                     required
                                 />
+                                {dateErrors.startDate && <p className="text-red-500 text-sm ml-1">{dateErrors.startDate}</p>}
                             </div>
 
                             {/* Thời gian kết thúc */}
@@ -220,8 +256,10 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                     selectedDate={endDate}
                                     setSelectedDate={setEndDate}
                                     popperPlacement="bottom-start"
+                                    validateDate={validateEndDate}
                                     required
                                 />
+                                {dateErrors.endDate && <p className="text-red-500 text-sm ml-1">{dateErrors.endDate}</p>}
                             </div>
                         </div>
 
@@ -235,8 +273,8 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                     <textarea
                                         className="w-full h-32 text-sm block appearance-none w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400"
                                         placeholder="Mô tả"
-                                        value={infoTicket}
-                                        onChange={(e) => handleInputChange(e, "infoTicket")}
+                                        value={ticketData.info}
+                                        onChange={(e) => handleInputChange(e, "info")}
                                     />
                                     <p className="text-sm text-gray-400 pointer-events-none absolute inset-y-0 right-0 flex items-end px-2 mb-3">
                                         0/1000
@@ -251,12 +289,12 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 </label>
                                 <div className="h-full flex items-center justify-center">
                                     <ImageUpload
-                                        image={imageTicket}
-                                        onUpload={(e) => handleUpload(e, "imageTicket")}
+                                        image={ticketData.image || null}
+                                        onUpload={(e) => handleUpload(e, "image")}
                                         placeholderText="Thêm"
                                         dimensions="1MB"
                                         height="h-32"
-                                        error={imageErrors.imageTicket}
+                                        error={imageErrors.image}
                                     />
                                 </div>
                             </div>
