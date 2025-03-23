@@ -6,8 +6,8 @@ import { Images } from '../domain/entities/images.entity';
 export class ImagesRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(imageUrl: string): Promise<Images> {
-    return this.prisma.images.create({ data: { imageUrl } });
+  async create(imageUrl: string, userId?: string): Promise<Images> {
+    return this.prisma.images.create({ data: { imageUrl, userId } });
   }
 
   async findAll(): Promise<Images[]> {

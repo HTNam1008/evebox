@@ -20,9 +20,9 @@ import { GetAllCategoriesController } from './queries/getAllCategories/getAllCat
 import { GetEventDetailController } from './queries/getEventDetail/getEventDetail.controller';
 import { GetAllCategoriesRepository } from './repositories/getAllCategories.repository';
 import { GetAllCategoriesService } from './queries/getAllCategories/getAllCategories.service';
-// import { GetEventDetailRecommendRepository } from './repositories/getEventDetailRecommend.repository';
-// import { GetEventDetailRecommendService } from './queries/getEventDetailRecommend/getEventDetailRecommend.service';
-// import { GetEventDetailRecommendController } from './queries/getEventDetailRecommend/getEventDetailRecommend.controller';
+import { GetEventDetailRecommendRepository } from './repositories/getEventDetailRecommend.repository';
+import { GetEventDetailRecommendService } from './queries/getEventDetailRecommend/getEventDetailRecommend.service';
+import { GetEventDetailRecommendController } from './queries/getEventDetailRecommend/getEventDetailRecommend.controller';
 import { GetEventDetailService } from './queries/getEventDetail/getEventDetail.service';
 import { GetEventDetailRepository } from './repositories/getEventDetail.repository';
 import { GetEventFrontDisplayRepository } from './repositories/getEventFrontDisplay.repository';
@@ -31,6 +31,9 @@ import { GetEventFrontDisplayController } from './queries/getEventFrontDisplay/g
 import { GetRecommendEventService } from './queries/getRecommendEvent/getRecommendEvent.service';
 import { GetRecommendEventRepository } from './repositories/getRecommendEvent.repository';
 import { GetRecommendedEventController } from './queries/getRecommendEvent/getRecommendEvent.controller';
+import { CreateEventController } from './commands/CreateEvent/createEvent.controller';
+import { CreateEventRepository } from './repositories/createEvent.repository';
+import { CreateEventService } from './commands/CreateEvent/createEvent.service';
 
 
 @Module({
@@ -39,19 +42,16 @@ import { GetRecommendedEventController } from './queries/getRecommendEvent/getRe
     // EventController, 
     ClickEventController,
     SearchEventController,
+    CreateEventController,
 
     GetAllCategoriesController,
     GetEventDetailController,
-    // GetEventDetailRecommendController,
+    GetEventDetailRecommendController,
     GetEventFrontDisplayController,
     GetRecommendedEventController,
     ],
   providers: [
     // UpdateWeeklyService, 
-
-    // EventService,
-    // EventCategoriesRepository, 
-    // EventRepository,
 
     ClickEventRepository,
     ClickEventService,
@@ -59,11 +59,14 @@ import { GetRecommendedEventController } from './queries/getRecommendEvent/getRe
     SearchEventService,
     SearchEventRepository,
 
+    CreateEventRepository,
+    CreateEventService,
+
     GetAllCategoriesRepository,
     GetAllCategoriesService,
 
-    // GetEventDetailRecommendRepository,
-    // GetEventDetailRecommendService,
+    GetEventDetailRecommendRepository,
+    GetEventDetailRecommendService,
 
     GetEventDetailService,
     GetEventDetailRepository,
