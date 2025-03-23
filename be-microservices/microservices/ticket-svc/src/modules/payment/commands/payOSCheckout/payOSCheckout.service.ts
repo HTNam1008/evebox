@@ -17,7 +17,7 @@ export class PayOSCheckoutService {
   async execute(payOSCheckoutDto: PayOSCheckoutDto, userId: string): Promise<Result<PayOSCheckoutResponseData, Error>> {
     try {
       const ttl = await this.getTimeRemaining(payOSCheckoutDto, userId);
-      if (ttl === 0) {
+      if (ttl <= 60) {
         return Err(new Error('Time remaining has expired'));
       }
 
@@ -33,6 +33,7 @@ export class PayOSCheckoutService {
           description: "Evebox"+ " - " + Date.now(),
           cancelUrl: payOSCheckoutDto.paymentCancelUrl,
           returnUrl: payOSCheckoutDto.paymentSuccessUrl + "?orderCode=" + orderCode,
+          expiredAt: Math.floor(Date.now() / 1000) + ttl,
         }
       );
       const payOSInfoCreated = await this.payOSCheckoutRepository.checkout(payOSCheckout, userId, payOSCheckoutDto);
@@ -69,7 +70,8 @@ export class PayOSCheckoutService {
       }
     } catch (error) {
       console.error(error);
-      return Err(new Error("Failed to get time remaining"));
+      return 0;
+      // return Err(new Error("Failed to get time remaining"));
     }
   }
 
