@@ -160,6 +160,7 @@ model PayOSInfo {
   checkoutUrl   String?
   qrCode        String?
   createdAt     DateTime @default(now())
+  expiredAt     String?
 }
 
 model PaymentInfo {
