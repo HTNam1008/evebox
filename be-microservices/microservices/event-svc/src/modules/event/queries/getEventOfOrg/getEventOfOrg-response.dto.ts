@@ -36,6 +36,9 @@ export class EventOrgFrontDisplayDto {
 
   @ApiProperty({ example: 'Nha hat Ben Thanh', description: 'Event venue' })
   venue: string;
+
+  @ApiProperty({ example: true, description: 'Event is approved' })
+  isApproved: boolean;
 }
 
 export class EventOrgFrontDisplayResponse extends BaseResponse {

@@ -37,7 +37,8 @@ export class GetEventOfOrgRepository {
                 }
               }
             }
-          }
+          },
+          isApproved: true,
         }
       });
       
