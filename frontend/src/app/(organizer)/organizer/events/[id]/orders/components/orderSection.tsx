@@ -13,9 +13,13 @@ export default function OrderSection() {
     }, []);
 
     const orders = [
-        { id: "#AD-001234", email: "user1@example.com", ticket: "ABC", total: "$634.68" },
-        { id: "#AD-001235", email: "user2@example.com", ticket: "CDE", total: "$185.07" }
+        { id: "#a1", name: "abc",ticket: "ABC", total: "$634.68" },
+        { id: "#a2", name: "abcd",ticket: "CDE", total: "$185.07" }
     ];
+
+    const filteredOrders = orders.filter(order =>
+        order.name.toLowerCase().includes(search.toLowerCase())
+    );
 
     const toggleCheckbox = (orderId: string) => {
         setSelectedOrders((prev) =>
@@ -46,11 +50,10 @@ export default function OrderSection() {
                         Gửi tất cả email
                     </button>
                     <button
-                        className={`px-4 py-2 rounded-md transition duration-200 ${
-                            selectedOrders.length > 0
+                        className={`px-4 py-2 rounded-md transition duration-200 ${selectedOrders.length > 0
                                 ? "bg-[#48D1CC] text-[#0C4762] hover:bg-[#51DACF]"
                                 : "bg-gray-300 text-gray-700 cursor-not-allowed"
-                        }`}
+                            }`}
                         disabled={selectedOrders.length === 0}
                     >
                         Email đã chọn ({selectedOrders.length})
@@ -65,9 +68,9 @@ export default function OrderSection() {
                             <input
                                 type="checkbox"
                                 onChange={(e) =>
-                                    setSelectedOrders(e.target.checked ? orders.map((o) => o.id) : [])
+                                    setSelectedOrders(e.target.checked ? filteredOrders.map((o) => o.id) : [])
                                 }
-                                checked={selectedOrders.length === orders.length}
+                                checked={filteredOrders.length > 0 && selectedOrders.length === filteredOrders.length}
                             />
                         </th>
                         <th>Đơn hàng</th>
@@ -76,20 +79,28 @@ export default function OrderSection() {
                     </tr>
                 </thead>
                 <tbody>
-                    {orders.map((order) => (
-                        <tr key={order.id} className="border-t">
-                            <td className="py-2 px-2">
-                                <input
-                                    type="checkbox"
-                                    onChange={() => toggleCheckbox(order.id)}
-                                    checked={selectedOrders.includes(order.id)}
-                                />
+                    {filteredOrders.length > 0 ? (
+                        filteredOrders.map((order) => (
+                            <tr key={order.id} className="border-t">
+                                <td className="py-2 px-2">
+                                    <input
+                                        type="checkbox"
+                                        onChange={() => toggleCheckbox(order.id)}
+                                        checked={selectedOrders.includes(order.id)}
+                                    />
+                                </td>
+                                <td className="py-2">{order.name}</td>
+                                <td>{order.ticket}</td>
+                                <td>{order.total}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={5} className="text-center py-4 text-gray-500">
+                                Không tìm thấy đơn hàng nào.
                             </td>
-                            <td className="py-2">{order.id}</td>
-                            <td>{order.ticket}</td>
-                            <td>{order.total}</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </div>

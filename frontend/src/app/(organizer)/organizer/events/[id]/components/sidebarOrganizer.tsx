@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { User, Ticket, Calendar, BarChart, Edit, Users, Map, ArrowLeft, Menu } from 'lucide-react';
-import { SidebarProps } from '../libs/interface/organizer.interface';
 import { usePathname } from 'next/navigation';
+
+import { SidebarProps } from '../libs/interface/organizer.interface';
 
 const SidebarOrganizer: React.FC<SidebarProps> = ({ onClose }) => {
   const pathName = usePathname();
@@ -25,7 +26,7 @@ const SidebarOrganizer: React.FC<SidebarProps> = ({ onClose }) => {
       items: [
         { text: 'Thành viên', href: 'member', icon: <Users size={18} /> },
         { text: 'Chỉnh sửa', href: '/edit', icon: <Edit size={18} /> },
-        { text: 'Seatmap', href: `/organizer/events/${eventId}/vouchers`, icon: <Map size={18} /> },
+        { text: 'Seatmap', href: `/organizer/events/${eventId}/seatmap`, icon: <Map size={18} /> },
       ],
     },
     {
@@ -50,15 +51,6 @@ const SidebarOrganizer: React.FC<SidebarProps> = ({ onClose }) => {
               <Menu size={24} />
             </button>
         </h3>
-        {/* <div className='flex flex-row justify-between items-center'>
-        <h2 className="text-xl sm:text-2xl font-bold m-0 p-0">QUẢN LÝ</h2>
-        <button
-          className="text-white p-2 hover:bg-teal-700 rounded-md"
-          onClick={onClose}
-        >
-          <Menu size={24} />
-        </button>
-      </div> */}
         <nav>
           {menuSections.map((section, index) => (
             <div key={index} className="mb-4">
