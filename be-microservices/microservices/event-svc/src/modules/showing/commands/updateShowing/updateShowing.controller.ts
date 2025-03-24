@@ -1,6 +1,6 @@
-import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, Param, Put, Query } from '@nestjs/common';
+import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, Param, Put, Query, Req } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateShowingService } from './updateShowing.service';
 import { UpdateShowingDto } from './updateShowing.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
@@ -13,6 +13,11 @@ export class UpdateShowingController {
 
   @UseGuards(JwtAuthGuard)
   @Put('update/:id')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Update an existing showing' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Showing updated successfully', type: UpdateShowingResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
@@ -22,6 +27,7 @@ export class UpdateShowingController {
     @Body() updateShowingDto: UpdateShowingDto,
     @Param('id') id: string,
     @Res() res: Response,
+    @Request() req: any,
   ) {
     try {
       if(!id) {
@@ -30,8 +36,9 @@ export class UpdateShowingController {
           message: 'Showing id is required',
         });
       }
-      console.log(updateShowingDto);
-      const result = await this.updateShowingService.updateShowing(updateShowingDto, id);
+      
+      const userId = req.user.email;
+      const result = await this.updateShowingService.updateShowing(updateShowingDto, id, userId);
       if (result.isErr()) {
         if (result.unwrapErr().message === 'Showing not found') {
           return res.status(HttpStatus.BAD_REQUEST).json({

@@ -1,6 +1,6 @@
 import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards, Param } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteTicketTypeService } from './deleteTicketType.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { DeleteTicketTypeResponseDto } from './deleteTicketType-response.dto';
@@ -12,6 +12,11 @@ export class DeleteTicketTypeController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Delete a ticket type' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Ticket type deleted successfully', type: DeleteTicketTypeResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
@@ -19,9 +24,11 @@ export class DeleteTicketTypeController {
   async deleteTicketType(
     @Param('id') id: string,
     @Res() res: Response,
+    @Request() req: any,
   ) {
     try {
-      const result = await this.deleteTicketTypeService.execute(id);
+      const userId = req.user.email;
+      const result = await this.deleteTicketTypeService.execute(id, userId);
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({
           statusCode: HttpStatus.BAD_REQUEST,

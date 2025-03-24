@@ -1,6 +1,6 @@
-import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards, Param } from '@nestjs/common';
+import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards, Param, Req } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteEventService } from './deleteEvent.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { EventResponse } from './deleteEvent-response.dto';
@@ -12,6 +12,11 @@ export class DeleteEventController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Delete an event' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Event deleted successfully', type: EventResponse })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })
@@ -19,10 +24,11 @@ export class DeleteEventController {
   async deleteEvent(
     @Param('id') id: number,
     @Res() res: Response,
+    @Request() req: any,
   ) {
     try {
-
-      const result = await this.deleteEventService.execute(id);
+      const userId = req.user.email;
+      const result = await this.deleteEventService.execute(id, userId);
 
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({

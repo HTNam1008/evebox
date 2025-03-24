@@ -1,6 +1,6 @@
 import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards, Param } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteShowingService } from './deleteShowing.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { DeleteShowingResponseDto } from './deleteShowing-response.dto';
@@ -12,6 +12,11 @@ export class DeleteShowingController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Delete a showing' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Showing deleted successfully', type: DeleteShowingResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
@@ -19,6 +24,7 @@ export class DeleteShowingController {
   async deleteShowing(
     @Param('id') id: string,
     @Res() res: Response,
+    @Request() req: any,
   ) {
     try {
       if(!id) {
@@ -27,8 +33,10 @@ export class DeleteShowingController {
           message: 'Showing id is required',
         });
       }
+
+      const userId = req.user.email;
       
-      const result = await this.deleteShowingService.execute(id);
+      const result = await this.deleteShowingService.execute(id, userId);
       if (result.isErr()) {
         if(result.unwrapErr().message === 'Showing not found') {
           return res.status(HttpStatus.BAD_REQUEST).json({
