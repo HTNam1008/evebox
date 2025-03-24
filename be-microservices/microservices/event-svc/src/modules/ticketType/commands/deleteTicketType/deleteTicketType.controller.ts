@@ -1,8 +1,7 @@
-import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteTicketTypeService } from './deleteTicketType.service';
-import { DeleteTicketTypeDto } from './deleteTicketType.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { DeleteTicketTypeResponseDto } from './deleteTicketType-response.dto';
 
@@ -18,16 +17,11 @@ export class DeleteTicketTypeController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
   @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Internal server error' })
   async deleteTicketType(
-    @Body() deleteTicketTypeDto: DeleteTicketTypeDto,
-    @Request() req,
+    @Param('id') id: string,
     @Res() res: Response,
   ) {
     try {
-      // If the ID is not provided in the body, use the URL parameter
-      if (!deleteTicketTypeDto.id && req.params.id) {
-        deleteTicketTypeDto.id = req.params.id;
-      }
-      const result = await this.deleteTicketTypeService.execute(deleteTicketTypeDto);
+      const result = await this.deleteTicketTypeService.execute(id);
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({
           statusCode: HttpStatus.BAD_REQUEST,
