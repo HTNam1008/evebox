@@ -21,7 +21,6 @@ export class CreateShowingController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async createEvent(
     @Body() CreateShowingDto: CreateShowingDto,
-    @Request() req, 
     @Param('eventId') eventId: number,
     @Res() res: Response,
   ) {

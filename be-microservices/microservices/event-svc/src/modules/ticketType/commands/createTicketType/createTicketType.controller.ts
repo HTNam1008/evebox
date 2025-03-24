@@ -39,7 +39,7 @@ export class CreateTicketTypeController {
 
       return res.status(HttpStatus.CREATED).json({
         statusCode: HttpStatus.CREATED,
-        message: 'Event created successfully',
+        message: 'TicketType created successfully',
         data: result.unwrap(),
       });
     } catch (error) {
