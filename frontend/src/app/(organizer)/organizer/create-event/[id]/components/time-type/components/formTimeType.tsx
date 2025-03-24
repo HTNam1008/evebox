@@ -85,9 +85,8 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     const handleSubmit = () => {
         if (event) event.preventDefault();
 
-        if (!month || !startDate || !endDate) {
+        if (!startDate || !endDate) {
             setErrors({
-                month: !month,
                 startDate: !startDate,
                 endDate: !endDate,
             });
