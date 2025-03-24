@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
 import { Result, Ok, Err } from 'oxide.ts';
 import { Categories } from '../domain/entities/categories.entity';
-import { CreateEventDto } from '../commands/CreateEvent/createEvent.dto';
+import { CreateEventDto } from '../commands/createEvent/createEvent.dto';
 import e from 'express';
-import { EventDto } from '../commands/CreateEvent/createEvent-response.dto';
+import { EventDto } from '../commands/createEvent/createEvent-response.dto';
 
 @Injectable()
 export class CreateEventRepository {

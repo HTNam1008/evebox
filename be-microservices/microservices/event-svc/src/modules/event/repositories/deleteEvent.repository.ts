@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
 import { Result, Ok, Err } from 'oxide.ts';
-import { DeleteEventDto } from '../commands/DeleteEvent/deleteEvent.dto';
 
 @Injectable()
 export class DeleteEventRepository {
@@ -10,12 +9,12 @@ export class DeleteEventRepository {
   async deleteEvent(id: number): Promise<Result<number, Error>> {
     try {
       // Optionally delete related event categories first
-      await this.prisma.eventCategories.deleteMany({
-        where: { eventId: id },
-      });
 
-      const event = await this.prisma.events.delete({
-        where: { id },
+      const event = await this.prisma.events.update({
+        where: { id: id >> 0 },
+        data: {
+          deleteAt: new Date(),
+        },
       });
 
       if (event) {

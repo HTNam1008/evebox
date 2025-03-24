@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
 import { Result, Ok, Err } from 'oxide.ts';
-import { UpdateEventDto } from '../commands/UpdateEvent/updateEvent.dto';
-import { EventDto } from '../commands/UpdateEvent/updateEvent-response.dto';
+import { UpdateEventDto } from '../commands/updateEvent/updateEvent.dto';
+import { EventDto } from '../commands/updateEvent/updateEvent-response.dto';
 
 @Injectable()
 export class UpdateEventRepository {
@@ -10,6 +10,7 @@ export class UpdateEventRepository {
 
   async updateEvent(
     dto: UpdateEventDto,
+    eventId: number,
     locationId?: number,
     imgLogoId?: number,
     imgPosterId?: number
@@ -26,10 +27,10 @@ export class UpdateEventRepository {
       if (dto.orgName) updateData.orgName = dto.orgName;
       if (dto.orgDescription) updateData.orgDescription = dto.orgDescription;
       // Add additional fields as needed, e.g., updating timestamps
-      updateData.updatedAt = new Date();
+      updateData.createdAt = new Date();
 
       const event = await this.prisma.events.update({
-        where: { id: dto.id },
+        where: { id: eventId >> 0 },
         data: updateData,
       });
 
@@ -57,6 +58,7 @@ export class UpdateEventRepository {
       }
       return Err(new Error('Failed to update event'));
     } catch (error) {
+      console.error(error);
       return Err(new Error('Failed to update event'));
     }
   }
