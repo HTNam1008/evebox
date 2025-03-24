@@ -156,14 +156,12 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     const handleSubmit = () => {
         if (event) event.preventDefault();
 
-        // if (!startDate || !endDate) {
-        //     setErrors({
-        //         startDate: !startDate,
-        //         endDate: !endDate,
-        //     });
-        //     toast.error("Vui lòng chọn đầy đủ thông tin!");
-        //     return;
-        // }
+        const totalTickets = showtimes.reduce((count, showtime) => count + showtime.tickets.length, 0);
+
+        if (totalTickets === 0) {
+            toast.error("Vui lòng tạo ít nhất một loại vé trước khi tiếp tục!");
+            return;
+        }
 
         // Nếu nút là "Save"
         if (btnValidate2 === "Save") {
