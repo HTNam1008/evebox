@@ -1,8 +1,7 @@
-import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteShowingService } from './deleteShowing.service';
-import { DeleteShowingDto } from './deleteShowing.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { DeleteShowingResponseDto } from './deleteShowing-response.dto';
 
@@ -12,23 +11,31 @@ export class DeleteShowingController {
   constructor(private readonly deleteShowingService: DeleteShowingService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Delete('/:id')
+  @Delete('delete/:id')
   @ApiOperation({ summary: 'Delete a showing' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Showing deleted successfully', type: DeleteShowingResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
   @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Internal server error' })
   async deleteShowing(
-    @Body() deleteShowingDto: DeleteShowingDto,
-    @Request() req,
+    @Param('id') id: string,
     @Res() res: Response,
   ) {
     try {
-      // If the ID is not provided in the body, use the URL parameter
-      if (!deleteShowingDto.id && req.params.id) {
-        deleteShowingDto.id = req.params.id;
+      if(!id) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Showing id is required',
+        });
       }
-      const result = await this.deleteShowingService.execute(deleteShowingDto);
+      
+      const result = await this.deleteShowingService.execute(id);
       if (result.isErr()) {
+        if(result.unwrapErr().message === 'Showing not found') {
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: 'Showing not found',
+          });
+        }
         return res.status(HttpStatus.BAD_REQUEST).json({
           statusCode: HttpStatus.BAD_REQUEST,
           message: result.unwrapErr().message,
