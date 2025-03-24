@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
+import { useTranslations } from 'next-intl';
 
 /* Package Application */
 import AlertDialog from '@/app/(showing)/showing/components/alertDialog';
@@ -29,12 +30,13 @@ export default function SelectTicket({
     selectedTicket,
     setSelectedTicket
 }: SelectTicketProps) {
+    const t = useTranslations("common");
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
 
     const handleIncrease = (id: string) => {
         if (selectedTicket && selectedTicket !== id) {
-            setAlertMessage("Bạn chỉ được mua 1 loại vé duy nhất.");
+            setAlertMessage(t("onlyOneTicketType") ?? "Bạn chỉ được mua 1 loại vé duy nhất.");
             setAlertOpen(true);
             return;
         }
@@ -64,11 +66,11 @@ export default function SelectTicket({
                 <hr className="mb-8 border-2 border-[#0C4762]" />
 
                 <div className='ticket-container flex justify-center'>
-                    <div className='inline-grid grid-flow-col auto-cols-[minmax(250px,1fr)] gap-4 mx-auto'>
+                    <div className='flex flex-wrap justify-center gap-4 max-w-full'>
                         {tickets.map((ticket) => (
                             <div
                                 key={ticket.id}
-                                className={`border rounded-lg p-3 text-center cursor-pointer transition-all duration-300 bg-white flex flex-col
+                                className={`w-[280px] border rounded-lg p-3 text-center cursor-pointer transition-all duration-300 bg-white flex flex-col
                             ${selectedTicket === ticket.id ? 'border-2 border-black shadow-[8px_8px_0px_0px_#0C4762]' : 'border-2 border-gray-800'}
                             ${!ticket.available ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 onClick={() => ticket.available && handleSelect(ticket.id)}
@@ -87,7 +89,7 @@ export default function SelectTicket({
                                 </div>
 
                                 <div className='ticket-actions mt-auto'>
-                                    <p className="font-semibold mt-2">{ticket.price.toLocaleString()}đ</p>
+                                    <p className="font-semibold mt-2">{ticket.price?.toLocaleString()}đ</p>
 
                                     {ticket.available ? (
                                         <div className='flex items-center justify-center mt-2'>
@@ -103,7 +105,7 @@ export default function SelectTicket({
                                             >+</button>
                                         </div>
                                     ) : (
-                                        <p className="text-red-500 mt-2 font-semibold">Hết vé</p>
+                                        <p className="text-red-500 mt-2 font-semibold">{t("soldOutTicket") ?? "Hết vé"}</p>
                                     )}
                                 </div>
                             </div>

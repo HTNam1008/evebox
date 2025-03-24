@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-class ImagesResponseData {
+export class ImagesResponseData {
   @ApiProperty({
     description: 'Image ID',
     example: 1,

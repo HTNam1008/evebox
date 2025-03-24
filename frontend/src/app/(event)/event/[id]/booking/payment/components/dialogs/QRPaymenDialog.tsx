@@ -72,7 +72,7 @@ export default function QRPaymentDialog({ open, onClose, amount, qrImage }: QRPa
                             <Image src={qrImage} alt="QR Code" width="200" height="200" />
                             <div className="d-flex justify-content-between fw-bold px-2 mt-2">
                                 <span>Tổng tiền</span>
-                                <span>{amount.toLocaleString()}đ</span>
+                                <span>{amount?.toLocaleString()}đ</span>
                             </div>
                         </div>
 

@@ -3,12 +3,20 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import { Icon } from "@iconify/react";
 
+interface UserProps {
+    name: string;
+    phone: string;
+    email: string;
+    addres: string;
+}
+
 interface PaymentInfoDialogProps {
     open: boolean;
+    user: UserProps;
     onClose: () => void;
 }
 
-export default function PaymentInfoDialog({ open, onClose }: PaymentInfoDialogProps) {
+export default function PaymentInfoDialog({ open, onClose, user }: PaymentInfoDialogProps) {
     return (
         <Dialog style={{ borderRadius: '20px' }} className="info-dialog" open={open} onClose={onClose}>
             <div className="text-white dialog-header px-6 py-4 justify-center items-center flex relative" style={{ background: '#0C4762' }}>
@@ -19,7 +27,7 @@ export default function PaymentInfoDialog({ open, onClose }: PaymentInfoDialogPr
             </div>
 
             <DialogContent className="p-6">
-                <TextField margin="dense" label="Tên người nhận" type="text" fullWidth defaultValue="Nguyễn Thanh Huệ" className="mb-4" />
+                <TextField margin="dense" label="Tên người nhận" type="text" fullWidth defaultValue={user.name} className="mb-4" />
                 <div className="grid grid-cols-3 gap-4">
                     <FormControl fullWidth margin="dense">
                         <Select defaultValue="+84">
@@ -27,9 +35,9 @@ export default function PaymentInfoDialog({ open, onClose }: PaymentInfoDialogPr
                             <MenuItem value="+1">+1</MenuItem>
                         </Select>
                     </FormControl>
-                    <TextField margin="dense" label="Số điện thoại" type="text" fullWidth defaultValue="123390876" className="col-span-2" />
+                    <TextField margin="dense" label="Số điện thoại" type="text" fullWidth defaultValue={user.phone} className="col-span-2" />
                 </div>
-                <TextField margin="dense" label="Email" type="email" fullWidth defaultValue="customer@gmail.com" className="mb-4" />
+                <TextField margin="dense" label="Email" type="email" fullWidth defaultValue={user.email} className="mb-4" />
                 <p>Địa chỉ nhận hàng (vui lòng cập nhật khi mua vé cứng)</p>
                 <FormControl fullWidth margin="dense" className="mb-4">
                     <InputLabel id="province-label">Tỉnh/Thành phố</InputLabel>

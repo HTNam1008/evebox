@@ -11,11 +11,11 @@ export class GetUserTicketService {
   ) {}
   async execute(email: string): Promise<Result<UserTicketDto[], Error>> {
     try {
-      const tickets = await this.getUserTicketRepository.getUserTicket(email);
-      if (!tickets) {
-        return Err(new Error('No tickets found'));
+      const userTickets = await this.getUserTicketRepository.getUserTicket(email);
+      if (!userTickets) {
+        return Err(new Error('User ticket not found.'));
       }
-      return Ok(tickets);
+      return Ok(userTickets);
     } catch (error) {
       console.error(error);
       return Err(new Error('Failed to select seat'));

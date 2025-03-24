@@ -1,11 +1,12 @@
 import { Controller, Get, Query, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { GetPayOSStatusService } from './getPayOSStatus.service';
 import { GetPayOSStatusResponseDto } from './getPayOSStatus-response.dto';
 
+@ApiTags('Payment')
 @Controller('api/payment')
 export class GetPayOSStatusController {
   constructor(private readonly getPayOSStatusService: GetPayOSStatusService) {}

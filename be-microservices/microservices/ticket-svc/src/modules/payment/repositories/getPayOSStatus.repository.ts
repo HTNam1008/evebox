@@ -43,14 +43,62 @@ export class GetPayOSStatusRepository {
       if (!paymentInfo) {
         return null;
       }
-      var { userId, showingId, ticketTypeId, seatId, quantity } = payOSInfo;
-      
-      const formResponseId = await this.getFormResponseId(showingId, userId);
-      if (!formResponseId) {
+
+      const orderInfo = await this.prisma.orderInfo.findUnique({
+        where: {
+          id: paymentInfo.orderInfoId
+        }
+      });
+      console.log(orderInfo);
+      if (!orderInfo) {
         return null;
       }
-      console.log("spam" + formResponseId);
+      var { userId, showingId, ticketTypeId, seatId, quantity } = orderInfo;
+      
+      const formId = await this.prisma.showing.findFirst({
+        where: {
+          id: showingId
+        },
+        select: {
+          formId: true,
+          id: true,
+        }
+      });
+
+      const formResponseId = formId.formId ? await this.getFormResponseId(showingId, userId): null;
+      if(!formResponseId && formId.formId){
+        return null;
+      }
       if(seatId && seatId.length > 0){
+        const showingData = await this.prisma.showing.findUnique({
+          where: {
+            id: showingId
+          },
+          select: {
+            TicketType: {
+              select: {
+                id: true,
+              }
+            }
+          }
+        });
+        if (!showingData) {
+          return null;
+        }
+        const ticket = await this.prisma.ticket.create({
+          data: {
+            showingId: showingId,
+            status: 1,
+            price: payOSInfo.amount,
+            userId: userId,
+            paymentId: paymentInfo.id,
+            formResponseId: formResponseId || null,
+            type: "Ve dien tu",
+          }
+        });
+        if (!ticket) {
+          return null;
+        }
         for(const seat of seatId){
           const row = await this.prisma.seat.findUnique({
             where: {
@@ -61,7 +109,7 @@ export class GetPayOSStatusRepository {
             }
           });
           if (!row) {
-            return null;
+            return 0;
           }
           const section = await this.prisma.row.findUnique({
             where: {
@@ -72,19 +120,25 @@ export class GetPayOSStatusRepository {
             }
           });
           if (!section) {
-            return null;
+            return 0;
           }
-          const getTicketTypeId = await this.prisma.section.findUnique({
+          const getticketTypeId = await this.prisma.ticketTypeSection.findFirst({
             where: {
-              id: section.Section.id
+              sectionId: section.Section.id,
+              ticketTypeId: {
+                in: showingData.TicketType.map((item) => item.id)
+              }
             },
             select: {
               ticketTypeId: true,
             }
           });
+          if (!getticketTypeId) {
+            return 0;
+          }
           const ticketType = await this.prisma.ticketType.findUnique({
             where: {
-              id: getTicketTypeId.ticketTypeId
+              id: getticketTypeId.ticketTypeId
             },
             select: {
               price: true,
@@ -97,28 +151,23 @@ export class GetPayOSStatusRepository {
             return null;
           }
 
-          const ticket = await this.prisma.ticket.create({
+          const ticketQRCode = await this.prisma.ticketQRCode.create({
             data: {
               seatId: seat,
-              showingId: showingId,
-              ticketTypeId: getTicketTypeId.ticketTypeId,
-              status: 1,
-              price: ticketType.price,
-              userId: userId,
-              purchasedAt: new Date(),
-              paymentId: paymentInfo.id,
-              formResponseId: formResponseId
+              ticketTypeId: getticketTypeId.ticketTypeId,
+              ticketId: ticket.id,
+              qrCode: "Unknow",
+              description: "QRCode for ticket",
             }
           });
-          if (!ticket) {
+          if (!ticketQRCode) {
             return null;
           }
-          return ticket;
         }
+        return ticket;
       }
       else{
-        console.log("spam" + quantity + ticketTypeId);
-        if(!quantity || !ticketTypeId)return null;
+        if(!quantity || !ticketTypeId || !showingId)return null;
         const ticketType = await this.prisma.ticketType.findUnique({
           where: {
             id: ticketTypeId
@@ -128,28 +177,41 @@ export class GetPayOSStatusRepository {
             showingId: true,
             maxQtyPerOrder: true,
             minQtyPerOrder: true,
+            quantity: true,
           }
         });
-        console.log("spam" + ticketType);
+        if (!ticketType) {
+          return null;
+        }
+        const ticket = await this.prisma.ticket.create({
+          data: {
+            showingId: showingId,
+            status: 1,
+            price: payOSInfo.amount,
+            userId: userId,
+            paymentId: paymentInfo.id,
+            formResponseId: formResponseId || null,
+            type: "Ve dien tu",
+          }
+        });
+        if (!ticket) {
+          return null;
+        }
         for (let i = 0; i < quantity; i++) {
-          const ticket = await this.prisma.ticket.create({
+          const ticketQRCode = await this.prisma.ticketQRCode.create({
             data: {
-              // seatId: seat,
-              showingId: showingId,
+              ticketId: ticket.id,
               ticketTypeId: ticketTypeId,
-              status: 1,
-              price: ticketType.price,
-              userId: userId,
-              purchasedAt: new Date(),
-              paymentId: paymentInfo.id,
-              formResponseId: formResponseId
+              seatId: null,
+              qrCode: "Unknow",
+              description: "QRCode for ticket",
             }
           });
-          if (!ticket) {
+          if (!ticketQRCode) {
             return null;
           }
-          return ticket;
         }
+        return ticket;
       }
     }
     catch (error) {

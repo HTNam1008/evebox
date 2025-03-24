@@ -1,16 +1,22 @@
 'use client';
 
+/* Package System */
 import { useState } from 'react';
 import Image from 'next/image';
 import React from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from 'next-auth/react';
+
+/* Package Application */
 import ConfirmDialog from './dialogs/confirmDialog';
+import { TicketType } from '@/app/(event)/event/libs/event.interface';
 
 interface EventProps {
     id: number;
     title: string;
     description: string;
-    startDate: string;
+    // startDate: string;
+    startTime: string;
     venue: string;
     Images_Events_imgPosterIdToImages?: { imageUrl: string };
     locationsString: string;
@@ -21,15 +27,58 @@ interface TicketInformationProps {
     totalTickets: number;
     totalAmount: number;
     isFormValid: boolean;
-    ticketTypeName?: string;
-    ticketPrice?: number;
+    ticketType?: TicketType | null;
+    formData: { [formInputId: number]: string };
+    formId: number | null;
+    showingId?: string;
 }
 
-export default function TicketInformation({ event, totalTickets, totalAmount, isFormValid, ticketTypeName, ticketPrice }: TicketInformationProps) {
+export default function TicketInformation({ event, totalTickets, totalAmount, isFormValid, ticketType, formData, showingId, formId }: TicketInformationProps) {
     const [openDialog, setOpenDialog] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { data: session } = useSession();
     const router = useRouter();
-    const handlePayment = () => {
-        router.push(`/event/${event?.id}/booking/payment`);
+
+    const handlePayment = async () => {
+        // router.push(`/event/${event?.id}/booking/payment`);
+        if (!session?.user?.accessToken || !event || !formId) return;
+
+        setLoading(true);
+
+        try {
+            const answers = Object.entries(formData).map(([formInputId, value]) => ({
+                formInputId: Number(formInputId),
+                value,
+            }));
+
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/ticket/submitForm`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session?.user?.accessToken}`,
+                },
+                body: JSON.stringify({
+                    formId: formId,
+                    showingId: showingId,
+                    answers: answers,
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.message || "Lỗi gửi form. Vui lòng kiểm tra lại.");
+                return;
+            }
+
+            localStorage.setItem('submittedForm', JSON.stringify(formData));
+            // ✅ Success → redirect
+            router.push(`/event/${event.id}/booking/payment`);
+        } catch (error) {
+            console.error("Gửi form thất bại:", error);
+            alert("Lỗi hệ thống. Vui lòng thử lại.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -55,7 +104,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                             </p>
                             <p className='d-flex justify-content-start'>
                                 <i className="bi bi-calendar2-event mr-2"></i>
-                                {new Date(event.startDate).toLocaleString('vi-VN', {
+                                {new Date(event?.startTime).toLocaleString('vi-VN', {
                                     weekday: 'long',
                                     year: 'numeric',
                                     month: 'long',
@@ -91,8 +140,8 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                 <div className='row'>
                     <div className="col-md-8 d-flex justify-content-start">
                         <p className='text-start'>
-                            <span style={{ display: "block" }}>{ticketTypeName}</span>
-                            <span style={{ display: "block" }}>{ticketPrice?.toLocaleString("vi-VN")}</span>
+                            <span style={{ display: "block" }}>{ticketType?.name}</span>
+                            <span style={{ display: "block" }}>{ticketType?.price?.toLocaleString("vi-VN")}</span>
                         </p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
@@ -105,7 +154,7 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                         <p>Tạm tính</p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-end">
-                        <p>{totalAmount.toLocaleString("vi-VN")}đ</p>
+                        <p>{totalAmount?.toLocaleString("vi-VN")}đ</p>
                     </div>
                 </div>
                 <div className='row mt-2 mb-4'>
@@ -114,7 +163,14 @@ export default function TicketInformation({ event, totalTickets, totalAmount, is
                 <div className='row'>
                     {/* <button onClick={handlePayment} className='h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]'>Thanh toán</button> */}
                     <button onClick={handlePayment} className={isFormValid ? 'h-11 rounded bg-[#51DACF] text-[#0C4762] font-bold hover:bg-[#3BB8AE]' : 'btn-order-disable'}
-                        disabled={!isFormValid}>Thanh toán
+                        disabled={!isFormValid || loading}>
+                        {loading ? (
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        ) : (
+                            `Thanh toán - ${totalAmount.toLocaleString("vi-VN")}đ`
+                        )}
                     </button>
                 </div>
             </div>

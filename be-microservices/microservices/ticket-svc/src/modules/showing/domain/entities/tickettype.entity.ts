@@ -8,8 +8,8 @@ export interface TicketType{
   originalPrice:  number;
   maxQtyPerOrder: number;
   minQtyPerOrder: number;
-  effectiveFrom:  Date;
-  effectiveTo:    Date;
+  startTime:  Date;
+  endTime:    Date;
   position:      number;
   status:         String;
   imageUrl:       String;

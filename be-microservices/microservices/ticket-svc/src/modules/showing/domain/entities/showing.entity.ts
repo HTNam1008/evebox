@@ -1,5 +1,5 @@
 import { TicketType } from "./tickettype.entity";
-import { Decimal } from "@prisma/client/runtime/library";
+import { Decimal, JsonValue } from "@prisma/client/runtime/library";
 
 interface Images {
   id: number;
@@ -9,13 +9,11 @@ interface Images {
 interface EventFrontDisplay {
   id: number;
   title: string;
-  startDate: Date;
   lastScore: Decimal;
   Images_Events_imgLogoIdToImages: Images;
   Images_Events_imgPosterIdToImages: Images;
   totalClicks: number;
   weekClicks: number;
-  minTicketPrice?: number;
 }
 
 interface FormInput {
@@ -25,12 +23,13 @@ interface FormInput {
   type: string;
   required: boolean;
   regex?: string;
+  options?: JsonValue;
 }
 
 interface Form {
   id: number;
   name: string;
-  inputs: FormInput[];
+  FormInput: FormInput[];
 }
 
 export interface ShowingFront{

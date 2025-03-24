@@ -1,5 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/library";
-import { ShowingFront } from "src/modules/showing/domain/entities/showing.entity";
+// import { ShowingFront } from "src/modules/showing/domain/entities/showing.entity";
 import { Categories, EventCategorySpecial } from "./categories.entity";
 import { Images } from "src/modules/images/domain/entities/images.entity";
 
@@ -46,7 +46,7 @@ export interface EventData {
   isSpecial: boolean;
   isOnlyOnEve: boolean;
   categories?: Categories[];
-  showing?: ShowingFront[];
+  // showing?: ShowingFront[];
 }
 
 export interface FrontDisplayData {

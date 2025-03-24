@@ -20,7 +20,7 @@ export class SubmitFormService {
       }
       const formResponseData = {
         formResponseId: formResponse.id,
-        answers: formResponse.answers.map((answer: FormAnswerResponseDto) => ({
+        answers: formResponse.FormAnswer.map((answer: FormAnswerResponseDto) => ({
           id: answer.id,
           formInputId: answer.formInputId,
           value: answer.value,

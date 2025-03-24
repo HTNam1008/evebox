@@ -10,11 +10,15 @@ import { GetRedisSeatController } from './queries/getRedisSeat/getRedisSeat.cont
 import { GetUserTicketService } from './queries/getUserTicket/getUserTicket.service';
 import { getUserTicketRepository } from './repositories/getUserTicket.repository';
 import { GetRedisSeatService } from './queries/getRedisSeat/getRedisSeat.service';
+import { UnSelectSeatController } from './commands/unSelectSeat/unSelectSeat.controller';
+import { UnSelectSeatService } from './commands/unSelectSeat/unSelectSeat.service';
+import { getRedisSeatRepository } from './repositories/getRedisSeat.repository';
 
 @Module({
   controllers: 
     [
       SelectSeatController,
+      UnSelectSeatController,
       SubmitFormController,
       
       GetUserTicketController,
@@ -25,6 +29,8 @@ import { GetRedisSeatService } from './queries/getRedisSeat/getRedisSeat.service
       SelectSeatService,
       SelectSeatRepository,
 
+      UnSelectSeatService,
+
       SubmitFormService,
       SubmitFormRepository,
 
@@ -32,6 +38,7 @@ import { GetRedisSeatService } from './queries/getRedisSeat/getRedisSeat.service
       getUserTicketRepository,
 
       GetRedisSeatService,
+      getRedisSeatRepository,
     ],
 })
 export class TicketModule {}
