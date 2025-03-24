@@ -16,6 +16,14 @@ export class UpdateEventService {
 
   async execute(dto: UpdateEventDto, organizerId: string, id: number): Promise<Result<EventDto, Error>> {
     try {
+      const isAuthor = await this.updateEventRepository.checkAuthor(id, organizerId);
+      if (isAuthor.isErr()) {
+        return Err(new Error('Failed to check author'));
+      }
+      if (!isAuthor.unwrap()) {
+        return Err(new Error('Unauthorized'));
+      }
+
       let imgLogoId: number | undefined;
       let imgPosterId: number | undefined;
       let locationId: number | undefined;

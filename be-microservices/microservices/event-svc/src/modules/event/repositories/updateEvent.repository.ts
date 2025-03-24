@@ -93,4 +93,20 @@ export class UpdateEventRepository {
       return Err(new Error('Failed to update event category'));
     }
   }
+
+  async checkAuthor(id: number, userId: string): Promise<Result<boolean, Error>> {
+    try {
+      const event = await this.prisma.events.findUnique({
+        where: { id: id >> 0 },
+        select: { organizerId: true },
+      });
+
+      if (event && event.organizerId === userId) {
+        return Ok(true);
+      }
+      return Ok(false);
+    } catch (error) {
+      return Err(new Error('Failed to check author'));
+    }
+  }
 }

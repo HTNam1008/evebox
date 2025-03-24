@@ -11,8 +11,16 @@ export class UpdateTicketTypeService {
     private readonly imagesService: ImagesService,
   ) {}
 
-  async updateTicketType(dto: UpdateTicketTypeDto, id: string): Promise<Result<string, Error>> {
+  async updateTicketType(dto: UpdateTicketTypeDto, id: string, userId: string): Promise<Result<string, Error>> {
     try {
+      const isAuthor = await this.updateTicketTypeRepository.checkAuthor(id, userId);
+      if (isAuthor.isErr()) {
+        return Err(new Error('Failed to check author'));
+      }
+      if (!isAuthor.unwrap()) {
+        return Err(new Error('Unauthorized'));
+      }
+
       let imageUrl: string | undefined = undefined;
       if (dto.img) {
         const uploadResult = await this.imagesService.uploadImage(dto.img.buffer, dto.img.originalname, "ticketType" + id);

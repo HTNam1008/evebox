@@ -23,4 +23,20 @@ export class DeleteShowingRepository {
       return Err(new Error('Failed to delete showing'));
     }
   }
+
+  async checkAuthor(id: string, userId: string): Promise<Result<boolean, Error>> {
+    try {
+      const showing = await this.prisma.showing.findUnique({
+        where: { id: id },
+        select: { Events: { select: { organizerId: true } } },
+      });
+
+      if ( showing && showing.Events.organizerId === userId) {
+        return Ok(true);
+      }
+      return Ok(false);
+    } catch (error) {
+      return Err(new Error('Failed to check author'));
+    }
+  }
 }

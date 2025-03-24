@@ -58,4 +58,20 @@ export class UpdateTicketTypeRepository {
       return Err(new Error('Failed to update ticket type'));
     }
   }
+
+  async checkAuthor(id: string, userId: string): Promise<Result<boolean, Error>> {
+    try {
+      const ticketType = await this.prisma.ticketType.findUnique({
+        where: { id: id },
+        select: { Showing: { select: { Events: { select: { organizerId: true } } } } },
+      });
+
+      if ( ticketType && ticketType.Showing.Events.organizerId === userId) {
+        return Ok(true);
+      }
+      return Ok(false);
+    } catch (error) {
+      return Err(new Error('Failed to check author'));
+    }
+  }
 }
