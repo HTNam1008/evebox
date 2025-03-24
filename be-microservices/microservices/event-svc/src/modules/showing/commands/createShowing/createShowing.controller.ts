@@ -7,13 +7,13 @@ import { CreateShowingService } from './createShowing.service';
 import { CreateShowingDto } from './createShowing.dto';
 import { CreateShowingResponseDto } from './createShowing-response.dto';
 
-@ApiTags('Showing')
-@Controller('api/showing')
+@ApiTags('Org - Showing')
+@Controller('api/org/showing')
 export class CreateShowingController {
   constructor(private readonly createShowingService: CreateShowingService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('/create/:eventId')
+  @Post('/:eventId')
   @ApiHeader({
     name: 'Authorization',
     description: 'Bearer token for authorization (`Bearer <token>`)',

@@ -17,7 +17,7 @@ export class GetAllShowingDetailOfEventController {
     description: 'Bearer token for authorization (`Bearer <token>`)',
     required: true
   })
-  @ApiOperation({ summary: 'Get all showing of Event of Organizer' })
+  @ApiOperation({ summary: 'Get all showing & ticketType of Event of Organizer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get all showing of Event of Organizer',

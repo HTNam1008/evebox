@@ -8,8 +8,8 @@ import { CreateTicketTypeResponseDto } from './createTicketType-response.dto';
 import { create } from 'domain';
 import { CreateTicketTypeDto } from './createTicketType.dto';
 
-@ApiTags('TicketType')
-@Controller('api/ticketType')
+@ApiTags('Org - Ticket Type')
+@Controller('api/org/ticketType')
 export class CreateTicketTypeController {
   constructor(private readonly createTicketTypeService: CreateTicketTypeService) {}
 

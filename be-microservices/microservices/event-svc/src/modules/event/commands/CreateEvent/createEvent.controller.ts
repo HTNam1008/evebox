@@ -7,8 +7,8 @@ import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { EventResponse } from './createEvent-response.dto';
 
-@ApiTags('Event')
-@Controller('api/event')
+@ApiTags('Org - Event')
+@Controller('api/org/event')
 export class CreateEventController {
   constructor(private readonly createEventService: CreateEventService) {}
 

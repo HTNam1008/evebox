@@ -5,8 +5,8 @@ import { DeleteTicketTypeService } from './deleteTicketType.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { DeleteTicketTypeResponseDto } from './deleteTicketType-response.dto';
 
-@ApiTags('TicketType')
-@Controller('api/ticketType')
+@ApiTags('Org - Ticket Type')
+@Controller('api/org/ticketType')
 export class DeleteTicketTypeController {
   constructor(private readonly deleteTicketTypeService: DeleteTicketTypeService) {}
 

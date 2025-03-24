@@ -5,13 +5,13 @@ import { DeleteShowingService } from './deleteShowing.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { DeleteShowingResponseDto } from './deleteShowing-response.dto';
 
-@ApiTags('Showing')
-@Controller('api/showing')
+@ApiTags('Org - Showing')
+@Controller('api/org/showing')
 export class DeleteShowingController {
   constructor(private readonly deleteShowingService: DeleteShowingService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Delete('delete/:id')
+  @Delete('/:id')
   @ApiHeader({
     name: 'Authorization',
     description: 'Bearer token for authorization (`Bearer <token>`)',

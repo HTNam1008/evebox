@@ -29,9 +29,9 @@ import { IORedisModule } from './infrastructure/redis/ioredis.module';
     CloudinaryModule,
 
     UserModule,
-    EventModule,
     LocationModule,
     ImagesModule,
+    EventModule,
     ShowingModule,
     TicketTypeModule,
   ],

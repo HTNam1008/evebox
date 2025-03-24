@@ -7,8 +7,8 @@ import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateTicketTypeResponseDto } from './updateTicketType-response.dto';
 
-@ApiTags('TicketType')
-@Controller('api/ticketType')
+@ApiTags('Org - Ticket Type')
+@Controller('api/org/ticketType')
 export class UpdateTicketTypeController {
   constructor(private readonly updateTicketTypeService: UpdateTicketTypeService) {}
 

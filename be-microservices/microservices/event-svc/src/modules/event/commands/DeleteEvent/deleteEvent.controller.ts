@@ -5,13 +5,13 @@ import { DeleteEventService } from './deleteEvent.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { EventResponse } from './deleteEvent-response.dto';
 
-@ApiTags('Event')
-@Controller('api/event')
+@ApiTags('Org - Event')
+@Controller('api/org/event')
 export class DeleteEventController {
   constructor(private readonly deleteEventService: DeleteEventService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Delete('delete/:id')
+  @Delete('/:id')
   @ApiHeader({
     name: 'Authorization',
     description: 'Bearer token for authorization (`Bearer <token>`)',

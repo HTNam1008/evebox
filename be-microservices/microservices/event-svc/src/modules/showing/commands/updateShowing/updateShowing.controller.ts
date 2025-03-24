@@ -6,13 +6,13 @@ import { UpdateShowingDto } from './updateShowing.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { UpdateShowingResponseDto } from './updateShowing-response.dto';
 
-@ApiTags('Showing')
-@Controller('api/showing')
+@ApiTags('Org - Showing')
+@Controller('api/org/showing')
 export class UpdateShowingController {
   constructor(private readonly updateShowingService: UpdateShowingService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Put('update/:id')
+  @Put('/:id')
   @ApiHeader({
     name: 'Authorization',
     description: 'Bearer token for authorization (`Bearer <token>`)',
