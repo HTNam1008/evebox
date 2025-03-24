@@ -6,7 +6,7 @@ import Image from "next/image";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 /* Package Application */
-// import PaymentInfoDialog from "./dialogs/paymentInfoDialog";
+import PaymentInfoDialog from "./dialogs/paymentInfoDialog";
 import '@/../public/styles/events/payment.css';
 
 interface PaymentMethod {
@@ -19,7 +19,7 @@ interface PaymentMethodProps {
 }
 
 export default function PaymentMethod({ onMethodSelected }: PaymentMethodProps) {
-    // const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const [selectedMethod, setSelectedMethod] = useState("");
 
@@ -35,12 +35,12 @@ export default function PaymentMethod({ onMethodSelected }: PaymentMethodProps) 
         }
     }, []);
 
-    // const userData = localStorage.getItem('verifyData');
-    // const user = userData ? JSON.parse(userData) : null;
+    const userData = localStorage.getItem('verifyData');
+    const user = userData ? JSON.parse(userData) : null;
 
-    // const handleOpenInfoDialog = () => {
-    //     setIsDialogOpen(true);
-    // };
+    const handleOpenInfoDialog = () => {
+        setIsDialogOpen(true);
+    };
 
     useEffect(() => {
         const fetchPaymentMethods = async () => {
@@ -129,7 +129,7 @@ export default function PaymentMethod({ onMethodSelected }: PaymentMethodProps) 
                     </div>
                 </div>
             </div>
-            {/* <PaymentInfoDialog open={isDialogOpen} user={user} onClose={() => setIsDialogOpen(false)} /> */}
+            <PaymentInfoDialog open={isDialogOpen} user={user} onClose={handleOpenInfoDialog} />
         </>
     );
 }
