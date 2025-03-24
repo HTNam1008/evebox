@@ -1,4 +1,4 @@
-import { Module, Search } from '@nestjs/common';
+import { Get, Module, Search } from '@nestjs/common';
 
 
 // import { UpdateWeeklyService } from './tasks/update-weekly.service';
@@ -40,6 +40,9 @@ import { DeleteEventService } from './commands/deleteEvent/deleteEvent.service';
 import { UpdateEventController } from './commands/updateEvent/updateEvent.controller';
 import { UpdateEventService } from './commands/updateEvent/updateEvent.service';
 import { UpdateEventRepository } from './repositories/updateEvent.repository';
+import { GetEventOfOrgController } from './queries/getEventOfOrg/getEventOfOrg.controller';
+import { GetEventOfOrgService } from './queries/getEventOfOrg/getEventOfOrg.service';
+import { GetEventOfOrgRepository } from './repositories/getEventOfOrg.repository';
 
 
 @Module({
@@ -48,15 +51,19 @@ import { UpdateEventRepository } from './repositories/updateEvent.repository';
     // EventController, 
     ClickEventController,
     SearchEventController,
-    CreateEventController,
-    UpdateEventController,
-    DeleteEventController,
 
     GetAllCategoriesController,
     GetEventDetailController,
     GetEventDetailRecommendController,
     GetEventFrontDisplayController,
     GetRecommendedEventController,
+
+    // For Organizer
+    CreateEventController,
+    UpdateEventController,
+    DeleteEventController,
+
+    GetEventOfOrgController,
     ],
   providers: [
     // UpdateWeeklyService, 
@@ -66,15 +73,6 @@ import { UpdateEventRepository } from './repositories/updateEvent.repository';
 
     SearchEventService,
     SearchEventRepository,
-
-    CreateEventRepository,
-    CreateEventService,
-
-    UpdateEventService,
-    UpdateEventRepository,
-
-    DeleteEventRepository,
-    DeleteEventService,
 
     GetAllCategoriesRepository,
     GetAllCategoriesService,
@@ -90,6 +88,20 @@ import { UpdateEventRepository } from './repositories/updateEvent.repository';
 
     GetRecommendEventService,
     GetRecommendEventRepository,
+
+    // For Organizer
+    CreateEventRepository,
+    CreateEventService,
+
+    UpdateEventService,
+    UpdateEventRepository,
+
+    DeleteEventRepository,
+    DeleteEventService,
+
+    GetEventOfOrgService,
+    GetEventOfOrgRepository,
+
     ],
 })
 export class EventModule {}

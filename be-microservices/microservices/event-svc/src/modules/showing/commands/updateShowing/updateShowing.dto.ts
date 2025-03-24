@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsDateString, ValidateIf } from 'class-validator';
 
 export class UpdateShowingDto {
-  @ApiProperty({ example: 'Online', description: 'Showing type' })
+  @ApiProperty({ example: 'Online', description: 'Showing Online or Offline' })
   @IsOptional()
   @IsString({ message: 'Showing type must be a string' })
   status: string;
