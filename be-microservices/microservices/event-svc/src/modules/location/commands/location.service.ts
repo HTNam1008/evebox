@@ -6,8 +6,8 @@ import { LocationRepository } from '../repositories/location.repository';
 export class LocationService {
   constructor(private readonly locationRepository: LocationRepository) {}
 
-  async createLocation(street: string, ward: string, provinceId: number, districtId: number) {
-    return this.locationRepository.create({ street, ward, provinceId, districtId });
+  async createLocation(street: string, ward: string, districtId: number) {
+    return this.locationRepository.create({ street, ward, districtId });
   }
 
   async getAllLocations() {

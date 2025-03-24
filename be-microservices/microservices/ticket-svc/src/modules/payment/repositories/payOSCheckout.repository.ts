@@ -27,6 +27,7 @@ export class payOSCheckoutRepository {
       const payOSInfo = await this.prisma.payOSInfo.create({
         data: {
           ...checkoutResponseDataType,
+          expiredAt: checkoutResponseDataType.expiredAt.toString(),
         }
       });
       if(payOSInfo){

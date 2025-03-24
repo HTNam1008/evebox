@@ -5,12 +5,12 @@ import { PrismaService } from "../../../infrastructure/database/prisma/prisma.se
 export class LocationRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: { street: string; ward: string; provinceId: number; districtId: number }) {
+  async create(data: { street: string; ward: string; districtId: number }) {
     const location = await this.prisma.locations.findFirst({
       where: {
         street: data.street,
         ward: data.ward,
-        districtId: data.districtId,
+        districtId: data.districtId >> 0,
       },
     });
     if (location) {
@@ -21,7 +21,7 @@ export class LocationRepository {
         street: data.street,
         ward: data.ward,
         districts: {
-          connect: { id: data.districtId },
+          connect: { id: data.districtId >> 0 },
         },
       },
     });

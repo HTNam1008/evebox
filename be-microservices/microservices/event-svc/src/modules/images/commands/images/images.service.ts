@@ -11,10 +11,10 @@ export class ImagesService {
     private readonly cloudinaryService: CloudinaryService
   ) {}
 
-  async uploadImage(fileBuffer: Buffer, fileName: string): Promise<Result<Images, Error>> {
+  async uploadImage(fileBuffer: Buffer, fileName: string, userId?: string): Promise<Result<Images, Error>> {
     try {
       const uploadResult = await this.cloudinaryService.uploadImage(fileBuffer, fileName);
-      const image = await this.imagesRepository.create(uploadResult.secure_url);
+      const image = await this.imagesRepository.create(uploadResult.secure_url, userId);
       return Ok(image);
     } catch (error) {
       return Err(new Error('Failed to upload image'));

@@ -11,6 +11,9 @@ import { LocationModule } from './modules/location/location.module';
 import { CloudinaryModule } from './infrastructure/adapters/cloudinary/cloudinary.module';
 import { ImagesModule } from './modules/images/images.module';
 import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
+import { ShowingModule } from './modules/showing/showing.module';
+import { TicketTypeModule } from './modules/ticketType/ticketType.module';
+import { IORedisModule } from './infrastructure/redis/ioredis.module';
 
 @Module({
   imports: [
@@ -19,15 +22,18 @@ import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
       envFilePath: '.env', // Path to .env file
     }),
     PrismaModule,
+    IORedisModule,
     CqrsModule,
 
     EmailModule,
     CloudinaryModule,
 
     UserModule,
-    EventModule,
     LocationModule,
     ImagesModule,
+    EventModule,
+    ShowingModule,
+    TicketTypeModule,
   ],
 })
 
