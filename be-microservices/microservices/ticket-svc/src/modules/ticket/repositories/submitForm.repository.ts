@@ -18,7 +18,7 @@ export class SubmitFormRepository {
           },
         },
         include: {
-          answers: true,
+          FormAnswer: true,
         },
       });
       
@@ -35,7 +35,7 @@ export class SubmitFormRepository {
         return await this.prisma.formResponse.update({
           where: { id: existsForm.id },
           data: {
-            answers: {
+            FormAnswer: {
               create: submitFormDto.answers.map((answer) => ({
                 formInputId: answer.formInputId,
                 value: answer.value,
@@ -43,7 +43,7 @@ export class SubmitFormRepository {
             },
           },
           include: {
-            answers: true, // Lấy luôn danh sách câu trả lời sau khi cập nhật
+            FormAnswer: true, // Lấy luôn danh sách câu trả lời sau khi cập nhật
           },
         });
       }
@@ -54,7 +54,7 @@ export class SubmitFormRepository {
           userId: userId,
           formId: submitFormDto.formId,
           showingId: submitFormDto.showingId,
-          answers: {
+          FormAnswer: {
             create: submitFormDto.answers.map((answer) => ({
               formInputId: answer.formInputId,
               value: answer.value,
@@ -62,7 +62,7 @@ export class SubmitFormRepository {
           },
         },
         include: {
-          answers: true, // Lấy luôn danh sách câu trả lời sau khi tạo
+          FormAnswer: true, // Lấy luôn danh sách câu trả lời sau khi tạo
         },
       });
     }

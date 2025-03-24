@@ -11,14 +11,22 @@ export class payOSCheckoutRepository {
     payOSCheckoutDto: PayOSCheckoutDto
   ): Promise<Result<number, Error>> {
     try{
+      const orderInfo = await this.prisma.orderInfo.create({
+        data: {
+          userId: userId,
+          showingId: payOSCheckoutDto.showingId,
+          ticketTypeId: payOSCheckoutDto.ticketTypeId || "",
+          quantity: payOSCheckoutDto.quantity || 0,
+          seatId: payOSCheckoutDto.seatId || [],
+          status: 0,
+        }
+      });
+      if(!orderInfo){
+        return Err(new Error('Database Error.'));
+      }
       const payOSInfo = await this.prisma.payOSInfo.create({
         data: {
           ...checkoutResponseDataType,
-          userId: userId,
-          showingId: payOSCheckoutDto.showingId,
-          ticketTypeId: payOSCheckoutDto.ticketTypeId || null,
-          quantity: payOSCheckoutDto.quantity || 0,
-          seatId: payOSCheckoutDto.seatId || [],
         }
       });
       if(payOSInfo){
@@ -26,6 +34,7 @@ export class payOSCheckoutRepository {
           data: {
             method: "PAYOS",
             paymentCode: payOSInfo.orderCode,
+            orderInfoId: orderInfo.id,
           }
         });
         if(paymentInfo){
@@ -46,7 +55,7 @@ export class payOSCheckoutRepository {
       }
     });
     if(payOSInfo){
-      return payOSInfo[0].orderCode+1 || Date.now();
+      return payOSInfo[0]?.orderCode+1 || (Date.now() % 1000000);
     }
   }
   async getAmount(payOSCheckoutDto: PayOSCheckoutDto){
@@ -55,6 +64,14 @@ export class payOSCheckoutRepository {
         where: {
           id: payOSCheckoutDto.showingId
         },
+        select: {
+          id: true,
+          TicketType: {
+            select: {
+              id: true,
+            }
+          }
+        }
       });
       if (!showing) {
         return 0;
@@ -117,14 +134,20 @@ export class payOSCheckoutRepository {
         if (!section) {
           return 0;
         }
-        const ticketTypeId = await this.prisma.section.findUnique({
+        const ticketTypeId = await this.prisma.ticketTypeSection.findFirst({
           where: {
-            id: section.Section.id
+            sectionId: section.Section.id,
+            ticketTypeId: {
+              in: showing.TicketType.map((item) => item.id)
+            }
           },
           select: {
             ticketTypeId: true,
           }
         });
+        if (!ticketTypeId) {
+          return 0;
+        }
         const ticketType = await this.prisma.ticketType.findUnique({
           where: {
             id: ticketTypeId.ticketTypeId
@@ -146,8 +169,8 @@ export class payOSCheckoutRepository {
           return 0;
         }
         amount += ticketType.price;
-        return amount;
       }
+      return amount;
     }
     catch(error){
       console.error(error);
@@ -156,10 +179,24 @@ export class payOSCheckoutRepository {
   }
   async checkSeatAvailability(payOSCheckoutDto: PayOSCheckoutDto){
     try{
-      console.log("2");
-      const ticket = await this.prisma.ticket.findFirst({
+      const showing = await this.prisma.showing.findUnique({
         where: {
-          showingId: payOSCheckoutDto.showingId,
+          id: payOSCheckoutDto.showingId
+        },
+        select:{
+          TicketType: {
+            select: {
+              id: true,
+            }
+          }
+        }
+      });
+
+      const ticket = await this.prisma.ticketQRCode.findFirst({
+        where: {
+          ticketTypeId: {
+            in: showing.TicketType.map((item) => item.id)
+          },
           seatId: {
             in: payOSCheckoutDto.seatId
           }
@@ -177,28 +214,19 @@ export class payOSCheckoutRepository {
   }
   async checkTicketTypeAvailability(payOSCheckoutDto: PayOSCheckoutDto){
     try{
-      console.log("23");
-
       const ticketType = await this.prisma.ticketType.findUnique({
         where: {
           id: payOSCheckoutDto.ticketTypeId
         }
       });
-      const showingTicketTypeQuantity = await this.prisma.showingTicketTypeQuantity.findFirst({
+
+      const ticketBuy = await this.prisma.ticketQRCode.findMany({
         where: {
-          showingId: payOSCheckoutDto.showingId,
           ticketTypeId: payOSCheckoutDto.ticketTypeId
         }
       });
-      console.log(showingTicketTypeQuantity);
-      const ticketBuy = await this.prisma.ticket.findMany({
-        where: {
-          showingId: payOSCheckoutDto.showingId,
-          ticketTypeId: payOSCheckoutDto.ticketTypeId
-        }
-      });
-      if(ticketType && ticketBuy && showingTicketTypeQuantity && 
-        showingTicketTypeQuantity.quantity >= ticketBuy.length + payOSCheckoutDto.quantity
+      if(ticketType && ticketBuy && 
+        ticketType.quantity >= ticketBuy.length + payOSCheckoutDto.quantity
         && payOSCheckoutDto.quantity <= ticketType.maxQtyPerOrder 
         && payOSCheckoutDto.quantity >= ticketType.minQtyPerOrder
       ){

@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { Menu } from "lucide-react";
-import OverviewCard from "./overviewCard";
 import { Line } from "react-chartjs-2";
+
+import OverviewCard from "./overviewCard";
+
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from "chart.js";
+
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
 // TODO: chart can't show data when run build & start, but run dev, chart is ok

@@ -1,10 +1,9 @@
 import SidebarOrganizer from "../components/sidebarOrganizer";
 import DateRangePicker from "./components/dateRangePicker";
+import TrafficChart from "../marketing/components/trafficChart";
 
 import 'tailwindcss/tailwind.css';
 import "react-datepicker/dist/react-datepicker.css";
-import TrafficChart from "../marketing/components/trafficChart";
-
 
 function Dashboard() {
     return (
@@ -26,8 +25,6 @@ function Dashboard() {
 
                     {/* Filter Section */}
                     <DateRangePicker />
-
-                    {/* <button className="bg-blue-900 text-white px-4 py-2 rounded-md">Xác nhận</button> */}
                 </div>
 
                 {/* Statistics Cards */}

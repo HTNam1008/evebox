@@ -10,6 +10,38 @@ interface AddMemberFormProps {
 export default function AddMemberForm({ onClose }: AddMemberFormProps) {
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [roleError, setRoleError] = useState('');
+
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const handleSave = () => {
+        let isValid = true;
+
+        if (!email.trim()) {
+            setEmailError('Vui lòng nhập email');
+            isValid = false;
+        } else if (!validateEmail(email)) {
+            setEmailError('Email không hợp lệ');
+            isValid = false;
+        } else {
+            setEmailError('');
+        }
+
+        if (!role) {
+            setRoleError('Vui lòng chọn vai trò!');
+            isValid = false;
+        } else {
+            setRoleError('');
+        }
+
+        if (!isValid) return;
+
+
+    };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -30,17 +62,18 @@ export default function AddMemberForm({ onClose }: AddMemberFormProps) {
                         <label className="block font-medium">Email <span className="text-red-500">*</span></label>
                         <input
                             type="email"
-                            className="w-full border rounded-md px-3 py-2 mt-1 outline-none"
+                            className={`w-full border rounded-md px-3 py-2 mt-1 outline-none ${emailError ? 'border-red-500' : 'border-gray-300'}`}
                             placeholder="Nhập email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
+                        {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
                     </div>
 
                     <div className="mt-4">
                         <label className="block font-medium">Vai trò <span className="text-red-500">*</span></label>
                         <select
-                            className="w-full border rounded-md px-3 py-2 mt-1 outline-none"
+                            className={`w-full border rounded-md px-3 py-2 mt-1 outline-none ${roleError ? 'border-red-500' : 'border-gray-300'}`}
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
                         >
@@ -49,13 +82,13 @@ export default function AddMemberForm({ onClose }: AddMemberFormProps) {
                             <option value="manager">Quản lý</option>
                             <option value="staff">Nhân viên</option>
                         </select>
+                        {roleError && <p className="text-red-500 text-sm mt-1">{roleError}</p>}
                     </div>
 
                     <button className="mt-6 w-full bg-[#51DACF] text-[#0C4762] py-2 rounded-md hover:bg-[#3AB5A3]">
                         Lưu
                     </button>
 
-                    {/* Bảng quyền */}
                     {/* Bảng quyền */}
                     <div className="mt-6 overflow-x-auto">
                         <table className="w-full border-collapse border border-gray-300">
