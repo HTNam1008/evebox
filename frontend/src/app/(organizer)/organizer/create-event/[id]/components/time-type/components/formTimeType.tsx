@@ -16,9 +16,7 @@ import { Showtime } from "../../../libs/interface/idevent.interface";
 import ConfirmDeleteTicketDialog from "./dialogs/confirmDeleteTicket";
 
 export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
-    const [month, setMonth] = useState("");
-    const months = ["Tất cả", "Tháng 1", "Tháng 2", "Tháng 3"];
-    const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+    const [, setErrors] = useState<{ [key: string]: boolean }>({});
 
     //Tạo suất diễn
     const [showtimes, setShowtimes] = useState<Showtime[]>([
@@ -27,6 +25,20 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
             showEditDialog: false, showConfirmDeleteDialog: false
         }
     ]);
+
+    //Filter month of showing
+    const [selectedMonth, setSelectedMonth] = useState("");
+    const filteredShowtimes = selectedMonth
+        ? showtimes.filter((showtime) => {
+            if (!showtime.startDate) return false;
+            const showtimeMonth = new Date(showtime.startDate as Date).getMonth() + 1;
+            return showtimeMonth === parseInt(selectedMonth);
+        })
+        : showtimes;
+
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedMonth(e.target.value);
+    };
 
     const toggleExpanded = (id: number) => {
         setShowtimes((prevShowtimes) =>
@@ -119,22 +131,13 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
         setDelShowtimeId(null);
         setDelTicketIndex(null);
     };
-    
+
     const validateStartDate = (date: Date | null, endDate: Date | null) => {
         return !date || !endDate || date <= endDate; // Thời gian bắt đầu không được lớn hơn thời gian kết thúc
     };
 
     const validateEndDate = (date: Date | null, startDate: Date | null) => {
         return !date || !startDate || date >= startDate; // Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu
-    };
-
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, field: string) => {
-        const value = e.target.value;
-        if (field === "month") setMonth(value);
-
-        if (errors[field]) {
-            setErrors((prev) => ({ ...prev, [field]: false }));
-        }
     };
 
     const validateTimeSelection = (startDate: Date | null, endDate: Date | null) => {
@@ -183,14 +186,17 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                     <div className="relative ml-auto">
                         <select
                             className={`text-base block appearance-none w-40 border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 
-                                    ${month === "" ? "text-gray-400" : "text-black"}`}
-                            value={month}
-                            onChange={(e) => handleSelectChange(e, "month")}
+                                    ${selectedMonth === "" ? "text-gray-400" : "text-black"}`}
+                            value={selectedMonth}
+                            onChange={handleSelectChange}
                         >
-                            <option value="" disabled hidden>Chọn tháng</option>
-                            {months.map((item, index) => (
-                                <option value={item} key={index} className="text-black">
-                                    {item}
+                            <option value="">Tất cả tháng</option>
+                            {Array.from(new Set(showtimes
+                                .filter(show => show.startDate) // Lọc bỏ các startDate null
+                                .map(show => new Date(show.startDate as Date).getMonth() + 1)
+                            )).map((month) => (
+                                <option key={month} value={month} className="text-black">
+                                    Tháng {month}
                                 </option>
                             ))}
                         </select>
@@ -200,7 +206,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                     </div>
                 </div>
 
-                {showtimes.map((showtime, index) => (
+                {filteredShowtimes.map((showtime, index) => (
                     <div key={showtime.id} className="p-4 lg:p-4 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4"
                         style={{
                             backgroundColor: "rgba(158, 245, 207, 0.2)",
@@ -289,11 +295,11 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
 
                                             {showtime.showEditDialog && editShowtimeId === showtime.id && editTicketIndex !== null && (
                                                 <EditTicketDailog
-                                                open={true}
-                                                onClose={() => setEditShowtimeId(null)}
-                                                endDateEvent={showtime.endDate}
-                                                ticket={showtime.tickets[editTicketIndex]}
-                                                updateTicket={(updatedTicket) => updateTicket(showtime.id, editTicketIndex, updatedTicket)}
+                                                    open={true}
+                                                    onClose={() => setEditShowtimeId(null)}
+                                                    endDateEvent={showtime.endDate}
+                                                    ticket={showtime.tickets[editTicketIndex]}
+                                                    updateTicket={(updatedTicket) => updateTicket(showtime.id, editTicketIndex, updatedTicket)}
                                                 />)}
 
                                             <Trash2 className="p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer"
