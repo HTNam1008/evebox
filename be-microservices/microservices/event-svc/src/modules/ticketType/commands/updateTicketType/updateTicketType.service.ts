@@ -11,18 +11,18 @@ export class UpdateTicketTypeService {
     private readonly imagesService: ImagesService,
   ) {}
 
-  async updateTicketType(dto: UpdateTicketTypeDto): Promise<Result<string, Error>> {
+  async updateTicketType(dto: UpdateTicketTypeDto, id: string): Promise<Result<string, Error>> {
     try {
       let imageUrl: string | undefined = undefined;
       if (dto.img) {
-        const uploadResult = await this.imagesService.uploadImage(dto.img.buffer, dto.img.originalname, "ticketType" + dto.id);
+        const uploadResult = await this.imagesService.uploadImage(dto.img.buffer, dto.img.originalname, "ticketType" + id);
         if (uploadResult.isErr()) {
           return Err(new Error('Failed to upload ticket image'));
         }
         imageUrl = uploadResult.unwrap().imageUrl;
       }
 
-      return await this.updateTicketTypeRepository.updateTicketType(dto, imageUrl);
+      return await this.updateTicketTypeRepository.updateTicketType(dto, id, imageUrl);
     } catch (error) {
       return Err(new Error('Failed to update ticket type'));
     }

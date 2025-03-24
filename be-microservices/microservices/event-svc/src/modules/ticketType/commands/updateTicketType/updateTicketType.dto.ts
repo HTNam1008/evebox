@@ -3,9 +3,6 @@ import { Transform } from 'class-transformer';
 import { IsString, IsOptional, IsDateString, IsBoolean, IsNumber, ValidateIf } from 'class-validator';
 
 export class UpdateTicketTypeDto {
-  @ApiProperty({ example: '1', description: 'Ticket Type ID' })
-  @IsString()
-  id: string;
 
   @ApiPropertyOptional({ example: 'vip', description: 'Ticket type' })
   @IsOptional()

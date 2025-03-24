@@ -1,4 +1,4 @@
-import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, UseInterceptors, UploadedFile, Put, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateTicketTypeService } from './updateTicketType.service';
@@ -13,7 +13,7 @@ export class UpdateTicketTypeController {
   constructor(private readonly updateTicketTypeService: UpdateTicketTypeService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Patch('/:id')
+  @Put('/:id')
   @ApiOperation({ summary: 'Update an existing ticket type' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Ticket type updated successfully', type: UpdateTicketTypeResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
@@ -22,18 +22,15 @@ export class UpdateTicketTypeController {
   @UseInterceptors(FileInterceptor('file'))
   async updateTicketType(
     @Body() updateTicketTypeDto: UpdateTicketTypeDto,
-    @Request() req,
+    @Param('id') id: string,
     @Res() res: Response,
     @UploadedFile() file?: Express.Multer.File,
   ) {
     try {
-      if (!updateTicketTypeDto.id && req.params.id) {
-        updateTicketTypeDto.id = req.params.id;
-      }
       if (file) {
         updateTicketTypeDto.img = file;
       }
-      const result = await this.updateTicketTypeService.updateTicketType(updateTicketTypeDto);
+      const result = await this.updateTicketTypeService.updateTicketType(updateTicketTypeDto, id);
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({
           statusCode: HttpStatus.BAD_REQUEST,
