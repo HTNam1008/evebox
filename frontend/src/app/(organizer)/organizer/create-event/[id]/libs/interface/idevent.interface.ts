@@ -1,3 +1,4 @@
+import { TicketProps } from "./dialog.interface";
 export interface CreateQuestionsProps {
     eventId: string;
 }
@@ -8,4 +9,15 @@ export interface SettingProps {
 
 export interface TimeAndTypeTicketsProps {
     eventId: string;
+}
+
+export interface Showtime {
+    id: number;
+    startDate: Date | null;
+    endDate: Date | null;
+    tickets: TicketProps[];
+    isExpanded?: boolean;
+    showDialog?: boolean;
+    showEditDialog?: boolean;
+    showConfirmDeleteDialog?: boolean;
 }

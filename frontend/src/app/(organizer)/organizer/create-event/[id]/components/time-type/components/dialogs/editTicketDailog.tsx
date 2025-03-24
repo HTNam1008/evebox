@@ -166,11 +166,10 @@ export default function EditTicketDailog({ open, onClose, endDateEvent, ticket, 
                                         className={`w-full p-2 border rounded-md text-sm 
                                             ${ticketData.isFree ? 'bg-red-100 text-red-500 border-red-500 cursor-not-allowed' : 'border-gray-300'}`}
                                         type="number"
-                                        value={ticketData.isFree ? "0" : ticket.price}
+                                        value={ticketData.isFree ? 0 : ticketData.price}
                                         placeholder="0"
                                         onChange={(e) => {
-                                            ticketData.price = e.target.value;
-
+                                            setTicketData((prev) => ({ ...prev, price: e.target.value }));
                                             if (errors.price) {
                                                 setErrors((prev) => ({ ...prev, price: false }));
                                             }
