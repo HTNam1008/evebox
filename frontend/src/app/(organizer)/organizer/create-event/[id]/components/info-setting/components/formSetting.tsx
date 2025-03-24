@@ -7,9 +7,9 @@ import { LockKeyhole, Users, User, Mail, LayoutList, ToggleLeft, ToggleRight } f
 /* Package Application */
 import RadioOption from "../../common/form/radioOption";
 
-export default function FormSettingClient() {
+export default function FormSettingClient({ onNextStep, btnValidate3 }: { onNextStep: () => void, btnValidate3: string }) {
     const [eventName, setEventName] = useState("name-of-event");
-    const [eventScopeSelected, setEventScopeSelected] = useState("evryone");
+    const [eventScopeSelected, setEventScopeSelected] = useState("everyone");
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
     const [isToggleOn, setIsToggleOn] = useState(false);
@@ -32,16 +32,22 @@ export default function FormSettingClient() {
 
         setErrors(newErrors);
 
-        if (Object.keys(newErrors).length === 0) {
-            alert("Form hợp lệ! Gửi dữ liệu...");
+        // Nếu nút là "Save"
+        if (btnValidate3 === "Save") {
+            alert("Form hợp lệ!");
+        }
+        // Nếu nút là "Continue"
+        else if (btnValidate3 === "Continue") {
+            alert("Form hợp lệ! Chuyển sang bước tiếp theo...");
+            onNextStep();
         }
     };
 
 
     return (
         <>
-            <div className="flex justify-center w-full">
-                <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit}>
+            <div className="flex justify-center w-full mb-6">
+                <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="setting-form">
                     <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <label className="block text-base font-bold mb-2">
                             <span className="text-red-500">* </span> Link dẫn đến sự kiện
@@ -134,7 +140,7 @@ export default function FormSettingClient() {
                         </div>
                     </div>
 
-                    <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-3" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
+                    <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-3 mb-6" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <div className="relative flex items-center space-x-2">
                             <LayoutList size={20} />
                             <label className="text-base font-bold">
@@ -150,21 +156,11 @@ export default function FormSettingClient() {
                         </span>
 
                         <div className="relative flex items-center space-x-2 ">
-                        {isToggleOn ? <ToggleRight size={30} onClick={() => setIsToggleOn(false)} className="cursor-pointer text-[#51DACF]" /> : <ToggleLeft size={30} onClick={() => setIsToggleOn(true)} className="cursor-pointer text-gray-500" />}
-                        <label className="text-sm cursor-pointer" onClick={() => setIsToggleOn(!isToggleOn)}>
-                            Mở chức năng này (tạo câu hỏi ở bước sau)
-                        </label>
-                    </div>
-
-                    </div>
-
-                    <div className="flex justify-center mt-4 mb-4">
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white font-bold py-2 px-6 rounded hover:bg-blue-700 transition"
-                        >
-                            Nộp
-                        </button>
+                            {isToggleOn ? <ToggleRight size={30} onClick={() => setIsToggleOn(false)} className="cursor-pointer text-[#51DACF]" /> : <ToggleLeft size={30} onClick={() => setIsToggleOn(true)} className="cursor-pointer text-gray-500" />}
+                            <label className="text-sm cursor-pointer" onClick={() => setIsToggleOn(!isToggleOn)}>
+                                Mở chức năng này (tạo câu hỏi ở bước sau)
+                            </label>
+                        </div>
                     </div>
                 </form>
             </div>
