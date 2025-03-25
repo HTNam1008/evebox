@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
 
+import { generateQRCode } from 'src/utils/utils';
+
 @Injectable()
 export class GetPayOSStatusRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -151,12 +153,29 @@ export class GetPayOSStatusRepository {
             return null;
           }
 
+          const qrData = {
+            showingId: showingId,
+            ticketTypeId: getticketTypeId.ticketTypeId,
+            seatId: seat,
+            userId: userId,
+            ticketId: ticket.id,
+          }
+          const qrContent = JSON.stringify(qrData);
+          const qrCode = await generateQRCode(qrContent);
+          let qrCodeContent = "";
+          if (!qrCode) {
+            qrCodeContent = "Unknow";
+          }
+          else {
+            qrCodeContent = qrCode;
+          }
+          
           const ticketQRCode = await this.prisma.ticketQRCode.create({
             data: {
               seatId: seat,
               ticketTypeId: getticketTypeId.ticketTypeId,
               ticketId: ticket.id,
-              qrCode: "Unknow",
+              qrCode: qrCodeContent,
               description: "QRCode for ticket",
             }
           });
@@ -198,12 +217,28 @@ export class GetPayOSStatusRepository {
           return null;
         }
         for (let i = 0; i < quantity; i++) {
+          const qrData = {
+            showingId: showingId,
+            ticketTypeId: ticketTypeId,
+            seatId: null,
+            userId: userId,
+            ticketId: ticket.id,
+          }
+          const qrContent = JSON.stringify(qrData);
+          const qrCode = await generateQRCode(qrContent);
+          let qrCodeContent = "";
+          if (!qrCode) {
+            qrCodeContent = "Unknow";
+          }
+          else {
+            qrCodeContent = qrCode;
+          }
           const ticketQRCode = await this.prisma.ticketQRCode.create({
             data: {
               ticketId: ticket.id,
               ticketTypeId: ticketTypeId,
               seatId: null,
-              qrCode: "Unknow",
+              qrCode: qrCodeContent,
               description: "QRCode for ticket",
             }
           });

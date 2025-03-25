@@ -3,11 +3,11 @@
 /* Package System */
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import PaymentInfoDialog from "./dialogs/paymentInfoDialog";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 /* Package Application */
+import PaymentInfoDialog from "./dialogs/paymentInfoDialog";
 import '@/../public/styles/events/payment.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface PaymentMethod {
     paymentMethod: string;
@@ -18,7 +18,7 @@ interface PaymentMethodProps {
     onMethodSelected: (method: string) => void;
 }
 
-export default function PaymentMethod( { onMethodSelected }: PaymentMethodProps ) {
+export default function PaymentMethod({ onMethodSelected }: PaymentMethodProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const [selectedMethod, setSelectedMethod] = useState("");
@@ -26,12 +26,17 @@ export default function PaymentMethod( { onMethodSelected }: PaymentMethodProps 
     const [isLoadingMethods, setIsLoadingMethods] = useState(true);
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
 
+    const [submittedAnswers, setSubmittedAnswers] = useState<{ [key: string]: string }>({});
+
+    useEffect(() => {
+        const data = localStorage.getItem('submittedForm');
+        if (data) {
+            setSubmittedAnswers(JSON.parse(data));
+        }
+    }, []);
+
     const userData = localStorage.getItem('verifyData');
     const user = userData ? JSON.parse(userData) : null;
-    const phone = localStorage.getItem('phone');
-    const email = localStorage.getItem('email');
-    // const address = localStorage.getItem('address');
-
 
     const handleOpenInfoDialog = () => {
         setIsDialogOpen(true);
@@ -77,7 +82,10 @@ export default function PaymentMethod( { onMethodSelected }: PaymentMethodProps 
                     <div className="alert alert-info bg-alert text-sm d-flex align-items-center">
                         <i className="bi bi-exclamation-circle mr-2"></i>
                         Lưu ý kiểm tra thông tin nhận vé. Nếu có thay đổi vui lòng&nbsp;
-                        <a onClick={handleOpenInfoDialog} className="fw-bold text-primary cursor-pointer hover:underline">
+                        <a
+                            // onClick={handleOpenInfoDialog} 
+                            className="fw-bold text-primary cursor-pointer hover:underline"
+                        >
                             cập nhật tại đây
                         </a>
                     </div>
@@ -85,8 +93,11 @@ export default function PaymentMethod( { onMethodSelected }: PaymentMethodProps 
                     {/* Thông tin nhận vé */}
                     <div className="mt-3 flex flex-col items-start">
                         <h2 className="fw-bold">Thông tin nhận vé</h2>
-                        <p className="mb-1">{user?.name} &nbsp;&nbsp; {phone}</p>
-                        <p className="text-muted">{email}</p>
+                        {Object.entries(submittedAnswers).map(([formInputId, value]) => (
+                            !value.includes("Tôi") && (
+                                <p key={formInputId} className="mb-1">{value}</p>
+                            )
+                        ))}
                     </div>
 
                     {/* Phương thức thanh toán */}
@@ -118,7 +129,7 @@ export default function PaymentMethod( { onMethodSelected }: PaymentMethodProps 
                     </div>
                 </div>
             </div>
-            <PaymentInfoDialog open={isDialogOpen} user={user} onClose={() => setIsDialogOpen(false)} />
+            <PaymentInfoDialog open={isDialogOpen} user={user} onClose={handleOpenInfoDialog} />
         </>
     );
 }

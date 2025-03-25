@@ -9,14 +9,14 @@ const VoucherTable = () => {
     const [search, setSearch] = useState("");
 
     const vouchers = [
-        { id: "#AD-001234", discount: "a", duration: "b", status: "c", },
-        { id: "#AD-001234", discount: "d", duration: "e", status: "f", },
-        { id: "#AD-001234", discount: "g", duration: "h", status: "i", },
-        { id: "#AD-001234", discount: "k", duration: "l", status: "m", }
+        { name: "a", id: "#AD-001234", discount: "10%", duration: "1 tháng", status: "Hết hạn", },
+        { name: "b", id: "#AD-001234", discount: "15%", duration: "2 tháng", status: "Hoạt động", },
+        { name: "c", id: "#AD-001234", discount: "16%", duration: "15 ngày", status: "Hoạt động", },
+        { name: "d", id: "#AD-001234", discount: "17%", duration: "5 tháng", status: "Hết hạn", }
     ];
 
     const filteredVouchers = vouchers.filter((vou) =>
-        vou.id.toLowerCase().includes(search.toLowerCase())
+        vou.name.toLowerCase().includes(search.toLowerCase())
     );
 
     return (
@@ -56,23 +56,31 @@ const VoucherTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredVouchers.map((voucher, index) => (
-                        <tr key={index}>
-                            <td className="border px-4 py-2">{voucher.id}</td>
-                            <td className="border px-4 py-2">{voucher.id}</td>
-                            <td className="border px-4 py-2">{voucher.discount}</td>
-                            <td className="border px-4 py-2">{voucher.duration}</td>
-                            <td className="border px-4 py-2">{voucher.status}</td>
-                            <td className="border px-2 py-2 text-center w-40">
-                                <button className="text-blue-500 hover:text-blue-700 mx-1">
-                                    <FaEdit />
-                                </button>
-                                <button className="text-red-500 hover:text-red-700 mx-1">
-                                    <FaTrash />
-                                </button>
+                    {filteredVouchers.length > 0 ? (
+                        filteredVouchers.map((voucher, index) => (
+                            <tr key={index}>
+                                <td className="border px-4 py-2">{voucher.name}</td>
+                                <td className="border px-4 py-2">{voucher.id}</td>
+                                <td className="border px-4 py-2">{voucher.discount}</td>
+                                <td className="border px-4 py-2">{voucher.duration}</td>
+                                <td className="border px-4 py-2">{voucher.status}</td>
+                                <td className="border px-2 py-2 text-center w-40">
+                                    <button className="text-blue-500 hover:text-blue-700 mx-1">
+                                        <FaEdit />
+                                    </button>
+                                    <button className="text-red-500 hover:text-red-700 mx-1">
+                                        <FaTrash />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={5} className="text-center py-4 text-gray-500">
+                                Không tìm thấy voucher nào.
                             </td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </div>

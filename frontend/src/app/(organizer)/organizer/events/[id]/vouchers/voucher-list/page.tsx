@@ -18,7 +18,6 @@ export default function Member() {
                     <div className="py-6 flex items-center space-x-6">
                         <h3 className="text-lg font-bold text-[#0C4762] mb-2">Danh sách voucher</h3>
                     </div>
-
                     <VoucherTable />
                 </div>
             </div>

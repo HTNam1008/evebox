@@ -150,6 +150,12 @@ export class EventDetailResponseDto {
   @ApiProperty({ example: false })
   isOnlyOnEve: boolean;
 
+  @ApiProperty({ example: "Nha hat kich Idecaf", description: 'Organizer name' })
+  orgName: string;
+
+  @ApiProperty({ example: 'Nha hat kich Idecaf', description: 'Organizer description' })
+  orgDescription: string;
+
   @ApiProperty({ type: [CategoryDto] })
   categories: CategoryDto[];
 

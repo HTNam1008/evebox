@@ -42,7 +42,14 @@
 //   @Post('/payos/checkout')
 //   async createPaymentLink(@Body() body: CheckoutRequestType, @Res() res) {
 //     try {
-//       const response: CheckoutResponseDataType = await this.payOS.createPaymentLink(body);
+//       const response: CheckoutResponseDataType = await this.payOS.createPaymentLink({
+//         orderCode: Date.now(),
+//         amount: 2000,
+//         description: "Thanh toán đơn hàng",
+//         cancelUrl: "https://example.com/cancel",
+//         returnUrl: "https://example.com/success",
+//         expiredAt: Math.floor(Date.now() / 1000) + 3 * 60,
+//       });
 //       return res.status(HttpStatus.CREATED).json(response);
 //     } catch (error) {
 //       console.error("Lỗi khi tạo link thanh toán:", error);

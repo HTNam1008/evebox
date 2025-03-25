@@ -1,5 +1,5 @@
-// // app/_components/EventSection.tsx
 "use client";
+
 import { Cloud } from "lucide-react";
 
 export default function TicketSection() {
