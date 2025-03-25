@@ -14,6 +14,7 @@ import { Category } from '@/types/model/frontDisplay';
 import mapCategoryName from '@/app/(dashboard)/libs/functions/mapCategoryName';
 import axios from 'axios';
 import { fetchSearchEvents } from '@/app/(dashboard)/libs/server/fetchSearchEvents';
+import { useRouter } from 'next/navigation';
 
 interface SearchClientProps {
   events: SearchEventsResponse;
@@ -31,6 +32,7 @@ export default function SearchClient({ events: initialEvents }: SearchClientProp
 
   const dropdownEventRef = useRef<HTMLDivElement | null>(null);
 
+  const router = useRouter();
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const currentQuery = searchParams.get('q') || '';
 
@@ -71,6 +73,20 @@ export default function SearchClient({ events: initialEvents }: SearchClientProp
     setLoading(true);
     try {
       const title = searchText.trim() !== '' ? searchText.trim() : currentQuery;
+
+      const query: Record<string, string> = {
+        q: title,
+        minPrice: priceRange[0].toString(),
+        maxPrice: priceRange[1].toString(),
+      };
+  
+      if (selectedOptions.length > 0) query.types = selectedOptions.join(',');
+      if (dateRange?.start) query.startDate = dateRange.start.toString();
+      if (dateRange?.end) query.endDate = dateRange.end.toString();
+  
+      // Update URL without reload
+      const queryString = new URLSearchParams(query).toString();
+      router.push(`/search?${queryString}`);
   
       const newEvents = await fetchSearchEvents({
         title,
