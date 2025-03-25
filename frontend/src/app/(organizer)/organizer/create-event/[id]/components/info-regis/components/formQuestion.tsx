@@ -11,7 +11,7 @@ import CustomRadioButton from "../../common/form/customRadioButton";
 import MultipleAnswer from "../../common/form/multipleAns";
 import OneAnswer from "../../common/form/oneAns";
 
-export default function FormQuestionClient() {
+export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNextStep: () => void, btnValidate4: string }) {
     const [name, setName] = useState("");
     const [des, setDes] = useState("");
     const [eventScopeSelected, setEventScopeSelected] = useState("all");
@@ -26,7 +26,7 @@ export default function FormQuestionClient() {
         setOneTexts([...oneTexts, ""]);
         setOneCheckedItems([...oneCheckedItems, false]); // Thêm trạng thái checked mới
     };
-    
+
     const handleOneDelete = (index: number) => {
         setOneTexts(oneTexts.filter((_, i) => i !== index));
         setOneCheckedItems(oneCheckedItems.filter((_, i) => i !== index)); // Xóa trạng thái checked tương ứng
@@ -46,7 +46,7 @@ export default function FormQuestionClient() {
         setTexts([...texts, ""]);
         setCheckedItems([...checkedItems, false]); // Thêm trạng thái checked mới
     };
-    
+
     const handleDelete = (index: number) => {
         setTexts(texts.filter((_, i) => i !== index));
         setCheckedItems(checkedItems.filter((_, i) => i !== index)); // Xóa trạng thái checked tương ứng
@@ -74,14 +74,22 @@ export default function FormQuestionClient() {
         const newErrors: { [key: string]: boolean } = {};
 
         if (Object.keys(newErrors).length === 0) {
-            alert("Form hợp lệ! Gửi dữ liệu...");
+            // Nếu nút là "Save"
+            if (btnValidate4 === "Save") {
+                alert("Form hợp lệ!");
+            }
+            // Nếu nút là "Continue"
+            else if (btnValidate4 === "Continue") {
+                alert("Form hợp lệ! Chuyển sang bước tiếp theo...");
+                onNextStep();
+            }
         }
     };
 
     return (
         <>
-            <div className="flex justify-center w-full">
-                <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit}>
+            <div className="flex justify-center w-full mb-6">
+                <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="ques-form">
                     <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <div className="relative flex items-center space-x-2">
                             <label className="text-base font-bold">
@@ -262,21 +270,12 @@ export default function FormQuestionClient() {
 
                     <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
 
-                    <div className="flex justify-center">
+                    <div className="flex justify-center mb-6">
                         <button
                             type="button"
                             className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
                         >
                             <CirclePlus size={20} /> Tạo câu hỏi
-                        </button>
-                    </div>
-
-                    <div className="flex justify-center mt-4 mb-4">
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white font-bold py-2 px-6 rounded hover:bg-blue-700 transition"
-                        >
-                            Nộp
                         </button>
                     </div>
                 </form>
