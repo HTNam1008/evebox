@@ -6,7 +6,7 @@ import InputCountField from '../../common/form/inputCountField';
 import InputField from '../../common/form/inputField';
 import SelectField from '../../common/form/selectField';
 
-export default function FormInfoPaymentClient() {
+export default function FormInfoPaymentClient({ onNextStep, btnValidate5 }: { onNextStep: () => void, btnValidate5: string }) {
     const [accName, setAccName] = useState("");
     const [accNum, setAccNum] = useState("0");
     const [bankName, setBankName] = useState("");
@@ -44,15 +44,23 @@ export default function FormInfoPaymentClient() {
         const newErrors: { [key: string]: boolean } = {};
 
         if (Object.keys(newErrors).length === 0) {
-            alert("Form hợp lệ! Gửi dữ liệu...");
+            // Nếu nút là "Save"
+            if (btnValidate5 === "Save") {
+                alert("Form hợp lệ!");
+            }
+            // Nếu nút là "Continue"
+            else if (btnValidate5 === "Continue") {
+                alert("Form hợp lệ! Chuyển sang bước tiếp theo...");
+                onNextStep();
+            }
         }
     };
 
     return (
         <>
-            <div className="flex justify-center w-full mb-4">
-                <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit}>
-                    <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
+            <div className="flex justify-center w-full mb-6">
+                <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="pay-form">
+                    <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mb-6" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <label className="text-base font-bold">
                             Thông tin thanh toán
                         </label>
@@ -269,16 +277,6 @@ export default function FormInfoPaymentClient() {
                                 </div>
                             </div>
                         )}
-
-                    </div>
-
-                    <div className="flex justify-center mt-4 mb-4">
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white font-bold py-2 px-6 rounded hover:bg-blue-700 transition"
-                        >
-                            Nộp
-                        </button>
                     </div>
                 </form>
             </div>
