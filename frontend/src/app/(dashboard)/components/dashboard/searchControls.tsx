@@ -2,7 +2,7 @@
 
 //Package System
 import { ChevronDown, Search } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CalendarDate} from "@internationalized/date";
 import Link from 'next/link';
 import { RangeValue } from "@react-types/shared";
@@ -10,6 +10,10 @@ import 'tailwindcss/tailwind.css';
 import { useTranslations } from "next-intl";
 //Package App
 import DatePicker from './datePicker';
+import axios from 'axios';
+import { Category } from '@/types/model/frontDisplay';
+import mapCategoryName from '@/app/(dashboard)/libs/functions/mapCategoryName'; 
+import { fetchProvinces } from '@/app/(dashboard)/libs/server/fetchProvinces';
 
 export default function SearchControls() {
     const [searchText, setSearchText] = useState('');
@@ -17,12 +21,40 @@ export default function SearchControls() {
     const [isEventTypeOpen, setIsEventTypeOpen] = useState(false);
     const [isLocationOpen, setIsLocationOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-    const options = ["Âm nhạc", "Kịch", "Học thuật", "Thể thao", "Workshop", "Hòa nhạc"];
+    const [categories, setCategories] = useState<Category[]>([]); 
     const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
-    const locations = ["Hà Nội", "TP.HCM", "Đà Nẵng"];
+    const [locations, setLocations] = useState<{ name: string; code: number }[]>([]);
     const dropdownEventRef = useRef(null);
     const dropdownLocationRef = useRef(null);
     const t = useTranslations("common");
+
+    const queryParams: Record<string, string> = {};
+
+    if (searchText) queryParams.q = searchText;
+    if (selectedOptions.length > 0) queryParams.types = selectedOptions.join(',');
+    if (dateRange?.start) queryParams.startDate = dateRange.start.toString();
+    if (dateRange?.end) queryParams.endDate = dateRange.end.toString();
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+          try {
+            const response = await axios.get(`/api/categories`);
+            setCategories(response.data || []); 
+          } catch (error) {
+            console.error("Error fetching categories:", error);
+            setCategories([]); 
+          }
+        };
+        fetchCategories();
+    }, []);
+
+    useEffect(() => {
+        const loadLocations = async () => {
+          const data = await fetchProvinces();
+          setLocations(data);
+        };
+        loadLocations();
+      }, []);
 
     const toggleOption = (option: string) => {
         if (selectedOptions.includes(option)) {
@@ -64,18 +96,18 @@ export default function SearchControls() {
                             {/* Dropdown menu */}
                             {isEventTypeOpen && (
                                 <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg text-[#0C4762] small-text">
-                                    {options.map((option) => (
+                                    {categories.map((option) => (
                                         <label
-                                            key={option}
+                                            key={option.id}
                                             className="flex items-center p-2 hover:bg-[#0C4762] hover:bg-opacity-[0.31] cursor-pointer"
                                         >
                                             <input
                                                 type="checkbox"
-                                                checked={selectedOptions.includes(option)}
-                                                onChange={() => toggleOption(option)}
+                                                checked={selectedOptions.includes(option.name)}
+                                                onChange={() => toggleOption(option.name)}
                                                 className="mr-2"
                                             />
-                                            {option}
+                                             {mapCategoryName(option.name)}
                                         </label>
                                     ))}
                                 </div>
@@ -97,19 +129,18 @@ export default function SearchControls() {
 
                             {/* Dropdown menu */}
                             {isLocationOpen && (
-                                <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg text-[#0C4762] small-text">
-                                    {locations.map((location) => (
-                                        <div
-                                            key={location}
-                                            className="p-2 hover:bg-[#0C4762] hover:bg-opacity-[0.31] cursor-pointer"
-                                            onClick={() => {
-                                                setSelectedLocation(location);
-                                                setIsLocationOpen(false);
-                                            }}
-                                        >
-                                            {location}
-                                        </div>
-                                    ))}
+                                <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg text-[#0C4762] small-text max-h-64 overflow-y-auto">                                    {locations.map((location) => (
+                    <div
+                      key={location.code}
+                      className="p-2 hover:bg-[#0C4762] hover:bg-opacity-[0.31] cursor-pointer"
+                      onClick={() => {
+                        setSelectedLocation(location.name);
+                        setIsLocationOpen(false);
+                      }}
+                    >
+                      {location.name}
+                    </div>
+                  ))}
                                 </div>
                             )}
                         </div>
@@ -121,16 +152,12 @@ export default function SearchControls() {
                         </div>
                     </div>
                     <div className="flex md:items-end">
-                        <Link href={{
-                            pathname: "/search",
-                            query: {
-                                q: searchText || undefined,
-                                types: selectedOptions.length > 0 ? selectedOptions.join(',') : undefined,
-                                location: selectedLocation || undefined,
-                                startDate: dateRange?.start?.toString() || undefined,
-                                endDate: dateRange?.end?.toString() || undefined
-                            }
-                        }}>
+                    <Link
+    href={{
+      pathname: "/search",
+      query: queryParams,
+    }}
+  >
                             <button className="w-full md:w-14 h-10 bg-teal-400 hover:bg-teal-300 rounded flex items-center justify-center">
                                 <Search size={20} className="text-white" />
                             </button>

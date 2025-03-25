@@ -7,6 +7,7 @@ import { Event } from '../../libs/interface/dashboard.interface';
 interface ImageSliderProps {
   events: Event[]; // Nhận dữ liệu từ props
 }
+import Link from 'next/link';
 
 const ImageSlider = ({ events }: ImageSliderProps) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
@@ -30,18 +31,23 @@ const ImageSlider = ({ events }: ImageSliderProps) => {
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {events.map((event) => (
-          <div key={event.id} className="w-full h-full flex-shrink-0 relative">
-            <Image
-              src={event.Images_Events_imgPosterIdToImages?.imageUrl || '/images/default-image.jpg'}
-              alt={event.title}
-              className="w-full h-full object-cover"
-              width={350}
-              height={250}
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white">
-              <h2 className="text-3xl md:text-5xl font-bold mb-2 md:mb-4 text-center">{event.title}</h2>
-            </div>
-          </div>
+           <Link key={event.id} href={`/event/${event.id}`} className="w-full h-full flex-shrink-0 relative group">
+           <div className="w-full h-full">
+             <Image
+               src={event.Images_Events_imgPosterIdToImages?.imageUrl || '/images/default-image.jpg'}
+               alt={event.title}
+               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+               width={350}
+               height={250}
+             />
+             {/* Overlay with Title */}
+             <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white transition-opacity duration-300 group-hover:bg-opacity-60">
+               <h2 className="text-3xl md:text-5xl font-bold mb-2 md:mb-4 text-center">
+                 {event.title}
+               </h2>
+             </div>
+           </div>
+         </Link>
         ))}
       </div>
 
