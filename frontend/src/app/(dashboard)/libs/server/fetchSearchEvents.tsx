@@ -3,6 +3,8 @@ interface FetchSearchEventsParams {
   type?: string;       // comma-separated category names
   startDate?: string;  // in YYYY-MM-DD format
   endDate?: string;    // in YYYY-MM-DD format
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 export async function fetchSearchEvents({
@@ -10,6 +12,8 @@ export async function fetchSearchEvents({
   type,
   startDate,
   endDate,
+  minPrice,
+  maxPrice,
 }: FetchSearchEventsParams) {
   try {
     const params = new URLSearchParams();
@@ -17,6 +21,9 @@ export async function fetchSearchEvents({
     if (type) params.append("type", type);
     if (startDate) params.append("startDate", startDate);
     if (endDate) params.append("endDate", endDate);
+    if (minPrice !== undefined) params.append("minPrice", minPrice.toString());
+    if (maxPrice !== undefined) params.append("maxPrice", maxPrice.toString());
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/event/search?${params.toString()}`,
       {
@@ -37,5 +44,6 @@ export async function fetchSearchEvents({
     return response.json();
   } catch (error) {
     console.error("Error fetching event details:", error);
+    return [];
   }
 }
