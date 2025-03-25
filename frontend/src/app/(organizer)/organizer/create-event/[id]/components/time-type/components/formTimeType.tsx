@@ -178,7 +178,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
         <>
             <Toaster position="top-center" />
 
-            <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="ticket-form">
+            <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="ticket-form">
                 <div className="relative flex items-center">
                     <label className="text-xl font-bold mr-4">Thời gian</label>
                     <div className="relative ml-auto">

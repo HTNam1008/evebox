@@ -194,8 +194,8 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
     return (
         <>
             <Toaster position="top-center" />
-            <div className="flex justify-center">
-                <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="event-form">
+            <div className="flex justify-center mb-6">
+                <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="event-form">
                     <EventImageUpload
                         logo={logo}
                         background={background}

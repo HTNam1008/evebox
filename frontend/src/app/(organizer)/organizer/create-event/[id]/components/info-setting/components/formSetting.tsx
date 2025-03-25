@@ -47,7 +47,7 @@ export default function FormSettingClient({ onNextStep, btnValidate3 }: { onNext
     return (
         <>
             <div className="flex justify-center w-full mb-6">
-                <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="setting-form">
+                <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="setting-form">
                     <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <label className="block text-base font-bold mb-2">
                             <span className="text-red-500">* </span> Link dẫn đến sự kiện
