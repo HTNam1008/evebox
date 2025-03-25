@@ -2,8 +2,8 @@
 import 'tailwindcss/tailwind.css';
 
 /* Package Application */
-import Sidebar from './[id]/components/common/sidebar';
-import InformationEventClient from './[id]/components/info-event/page';
+import Sidebar from './components/common/sidebar';
+import EventStep from './components/common/eventStep';
 
 export default function Page() {
     return (
@@ -13,11 +13,10 @@ export default function Page() {
             </div>
 
             <div className="w-full flex flex-col">
-                <InformationEventClient />
+                {/* Gán cứng là 1 tuy nhiên sau này sẽ dựa và db tạo event để tạo ID */}
+                <EventStep eventId='1'/>  
             </div>
 
         </div>
     )
 }
-
-export const dynamic = 'force-dynamic';
