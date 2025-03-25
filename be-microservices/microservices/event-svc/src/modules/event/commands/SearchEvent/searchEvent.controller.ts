@@ -21,9 +21,12 @@ export class SearchEventController {
     description: 'Invalid input',
   })
   async search(@Query('title') title: string, @Query('type') type: string, @Query('startDate') startDate: string,
-  @Query('endDate') endDate: string, @Res() res: Response) {
+  @Query('endDate') endDate: string, @Query('minPrice') minPrice: string,
+  @Query('maxPrice') maxPrice: string, @Res() res: Response) {
     const typeArray = type ? type.split(',').map((item) => item.trim()) : [];
-    const result = await this.searchService.execute(title,typeArray,startDate,endDate);
+    const minPriceNum = minPrice ? parseInt(minPrice, 10) : undefined;
+    const maxPriceNum = maxPrice ? parseInt(maxPrice, 10) : undefined;
+    const result = await this.searchService.execute(title,typeArray,startDate,endDate, minPriceNum, maxPriceNum);
 
     if (result.isErr()) {
       const error = result.unwrapErr();

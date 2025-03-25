@@ -220,6 +220,100 @@ export class SearchEventRepository {
   
     return updatedEvents;
   }
+
+  async getEventsByTitleCategoryDateAndPrice(
+    title: string,
+    categories: string[],
+    startDate?: string,
+    endDate?: string,
+    minPrice?: number,
+    maxPrice?: number
+  ) {
+    const events = await this.prisma.events.findMany({
+      where: {
+        title: {
+          contains: title,
+          mode: 'insensitive',
+        },
+        EventCategories: categories.length > 0
+          ? {
+              some: {
+                Categories: {
+                  name: {
+                    in: categories,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            }
+          : undefined,
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        lastScore: true,
+        EventCategories: {
+          select: {
+            Categories: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        Images_Events_imgLogoIdToImages: true,
+        Images_Events_imgPosterIdToImages: true,
+      },
+    });
   
+    const now = new Date();
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+  
+    let updatedEvents = [];
+  
+    for (const event of events) {
+      const showings = await this.prisma.showing.findMany({
+        where: {
+          eventId: event.id,
+          startTime: {
+            gte: start ?? now,
+            lte: end ?? undefined,
+          },
+        },
+        select: {
+          id: true,
+          startTime: true,
+          TicketType: {
+            select: {
+              price: true,
+              id: true,
+            },
+          },
+        },
+      });
+  
+      if (showings.length > 0) {
+        const eventAddition = await this.getEventFrontDisplayRepository.caculateEvents(showings);
+  
+        // Filter by price range on the calculated minTicketPrice
+        if (
+          (minPrice !== undefined && eventAddition.minTicketPrice < minPrice) ||
+          (maxPrice !== undefined && eventAddition.minTicketPrice > maxPrice)
+        ) {
+          continue;
+        }
+  
+        updatedEvents.push({
+          ...event,
+          ...eventAddition,
+        });
+      }
+    }
+  
+    return updatedEvents;
+  }
   
 }
