@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@fontsource/nunito-sans": "^5.1.0",
     "@iconify/react": "^5.0.2",
+    "@mui/material": "^6.4.8",
     "@next/third-parties": "^15.2.1",
     "@nextui-org/date-picker": "^2.3.7",
     "@nextui-org/react": "^2.6.8",

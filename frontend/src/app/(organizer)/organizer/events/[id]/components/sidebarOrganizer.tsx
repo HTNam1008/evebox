@@ -42,7 +42,12 @@ const SidebarOrganizer: React.FC<SidebarProps> = ({ onClose }) => {
       <div className="top-16 left-0 h-full w-64 bg-sky-900 text-white p-4">
         <h2 className="text-xl font-bold mb-6 bg-gradient-to-r from-white to-[#51DACF] text-transparent bg-clip-text">ORGANIZER CENTER</h2>
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <ArrowLeft size={20} className="cursor-pointer hover:text-teal-400 transition" />
+          <Link href="/organizer/events">
+            <ArrowLeft 
+              size={20} 
+              className="cursor-pointer hover:text-teal-400 transition" 
+            />
+          </Link>
           <span>Quản trị sự kiện</span>
           <button
               className="md:hidden top-4 right-4 p-2 bg-gray-700 rounded-md"
@@ -60,7 +65,9 @@ const SidebarOrganizer: React.FC<SidebarProps> = ({ onClose }) => {
                   <li key={i}>
                     <Link
                       href={item.href}
-                      className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-sky-800 transition-colors"
+                      className={`flex items-center gap-3 py-2 px-3 rounded-md transition-colors ${
+                        pathName === item.href ? "bg-sky-700" : "hover:bg-sky-800"
+                      }`}
                     >
                       {item.icon}
                       {item.text}

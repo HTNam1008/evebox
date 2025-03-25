@@ -92,7 +92,7 @@ const TicketManagement = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-2xl font-bold mt-8 mb-6">Quản lý vé đã mua</h2>
+      <h2 className="text-2xl font-bold mt-8 mb-4">Quản lý vé đã mua</h2>
       <h5 className="text-sm text-gray-700">
         Quản lý tiến trình tham gia sự kiện qua các vé
       </h5>

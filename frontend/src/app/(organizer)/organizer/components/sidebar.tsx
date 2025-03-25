@@ -1,9 +1,11 @@
 "use client"
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Ticket, CalendarPlus, BarChart, BookMinus } from 'lucide-react';
 
 const Sidebar = () => {
+  const pathName = usePathname();
   const menuSections = [
     { text: 'Sự kiện của tôi', href: '/organizer/events', icon: <Ticket size={20} /> },
     { text: 'Quản lý báo cáo', href: '/organizer/report-management', icon: <BarChart size={20} /> },
@@ -20,7 +22,9 @@ const Sidebar = () => {
             <li key={i}>
               <Link
                 href={item.href}
-                className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-sky-800 transition-colors"
+                className={`flex items-center gap-3 py-2 px-3 rounded-md transition-colors ${
+                  pathName === item.href ? "bg-sky-700" : "hover:bg-sky-800"
+                }`}
               >
                 {item.icon}
                 {item.text}
