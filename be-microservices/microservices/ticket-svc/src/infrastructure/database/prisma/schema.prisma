@@ -110,6 +110,8 @@ model Form {
   id           Int            @id @default(autoincrement())
   name         String         @db.VarChar(255)
   createdAt    DateTime       @default(now())
+  deleteAt     DateTime?      
+  createdBy    String?
   FormInput    FormInput[]
   FormResponse FormResponse[]
   Showing      Showing[]
@@ -134,6 +136,7 @@ model FormInput {
   options    Json?
   FormAnswer FormAnswer[]
   Form       Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  deleteAt   DateTime?
 }
 
 model FormResponse {
