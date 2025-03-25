@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { BaseResponse } from 'src/shared/constants/baseResponse';
 
 export class FormInputResponseDto {
   @ApiProperty({ example: '1', description: 'Form input id' })
@@ -23,7 +24,7 @@ export class FormInputResponseDto {
   options?: any;
 }
 
-export class GetFormOfShowingResponseDto {
+export class GetFormOfShowingDataDto {
   @ApiProperty({ example: '1', description: 'Form id' })
   id: string;
 
@@ -35,4 +36,9 @@ export class GetFormOfShowingResponseDto {
 
   @ApiProperty({ type: [FormInputResponseDto], description: 'List of form inputs' })
   formInputs: FormInputResponseDto[];
+}
+
+export class GetFormOfShowingResponseDto extends BaseResponse {
+  @ApiProperty({ type: GetFormOfShowingDataDto, description: 'Data of the form' })
+  data: GetFormOfShowingDataDto;
 }
