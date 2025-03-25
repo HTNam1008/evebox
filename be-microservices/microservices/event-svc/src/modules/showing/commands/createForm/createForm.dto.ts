@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsBoolean, IsOptional, IsArray, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
+import { JsonValue } from "@prisma/client/runtime/library";
 
 export class CreateFormInputDto {
   @ApiProperty({ example: 'Name', description: 'Field name of the form input' })
@@ -23,17 +24,17 @@ export class CreateFormInputDto {
   @ApiProperty({ example: ['Option1', 'Option2'], description: 'List of options for the form input (if applicable)', required: false })
   @IsOptional()
   @IsArray()
-  options?: any[];
+  options?: JsonValue[];
 }
 
 export class CreateFormDto {
-  @ApiProperty({ example: '1041811243642', description: 'Showing ID to which the form belongs' })
-  @IsString()
-  showingId: string;
-
   @ApiProperty({ example: 'Registration Form', description: 'Name of the form' })
   @IsString()
   name: string;
+
+  @ApiProperty({ example: 'nguyenvana@gmail.com', description: 'Organizer email who created the form' })
+  @IsString()
+  createdBy: string;
 
   @ApiProperty({ type: [CreateFormInputDto], description: 'List of form inputs' })
   @IsArray()

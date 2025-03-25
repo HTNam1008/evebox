@@ -11,12 +11,8 @@ export class CreateFormRepository {
     try {
       const createdForm = await this.prisma.form.create({
         data: {
-          Showing: {
-            connect: {
-              id: dto.showingId
-            }
-          },
           name: dto.name,
+          createdBy: dto.createdBy,
           FormInput: {
             create: dto.formInputs.map((input) => ({
               fieldName: input.fieldName,

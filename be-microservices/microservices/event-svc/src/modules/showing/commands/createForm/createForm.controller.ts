@@ -1,28 +1,37 @@
-import { Controller, Post, Body, Res, UseGuards, HttpStatus } from "@nestjs/common";
+import { Controller, Post, Body, Request, Res, UseGuards, HttpStatus } from "@nestjs/common";
 import { Response } from "express";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiHeader, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/shared/guard/jwt-auth.guard";
 import { CreateFormService } from "./createForm.service";
 import { CreateFormDto } from "./createForm.dto";
 import { CreateFormResponseDto } from "./createForm-response.dto";
 
-@ApiTags('Org - Event')
-@Controller('api/org/event')
+@ApiTags('Org - Showing')
+@Controller('api/org/showing')
 export class CreateFormController {
   constructor(private readonly createFormService: CreateFormService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post('/form')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
+  @ApiBody({ type: CreateFormDto })
   @ApiOperation({ summary: 'Create a new form' })
   @ApiResponse({ status: 201, description: 'Form created successfully', type: CreateFormResponseDto })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async createForm(
+    @Request() req,
     @Body() createFormDto: CreateFormDto,
     @Res() res: Response,
   ) {
     try {
+      const user = req.user;
+      createFormDto.createdBy = user.email;
       const result = await this.createFormService.execute(createFormDto);
       
       if (result.isErr()) {

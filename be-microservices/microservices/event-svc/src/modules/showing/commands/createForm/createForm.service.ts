@@ -9,7 +9,7 @@ export class CreateFormService {
 
   async execute (dto: CreateFormDto): Promise<Result<number, Error>> {
     try {
-      if (!dto.showingId || !dto.showingId.trim()) {
+      if (!dto.createdBy || !dto.createdBy.trim()) {
         return Err(new Error('Showing ID is required.'));
       }
 
