@@ -7,21 +7,27 @@ import { DeleteFormDto } from "../commands/deleteForm/deleteForm.dto";
 export class DeleteFormRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async deleteForm(id: number): Promise<Result<number, Error>> {
+  async deleteForm(dto: DeleteFormDto): Promise<Result<number, Error>> {
     try {
+      const form = await this.prisma.form.findFirst({
+        where: { id: dto.id, createdBy: dto.createdBy, deleteAt: null },
+      });
+      if (!form) {
+        return Err(new Error('Form not found or no permission to delete'));
+      }
       await this.prisma.$transaction(async (tx) => {
-        await tx.formInput.deleteMany({
-          where: {
-            formId: id
-          }
+        // Soft delete FormInput: cập nhật deleteAt cho tất cả các FormInput chưa bị xoá
+        await tx.formInput.updateMany({
+          where: { formId: dto.id, deleteAt: null },
+          data: { deleteAt: new Date() },
         });
-
-        await tx.form.delete({
-          where: { id }
+        // Soft delete Form: cập nhật deleteAt
+        await tx.form.update({
+          where: { id: dto.id },
+          data: { deleteAt: new Date() },
         });
       });
-
-      return Ok(id);
+      return Ok(dto.id);
     } catch (error) {
       return Err(new Error('Failed to delete form'));
     }

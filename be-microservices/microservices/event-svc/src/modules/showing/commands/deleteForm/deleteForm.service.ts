@@ -13,7 +13,7 @@ export class DeleteFormService {
         return Err(new Error('Form ID is required.'));
       }
 
-      const result = await this.deleteFormRepository.deleteForm(dto.id);
+      const result = await this.deleteFormRepository.deleteForm(dto);
       if (result.isErr()) {
         return Err(result.unwrapErr());
       }
