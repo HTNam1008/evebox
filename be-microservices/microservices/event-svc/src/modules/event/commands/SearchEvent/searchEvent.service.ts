@@ -7,14 +7,21 @@ import { SearchEventResponseDto } from './searchEvent-response.dto';
 export class SearchEventService {
   constructor(private readonly eventSearchRepository: SearchEventRepository) {}
 
-  async execute(title: string): Promise<Result<SearchEventResponseDto[], Error>> {
+  async execute(title: string, categories: string[],startDate?: string, endDate?: string,  minPrice?: number, maxPrice?: number): Promise<Result<SearchEventResponseDto[], Error>> {
     try {
-      const searchResult = await this.eventSearchRepository.getEventsByTitle(title);
+      const searchResult = await this.eventSearchRepository.getEventsByTitleCategoryDateAndPrice(
+        title,
+        categories,
+        startDate,
+        endDate,
+        minPrice,
+        maxPrice
+      );
 
       const formattedResult: SearchEventResponseDto[] = searchResult.map(event => ({
         id: event.id,
         title: event.title,
-        startDate: event.startDate,
+        startDate: event.startTime,
         lastScore: event.lastScore,
         status: event.status,
         minTicketPrice: event.minTicketPrice,
