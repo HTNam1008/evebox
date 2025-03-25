@@ -17,10 +17,11 @@ export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNex
     const [eventScopeSelected, setEventScopeSelected] = useState("all");
     const [quesText, setQuesText] = useState("quesText");
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+    const [isExpanded, setIsExpanded] = useState(true);
 
     // One Answer
-    const [oneTexts, setOneTexts] = useState<string[]>([""]);
-    const [oneCheckedItems, setOneCheckedItems] = useState<boolean[]>([false]); // Trạng thái checked của mỗi input
+    const [oneTexts, setOneTexts] = useState<string[]>(["", "", ""]);
+    const [oneCheckedItems, setOneCheckedItems] = useState<boolean[]>([false, false, false]); // Trạng thái checked của mỗi input
 
     const handleOneAddOption = () => {
         setOneTexts([...oneTexts, ""]);
@@ -39,8 +40,8 @@ export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNex
     };
 
     // Multiple Answer
-    const [texts, setTexts] = useState<string[]>([""]);
-    const [checkedItems, setCheckedItems] = useState<boolean[]>([false]); // Trạng thái checked của mỗi input
+    const [texts, setTexts] = useState<string[]>(["", "", ""]);
+    const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false]); // Trạng thái checked của mỗi input
 
     const handleAddOption = () => {
         setTexts([...texts, ""]);
@@ -119,7 +120,7 @@ export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNex
                     {/* Questions */}
                     <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-3" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <div className="flex items-center justify-between w-full">
-                            <Equal className="text-[#51DACF]" />
+                            <Equal className="text-[#51DACF]" onClick={() => setIsExpanded((prev) => !prev)} />
 
                             <div className="ml-2">
                                 <div className="relative flex items-center space-x-2">
@@ -134,138 +135,140 @@ export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNex
                             <Trash2 className="ml-auto p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer" />
                         </div>
 
-                        {/* Input Question */}
-                        <div className="flex flex-wrap items-center -mx-3 mb-6 mt-4">
-                            <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
-                                <label className="block text-sm font-bold mb-2 text-right">
-                                    <span className="text-red-500">* </span> Câu hỏi
-                                </label>
-                            </div>
-
-                            <div className="w-full md:w-5/6 px-3 mb-6 md:mb-0">
-                                <InputCountField
-                                    label=""
-                                    placeholder="Họ và tên"
-                                    value={name}
-                                    onChange={(e) => handleInputChange(e, "name")}
-                                    error={errors.name}
-                                    maxLength={100}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Description of Question */}
-                        <div className="flex flex-wrap items-center -mx-3 mb-6 mt-4">
-                            <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
-                                <label className="block text-sm font-bold mb-2 text-right">
-                                    Mô tả
-                                </label>
-                            </div>
-
-                            <div className="w-full md:w-5/6 px-3 mb-6 md:mb-0">
-                                <InputCountField
-                                    label=""
-                                    placeholder="Mô tả"
-                                    value={des}
-                                    onChange={(e) => handleInputChange(e, "des")}
-                                    maxLength={250}
-                                />
-                            </div>
-
-                            <div className="w-full ml-4 mr-4">
-                                <div className="TypeOfQuestion flex justify-between items-center w-full mt-2 mb-2">
-                                    <div className="flex-1 flex justify-start">
-                                        <CustomRadioButton
-                                            value="quesText"
-                                            selectedValue={quesText}
-                                            onChange={setQuesText}
-                                            label="Thêm câu hỏi dạng văn bản"
-                                        />
-                                    </div>
-
-                                    <div className="flex-1 flex justify-center">
-                                        <CustomRadioButton
-                                            value="oneAns"
-                                            selectedValue={quesText}
-                                            onChange={setQuesText}
-                                            label="Thêm câu hỏi 'một câu trả lời'"
-                                        />
-                                    </div>
-
-                                    <div className="flex-1 flex justify-end">
-                                        <CustomRadioButton
-                                            value="multAns"
-                                            selectedValue={quesText}
-                                            onChange={setQuesText}
-                                            label="Thêm câu hỏi ‘nhiều câu trả lời’"
-                                        />
-                                    </div>
-                                </div>
-
-                                {quesText === "oneAns" && (<div className="border border-gray-400 p-4 rounded bg-white w-full mt-4">
-                                    {oneTexts.map((text, index) => (
-                                        <OneAnswer
-                                            key={index}
-                                            value={text}
-                                            checked={oneCheckedItems[index]} // Truyền trạng thái checked xuống component con
-                                            onChange={(newValue) => {
-                                                const newTexts = [...oneTexts];
-                                                newTexts[index] = newValue;
-                                                setOneTexts(newTexts);
-                                            }}
-                                            onToggle={() => toggleOneChecked(index)} // Hàm xử lý chọn/bỏ chọn
-                                            onDelete={() => handleOneDelete(index)}
-                                        />
-                                    ))}
-
-                                    <div className="ml-2">
-                                        <button
-                                            type="button"
-                                            className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
-                                            onClick={handleOneAddOption}
-                                        >
-                                            <CirclePlus size={20} /> Thêm tùy chọn
-                                        </button>
-                                    </div>
-                                </div>
-                                )}
-
-                                {quesText === "multAns" && (<div className="border border-gray-400 p-4 rounded bg-white w-full mt-4">
-                                    {texts.map((text, index) => (
-                                        <MultipleAnswer
-                                            key={index}
-                                            value={text}
-                                            checked={checkedItems[index]} // Truyền trạng thái checked xuống component con
-                                            onChange={(newValue) => {
-                                                const newTexts = [...texts];
-                                                newTexts[index] = newValue;
-                                                setTexts(newTexts);
-                                            }}
-                                            onToggle={() => toggleChecked(index)} // Hàm xử lý chọn/bỏ chọn
-                                            onDelete={() => handleDelete(index)}
-                                        />
-                                    ))}
-
-                                    <div className="ml-2">
-                                        <button
-                                            type="button"
-                                            className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
-                                            onClick={handleAddOption}
-                                        >
-                                            <CirclePlus size={20} /> Thêm tùy chọn
-                                        </button>
-                                    </div>
-                                </div>
-                                )}
-
-                                <div className="flex justify-end mt-3">
-                                    <label className="flex items-center gap-2 cursor-pointer">
-                                        <input type="checkbox" className="w-4 h-4 border border-black" />
-                                        <span className="text-sm">Yêu cầu trả lời</span>
+                        {isExpanded && (<>
+                            {/* Input Question */}
+                            <div className="flex flex-wrap items-center -mx-3 mb-6 mt-4">
+                                <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+                                    <label className="block text-sm font-bold mb-2 text-right">
+                                        <span className="text-red-500">* </span> Câu hỏi
                                     </label>
                                 </div>
+
+                                <div className="w-full md:w-5/6 px-3 mb-6 md:mb-0">
+                                    <InputCountField
+                                        label=""
+                                        placeholder="Họ và tên"
+                                        value={name}
+                                        onChange={(e) => handleInputChange(e, "name")}
+                                        error={errors.name}
+                                        maxLength={100}
+                                    />
+                                </div>
                             </div>
-                        </div>
+
+                            {/* Description of Question */}
+                            <div className="flex flex-wrap items-center -mx-3 mb-6 mt-4">
+                                <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
+                                    <label className="block text-sm font-bold mb-2 text-right">
+                                        Mô tả
+                                    </label>
+                                </div>
+
+                                <div className="w-full md:w-5/6 px-3 mb-6 md:mb-0">
+                                    <InputCountField
+                                        label=""
+                                        placeholder="Mô tả"
+                                        value={des}
+                                        onChange={(e) => handleInputChange(e, "des")}
+                                        maxLength={250}
+                                    />
+                                </div>
+
+                                <div className="w-full ml-4 mr-4">
+                                    <div className="TypeOfQuestion flex justify-between items-center w-full mt-2 mb-2">
+                                        <div className="flex-1 flex justify-start">
+                                            <CustomRadioButton
+                                                value="quesText"
+                                                selectedValue={quesText}
+                                                onChange={setQuesText}
+                                                label="Thêm câu hỏi dạng văn bản"
+                                            />
+                                        </div>
+
+                                        <div className="flex-1 flex justify-center">
+                                            <CustomRadioButton
+                                                value="oneAns"
+                                                selectedValue={quesText}
+                                                onChange={setQuesText}
+                                                label="Thêm câu hỏi 'một câu trả lời'"
+                                            />
+                                        </div>
+
+                                        <div className="flex-1 flex justify-end">
+                                            <CustomRadioButton
+                                                value="multAns"
+                                                selectedValue={quesText}
+                                                onChange={setQuesText}
+                                                label="Thêm câu hỏi ‘nhiều câu trả lời’"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {quesText === "oneAns" && (<div className="border border-gray-400 p-4 rounded bg-white w-full mt-4">
+                                        {oneTexts.map((text, index) => (
+                                            <OneAnswer
+                                                key={index}
+                                                value={text}
+                                                checked={oneCheckedItems[index]} // Truyền trạng thái checked xuống component con
+                                                onChange={(newValue) => {
+                                                    const newTexts = [...oneTexts];
+                                                    newTexts[index] = newValue;
+                                                    setOneTexts(newTexts);
+                                                }}
+                                                onToggle={() => toggleOneChecked(index)} // Hàm xử lý chọn/bỏ chọn
+                                                onDelete={() => handleOneDelete(index)}
+                                            />
+                                        ))}
+
+                                        <div className="ml-2">
+                                            <button
+                                                type="button"
+                                                className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
+                                                onClick={handleOneAddOption}
+                                            >
+                                                <CirclePlus size={20} /> Thêm tùy chọn
+                                            </button>
+                                        </div>
+                                    </div>
+                                    )}
+
+                                    {quesText === "multAns" && (<div className="border border-gray-400 p-4 rounded bg-white w-full mt-4">
+                                        {texts.map((text, index) => (
+                                            <MultipleAnswer
+                                                key={index}
+                                                value={text}
+                                                checked={checkedItems[index]} // Truyền trạng thái checked xuống component con
+                                                onChange={(newValue) => {
+                                                    const newTexts = [...texts];
+                                                    newTexts[index] = newValue;
+                                                    setTexts(newTexts);
+                                                }}
+                                                onToggle={() => toggleChecked(index)} // Hàm xử lý chọn/bỏ chọn
+                                                onDelete={() => handleDelete(index)}
+                                            />
+                                        ))}
+
+                                        <div className="ml-2">
+                                            <button
+                                                type="button"
+                                                className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
+                                                onClick={handleAddOption}
+                                            >
+                                                <CirclePlus size={20} /> Thêm tùy chọn
+                                            </button>
+                                        </div>
+                                    </div>
+                                    )}
+
+                                    <div className="flex justify-end mt-3">
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" className="w-4 h-4 border border-black" />
+                                            <span className="text-sm">Yêu cầu trả lời</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </>)}
                     </div>
 
                     <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
