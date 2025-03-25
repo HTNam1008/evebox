@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsBoolean, IsOptional, IsArray, ValidateNested, IsNumber } from "class-validator";
 import { Type } from "class-transformer";
+import { JsonValue } from "@prisma/client/runtime/library";
 
 export class UpdateFormInputDto {
   @ApiProperty({ example: 1, description: 'Form input ID' })
@@ -27,7 +28,7 @@ export class UpdateFormInputDto {
   @ApiProperty({ example: ['Option1', 'Option2'], description: 'List of options for the form input (if applicable)', required: false })
   @IsOptional()
   @IsArray()
-  options?: any[];
+  options?: JsonValue[];
 }
 
 export class UpdateFormDto {

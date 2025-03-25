@@ -1,16 +1,16 @@
-import { Controller, Patch, Param, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Patch, Put, Param, Body, Res, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { UpdateFormService } from './updateForm.service';
 import { UpdateFormDto } from './updateForm.dto';
 import { UpdateFormResponseDto } from './updateForm-response.dto';
 
-@ApiTags('Org - Event')
-@Controller('api/org/event')
+@ApiTags('Org - Showing')
+@Controller('api/org/showing')
 export class UpdateFormController {
   constructor(private readonly updateFormService: UpdateFormService) {}
 
-  @Patch('form/:id')
+  @Put('form/:id')
   @ApiOperation({ summary: 'Update form of a showing' })
   @ApiParam({ name: 'id', description: 'Form ID need update' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Form updated successfully', type: UpdateFormResponseDto })

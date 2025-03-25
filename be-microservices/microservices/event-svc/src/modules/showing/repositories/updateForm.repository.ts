@@ -12,6 +12,7 @@ export class UpdateFormRepository {
       const existingForm = await this.prisma.form.findFirst({
         where: {
           id: dto.id,
+          deleteAt: null,
           Showing: {
             some: {
               id: dto.showingId
@@ -38,7 +39,9 @@ export class UpdateFormRepository {
       let formInputIdsToDelete: number[] = [];
 
       if (dto.formInputs) {
-        const existingFormInputIds = existingForm.FormInput.map((input) => input.id);
+        const existingFormInputIds = existingForm.FormInput
+          .filter(input => input.deleteAt === null)
+          .map((input) => input.id);
         const newInputIds = dto.formInputs.filter((fi) => fi.id).map((fi) => fi.id);
 
         // identify old inputs to delete
@@ -61,12 +64,9 @@ export class UpdateFormRepository {
         });
 
         if (formInputIdsToDelete.length > 0) {
-          await tx.formInput.deleteMany({
-            where: {
-              id: {
-                in: formInputIdsToDelete
-              }
-            }
+          await tx.formInput.updateMany({
+            where: { id: { in: formInputIdsToDelete } },
+            data: { deleteAt: new Date() }
           });
         }
 
@@ -92,7 +92,7 @@ export class UpdateFormRepository {
               type: input.type,
               required: input.required,
               regex: input.regex,
-              options: input.options
+              options: input.options,
             }))
           });
         }
