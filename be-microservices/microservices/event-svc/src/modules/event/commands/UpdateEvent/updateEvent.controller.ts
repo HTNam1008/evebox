@@ -1,19 +1,24 @@
-import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, UseInterceptors, UploadedFiles, Put } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateEventService } from './updateEvent.service';
 import { UpdateEventDto } from './updateEvent.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { EventResponse } from './updateEvent-response.dto';
 
-@ApiTags('Event')
-@Controller('api/event')
+@ApiTags('Org - Event')
+@Controller('api/org/event')
 export class UpdateEventController {
   constructor(private readonly updateEventService: UpdateEventService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Patch('/:id')
+  @Put('/:id')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Update an existing event' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Event updated successfully', type: EventResponse })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })
@@ -36,12 +41,8 @@ export class UpdateEventController {
       if (files.imgPoster && files.imgPoster.length > 0) {
         updateEventDto.imgPoster = files.imgPoster[0];
       }
-      // If the ID is not provided in the body, use the URL parameter
-      if (!updateEventDto.id && req.params.id) {
-        updateEventDto.id = Number(req.params.id);
-      }
 
-      const result = await this.updateEventService.execute(updateEventDto, user.email);
+      const result = await this.updateEventService.execute(updateEventDto, user.email, req.params.id);
 
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({

@@ -14,8 +14,16 @@ export class UpdateEventService {
     private readonly locationService: LocationService,
   ) {}
 
-  async execute(dto: UpdateEventDto, organizerId: string): Promise<Result<EventDto, Error>> {
+  async execute(dto: UpdateEventDto, organizerId: string, id: number): Promise<Result<EventDto, Error>> {
     try {
+      const isAuthor = await this.updateEventRepository.checkAuthor(id, organizerId);
+      if (isAuthor.isErr()) {
+        return Err(new Error('Failed to check author'));
+      }
+      if (!isAuthor.unwrap()) {
+        return Err(new Error('Unauthorized'));
+      }
+
       let imgLogoId: number | undefined;
       let imgPosterId: number | undefined;
       let locationId: number | undefined;
@@ -45,14 +53,14 @@ export class UpdateEventService {
         locationId = location.id;
       }
 
-      const eventResult = await this.updateEventRepository.updateEvent(dto, locationId, imgLogoId, imgPosterId);
+      const eventResult = await this.updateEventRepository.updateEvent(dto, id, locationId, imgLogoId, imgPosterId);
       if (eventResult.isErr()) {
         return Err(new Error('Failed to update event'));
       }
 
       // Update event categories if provided
       if (dto.categoryIds && dto.categoryIds.length > 0) {
-        const categoryResult = await this.updateEventRepository.updateEventCategory(dto.id, dto.categoryIds);
+        const categoryResult = await this.updateEventRepository.updateEventCategory(id, dto.categoryIds);
         if (categoryResult.isErr()) {
           return Err(new Error('Failed to update event categories'));
         }

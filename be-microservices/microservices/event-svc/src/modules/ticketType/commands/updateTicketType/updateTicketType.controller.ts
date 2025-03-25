@@ -1,19 +1,24 @@
-import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, UseInterceptors, UploadedFile, Put, Param } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateTicketTypeService } from './updateTicketType.service';
 import { UpdateTicketTypeDto } from './updateTicketType.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateTicketTypeResponseDto } from './updateTicketType-response.dto';
 
-@ApiTags('TicketType')
-@Controller('api/ticketType')
+@ApiTags('Org - Ticket Type')
+@Controller('api/org/ticketType')
 export class UpdateTicketTypeController {
   constructor(private readonly updateTicketTypeService: UpdateTicketTypeService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Patch('/:id')
+  @Put('/:id')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Update an existing ticket type' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Ticket type updated successfully', type: UpdateTicketTypeResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
@@ -22,18 +27,18 @@ export class UpdateTicketTypeController {
   @UseInterceptors(FileInterceptor('file'))
   async updateTicketType(
     @Body() updateTicketTypeDto: UpdateTicketTypeDto,
-    @Request() req,
+    @Param('id') id: string,
     @Res() res: Response,
+    @Request() req: any,
     @UploadedFile() file?: Express.Multer.File,
   ) {
     try {
-      if (!updateTicketTypeDto.id && req.params.id) {
-        updateTicketTypeDto.id = req.params.id;
-      }
+      const userId = req.user.email;
+
       if (file) {
         updateTicketTypeDto.img = file;
       }
-      const result = await this.updateTicketTypeService.updateTicketType(updateTicketTypeDto);
+      const result = await this.updateTicketTypeService.updateTicketType(updateTicketTypeDto, id, userId);
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({
           statusCode: HttpStatus.BAD_REQUEST,

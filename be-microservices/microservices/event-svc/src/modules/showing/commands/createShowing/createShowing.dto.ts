@@ -5,7 +5,7 @@ import { isDeepStrictEqual } from 'util';
 
 
 export class CreateShowingDto {
-  @ApiProperty({ example: 'Online', description: 'Showing type' })
+  @ApiProperty({ example: 'Online', description: 'Showing Online or Offline' })
   @IsString({message: 'Showing type must be a string'})
   status: string;
 

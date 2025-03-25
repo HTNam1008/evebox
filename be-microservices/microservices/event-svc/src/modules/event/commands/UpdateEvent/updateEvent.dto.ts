@@ -3,10 +3,6 @@ import { Transform } from 'class-transformer';
 import { IsString, IsOptional, IsNumber, IsIn } from 'class-validator';
 
 export class UpdateEventDto {
-  @ApiProperty({ example: 22911, description: 'Event ID' })
-  @IsNumber()
-  id: number;
-
   @ApiPropertyOptional({ example: 'Tech Conference 2025', description: 'Title of the event' })
   @IsOptional()
   @IsString({ message: 'Title must be a string' })

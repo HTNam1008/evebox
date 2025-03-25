@@ -1,19 +1,24 @@
 import { Controller, Get, Request, Res, HttpStatus, Post, Body, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateEventService } from './createEvent.service';
 import { CreateEventDto } from './createEvent.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { EventResponse } from './createEvent-response.dto';
 
-@ApiTags('Event')
-@Controller('api/event')
+@ApiTags('Org - Event')
+@Controller('api/org/event')
 export class CreateEventController {
   constructor(private readonly createEventService: CreateEventService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post('/')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Create a new event' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Event created successfully', type: EventResponse })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })
@@ -24,7 +29,7 @@ export class CreateEventController {
   ]))
   async createEvent(
     @Body() createEventDto: CreateEventDto,
-    @Request() req,
+    @Request() req: any,
     @Res() res: Response,
     @UploadedFiles() files: { imgLogo?: Express.Multer.File[]; imgPoster?: Express.Multer.File[] }
   ) {

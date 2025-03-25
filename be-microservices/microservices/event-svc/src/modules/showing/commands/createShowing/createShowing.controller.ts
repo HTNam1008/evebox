@@ -1,19 +1,24 @@
 import { Controller, Get, Request, Res, HttpStatus, Post, Body, UseGuards, UseInterceptors, UploadedFiles, Param } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateShowingService } from './createShowing.service';
 import { CreateShowingDto } from './createShowing.dto';
 import { CreateShowingResponseDto } from './createShowing-response.dto';
 
-@ApiTags('Showing')
-@Controller('api/showing')
+@ApiTags('Org - Showing')
+@Controller('api/org/showing')
 export class CreateShowingController {
   constructor(private readonly createShowingService: CreateShowingService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('/create/:eventId')
+  @Post('/:eventId')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Create a new showing' })
   @ApiResponse({ status: 201, description: 'Showing created successfully', type: CreateShowingResponseDto })
   @ApiResponse({ status: 400, description: 'Bad request' })
@@ -21,7 +26,6 @@ export class CreateShowingController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async createEvent(
     @Body() CreateShowingDto: CreateShowingDto,
-    @Request() req, 
     @Param('eventId') eventId: number,
     @Res() res: Response,
   ) {

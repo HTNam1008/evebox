@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Result, Ok, Err } from 'oxide.ts';
 import { DeleteEventRepository } from '../../repositories/deleteEvent.repository';
-import { DeleteEventDto } from './deleteEvent.dto';
 
 @Injectable()
 export class DeleteEventService {
@@ -9,9 +8,17 @@ export class DeleteEventService {
     private readonly deleteEventRepository: DeleteEventRepository,
   ) {}
 
-  async execute(dto: DeleteEventDto): Promise<Result<number, Error>> {
+  async execute(id: number, userId: string): Promise<Result<number, Error>> {
     try {
-      const result = await this.deleteEventRepository.deleteEvent(dto.id);
+      const isAuthor = await this.deleteEventRepository.checkAuthor(id, userId);
+      if (isAuthor.isErr()) {
+        return Err(new Error('Failed to check author'));
+      }
+      if (!isAuthor.unwrap()) {
+        return Err(new Error('Unauthorized'));
+      }
+
+      const result = await this.deleteEventRepository.deleteEvent(id);
       if (result.isErr()) {
         return Err(new Error('Failed to delete event'));
       }

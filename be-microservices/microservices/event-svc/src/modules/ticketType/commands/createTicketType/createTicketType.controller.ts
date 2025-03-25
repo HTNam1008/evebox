@@ -1,6 +1,6 @@
 import { Controller, Get, Request, Res, HttpStatus, Post, Body, UseGuards, UseInterceptors, UploadedFiles, Param, UploadedFile } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateTicketTypeService } from './createTicketType.service';
@@ -8,13 +8,18 @@ import { CreateTicketTypeResponseDto } from './createTicketType-response.dto';
 import { create } from 'domain';
 import { CreateTicketTypeDto } from './createTicketType.dto';
 
-@ApiTags('TicketType')
-@Controller('api/ticketType')
+@ApiTags('Org - Ticket Type')
+@Controller('api/org/ticketType')
 export class CreateTicketTypeController {
   constructor(private readonly createTicketTypeService: CreateTicketTypeService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post('/create/:showingId')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true
+  })
   @ApiOperation({ summary: 'Create a new ticket type' })
   @ApiResponse({ status: 201, description: 'Ticket type created successfully', type: CreateTicketTypeResponseDto })
   @ApiResponse({ status: 400, description: 'Bad request' })
@@ -39,7 +44,7 @@ export class CreateTicketTypeController {
 
       return res.status(HttpStatus.CREATED).json({
         statusCode: HttpStatus.CREATED,
-        message: 'Event created successfully',
+        message: 'TicketType created successfully',
         data: result.unwrap(),
       });
     } catch (error) {
