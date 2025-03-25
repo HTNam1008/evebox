@@ -28,6 +28,13 @@ export default function SearchControls() {
     const dropdownLocationRef = useRef(null);
     const t = useTranslations("common");
 
+    const queryParams: Record<string, string> = {};
+
+    if (searchText) queryParams.q = searchText;
+    if (selectedOptions.length > 0) queryParams.types = selectedOptions.join(',');
+    if (dateRange?.start) queryParams.startDate = dateRange.start.toString();
+    if (dateRange?.end) queryParams.endDate = dateRange.end.toString();
+
     useEffect(() => {
         const fetchCategories = async () => {
           try {
@@ -145,16 +152,12 @@ export default function SearchControls() {
                         </div>
                     </div>
                     <div className="flex md:items-end">
-                        <Link href={{
-                            pathname: "/search",
-                            query: {
-                                q: searchText || undefined,
-                                types: selectedOptions.length > 0 ? selectedOptions.join(',') : undefined,
-                                // location: selectedLocation || undefined,
-                                startDate: dateRange?.start?.toString() || undefined,
-                                endDate: dateRange?.end?.toString() || undefined
-                            }
-                        }}>
+                    <Link
+    href={{
+      pathname: "/search",
+      query: queryParams,
+    }}
+  >
                             <button className="w-full md:w-14 h-10 bg-teal-400 hover:bg-teal-300 rounded flex items-center justify-center">
                                 <Search size={20} className="text-white" />
                             </button>

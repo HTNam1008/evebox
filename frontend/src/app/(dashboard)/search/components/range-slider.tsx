@@ -3,7 +3,7 @@ import { Slider } from "@nextui-org/react";
 import { motion } from "framer-motion";
 
 export default function RangeSlider({ onChange }: { onChange?: (value: number[]) => void }) {
-  const [value, setValue] = React.useState<number[]>([100, 300]);
+  const [value, setValue] = React.useState<number[]>([0, 20000000]);
   const handleChange = (newValue: number | number[]) => {
     if (Array.isArray(newValue)) {
       setValue(newValue);
