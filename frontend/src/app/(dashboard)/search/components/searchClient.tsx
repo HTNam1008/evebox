@@ -12,7 +12,9 @@ import Image from "next/image";
 import { SearchEventsResponse } from '@/types/model/searchEvents';
 import DatePicker from '../../components/dashboard/datePicker';
 import { CalendarDate, RangeValue } from '@nextui-org/react';
-
+import { Category } from '@/types/model/frontDisplay';
+import mapCategoryName from '@/app/(dashboard)/libs/functions/mapCategoryName'; 
+import axios from 'axios';
 // import EventSlider from '../../components/dashboard/eventSlider';
 
 interface SearchClientProps {
@@ -22,11 +24,56 @@ interface SearchClientProps {
 export default function SearchClient({ events }: SearchClientProps) {
     const [isEventTypeOpen, setIsEventTypeOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-    const [, setDateRange] = useState<RangeValue<CalendarDate> | null>(null);
-
-    const options = ["Âm nhạc", "Kịch", "Học thuật", "Thể thao", "Workshop", "Hòa nhạc"];
-    
+    const [categories, setCategories] = useState<Category[]>([]); 
+    const [priceRange, setPriceRange] = useState<number[]>([0, 20000000]);
+    const [dateRange, setDateRange] = useState<RangeValue<CalendarDate> | null>(null);
     const dropdownEventRef = useRef<HTMLDivElement | null>(null);
+
+    const filteredEvents = events.data.filter(event => {
+      // Filter by category
+      if (selectedOptions.length > 0) {
+        const eventCategoryNames = event.categories.map(cat => cat.name);
+        if (!eventCategoryNames.some(name => selectedOptions.includes(name))) {
+          return false;
+        }
+      }
+    
+      // Filter by price
+      if (
+        event.minTicketPrice < priceRange[0] ||
+        event.minTicketPrice > priceRange[1]
+      ) {
+        return false;
+      }
+    
+      // Filter by date range
+      if (dateRange) {
+        const eventDate = new Date(event.startDate);
+        const start = dateRange.start?.toDate('UTC');
+        const end = dateRange.end?.toDate('UTC');
+        if (
+          (start && eventDate < start) ||
+          (end && eventDate > end)
+        ) {
+          return false;
+        }
+      }
+    
+      return true;
+    });
+
+    useEffect(() => {
+      const fetchCategories = async () => {
+        try {
+          const response = await axios.get(`/api/categories`);
+          setCategories(response.data || []); 
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          setCategories([]); 
+        }
+      };
+      fetchCategories();
+      }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -76,55 +123,53 @@ export default function SearchClient({ events }: SearchClientProps) {
                                     }}
                                 >
                                     <span className="block overflow-hidden whitespace-nowrap text-ellipsis">
-                                        {selectedOptions.length > 0
-                                            ? selectedOptions.join(", ")
-                                            : "Loại sự kiện"}
+                                       {selectedOptions.length > 0 ? selectedOptions.map((name) => mapCategoryName(name)).join(", "): "Loại sự kiện"}
                                     </span>
                                     <ChevronDown size={16} className="text-gray-500" />
                                 </button>
 
                                 {/* Dropdown multi-select */}
                                 {isEventTypeOpen && (
-                                    <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg text-[#0C4762]">
-                                        {options.map((option) => (
-                                            <label
-                                                key={option}
-                                                className="flex items-center p-2 hover:bg-[#0C4762] hover:bg-opacity-[0.31] cursor-pointer"
-                                                style={{ lineHeight: "normal" }}
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedOptions.includes(option)}
-                                                    onChange={() => toggleOption(option)}
-                                                    className="mr-2"
-                                                />
-                                                {option}
-                                            </label>
-                                        ))}
-                                    </div>
-                                )}
+                                   <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg text-[#0C4762] max-h-64 overflow-y-auto">
+                                        {categories.map((category) => (
+                                  <label
+                                     key={category.id}
+                                    className="flex items-center p-2 hover:bg-[#0C4762] hover:bg-opacity-[0.31] cursor-pointer"
+                                    style={{ lineHeight: "normal" }}
+                                   >
+                                 <input
+                                   type="checkbox"
+                                   checked={selectedOptions.includes(category.name)}
+                                   onChange={() => toggleOption(category.name)}
+                                   className="mr-2"
+                                   />
+                                 {mapCategoryName(category.name)}
+                                </label>
+                              ))}
+                           </div>
+                            )}
                             </div>
                             {/* Bộ lọc: Range Slider */}
                             <div className="w-full items-center md:w-80 flex-shrink-0">
-                                <RangeSlider/>
+                                <RangeSlider  onChange={setPriceRange}/>
                             </div>
                         </div>
                     </div>
                     {/* Event Cards Grid */}
-                    {events.data.length === 0 ? (
+                    {filteredEvents.length === 0 ? (
               <p className="text-center text-gray-500 mt-10">
                 Không tìm thấy sự kiện nào phù hợp.
               </p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {events.data.map((event) => (
+                {filteredEvents.map((event) => (
                   <Link key={event.id} href={`/event/${event.id}`}>
                     <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow flex flex-col h-full hover:shadow-xl cursor-pointer">
                       <div className="flex items-center justify-center p-2 w-full h-auto overflow-hidden">
                         <Image
                           src={
                             event.Images_Events_imgPosterIdToImages?.imageUrl ||
-                            "/images/dashboard/card_pic.png"
+                            '/images/dashboard/card_pic.png'
                           }
                           alt={event.title}
                           className="w-full aspect-video object-cover rounded-lg hover:scale-110 transition-transform duration-300"
@@ -139,18 +184,18 @@ export default function SearchClient({ events }: SearchClientProps) {
                         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-2 text-[14px]">
                           <span
                             className={`rounded-lg px-2 font-medium text-sky-950 text-center md:text-left ${
-                              event.status === "event_over"
-                                ? "bg-red-300"
-                                : "bg-emerald-200"
+                              event.status === 'event_over'
+                                ? 'bg-red-300'
+                                : 'bg-emerald-200'
                             }`}
                           >
-                            {event.status === "available"
-                              ? "Từ " +
-                                event.minTicketPrice?.toLocaleString("vi-VN") +
-                                "đ"
-                              : event.status === "event_over"
-                              ? "Đã kết thúc"
-                              : "Chưa có thông tin vé"}
+                            {event.status === 'available'
+                              ? 'Từ ' +
+                                event.minTicketPrice?.toLocaleString('vi-VN') +
+                                'đ'
+                              : event.status === 'event_over'
+                              ? 'Đã kết thúc'
+                              : 'Chưa có thông tin vé'}
                           </span>
                         </div>
                       </div>

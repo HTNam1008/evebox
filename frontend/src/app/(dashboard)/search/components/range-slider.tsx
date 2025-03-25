@@ -2,14 +2,14 @@ import React from "react";
 import { Slider } from "@nextui-org/react";
 import { motion } from "framer-motion";
 
-export default function RangeSlider() {
+export default function RangeSlider({ onChange }: { onChange?: (value: number[]) => void }) {
   const [value, setValue] = React.useState<number[]>([100, 300]);
-
   const handleChange = (newValue: number | number[]) => {
     if (Array.isArray(newValue)) {
       setValue(newValue);
+      if (onChange) onChange(newValue);
     }
-  };
+  }
 
   return (
     <div className="flex flex-col w-full items-start p-2 bg-white rounded shadow-md max-w-md">
