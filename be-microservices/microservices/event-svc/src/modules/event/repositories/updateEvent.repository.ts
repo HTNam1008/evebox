@@ -26,6 +26,7 @@ export class UpdateEventRepository {
       if (imgPosterId) updateData.imgPosterId = imgPosterId;
       if (dto.orgName) updateData.orgName = dto.orgName;
       if (dto.orgDescription) updateData.orgDescription = dto.orgDescription;
+      if (dto.isOnline) updateData.isOnline = dto.isOnline;
       // Add additional fields as needed, e.g., updating timestamps
       updateData.createdAt = new Date();
 

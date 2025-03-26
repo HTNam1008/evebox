@@ -23,7 +23,6 @@ export class UpdateShowingRepository {
       console.log(dto);
       // Build dynamic update data based on provided fields
       const updateData: any = {};
-      if (dto.status) updateData.status = dto.status;
       if (dto.startTime) updateData.startTime = dto.startTime;
       if (dto.endTime) updateData.endTime = dto.endTime;
 

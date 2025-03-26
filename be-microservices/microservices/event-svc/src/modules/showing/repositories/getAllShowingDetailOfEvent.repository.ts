@@ -15,7 +15,6 @@ export class GetAllShowingDetailOfEventRepository {
          },
         select: {
           id: true,
-          status: true,
           startTime: true,
           endTime: true,
           TicketType: {
