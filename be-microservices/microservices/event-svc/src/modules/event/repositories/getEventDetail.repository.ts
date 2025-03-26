@@ -22,6 +22,7 @@ export class GetEventDetailRepository {
             venue: true,
             orgName: true,
             orgDescription: true,
+            isOnline: true,
             locations: {
                 select: {
                     id: true,
@@ -56,7 +57,6 @@ export class GetEventDetailRepository {
                 select: {
                     id: true,
                     eventId: true,
-                    status: true,
                     isFree: true,
                     isSalable: true,
                     isPresale: true,
@@ -112,7 +112,6 @@ export class GetEventDetailRepository {
         });
         return {
             ...showing,
-            type: showing.status, // ✅ Gán lại type bằng status
             status: showingStatus.showingStatus, // ✅ Gán status mới cho showing
             TicketType: showing.TicketType.map(ticketType => ({
                 ...ticketType,

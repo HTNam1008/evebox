@@ -10,13 +10,13 @@ import { EventDto } from '../commands/createEvent/createEvent-response.dto';
 export class CreateEventRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createEvent(dto: CreateEventDto, locationId: number, orgId: string, imgLogoId: number, imgPosterId: number): Promise<Result<EventDto, Error>> {
+  async createEvent(dto: CreateEventDto, orgId: string, imgLogoId: number, imgPosterId: number, locationId?: number): Promise<Result<EventDto, Error>> {
     try{
       const event = await this.prisma.events.create({
         data: {
           title: dto.title,
           description: dto.description,
-          locationId: locationId >> 0,
+          locationId: locationId >> 0 || null,
           organizerId: orgId,
           venue: dto.venue,
           imgLogoId: imgLogoId >> 0,
@@ -37,6 +37,7 @@ export class CreateEventRepository {
           title: event.title,
           description: event.description,
           locationId: event.locationId,
+          isOnline: event.isOnline,
           organizerId: event.organizerId,
           venue: event.venue,
           imgLogoId: event.imgLogoId,

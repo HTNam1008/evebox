@@ -18,7 +18,6 @@ export class CreateEventService {
   async execute(dto: CreateEventDto, organizerId: string, imgLogo: Express.Multer.File, imgPoster: Express.Multer.File): Promise<Result<EventDto, Error>> {
     try {
       const categories = dto.categoryIds;
-      console.log(categories);
       if (categories.length === 0) {
         return Err(new Error('Categories not found'));
       }
@@ -35,15 +34,19 @@ export class CreateEventService {
         return Err(new Error('Failed to upload poster image'));
       }
 
-      const location = await this.locationService.createLocation(dto.streetString, dto.wardString, dto.districtId);
-      if (!location) {
-        return Err(new Error('Failed to create location'));
+      let locationId : number;
+      if (dto.isOnline)
+        {
+        const location = await this.locationService.createLocation(dto.streetString, dto.wardString, dto.districtId);
+        if (!location) {
+          return Err(new Error('Failed to create location'));
+        }
       }
 
       const imgLogoCreated = imgLogoResult.unwrap();
       const imgPosterCreated = imgPosterResult.unwrap();
 
-      const eventResult = await this.createEventRepository.createEvent(dto, location.id, organizerId, imgLogoCreated.id, imgPosterCreated.id);
+      const eventResult = await this.createEventRepository.createEvent(dto, organizerId, imgLogoCreated.id, imgPosterCreated.id, locationId);
       if (eventResult.isErr()) {
         return Err(new Error('Failed to create event'));
       }

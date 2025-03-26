@@ -14,17 +14,23 @@ export class CreateEventDto {
   @IsOptional()
   description?: string;
 
+  
+  @ApiProperty({ example: 'Online', description: 'Showing Online or Offline' })
+  @IsOptional()
+  @IsString({ message: 'Showing type must be a string' })
+  isOnline: boolean;
+
   @ApiProperty({ example: 1, description: 'District ID' })
   @IsNumber()
-  districtId: number;
+  districtId?: number;
 
   @ApiProperty({ example: "Phuong 3", description: 'Ward String' })
   @IsString()
-  wardString: string;
+  wardString?: string;
   
   @ApiProperty({ example: "10 To Hien Thanh", description: 'Location String' })
   @IsString()
-  streetString: string;
+  streetString?: string;
 
   @ApiProperty({ example: "San khau Thien Dang", description: 'Venue String' })
   @IsString()

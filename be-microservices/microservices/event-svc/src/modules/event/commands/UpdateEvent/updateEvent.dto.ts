@@ -8,6 +8,11 @@ export class UpdateEventDto {
   @IsString({ message: 'Title must be a string' })
   title?: string;
 
+  @ApiProperty({ example: 'Online', description: 'Showing Online or Offline' })
+  @IsOptional()
+  @IsString({ message: 'Showing type must be a string' })
+  isOnline?: boolean;
+
   @ApiPropertyOptional({ example: 'A technology conference for developers', description: 'Event description' })
   @IsOptional()
   @IsString({ message: 'Description must be a string' })
