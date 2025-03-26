@@ -7,10 +7,10 @@ import { Result, Ok, Err } from "oxide.ts";
 export class CreateFormService {
   constructor(private readonly createFormRepository: CreateFormRepository) {}
 
-  async execute (dto: CreateFormDto): Promise<Result<number, Error>> {
+  async execute (dto: CreateFormDto, userEmail: string): Promise<Result<number, Error>> {
     try {
-      if (!dto.createdBy || !dto.createdBy.trim()) {
-        return Err(new Error('Showing ID is required.'));
+      if (!userEmail || !userEmail.trim()) {
+        return Err(new Error('User email is required.'));
       }
 
       if (!dto.name || dto.formInputs.length === 0) {
@@ -35,7 +35,7 @@ export class CreateFormService {
         }
       }
 
-      const result = await this.createFormRepository.createForm(dto);
+      const result = await this.createFormRepository.createForm(dto, userEmail);
       if (result.isErr()) {
         return Err(result.unwrapErr());
       }

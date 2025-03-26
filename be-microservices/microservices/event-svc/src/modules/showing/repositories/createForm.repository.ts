@@ -7,12 +7,12 @@ import { CreateFormDto } from "../commands/createForm/createForm.dto";
 export class CreateFormRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createForm(dto: CreateFormDto): Promise<Result<number, Error>> {
+  async createForm(dto: CreateFormDto, userEmail: string): Promise<Result<number, Error>> {
     try {
       const createdForm = await this.prisma.form.create({
         data: {
           name: dto.name,
-          createdBy: dto.createdBy,
+          createdBy: userEmail,
           FormInput: {
             create: dto.formInputs.map((input) => ({
               fieldName: input.fieldName,

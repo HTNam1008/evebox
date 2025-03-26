@@ -11,7 +11,7 @@ export class GetAllFormsController {
 
   @Get('form/all')
   @ApiOperation({ summary: 'Get all forms (not deleted) for organizer' })
-  @ApiQuery({ name: 'organizerId', type: String, description: 'Organizer ID' })
+  // @ApiQuery({ name: 'organizerId', type: String, description: 'Organizer ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Forms retrieved successfully', type: GetAllFormsResponseDto })
   async getAllForms( @Res() res: Response) {
     const result = await this.getAllFormsService.execute();

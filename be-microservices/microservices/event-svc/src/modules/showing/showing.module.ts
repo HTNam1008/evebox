@@ -20,17 +20,30 @@ import { DeleteShowingRepository } from './repositories/deleteShowing.repository
 import { GetAllShowingDetailOfEventController } from './queries/getAllShowingDetailOfEvent/getAllShowingDetailOfEvent.controller';
 import { GetAllShowingDetailOfEventService } from './queries/getAllShowingDetailOfEvent/getAllShowingDetailOfEvent.service';
 import { GetAllShowingDetailOfEventRepository } from './repositories/getAllShowingDetailOfEvent.repository';
+import { GetAllFormsController } from './commands/getAllForms/getAllForms.controller';
+import { GetAllFormsService } from './commands/getAllForms/getAllForms.service';
+import { GetAllFormsRepository } from './repositories/getAllForms.repository';
+import { GetFormController } from './commands/getForm/getForm.controller';
+import { GetFormService } from './commands/getForm/getForm.service';
+import { GetFormRepository } from './repositories/getForm.repository';
+import { ConnectFormController } from './commands/connectShowingToForm/connectShowingToForm.controller';
+import { ConnectFormService } from './commands/connectShowingToForm/connectShowingToForm.service';
+import { ConnectFormRepository } from './repositories/connectShowingToForm.repository';
 
 @Module({
   controllers: [
-    CreateShowingController,
+    GetAllFormsController,
+    GetFormController,
+    GetAllShowingDetailOfEventController,
+    ConnectFormController,
+
     CreateFormController,
     UpdateFormController,
     DeleteFormController,
+    CreateShowingController,
     UpdateShowingController,
     DeleteShowingController,
     
-    GetAllShowingDetailOfEventController,
   ],
   providers: [
     CreateShowingService,
@@ -41,6 +54,12 @@ import { GetAllShowingDetailOfEventRepository } from './repositories/getAllShowi
     UpdateFormRepository,
     DeleteFormService,
     DeleteFormRepository,
+    GetAllFormsService,
+    GetAllFormsRepository,
+    GetFormService,
+    GetFormRepository,
+    ConnectFormService,
+    ConnectFormRepository,
 
     UpdateShowingRepository,
     UpdateShowingService,

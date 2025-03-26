@@ -31,8 +31,7 @@ export class CreateFormController {
   ) {
     try {
       const user = req.user;
-      createFormDto.createdBy = user.email;
-      const result = await this.createFormService.execute(createFormDto);
+      const result = await this.createFormService.execute(createFormDto, user.email);
       
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({

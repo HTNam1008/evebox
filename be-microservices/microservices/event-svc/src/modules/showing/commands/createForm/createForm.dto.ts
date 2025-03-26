@@ -32,10 +32,6 @@ export class CreateFormDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ example: 'nguyenvana@gmail.com', description: 'Organizer email who created the form' })
-  @IsString()
-  createdBy: string;
-
   @ApiProperty({ type: [CreateFormInputDto], description: 'List of form inputs' })
   @IsArray()
   @ValidateNested({ each: true })
