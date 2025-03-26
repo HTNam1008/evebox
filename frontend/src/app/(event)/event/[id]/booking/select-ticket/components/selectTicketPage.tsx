@@ -40,6 +40,12 @@ export default function SelectTicketPage({ showingId, serverEvent, seatMapId }: 
     const [seatmapError, setSeatmapError] = useState<string | "">("");
     const [selectedSeatIds, setSelectedSeatIds] = useState<number[]>([]);
 
+    const clearSelection = () => {
+        setSelectedTickets({});
+        setSelectedTicket(null);
+        setSelectedSeatIds([]);
+    };
+
     useEffect(() => {
         if (!showingId) return;
 
@@ -141,6 +147,7 @@ export default function SelectTicketPage({ showingId, serverEvent, seatMapId }: 
                     selectedTicketType={selectedTicketType}
                     selectedSeatIds={selectedSeatIds}
                     showingId={showingId}
+                    onClearSelection={clearSelection}
                 />
             ) : (
                 <Loading />
@@ -152,13 +159,19 @@ export default function SelectTicketPage({ showingId, serverEvent, seatMapId }: 
                     <Error />
                 ) : isShowingData(seatMapData) ? (
                     <SelectTicket
-                        tickets={(seatMapData?.TicketType || []).map((ticket) => ({
+                    tickets={
+                        (seatMapData?.TicketType || [])
+                          .slice() 
+                          .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+                          .map((ticket) => ({
                             id: ticket.id,
                             name: ticket.name,
                             price: ticket.price,
                             available: ticket.status !== "sold_out",
                             description: ticket.description,
-                        }))}
+                            position: ticket.position,
+                          }))
+                      }
                         selectedTickets={selectedTickets}
                         setSelectedTickets={setSelectedTickets}
                         selectedTicket={selectedTicket}
