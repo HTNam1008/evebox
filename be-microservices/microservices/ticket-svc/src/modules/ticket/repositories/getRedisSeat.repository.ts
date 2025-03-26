@@ -47,7 +47,7 @@ export class getRedisSeatRepository {
       if(!seatMap){
         return null;
       }
-      const sectionId = seatMap.Section.map((item) => {
+      const sectionId = seatMap.Section.filter((item) => {
         if(item.Row.find((row) => row.Seat.find((seat) => seatId.includes(seat.id)) !== undefined)){
           return item.id;
         }
@@ -59,7 +59,7 @@ export class getRedisSeatRepository {
 
       const ticketTypeId = await this.prisma.ticketTypeSection.findFirst({
         where: {
-          sectionId: sectionId[0],
+          sectionId: sectionId[0]?.id,
           ticketTypeId: {
             in: showing.TicketType.map((item) => item.id)
           }
