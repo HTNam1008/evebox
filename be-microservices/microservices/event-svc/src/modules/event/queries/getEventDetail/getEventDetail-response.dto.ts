@@ -83,9 +83,6 @@ class ShowingDto {
   @ApiProperty({ example: '2024-12-27T15:30:00.000Z' })
   endTime: Date;
 
-  @ApiProperty({ example: 'Offline' , description: 'Online or offline event'})
-  type: string;
-
   @ApiProperty({ example: false })
   isEnabledQueueWaiting: boolean;
 
@@ -137,6 +134,9 @@ export class EventDetailResponseDto {
 
   @ApiProperty({ example: '2024-12-17T07:57:23.528Z' })
   createdAt: Date;
+
+  @ApiProperty({ example: false })
+  isOnline: boolean;
 
   @ApiProperty({ example: '62 Trần Quang Khải, Tan Dinh Ward, 1 District, Ho Chi Minh City' })
   locationsString: string;

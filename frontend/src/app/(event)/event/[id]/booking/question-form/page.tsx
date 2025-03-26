@@ -44,11 +44,11 @@ export default function QuestionForm() {
     useEffect(() => {
         const fetchForm = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/showing?showingId=${showingId}`);
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/showing/get-form?showingId=${showingId}`);
                 const data = await res.json();
-                if (res.ok && data?.data?.Form) {
-                    setFormId(data.data.Form.id);
-                    setFormInputs(data.data.Form.FormInput);
+                if (res.ok && data?.data) {
+                    setFormId(data.data.id);
+                    setFormInputs(data.data.FormInput);
                 } else {
                     console.error('Không tìm thấy Form trong Showing');
                 }

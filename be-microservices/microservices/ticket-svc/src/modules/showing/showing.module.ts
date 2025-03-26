@@ -8,6 +8,9 @@ import { getAllShowingRepository } from './repositories/getAllShowing.repository
 import { getShowingSeatmapController } from './queries/getShowingSeatmap/getShowingSeatmap.controller';
 import { getShowingSeatmapService } from './queries/getShowingSeatmap/getShowingSeatmap.service';
 import { getShowingSeatmapRepository } from './repositories/getShowingSeatmap.repository';
+import { getFormOfShowingController } from './queries/getFormOfShowing/getFormOfShowing.controller';
+import { getFormOfShowingService } from './queries/getFormOfShowing/getFormOfShowing.service';
+import { getFormOfShowingRepository } from './repositories/getFormOfShowing.repository';
 
 @Module({
   controllers: 
@@ -15,6 +18,7 @@ import { getShowingSeatmapRepository } from './repositories/getShowingSeatmap.re
       getShowingDetailController,
       getAllShowingController,
       getShowingSeatmapController,
+      getFormOfShowingController,
     ],
   providers: 
     [
@@ -26,6 +30,9 @@ import { getShowingSeatmapRepository } from './repositories/getShowingSeatmap.re
       
       getShowingSeatmapService,
       getShowingSeatmapRepository,
+
+      getFormOfShowingService,
+      getFormOfShowingRepository,
     ],
 })
 export class ShowingModule {}
