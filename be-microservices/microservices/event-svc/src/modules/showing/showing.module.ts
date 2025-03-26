@@ -20,11 +20,11 @@ import { DeleteShowingRepository } from './repositories/deleteShowing.repository
 import { GetAllShowingDetailOfEventController } from './queries/getAllShowingDetailOfEvent/getAllShowingDetailOfEvent.controller';
 import { GetAllShowingDetailOfEventService } from './queries/getAllShowingDetailOfEvent/getAllShowingDetailOfEvent.service';
 import { GetAllShowingDetailOfEventRepository } from './repositories/getAllShowingDetailOfEvent.repository';
-import { GetAllFormsController } from './commands/getAllForms/getAllForms.controller';
-import { GetAllFormsService } from './commands/getAllForms/getAllForms.service';
+import { GetAllFormsController } from './queries/getAllForms/getAllForms.controller';
+import { GetAllFormsService } from './queries/getAllForms/getAllForms.service';
 import { GetAllFormsRepository } from './repositories/getAllForms.repository';
-import { GetFormController } from './commands/getForm/getForm.controller';
-import { GetFormService } from './commands/getForm/getForm.service';
+import { GetFormController } from './queries/getForm/getForm.controller';
+import { GetFormService } from './queries/getForm/getForm.service';
 import { GetFormRepository } from './repositories/getForm.repository';
 import { ConnectFormController } from './commands/connectShowingToForm/connectShowingToForm.controller';
 import { ConnectFormService } from './commands/connectShowingToForm/connectShowingToForm.service';
