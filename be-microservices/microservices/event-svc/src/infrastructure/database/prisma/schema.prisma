@@ -242,7 +242,8 @@ model Events {
   title                             String            @db.VarChar(255)
   description                       String?
   organizerId                       String?
-  locationId                        Int
+  isOnline                          Boolean           @default(false)
+  locationId                        Int?
   imgLogoId                         Int?
   imgPosterId                       Int?
   createdAt                         DateTime          @default(now())
@@ -259,7 +260,7 @@ model Events {
   EventCategories                   EventCategories[]
   Images_Events_imgLogoIdToImages   Images?           @relation("Events_imgLogoIdToImages", fields: [imgLogoId], references: [id])
   Images_Events_imgPosterIdToImages Images?           @relation("Events_imgPosterIdToImages", fields: [imgPosterId], references: [id])
-  locations                         locations         @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  locations                         locations?         @relation(fields: [locationId], references: [id], onDelete: Cascade)
   Showing                           Showing[]
 }
 
@@ -311,7 +312,6 @@ model Seatmap {
 model Showing {
   id                    String         @id @default(uuid())
   eventId               Int
-  status                String
   isFree                Boolean
   isSalable             Boolean
   isPresale             Boolean
