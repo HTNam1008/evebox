@@ -5,13 +5,15 @@ import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service
 export class GetAllFormsRepository {
   constructor(private readonly prisma: PrismaService) { }
 
-  async getAllForms(): Promise<any> {
+  async getAllForms(organizerEmail: string): Promise<any> {
+    const fixedFormIds = [12608, 12472, 12404, 12518, 12500];
     const forms = await this.prisma.form.findMany({
       where: {
         deleteAt: null,
-        // OR: [
-        //   { createdBy: organizerId },
-        // ],
+        OR: [
+          { id: { in: fixedFormIds } },
+          { createdBy: organizerEmail }
+        ]
       },
       select: {
         id: true,
@@ -28,7 +30,6 @@ export class GetAllFormsRepository {
           }
         },
       },
-      take: 5,
       orderBy: { createdAt: 'desc' },
       });
     return forms;

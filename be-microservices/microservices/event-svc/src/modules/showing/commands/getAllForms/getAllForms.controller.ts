@@ -1,5 +1,6 @@
-import { Controller, Get, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Res, Req, HttpStatus, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { GetAllFormsService } from './getAllForms.service';
 import { GetAllFormsResponseDto } from './getAllFroms-response.dto';
@@ -9,12 +10,15 @@ import { GetAllFormsResponseDto } from './getAllFroms-response.dto';
 export class GetAllFormsController {
   constructor(private readonly getAllFormsService: GetAllFormsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('form/all')
   @ApiOperation({ summary: 'Get all forms (not deleted) for organizer' })
   // @ApiQuery({ name: 'organizerId', type: String, description: 'Organizer ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Forms retrieved successfully', type: GetAllFormsResponseDto })
-  async getAllForms( @Res() res: Response) {
-    const result = await this.getAllFormsService.execute();
+  async getAllForms( @Req() req: any, @Res() res: Response) {
+    const user = req.user;
+
+    const result = await this.getAllFormsService.execute(user.email);
     if (result.isErr()) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         statusCode: HttpStatus.BAD_REQUEST,

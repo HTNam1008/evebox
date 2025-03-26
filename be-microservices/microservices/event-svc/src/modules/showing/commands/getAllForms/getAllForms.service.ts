@@ -6,9 +6,9 @@ import { Result, Ok, Err } from 'oxide.ts';
 export class GetAllFormsService {
   constructor(private readonly getAllFormsRepository: GetAllFormsRepository) {}
 
-  async execute(): Promise<Result<any, Error>> {
+  async execute(organizerEmail: string): Promise<Result<any, Error>> {
     try {
-      const forms = await this.getAllFormsRepository.getAllForms();
+      const forms = await this.getAllFormsRepository.getAllForms(organizerEmail);
       return Ok(forms);
     } catch (error) {
       return Err(new Error('Failed to retrieve forms'));
