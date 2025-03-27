@@ -2,14 +2,15 @@
 
 /* Package System */
 import { useState } from "react";
-import { LockKeyhole, Users, User, Mail, LayoutList, ToggleLeft, ToggleRight } from "lucide-react";
+import { Mail, LayoutList, ToggleLeft, ToggleRight } from "lucide-react";
+// import { LockKeyhole, Users, User } from "lucide-react";
 
 /* Package Application */
-import RadioOption from "../../common/form/radioOption";
+// import RadioOption from "../../common/form/radioOption";
 
 export default function FormSettingClient({ onNextStep, btnValidate3 }: { onNextStep: () => void, btnValidate3: string }) {
     const [eventName, setEventName] = useState("name-of-event");
-    const [eventScopeSelected, setEventScopeSelected] = useState("everyone");
+    // const [eventScopeSelected, setEventScopeSelected] = useState("everyone");
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
     const [isToggleOn, setIsToggleOn] = useState(false);
@@ -89,7 +90,8 @@ export default function FormSettingClient({ onNextStep, btnValidate3 }: { onNext
                         </a>
                     </div>
 
-                    <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-3" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
+                    {/* Tạm ẩn */}
+                    {/* <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-3" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <div className="relative flex items-center space-x-2">
                             <LockKeyhole size={20} />
                             <label className="text-base font-bold">
@@ -114,7 +116,7 @@ export default function FormSettingClient({ onNextStep, btnValidate3 }: { onNext
                             title="Sự kiện dành riêng cho 1 nhóm"
                             description="Chỉ người có link truy cập mới đặt được vé"
                         />
-                    </div>
+                    </div> */}
 
                     <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-3" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <div className="relative flex items-center space-x-2">
