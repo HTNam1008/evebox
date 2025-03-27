@@ -85,7 +85,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
             setStreet(eventData.street);
             setTypeEvent(eventData.typeEvent);
             setPost(eventData.post);
-     
+
             setBackground(eventData.background);
             setLogoOrg(eventData.logoOrg);
         }
@@ -153,7 +153,13 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         if (eventTypeSelected === "offline") {
             if (!eventAddress.trim()) newErrors.eventAddress = true;
             if (!province) newErrors.province = true;
+            if (!district) newErrors.district = true;
+            if (!ward) newErrors.ward = true;
             if (!street.trim()) newErrors.street = true;
+
+            if (!eventAddress.trim() || !province || !district || !ward || !street.trim()) {
+                toast.error("Vui lòng nhập đầy đủ thông tin địa điểm sự kiện!", { duration: 5000 });
+            }
         }
 
         setErrors(newErrors);

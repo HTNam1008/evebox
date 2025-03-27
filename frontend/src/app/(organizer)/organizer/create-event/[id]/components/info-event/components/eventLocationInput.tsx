@@ -93,6 +93,8 @@ const EventLocationInput: React.FC<EventLocationInputProps > = ({
                 options={districts}
                 value={district}
                 onChange={(e) => handleSelectChange(e, "district")}
+                error={errors.district}
+                required
               />
             </div>
           </div>
@@ -105,6 +107,8 @@ const EventLocationInput: React.FC<EventLocationInputProps > = ({
                 options={wards}
                 value={ward}
                 onChange={(e) => handleSelectChange(e, "ward")}
+                error={errors.ward}
+                required
               />
             </div>
 
