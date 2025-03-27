@@ -116,7 +116,6 @@ export const RegisterForm = () => {
                                                 onBlur={formik.handleBlur}
                                                 value={formik.values.password}
                                             />
-                                            {!formik.errors.password && (
                                                 <IconButton
                                                     className="position-absolute eye-btn"
                                                     aria-label="Toggle password visibility"
@@ -124,7 +123,6 @@ export const RegisterForm = () => {
                                                 >
                                                     <Icon icon={showPassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                                                 </IconButton>
-                                            )}
                                         </div>
                                         {formik.touched.password && formik.errors.password && (
                                             <div className="text-danger" style={{ fontSize: '12px' }}>
@@ -145,7 +143,6 @@ export const RegisterForm = () => {
                                                 onBlur={formik.handleBlur}
                                                 value={formik.values.re_password}
                                             />
-                                            {!formik.errors.re_password && (
                                                 <IconButton
                                                     className="position-absolute eye-btn"
                                                     aria-label="Toggle password visibility"
@@ -153,7 +150,6 @@ export const RegisterForm = () => {
                                                 >
                                                     <Icon icon={showRePassword ? "ph:eye-light" : "ph:eye-closed-light"} width="20px" color="#aaaaaa" />
                                                 </IconButton>
-                                            )}
                                         </div>
                                         {formik.touched.re_password && formik.errors.re_password && (
                                             <div className="text-danger" style={{ fontSize: '12px' }}>
