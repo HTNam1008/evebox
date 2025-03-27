@@ -40,7 +40,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   };
 
   const menuItems = [
-    { icon: <User size={20} />, text: t("accountManagement"), href: '/account' },
+    { icon: <User size={20} />, text: t("accountManagement"), href: '/my-profile' },
     { icon: <Ticket size={20} />, text: t("ticketManagement"), href: '/ticket' },
     { icon: <Calendar size={20} />, text: t("createEvent"), href: '/create-event' },
     { icon: <LogOut size={20} />, text: t("logout"), onClick: handleLogout },  // Sửa để sử dụng button

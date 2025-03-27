@@ -99,9 +99,9 @@ const NavigationBar = () => {
             ) : userInfo ? (
               <div className="flex items-center">
                 <h3 className="mr-2">
-                  <button className="text-white hover:text-teal-100 text-sm sm:text-base">
+                  <Link href="/my-profile" className="text-white hover:text-teal-400 text-sm sm:text-base">
                     {userInfo.name}
-                  </button>
+                  </Link>
                 </h3>
                 <User2Icon className="bg-white rounded-full" size={24} />
               </div>
