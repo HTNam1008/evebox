@@ -16,7 +16,7 @@ import { CreateTypeTicketDailogProps } from "../../../../libs/interface/dialog.i
 export default function CreateTypeTicketDailog({ open, onClose, startDate, endDate, setStartDate, setEndDate, addTicket }: CreateTypeTicketDailogProps) {
     const [ticketName, setTicketName] = useState("");
     const [ticketPrice, setTicketPrice] = useState("");
-    const [ticketNum, setTicketNum] = useState("10");
+    const [ticketNum, setTicketNum] = useState("");
     const [ticketNumMin, setTicketNumMin] = useState("1");
     const [ticketNumMax, setTicketNumMax] = useState("10");
     const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
@@ -203,9 +203,8 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 <InputNumberField
                                     label="Tổng số lượng vé"
                                     value={ticketNum}
-                                    placeholder=""
+                                    placeholder="10"
                                     error={errors.ticketNum}
-                                    required
                                     onChange={(e) => handleInputChange(e, "ticketNum")}
                                 />
                             </div>
