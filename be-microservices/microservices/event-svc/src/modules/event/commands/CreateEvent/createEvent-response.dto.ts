@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsOptional, IsString } from "class-validator";
 import { ImagesResponseDto } from "src/modules/images/commands/images/images-response.dto";
 
 export class EventDto {
@@ -27,7 +28,12 @@ export class EventDto {
     example: 1,
     description: 'Location ID',
   })
-  locationId: number;
+  locationId?: number;
+
+  @ApiProperty({ example: 'Online', description: 'Showing Online or Offline' })
+  @IsOptional()
+  @IsString({ message: 'Showing type must be a string' })
+  isOnline: boolean;
 
   @ApiProperty({
     example: 1,

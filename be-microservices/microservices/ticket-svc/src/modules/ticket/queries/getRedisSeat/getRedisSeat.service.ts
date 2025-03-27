@@ -86,6 +86,7 @@ export class GetRedisSeatService {
     
     console.log('=== Redis Data ===');
     for (const key of keys) {
+      if(key.includes('event')) continue;
       const value = await redis.get(key);
       console.log(`Key: ${key}, Value: ${value}`);
     }

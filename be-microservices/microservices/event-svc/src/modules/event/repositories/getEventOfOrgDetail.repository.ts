@@ -30,6 +30,7 @@ export class GetEventOfOrgDetailRepository {
             }
           },
           createdAt: true,
+          isOnline: true,
           locations: {
             select: {
               id: true,

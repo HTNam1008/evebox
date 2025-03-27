@@ -19,7 +19,6 @@ export class CreateShowingRepository {
       }
       const showing = await this.prisma.showing.create({
         data: {
-          status: dto.status,
           startTime: dto.startTime,
           endTime: dto.endTime,
           eventId: eventId >> 0,
