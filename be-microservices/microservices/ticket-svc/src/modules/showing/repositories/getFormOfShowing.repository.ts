@@ -11,9 +11,8 @@ export class getFormOfShowingRepository {
         id: showingId,
       },
       select: {
-        id: true,
-        eventId: true,
-        status: true,
+        // id: true,
+        // eventId: true,
         Form: {
           select: {
             id: true,

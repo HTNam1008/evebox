@@ -15,14 +15,13 @@ model User {
   password      String         @db.VarChar(255)
   role_id       Int?
   created_at    DateTime       @default(now())
+  FormResponse  FormResponse[]
   refreshTokens RefreshToken[]
   userProvince  UserProvince[]
-  FormResponse   FormResponse[]
   role          Role?          @relation(fields: [role_id], references: [id])
 
   @@map("users")
 }
-
 
 model Role {
   id        Int    @id
@@ -36,8 +35,8 @@ model Province {
   id           Int            @id @default(autoincrement())
   name         String         @db.VarChar(100)
   created_at   DateTime       @default(now())
+  districts    districts[]
   userProvince UserProvince[]
-  districts      districts[]
 
   @@map("province")
 }
@@ -105,13 +104,12 @@ model locations {
   districts  districts @relation(fields: [districtId], references: [id], onDelete: Cascade)
 }
 
-
 model Form {
   id           Int            @id @default(autoincrement())
   name         String         @db.VarChar(255)
   createdAt    DateTime       @default(now())
-  deleteAt     DateTime?      
   createdBy    String?
+  deleteAt     DateTime?
   FormInput    FormInput[]
   FormResponse FormResponse[]
   Showing      Showing[]
@@ -134,9 +132,9 @@ model FormInput {
   required   Boolean      @default(true)
   regex      String?
   options    Json?
+  deleteAt   DateTime?
   FormAnswer FormAnswer[]
   Form       Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
-  deleteAt   DateTime?
 }
 
 model FormResponse {
@@ -148,7 +146,7 @@ model FormResponse {
   FormAnswer FormAnswer[]
   Form       Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
   Showing    Showing?     @relation(fields: [showingId], references: [id], onDelete: Cascade)
-  user       User        @relation(fields: [userId], references: [email], onDelete: Cascade)
+  user       User         @relation(fields: [userId], references: [email], onDelete: Cascade)
   Ticket     Ticket[]
 }
 
@@ -242,7 +240,6 @@ model Events {
   title                             String            @db.VarChar(255)
   description                       String?
   organizerId                       String?
-  isOnline                          Boolean           @default(false)
   locationId                        Int?
   imgLogoId                         Int?
   imgPosterId                       Int?
@@ -257,10 +254,11 @@ model Events {
   orgDescription                    String?
   orgName                           String?
   deleteAt                          DateTime?
+  isOnline                          Boolean           @default(false)
   EventCategories                   EventCategories[]
   Images_Events_imgLogoIdToImages   Images?           @relation("Events_imgLogoIdToImages", fields: [imgLogoId], references: [id])
   Images_Events_imgPosterIdToImages Images?           @relation("Events_imgPosterIdToImages", fields: [imgPosterId], references: [id])
-  locations                         locations?         @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  locations                         locations?        @relation(fields: [locationId], references: [id], onDelete: Cascade)
   Showing                           Showing[]
 }
 
@@ -347,8 +345,8 @@ model TicketType {
   maxQtyPerOrder Int
   minQtyPerOrder Int
   isHidden       Boolean             @default(false)
-  deleteAt              DateTime?
   quantity       Int?                @default(0)
+  deleteAt       DateTime?
   Showing        Showing             @relation(fields: [showingId], references: [id])
   sections       TicketTypeSection[]
 }
