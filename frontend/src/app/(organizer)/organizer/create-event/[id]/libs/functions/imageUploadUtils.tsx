@@ -4,7 +4,6 @@ export const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
     type: string,
     setImageErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>,
-    setLogo: React.Dispatch<React.SetStateAction<string | null>>,
     setBackground: React.Dispatch<React.SetStateAction<string | null>>,
     setLogoOrg: React.Dispatch<React.SetStateAction<string | null>>
 ) => {
@@ -30,9 +29,7 @@ export const handleImageUpload = (
                 } else {
                     setImageErrors((prev) => ({ ...prev, [type]: '' }));
                     // Lưu ảnh vào state tương ứng
-                    if (type === 'logo') {
-                        setLogo(reader.result as string);
-                    } else if (type === 'background') {
+                    if (type === 'background') {
                         setBackground(reader.result as string);
                     } else if (type === 'logoOrg') {
                         setLogoOrg(reader.result as string);

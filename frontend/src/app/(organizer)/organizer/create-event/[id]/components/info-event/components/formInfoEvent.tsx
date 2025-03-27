@@ -15,7 +15,6 @@ import EventLocationInput from "./eventLocationInput";
 import EventImageUpload from "./eventImageUpload";
 
 export default function FormInformationEventClient({ onNextStep, btnValidate }: { onNextStep: () => void, btnValidate: string }) {
-    const [logo, setLogo] = useState<string | null>(null);
     const [background, setBackground] = useState<string | null>(null);
     const [logoOrg, setLogoOrg] = useState<string | null>(null);
     const [eventName, setEventName] = useState("");
@@ -86,18 +85,18 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
             setStreet(eventData.street);
             setTypeEvent(eventData.typeEvent);
             setPost(eventData.post);
-            setLogo(eventData.logo);
+     
             setBackground(eventData.background);
             setLogoOrg(eventData.logoOrg);
         }
     }, []);
 
     const handleUpload = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
-        handleImageUpload(event, type, setImageErrors, setLogo, setBackground, setLogoOrg);
+        handleImageUpload(event, type, setImageErrors, setBackground, setLogoOrg);
     };
 
     const handleUploadLogo = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
-        handleImageUpload(event, type, setImageLogoErrors, setLogo, setBackground, setLogoOrg);
+        handleImageUpload(event, type, setImageLogoErrors, setBackground, setLogoOrg);
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, field: string) => {
@@ -173,7 +172,6 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
             street,
             typeEvent,
             post,
-            logo,
             background,
             logoOrg,
         };
@@ -197,7 +195,6 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
             <div className="flex justify-center mb-6">
                 <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="event-form">
                     <EventImageUpload
-                        logo={logo}
                         background={background}
                         handleUpload={handleUpload}
                         imageErrors={imageErrors}

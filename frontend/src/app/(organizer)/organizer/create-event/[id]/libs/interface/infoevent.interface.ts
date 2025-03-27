@@ -25,7 +25,6 @@ export interface EventLocationInputProps {
 }
 
 export interface EventImageUploadProps {
-    logo: string | null;
     background: string | null;
     handleUpload: (event: React.ChangeEvent<HTMLInputElement>, type: string) => void;
     imageErrors: { logo?: string; background?: string };

@@ -4,7 +4,6 @@ import InputField from '../../common/form/inputCountField';
 import { EventImageUploadProps } from '../../../libs/interface/infoevent.interface';
 
 const EventImageUpload: React.FC<EventImageUploadProps> = ({
-    logo,
     background,
     handleUpload,
     imageErrors,
@@ -19,20 +18,8 @@ const EventImageUpload: React.FC<EventImageUploadProps> = ({
             </label>
 
             <div className="flex flex-wrap -mx-3 mb-6">
-                {/* Upload Logo */}
-                <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                    <ImageUpload
-                        image={logo}
-                        onUpload={(e) => handleUpload(e, "logo")}
-                        placeholderText="Thêm logo sự kiện"
-                        dimensions="(720x958)"
-                        height="h-96"
-                        error={imageErrors.logo}
-                    />
-                </div>
-
                 {/* Upload Background */}
-                <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
+                <div className="w-full px-3">
                     <ImageUpload
                         image={background}
                         onUpload={(e) => handleUpload(e, "background")}
