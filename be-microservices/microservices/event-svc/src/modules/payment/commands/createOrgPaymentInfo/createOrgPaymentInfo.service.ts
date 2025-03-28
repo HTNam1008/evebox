@@ -9,6 +9,9 @@ export class CreateOrgPaymentInfoService {
 
   async execute(dto: CreateOrgPaymentInfoDto, organizerId: string): Promise<Result<string, Error>> {
     try {
+      if (!dto.eventId || dto.eventId === 0) {
+        return Err(new Error('Event ID is required.'));
+      }
       if (!organizerId.trim()) {
         return Err(new Error('Organizer ID is required.'));
       }

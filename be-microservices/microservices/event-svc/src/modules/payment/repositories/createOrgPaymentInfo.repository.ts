@@ -11,6 +11,7 @@ export class CreateOrgPaymentInfoRepository {
     try {
       const orgPayment = await this.prisma.orgPaymentInfo.create({
         data: {
+          eventId: dto.eventId,
           organizerId: organizerId,
           accountName: dto.accountName,
           accountNumber: dto.accountNumber,

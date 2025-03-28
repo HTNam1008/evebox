@@ -2,6 +2,10 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsNumber, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateOrgPaymentInfoDto {
+  @ApiProperty({ example: 1234, description: 'Event ID associated with the payment info' })
+  @IsNumber()
+  eventId: number;
+
   @ApiProperty({ example: 'Nguyen Van A', description: 'Account name' })
   @IsString()
   @IsNotEmpty()
