@@ -11,18 +11,24 @@ import SearchControls from './components/dashboard/searchControls';
 import { CategorySpecial } from '@/types/model/frontDisplay';
 import { fetchEvents } from './libs/server/fetchEvents';
 import { fetchRecommendEvents } from './libs/server/fetchRecommendEvents';
+import TabSwitcher from '../(dashboard)/components/dashboard/tabSwitcher'; // Import the new client component
 
 const Dashboard = async () => {
     const data = await fetchEvents();
-    const dataImageSlider = await fetchRecommendEvents();
+    const weekTime = 'week';
+    const monthTime = 'month';
+    const dataMonthlyRecommendedEvent = await fetchRecommendEvents(monthTime);
+    const dataImageSlider = await fetchRecommendEvents(weekTime);
 
-    // Xử lý dữ liệu nếu cần
     const events = {
         specialEvents: data.data.specialEvents || [],
         trendingEvents: data.data.trendingEvents || [],
         onlyOnEve: data.data.onlyOnEve || [],
         categorySpecial: data.data.categorySpecial as CategorySpecial[] || [],
     };
+
+    const sliderMontlyEvents = dataMonthlyRecommendedEvent.data || [];
+
 
     const sliderEvents = dataImageSlider.data || [];
 
@@ -48,6 +54,12 @@ const Dashboard = async () => {
                         <div className="mt-8">
                             <EventSlider title="onlyOnEve" subtitle="onlyOnEveEvent" events={events.onlyOnEve} showViewMore />
                         </div>
+
+                        {/* Client-side TabSwitcher */}
+                        <TabSwitcher 
+                            sliderEvents={sliderEvents}
+                            dataMonthlyRecommendedEvent={sliderMontlyEvents}
+                        />
 
                         {events.categorySpecial?.map((category, index) => (
                             <div key={index} className="mt-8">
