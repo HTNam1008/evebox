@@ -34,15 +34,14 @@ export default function CountdownTimer({ expiredTime }: CountdownTimerProps) {
             localStorage.setItem('timeLeft', String(remainingTime));
             localStorage.setItem('timestamp', String(Date.now()));
         } else {
-            setIsTimeout(true);
+            handleTimeout();
         }
 
         const timer = setInterval(() => {
             setTimeLeft((prevTime) => {
                 if (prevTime <= 1) {
                     clearInterval(timer);
-                    setIsTimeout(true);
-                    localStorage.setItem('timeLeft', '0');
+                    handleTimeout();
                     return 0;
                 }
 
@@ -55,6 +54,12 @@ export default function CountdownTimer({ expiredTime }: CountdownTimerProps) {
 
         return () => clearInterval(timer);
     }, [expiredTime]);
+
+    const handleTimeout = () => {
+        setIsTimeout(true);
+        localStorage.removeItem('timeLeft');
+        localStorage.removeItem('timestamp');
+    };
 
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
