@@ -5,10 +5,11 @@ import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service
 export class GetOrgPaymentInfoRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getOrgPaymentInfoByOrganizer(organizerId: string): Promise<any> {
+  async getOrgPaymentInfoByOrganizerAndEvent(organizerId: string, eventId: number): Promise<any> {
     return this.prisma.orgPaymentInfo.findFirst({
       where: {
         organizerId: organizerId,
+        eventId: Number(eventId),
         isDeleted: false,
       },
     });
