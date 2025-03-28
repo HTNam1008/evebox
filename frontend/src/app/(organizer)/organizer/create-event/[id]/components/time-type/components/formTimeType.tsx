@@ -11,11 +11,23 @@ import { toast } from "react-hot-toast";
 import DateTimePicker from "../../common/form/dateTimePicker";
 import CreateTypeTicketDailog from "./dialogs/createTicketsDailog";
 import EditTicketDailog from "./dialogs/editTicketDailog";
-import { TicketProps } from "../../../libs/interface/dialog.interface";
 import { Showtime } from "../../../libs/interface/idevent.interface";
 import ConfirmDeleteTicketDialog from "./dialogs/confirmDeleteTicket";
+import { handleDeleteTicket } from "../../../libs/functions/showing/deleteTicket";
+import { updateTicket } from "../../../libs/functions/showing/updateTicket";
+import { addTicket } from "../../../libs/functions/showing/addTicket";
+import { validateStartDate, validateEndDate, validateTimeSelection } from "../../../libs/functions/showing/validationUtils";
+import { toggleExpanded, toggleDialog, toggleEditDialog, toggleDelDialog } from "../../../libs/functions/showing/toggleDialogUtils";
 
 export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
+    //Chỉnh sửa vé đã tạo
+    const [editShowtimeId, setEditShowtimeId] = useState<number | null>(null);
+    const [editTicketIndex, setEditTicketIndex] = useState<number | null>(null);
+
+    //Xóa vé
+    const [delShowtimeId, setDelShowtimeId] = useState<number | null>(null);
+    const [delTicketIndex, setDelTicketIndex] = useState<number | null>(null);
+
     const [, setErrors] = useState<{ [key: string]: boolean }>({});
 
     //Tạo suất diễn
@@ -40,117 +52,11 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
         setSelectedMonth(e.target.value);
     };
 
-    const toggleExpanded = (id: number) => {
-        setShowtimes((prevShowtimes) =>
-            prevShowtimes.map((showtime) =>
-                showtime.id === id ? { ...showtime, isExpanded: !showtime.isExpanded } : showtime
-            )
-        );
-    };
-
-    const toggleDialog = (id: number) => {
-        setShowtimes((prevShowtimes) =>
-            prevShowtimes.map((showtime) =>
-                showtime.id === id ? { ...showtime, showDialog: !showtime.showDialog } : showtime
-            )
-        );
-    };
-
-    const toggleEditDialog = (id: number) => {
-        setShowtimes((prevShowtimes) =>
-            prevShowtimes.map((showtime) =>
-                showtime.id === id ? { ...showtime, showEditDialog: !showtime.showEditDialog } : showtime
-            )
-        );
-    };
-
-    const toggleDelDialog = (id: number) => {
-        setShowtimes((prevShowtimes) =>
-            prevShowtimes.map((showtime) =>
-                showtime.id === id ? { ...showtime, showConfirmDeleteDialog: !showtime.showConfirmDeleteDialog } : showtime
-            )
-        );
-    };
-
     const handleAddShowtime = () => {
         setShowtimes([...showtimes, {
             id: showtimes.length + 1, startDate: null, endDate: null, tickets: [],
             showEditDialog: false, showConfirmDeleteDialog: false
         }]);
-    };
-
-    //Cập nhật danh sách vé sau khi tạo
-    const addTicket = (showtimeId: number, newTicket: TicketProps) => {
-        setShowtimes((prevShowtimes) =>
-            prevShowtimes.map((showtime) =>
-                showtime.id === showtimeId
-                    ? { ...showtime, tickets: [...showtime.tickets, newTicket] }
-                    : showtime
-            )
-        );
-    };
-
-
-    //Chỉnh sửa vé đã tạo
-    const [editShowtimeId, setEditShowtimeId] = useState<number | null>(null);
-    const [editTicketIndex, setEditTicketIndex] = useState<number | null>(null);
-    const updateTicket = (showtimeId: number, ticketIndex: number, updatedTicket: TicketProps) => {
-        setShowtimes((prevShowtimes) =>
-            prevShowtimes.map((showtime) =>
-                showtime.id === showtimeId
-                    ? {
-                        ...showtime,
-                        tickets: showtime.tickets.map((ticket, index) =>
-                            index === ticketIndex ? updatedTicket : ticket
-                        )
-                    }
-                    : showtime
-            )
-        );
-        setEditShowtimeId(null);
-        setEditTicketIndex(null);
-    };
-
-    //Xóa vé
-    const [delShowtimeId, setDelShowtimeId] = useState<number | null>(null);
-    const [delTicketIndex, setDelTicketIndex] = useState<number | null>(null);
-    const handleDeleteTicket = (showtimeId: number, ticketIndex: number) => {
-        setShowtimes((prevShowtimes) =>
-            prevShowtimes.map((showtime) =>
-                showtime.id === showtimeId
-                    ? {
-                        ...showtime,
-                        tickets: showtime.tickets.filter((_, index) => index !== ticketIndex),
-                        showConfirmDeleteDialog: false,
-                        selectedTicketIndex: null
-                    }
-                    : showtime
-            )
-        );
-
-        setDelShowtimeId(null);
-        setDelTicketIndex(null);
-    };
-
-    const validateStartDate = (date: Date | null, endDate: Date | null) => {
-        return !date || !endDate || date <= endDate; // Thời gian bắt đầu không được lớn hơn thời gian kết thúc
-    };
-
-    const validateEndDate = (date: Date | null, startDate: Date | null) => {
-        return !date || !startDate || date >= startDate; // Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu
-    };
-
-    const validateTimeSelection = (startDate: Date | null, endDate: Date | null) => {
-        if (!startDate || !endDate) {
-            setErrors((prev) => ({
-                ...prev,
-                startDate: !startDate,
-                endDate: !endDate,
-            }));
-            toast.error("Vui lòng chọn thời gian bắt đầu và kết thúc");
-            return false;
-        }
-        return true;
     };
 
     const handleSubmit = () => {
@@ -213,12 +119,12 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                         <div className="relative flex items-center mb-4">
                             {showtime.isExpanded ? (
                                 <>
-                                    <ChevronUp size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id)} />
+                                    <ChevronUp size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id, setShowtimes)} />
                                     <label className="text-base font-medium ml-2">Ngày sự kiện</label>
                                 </>
                             ) : (
                                 <>
-                                    <ChevronDown size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id)} />
+                                    <ChevronDown size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id, setShowtimes)} />
                                     <div>
                                         <label className={`text-base font-medium ml-2 ${showtime.tickets.length === 0 ? "text-red-500" : "text-black"}`}>
                                             {showtime.startDate ? `${showtime.startDate.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })} - ${showtime.startDate.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit" })}`
@@ -286,7 +192,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                 onClick={() => {
                                                     setEditShowtimeId(showtime.id);
                                                     setEditTicketIndex(ticketIndex);
-                                                    toggleEditDialog(showtime.id);
+                                                    toggleEditDialog(showtime.id, setShowtimes);
                                                 }}
 
                                             />
@@ -297,14 +203,14 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                     onClose={() => setEditShowtimeId(null)}
                                                     endDateEvent={showtime.endDate}
                                                     ticket={showtime.tickets[editTicketIndex]}
-                                                    updateTicket={(updatedTicket) => updateTicket(showtime.id, editTicketIndex, updatedTicket)}
+                                                    updateTicket={(updatedTicket) => updateTicket(showtime.id, editTicketIndex, updatedTicket, setShowtimes, setEditShowtimeId, setEditTicketIndex)}
                                                 />)}
 
                                             <Trash2 className="p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer"
                                                 onClick={() => {
                                                     setDelShowtimeId(showtime.id);
                                                     setDelTicketIndex(ticketIndex);
-                                                    toggleDelDialog(showtime.id);
+                                                    toggleDelDialog(showtime.id, setShowtimes);
                                                 }}
                                             />
 
@@ -313,7 +219,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                     open={showtime.showConfirmDeleteDialog}
                                                     onClose={() => setDelShowtimeId(null)}
                                                     onConfirm={() => {
-                                                        handleDeleteTicket(showtime.id, delTicketIndex);
+                                                        handleDeleteTicket(showtime.id, delTicketIndex, setShowtimes, setDelShowtimeId, setDelTicketIndex);
                                                     }}
                                                 />)}
                                         </div>
@@ -324,8 +230,8 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                             <div className="flex justify-center mt-4">
                                 <button type="button" className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
                                     onClick={() => {
-                                        if (validateTimeSelection(showtime.startDate, showtime.endDate)) {
-                                            toggleDialog(showtime.id);
+                                        if (validateTimeSelection(showtime.startDate, showtime.endDate, setErrors)) {
+                                            toggleDialog(showtime.id, setShowtimes);
                                         }
                                     }}>
                                     <CirclePlus size={20} /> Tạo loại vé mới
@@ -335,7 +241,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                     <CreateTypeTicketDailog
                                         open={showtime.showDialog}
                                         onClose={() =>
-                                            toggleDialog(showtime.id)}
+                                            toggleDialog(showtime.id, setShowtimes)}
                                         startDate={showtime.startDate}
                                         endDate={showtime.endDate}
                                         setStartDate={(date) => {
@@ -348,7 +254,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                             updatedShowtimes[index].endDate = date;
                                             setShowtimes(updatedShowtimes);
                                         }}
-                                        addTicket={(newTicket) => addTicket(showtime.id, newTicket)}
+                                        addTicket={(newTicket) => addTicket(showtime.id, newTicket, setShowtimes)}
                                     />}
                             </div>
                         </>)}
