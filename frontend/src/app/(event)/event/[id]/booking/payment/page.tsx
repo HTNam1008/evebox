@@ -70,7 +70,7 @@ const PaymentPage = () => {
       <Navigation title="Thanh toán" />
 
       <div className="fixed top-10 right-10 mt-4">
-        <CountdownTimer expiredTime={redisSeatInfo?.expiredTime ? redisSeatInfo?.expiredTime : 0} />           
+        <CountdownTimer expiredTime={redisSeatInfo?.expiredTime ? redisSeatInfo?.expiredTime : 15} />           
       </div>
 
       <div className="px-32 py-0">

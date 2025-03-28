@@ -41,6 +41,7 @@ export default function QuestionForm() {
     const [formInputs, setFormInputs] = useState<FormInputs[]>([]);
     const [formAnswers, setFormAnswers] = useState<{ [formInputId: number]: string }>({});
     const [redisSeatInfo, setRedisSeatInfo] = useState<redisInfo | null>(null);
+    const [isLoadingForm, setIsLoadingForm] = useState(true);
     const [allRequiredFilled, setAllRequiredFilled] = useState(false); // New state
 
 
@@ -48,6 +49,8 @@ export default function QuestionForm() {
 
     useEffect(() => {
         const fetchForm = async () => {
+            if (!showingId) return;
+            setIsLoadingForm(true);
             try {
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/showing/get-form?showingId=${showingId}`);
                 const data = await res.json();
@@ -55,10 +58,14 @@ export default function QuestionForm() {
                     setFormId(data.data.id);
                     setFormInputs(data.data.FormInput);
                 } else {
-                    console.error('Không tìm thấy Form trong Showing');
+                    setFormId(null);
+                    setFormInputs([]);
+                    // console.error('Không tìm thấy Form trong Showing');
                 }
             } catch (error) {
                 console.error('Lỗi khi tải Form:', error);
+            } finally {
+                setIsLoadingForm(false);
             }
         };
 
@@ -115,6 +122,7 @@ export default function QuestionForm() {
                         formInputs={formInputs} 
                         onValidationChange={setIsFormValid} 
                         onFormChange={setFormAnswers} 
+                        isLoadingForm={isLoadingForm}
                         onRequiredFilledChange={setAllRequiredFilled} // New prop
                     />
                     <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} isFormValid={isFormValid && allRequiredFilled} ticketType={ticketType} formData={formAnswers} formId={formId} showingId={showingId} />

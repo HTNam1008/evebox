@@ -16,6 +16,7 @@ interface QuestionListProps {
     formInputs: FormInput[];
     onValidationChange: (isValid: boolean) => void;
     onFormChange: (answers: { [formInputId: number]: string }) => void;
+    isLoadingForm?: boolean;
     onRequiredFilledChange: (allRequiredFilled: boolean) => void; // New prop
 }
 
@@ -23,6 +24,7 @@ export default function QuestionList({
     formInputs,
     onValidationChange,
     onFormChange,
+    isLoadingForm,
     onRequiredFilledChange, // New prop
 }: QuestionListProps) {
     const [answers, setAnswers] = useState<{ [formInputId: number]: string }>({});
@@ -87,53 +89,61 @@ export default function QuestionList({
                         của bạn là chính xác.
                     </div>
 
-                    {formInputs.length > 0 ? (
-                        formInputs.map((input) => (
-                            <div className="col-md-12" key={input.id}>
-                                <label htmlFor={`input-${input.id}`} className="form-label d-flex justify-content-start">
-                                    <b>{input.required && <span className="red-star">*</span>} {input.fieldName}</b>
-                                </label>
-                                {input.type === "2" ? (
-                                    // Radio button handling
-                                    <div className="form-check d-flex justify-content-start">
-                                        {input.options && input.options.length > 0 ? (
-                                            <>
-                                                <input
-                                                    className="form-check-input mr-2"
-                                                    type="radio"
-                                                    id={`input-${input.id}`}
-                                                    checked={answers[input.id] === input.options[0].optionText}
-                                                    onChange={() => input.options && handleChange(input.id, input.options[0].optionText, input.regex, input.required)}
-                                                    required={input.required}
-                                                />
-                                                <label className="form-check-label" htmlFor={`input-${input.id}`}>
-                                                    {input.options[0].optionText}
-                                                </label>
-                                            </>
-                                        ) : (
-                                            <span>Không có lựa chọn</span>
-                                        )}
-                                    </div>
-                                ) : (
-                                    // Other input fields
+                    {!isLoadingForm ? (
+                        formInputs.length > 0 ? (
+                            formInputs.map((input) => (
+                                <div className="col-md-12" key={input.id}>
+                                    <label htmlFor={`input-${input.id}`} className="form-label d-flex justify-content-start">
+                                        <b>{input.required && <span className="red-star">*</span>} {input.fieldName}</b>
+                                    </label>
+                                    {input.type === "2" ? (
+                                        // Radio button handling
+                                        <div className="form-check d-flex justify-content-start">
+                                            {input.options && input.options.length > 0 ? (
+                                                <>
+                                                    <input
+                                                        className="form-check-input mr-2"
+                                                        type="radio"
+                                                        id={`input-${input.id}`}
+                                                        checked={answers[input.id] === input.options[0].optionText}
+                                                        onChange={() => input.options && handleChange(input.id, input.options[0].optionText, input.regex, input.required)}
+                                                        required={input.required}
+                                                    />
+                                                    <label className="form-check-label" htmlFor={`input-${input.id}`}>
+                                                        {input.options[0].optionText}
+                                                    </label>
+                                                </>
+                                            ) : (
+                                                <span>Không có lựa chọn</span>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        // Other input fields
                                     <>
-                                        <input
-                                            type={input.type}
-                                            className="form-control custom-input"
-                                            id={`input-${input.id}`}
-                                            placeholder="Điền câu trả lời của bạn"
-                                            value={answers[input.id] || ''}
-                                            onChange={(e) => handleChange(input.id, e.target.value, input.regex,input.required)}
-                                            required={input.required}
-                                        />
+                                            <input
+                                                type={input.type}
+                                                className="form-control custom-input"
+                                                id={`input-${input.id}`}
+                                                placeholder="Điền câu trả lời của bạn"
+                                                value={answers[input.id] || ''}
+                                                onChange={(e) => handleChange(input.id, e.target.value, input.regex,input.required)}
+                                                required={input.required}
+                                            />
                                         {errors[input.id] && <div className="text-danger text-start mt-1">{errors[input.id]}</div>}
                                     </>
-                                )}
-                                <div className="valid-feedback">Looks good!</div>
-                            </div>
-                        ))
+                                    )}
+                                    <div className="valid-feedback">Looks good!</div>
+                                </div>
+                            ))
+                        ) : (
+                            <p>Sự kiện không yêu cầu thông tin.</p>
+                        )
                     ) : (
-                        <p>Đang tải câu hỏi từ chương trình</p>
+                        <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Đang tải câu hỏi thông tin từ chương trình</span>
+                            </div>
+                        </div>
                     )}
                 </form>
             </div>
