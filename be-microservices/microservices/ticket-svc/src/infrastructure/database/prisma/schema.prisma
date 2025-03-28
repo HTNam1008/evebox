@@ -370,6 +370,22 @@ model TicketTypeSection {
   @@id([ticketTypeId, sectionId])
 }
 
+model OrgPaymentInfo {
+  id              String      @id @default(uuid())
+  organizerId     String
+  accountName     String
+  accountNumber   String
+  bankName        String
+  branch          String
+  businessType    Int 
+  fullName        String?
+  address         String?
+  taxCode         String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  isDeleted       Boolean     @default(false)
+}
+
 enum OTPType {
   FORGOT_PASSWORD
   REGISTER
