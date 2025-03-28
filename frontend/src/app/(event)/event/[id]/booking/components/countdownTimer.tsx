@@ -13,8 +13,6 @@ interface CountdownTimerProps {
 export default function CountdownTimer({ expiredTime }: CountdownTimerProps) {
     const [isTimeout, setIsTimeout] = useState(false);
     const [timeLeft, setTimeLeft] = useState(expiredTime);
-    localStorage.setItem('timeLeft', String(expiredTime));
-
 
     useEffect(() => {
         if (expiredTime <= 0) {
@@ -33,7 +31,7 @@ export default function CountdownTimer({ expiredTime }: CountdownTimerProps) {
 
         if (remainingTime > 0) {
             setTimeLeft(remainingTime);
-            localStorage.setItem('timeLeft', String(remainingTime));
+            localStorage.setItem('timeLeft', String(expiredTime));
             localStorage.setItem('timestamp', String(Date.now()));
         } else {
             handleTimeout();
