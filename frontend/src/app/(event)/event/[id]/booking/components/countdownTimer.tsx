@@ -1,32 +1,40 @@
 'use client';
 
-//Package System
+// Package System
 import { useState, useEffect } from 'react';
 
-//Package App
+// Package App
 import TimeOutDialog from '../payment/components/dialogs/timeOutDialog';
 
-export default function CountdownTimer() {
-    const initialMinutes = 15;
-    const initialSeconds = 0;
-    const totalInitialTime = initialMinutes * 60 + initialSeconds;
-    
+interface CountdownTimerProps {
+    expiredTime: number;
+}
+
+export default function CountdownTimer({ expiredTime }: CountdownTimerProps) {
     const [isTimeout, setIsTimeout] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(totalInitialTime);
-    
+    const [timeLeft, setTimeLeft] = useState(expiredTime);
+
     useEffect(() => {
+        if (expiredTime <= 0) {
+            return;
+        }
+
         const storedTime = localStorage.getItem('timeLeft');
         const storedTimestamp = localStorage.getItem('timestamp');
 
+        let remainingTime = expiredTime; // Default to passed expiredTime
+
         if (storedTime && storedTimestamp) {
             const elapsedTime = Math.floor((Date.now() - Number(storedTimestamp)) / 1000);
-            const remainingTime = Math.max(Number(storedTime) - elapsedTime, 0);
-            setTimeLeft(remainingTime);
+            remainingTime = Math.max(Number(storedTime) - elapsedTime, 0);
+        }
 
-            if (remainingTime === 0) {
-                setIsTimeout(true);
-                return;
-            }
+        if (remainingTime > 0) {
+            setTimeLeft(remainingTime);
+            localStorage.setItem('timeLeft', String(remainingTime));
+            localStorage.setItem('timestamp', String(Date.now()));
+        } else {
+            setIsTimeout(true);
         }
 
         const timer = setInterval(() => {
@@ -37,14 +45,16 @@ export default function CountdownTimer() {
                     localStorage.setItem('timeLeft', '0');
                     return 0;
                 }
-                localStorage.setItem('timeLeft', String(prevTime - 1));
+
+                const updatedTime = prevTime - 1;
+                localStorage.setItem('timeLeft', String(updatedTime));
                 localStorage.setItem('timestamp', String(Date.now()));
-                return prevTime - 1;
+                return updatedTime;
             });
         }, 1000);
 
         return () => clearInterval(timer);
-    }, []); // Chỉ chạy một lần khi component mount
+    }, [expiredTime]);
 
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
