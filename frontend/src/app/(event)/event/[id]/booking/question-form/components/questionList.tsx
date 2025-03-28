@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from "react";
+import crypto from 'crypto';
 
 interface FormInput {
     id: number;
@@ -15,30 +16,66 @@ interface QuestionListProps {
     formInputs: FormInput[];
     onValidationChange: (isValid: boolean) => void;
     onFormChange: (answers: { [formInputId: number]: string }) => void;
+    onRequiredFilledChange: (allRequiredFilled: boolean) => void; // New prop
 }
 
 export default function QuestionList({
     formInputs,
     onValidationChange,
-    onFormChange
+    onFormChange,
+    onRequiredFilledChange, // New prop
 }: QuestionListProps) {
     const [answers, setAnswers] = useState<{ [formInputId: number]: string }>({});
+    const [errors, setErrors] = useState<{ [formInputId: number]: string | null }>({});
+    const [, setAllRequiredFilled] = useState<boolean>(false);
 
-    useEffect(() => {
-        const allRequiredAnswered = formInputs.every((input) =>
-            input.required ? answers[input.id]?.trim() : true
-        );
-        onFormChange(answers);
-        onValidationChange(allRequiredAnswered);
-    }, [answers, formInputs, onValidationChange, onFormChange]);
-
-    const handleChange = (id: number, value: string) => {
-        setAnswers((prev) => ({
-            ...prev,
-            [id]: value,
-        }));
+    // Hashing function
+    const hashInput = (value: string): string => {
+        return crypto.createHash('sha256').update(value).digest('hex');
     };
 
+    // Validation function
+    const validateInput = (value: string, regex: string | null) => {
+        if (!regex) return true; // No validation needed if regex is null
+        const pattern = new RegExp(regex);
+        return pattern.test(value);
+    };
+
+    useEffect(() => {
+        // Check if all required fields are filled
+        const allFilled = formInputs.every((input) => !input.required || (answers[input.id] && answers[input.id].trim() !== ""));
+        setAllRequiredFilled(allFilled);
+        onRequiredFilledChange(allFilled); // Notify parent component
+
+        // Check if all required inputs are valid
+        const allValid = formInputs.every((input) => {
+            const value = answers[input.id] || '';
+            return input.required ? validateInput(value, input.regex) : true;
+        });
+
+        onFormChange(answers);
+        onValidationChange(allValid);
+    }, [answers, formInputs, onValidationChange, onFormChange, onRequiredFilledChange]);
+
+    const handleChange = (id: number, value: string, regex: string | null, required: boolean) => {
+        const hashedValue = regex ? hashInput(value) : value;
+        
+        let isValid = true;
+        let errorMessage = null;
+    
+        // Check required field
+        if (required && (!value || value.trim() === "")) {
+            isValid = false;
+            errorMessage = "This field is required.";
+        } else if (regex && !validateInput(hashedValue, regex)) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            isValid = false;
+            errorMessage = `Invalid format:${hashedValue}`;
+        }
+    
+        setAnswers((prev) => ({ ...prev, [id]: hashedValue }));
+        setErrors((prev) => ({ ...prev, [id]: errorMessage }));
+    };
 
     return (
         <div className="col-7">
@@ -57,7 +94,7 @@ export default function QuestionList({
                                     <b>{input.required && <span className="red-star">*</span>} {input.fieldName}</b>
                                 </label>
                                 {input.type === "2" ? (
-                                    // Nếu type là "2" thì render radio
+                                    // Radio button handling
                                     <div className="form-check d-flex justify-content-start">
                                         {input.options && input.options.length > 0 ? (
                                             <>
@@ -66,7 +103,7 @@ export default function QuestionList({
                                                     type="radio"
                                                     id={`input-${input.id}`}
                                                     checked={answers[input.id] === input.options[0].optionText}
-                                                    onChange={() => input.options && handleChange(input.id, input.options[0].optionText)}
+                                                    onChange={() => input.options && handleChange(input.id, input.options[0].optionText, input.regex, input.required)}
                                                     required={input.required}
                                                 />
                                                 <label className="form-check-label" htmlFor={`input-${input.id}`}>
@@ -78,16 +115,19 @@ export default function QuestionList({
                                         )}
                                     </div>
                                 ) : (
-                                    // Các trường còn lại, sử dụng input với type tương ứng
-                                    <input
-                                        type={input.type} // "text", "email", "phone",…
-                                        className="form-control custom-input"
-                                        id={`input-${input.id}`}
-                                        placeholder="Điền câu trả lời của bạn"
-                                        value={answers[input.id] || ""}
-                                        onChange={(e) => handleChange(input.id, e.target.value)}
-                                        required={input.required}
-                                    />
+                                    // Other input fields
+                                    <>
+                                        <input
+                                            type={input.type}
+                                            className="form-control custom-input"
+                                            id={`input-${input.id}`}
+                                            placeholder="Điền câu trả lời của bạn"
+                                            value={answers[input.id] || ''}
+                                            onChange={(e) => handleChange(input.id, e.target.value, input.regex,input.required)}
+                                            required={input.required}
+                                        />
+                                        {errors[input.id] && <div className="text-danger text-start mt-1">{errors[input.id]}</div>}
+                                    </>
                                 )}
                                 <div className="valid-feedback">Looks good!</div>
                             </div>
@@ -98,5 +138,5 @@ export default function QuestionList({
                 </form>
             </div>
         </div>
-    )
+    );
 }

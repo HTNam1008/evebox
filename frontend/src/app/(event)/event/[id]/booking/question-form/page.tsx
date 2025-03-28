@@ -41,6 +41,8 @@ export default function QuestionForm() {
     const [formInputs, setFormInputs] = useState<FormInputs[]>([]);
     const [formAnswers, setFormAnswers] = useState<{ [formInputId: number]: string }>({});
     const [redisSeatInfo, setRedisSeatInfo] = useState<redisInfo | null>(null);
+    const [allRequiredFilled, setAllRequiredFilled] = useState(false); // New state
+
 
     // const [hasSelectedTickets, setHasSelectedTickets] = useState(false);
 
@@ -109,8 +111,13 @@ export default function QuestionForm() {
 
             <div className="px-32 py-0">
                 <div className="row align-items-start mt-4">
-                    <QuestionList onValidationChange={setIsFormValid} onFormChange={(answers) => setFormAnswers(answers)} formInputs={formInputs}/>
-                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} isFormValid={isFormValid} ticketType={ticketType} formData={formAnswers} formId={formId} showingId={showingId} />
+                    <QuestionList 
+                        formInputs={formInputs} 
+                        onValidationChange={setIsFormValid} 
+                        onFormChange={setFormAnswers} 
+                        onRequiredFilledChange={setAllRequiredFilled} // New prop
+                    />
+                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} isFormValid={isFormValid && allRequiredFilled} ticketType={ticketType} formData={formAnswers} formId={formId} showingId={showingId} />
                 </div>
             </div>
         </div>
