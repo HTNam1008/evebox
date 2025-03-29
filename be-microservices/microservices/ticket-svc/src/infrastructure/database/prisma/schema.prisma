@@ -372,6 +372,7 @@ model TicketTypeSection {
 
 model OrgPaymentInfo {
   id              String      @id @default(uuid())
+  eventId         Int
   organizerId     String
   accountName     String
   accountNumber   String
