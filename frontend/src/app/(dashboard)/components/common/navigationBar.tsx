@@ -10,12 +10,13 @@ import { useTranslations } from "next-intl";
 
 /* Package Application */
 import Sidebar from "./sidebar";
-import apiClient from "@/services/apiClient";
 import { UserInfo, UserInfoResponse } from "@/types/model/userInfo";
 import LanguageSwitcher from "../common/languageSwitcher";
 import { useI18n } from "../../../providers/I18nProvider";
+import createApiClient from "@/services/apiClient";
 
 const NavigationBar = () => {
+  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null); // Replace `any` with a proper type if known

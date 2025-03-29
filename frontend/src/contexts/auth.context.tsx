@@ -2,8 +2,8 @@ import { createContext, useState, useEffect, ReactNode } from 'react';
 import {jwtDecode} from 'jwt-decode';
 import { useRouter } from 'next/router';
 import axios, { AxiosError } from 'axios';
-import apiClient from '@/services/apiClient';
 import { ErrorResponse } from '@/types/ErrorResponse';
+import createApiClient from '@/services/apiClient';
 
 interface JwtPayload {
   id: string;
@@ -78,6 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getUserInfo = async (): Promise<UserInfo | null> => {
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
     try {
       const response = await apiClient.get('/api/user/me');
       return response.data.data;
