@@ -12,10 +12,12 @@ import Navigation from "../components/navigation";
 import TicketInformation from "./components/ticketInfo";
 import CountdownTimer from '../components/countdownTimer';
 import { TicketType } from "../../../libs/event.interface";
-import apiClient from '@/services/apiClient2';
 import { redisInfo, redisInfoResponse } from '@/types/model/redisSeat';
+import createApiClient from "@/services/apiClient";
 
 const PaymentPage = () => {
+  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_TICKET_SVC_URL || "");
+
   const [event, setEvent] = useState(null);
   const [totalTickets, setTotalTickets] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);

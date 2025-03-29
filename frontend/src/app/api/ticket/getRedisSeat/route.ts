@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import apiClient from '@/services/apiClient2';
 import { ErrorResponse } from '@/types/ErrorResponse';
 import { authOptions } from '@/lib/authOptions';
 import { redisInfoResponse } from '@/types/model/redisSeat';
+import createApiClient from '@/services/apiClient';
 
 export async function GET(request: Request): Promise<NextResponse<redisInfoResponse | ErrorResponse>> {
+  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_TICKET_SVC_URL || "");
+
   try {
     const session = await getServerSession(authOptions);
     console.log('Session route api me:', session);

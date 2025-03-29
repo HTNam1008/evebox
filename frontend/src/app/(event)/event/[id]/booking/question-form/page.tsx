@@ -16,8 +16,8 @@ import TicketInformation from './components/ticketInfo';
 import Navigation from '../components/navigation';
 import CountdownTimer from '../components/countdownTimer';
 import { TicketType } from '../../../libs/event.interface';
-import apiClient from '@/services/apiClient2';
 import { redisInfo, redisInfoResponse } from '@/types/model/redisSeat';
+import createApiClient from '@/services/apiClient';
 
 interface FormInputs {
     id: number;
@@ -30,6 +30,7 @@ interface FormInputs {
 }
 
 export default function QuestionForm() {
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_TICKET_SVC_URL || "");
     const t = useTranslations('common');
     const [event, setEvent] = useState(null);
     const [totalTickets, setTotalTickets] = useState(0);

@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
-import apiClient from '@/services/apiClient';
 import { ErrorResponse } from '@/types/ErrorResponse';
 import { CategoriesResponse } from '@/types/model/categories';
+import createApiClient from '@/services/apiClient';
 
 export async function GET(): Promise<NextResponse<CategoriesResponse | ErrorResponse>> {
+  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+
   try {
     // Type cho response từ backend
     const response = await apiClient.get<CategoriesResponse>(
