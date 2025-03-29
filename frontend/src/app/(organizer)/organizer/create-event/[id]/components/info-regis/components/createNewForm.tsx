@@ -53,7 +53,10 @@ export default function CreateNewForm() {
                             <label className="text-base font-bold"> Câu 1 </label>
                         </div>
 
-                        <span>Câu hỏi dạng văn bản</span>
+                        {quesText === "quesText" && <span>Câu hỏi dạng văn bản</span>}
+                        {quesText === "oneAns" && <span>Câu hỏi một lựa chọn</span>}
+                        {quesText === "multAns" && <span>Câu hỏi nhiều lựa chọn</span>}
+                        
                     </div>
 
                     <Trash2 className="ml-auto p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer" />
