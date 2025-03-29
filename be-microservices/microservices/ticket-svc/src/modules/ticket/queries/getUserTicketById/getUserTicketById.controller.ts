@@ -12,7 +12,7 @@ export class GetUserTicketByIdController {
   constructor(private readonly getUserTicketByIdService: GetUserTicketByIdService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('/getUserTicket/:id')
+  @Get('/getUserTicketById/:id')
   @ApiHeader({
     name: 'Authorization',
     description: 'Bearer token for authorization (`Bearer <token>`)',
