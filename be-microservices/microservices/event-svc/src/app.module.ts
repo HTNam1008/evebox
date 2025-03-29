@@ -13,6 +13,7 @@ import { ImagesModule } from './modules/images/images.module';
 import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
 import { ShowingModule } from './modules/showing/showing.module';
 import { TicketTypeModule } from './modules/ticketType/ticketType.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { IORedisModule } from './infrastructure/redis/ioredis.module';
 
 @Module({
@@ -34,6 +35,7 @@ import { IORedisModule } from './infrastructure/redis/ioredis.module';
     EventModule,
     ShowingModule,
     TicketTypeModule,
+    PaymentModule,
   ],
 })
 
