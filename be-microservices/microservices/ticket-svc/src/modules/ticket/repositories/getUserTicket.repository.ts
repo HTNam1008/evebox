@@ -17,20 +17,20 @@ export class getUserTicketRepository {
           status: true,
           price: true,
           type: true,
-          FormResponse: {
-            select: {
-              FormAnswer: {
-                select: {
-                  FormInput: {
-                    select: {
-                      fieldName: true
-                    }
-                  },
-                  value: true,
-                }
-              }
-            }
-          },
+          // FormResponse: {
+          //   select: {
+          //     FormAnswer: {
+          //       select: {
+          //         FormInput: {
+          //           select: {
+          //             fieldName: true
+          //           }
+          //         },
+          //         value: true,
+          //       }
+          //     }
+          //   }
+          // },
           Showing: {
             select: {
               startTime: true,
@@ -38,7 +38,23 @@ export class getUserTicketRepository {
               Events: {
                 select: {
                   title: true,
-                  description: true,
+                  // description: true,
+                  venue: true,
+                  locations: {
+                    select: {
+                        id: true,
+                        street: true,
+                        ward: true,
+                        districtId: true,
+                        createdAt: true,
+                        districts: {
+                            select: {
+                                name: true,
+                                province: { select: { name: true } },
+                            },
+                        },
+                    },
+                },
                 }
               }
             }
@@ -60,36 +76,39 @@ export class getUserTicketRepository {
       if (!userTicket) {
         return null;
       }
-
-      return userTicket.map(ticket => ({
-        id: ticket.id,
-        showingId: ticket.showingId,
-        status: ticket.status,
-        type: ticket.type,
-        price: ticket.price,
-        PaymentInfo: ticket.PaymentInfo ?? undefined,
-        TicketQRCode: ticket.TicketQRCode ?? [],
-        Showing: ticket.Showing
-          ? {
-            startTime: ticket.Showing.startTime,
-            endTime: ticket.Showing.endTime,
-            Events: {
-              title: ticket.Showing.Events?.title || '',
-              description: ticket.Showing.Events?.description || '',
-            },
-          }
-          : undefined,
-        FormResponse: ticket.FormResponse
-          ? {
-            answers: ticket.FormResponse.FormAnswer.map(answer => ({
-              formInput: {
-                fieldName: answer.FormInput.fieldName,
+      // Xử lý địa chỉ
+      // const { street, ward, districts } = event.locations ?? {};
+      // const districtName = districts?.name || '';
+      // const provinceName = districts?.province?.name || '';
+      // const locationsString = `${street || ''}, ${ward || ''}, ${districtName}, ${provinceName}`;
+      const formatUserTicket = userTicket.map(ticket => {
+        const { street, ward, districts } = ticket.Showing?.Events?.locations ?? {};
+        const districtName = districts?.name || '';
+        const provinceName = districts?.province?.name || '';
+        const locationsString = `${street || ''}, ${ward || ''}, ${districtName}, ${provinceName}`;
+        return {
+          id: ticket.id,
+          showingId: ticket.showingId,
+          status: ticket.status,
+          type: ticket.type,
+          price: ticket.price,
+          PaymentInfo: ticket.PaymentInfo ?? undefined,
+          TicketQRCode: ticket.TicketQRCode ?? [],
+          Showing: ticket.Showing
+            ? {
+              startTime: ticket.Showing.startTime,
+              endTime: ticket.Showing.endTime,
+              Events: {
+                title: ticket.Showing.Events?.title || '',
+                venue: ticket.Showing.Events?.venue || '',
+                locationsString: locationsString || '',
               },
-              value: answer.value,
-            })),
-          }
-          : undefined,
-      }));
+            }
+            : undefined,
+          };
+        }
+      );
+      return formatUserTicket;
     }
     catch (e) {
       console.error(e);
