@@ -115,4 +115,132 @@ export class getUserTicketRepository {
       return null;
     }
   }
+
+  async getUserTicketById(userId: string, ticketId: string) {
+    try{
+      const userTicket = await this.prisma.ticket.findFirst({
+        where: {
+          id: ticketId,
+          userId: userId
+        },
+        select:{
+          Showing: {
+            select: {
+              startTime: true,
+              endTime: true,
+              Events: {
+                select: {
+                  title: true,
+                  venue: true,
+                  Images_Events_imgPosterIdToImages: {
+                    select: {
+                      imageUrl: true,
+                    }
+                  }
+                },
+              }
+            }
+          },
+          TicketQRCode: {
+            select: {
+              qrCode: true,
+              ticketTypeId: true,
+              seatId: true,
+            }
+          },
+          PaymentInfo: {
+            select: {
+              method: true,
+              paidAt: true,
+            }
+          },
+          FormResponse: {
+            select: {
+              FormAnswer: {
+                select: {
+                  FormInput: {
+                    select: {
+                      fieldName: true
+                    }
+                  },
+                  value: true,
+                }
+              }
+            }
+          },
+          id: true,
+          showingId: true,
+          status: true,
+          price: true,
+          type: true,
+        }
+      });
+
+      if(!userTicket){
+        return null;
+      }
+
+      const { ticketTypeId } = userTicket.TicketQRCode[0] || {};
+      const seatIds = userTicket.TicketQRCode.map(ticket => ticket.seatId).filter(seatId => seatId !== null);
+      const ticketType = ticketTypeId ? await this.prisma.ticketType.findFirst({
+        where: {
+          id: ticketTypeId,
+        },
+        select: {
+          name: true,
+          price: true,
+          sections: {
+            select: {
+              sectionId: true,
+            }
+          }
+        }
+      }) : null;
+      if( seatIds.length > 0 ){
+        const seats = await this.prisma.seat.findMany({
+          where: {
+            id: { in: seatIds },
+          },
+          select: {
+            id: true,
+            name: true,
+            Row: {
+              select: {
+                id: true,
+                name: true,
+                Section: {
+                  select: {
+                    id: true,
+                    name: true,
+                  }
+                }
+              }
+            }
+          }
+        });
+        return {
+          ...userTicket,
+          ticketType: ticketType ? {
+            name: ticketType.name,
+            price: ticketType.price,
+          } : null,
+          seats: seats ? seats : [],
+          count: userTicket.TicketQRCode.length,
+        }
+      }
+      return {
+        ...userTicket,
+        ticketType: ticketType ? {
+          name: ticketType.name,
+          price: ticketType.price,
+          sections: ticketType.sections.map(section => section.sectionId),
+        } : null,
+        seats: [],
+        count: userTicket.TicketQRCode.length,
+      }
+    }
+    catch{
+
+    }
+  }
 }
