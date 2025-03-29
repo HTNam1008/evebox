@@ -15,7 +15,6 @@ export class getShowingDetailRepository {
       select: {
         id: true,
         eventId: true,
-        status: true,
         isFree: true,
         isSalable: true,
         isPresale: true,
@@ -77,11 +76,8 @@ export class getShowingDetailRepository {
       return null;
     }
 
-    const showingType = showing.status;
-
     const showingStatus = await this.getShowingStatus(showingId);
     // console.log(showingStatus);
-    showing.status = showingStatus.showingStatus;
 
     // // Lặp qua từng ticketType và gán status tương ứng
     // showing.TicketType = showing.TicketType.map(ticketType => ({
@@ -92,8 +88,7 @@ export class getShowingDetailRepository {
     const showingFormatted = {
       id: showing.id,
       eventId: showing.eventId,
-      status: showing.status,
-      type: showingType,
+      status: showingStatus.showingStatus,
       isFree: showing.isFree,
       isSalable: showing.isSalable,
       isPresale: showing.isPresale,

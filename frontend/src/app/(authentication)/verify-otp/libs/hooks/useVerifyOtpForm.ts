@@ -182,7 +182,11 @@ export const useVerifyOTPForm = () => {
 
   const handleCloseDialog = () => {
     setIsOpen(false);
-    router.push('/login');
+    if (type === OtpConstants.FORGOT_PASSWORD) {
+      router.push('/reset-password');
+    } else {
+      router.push('/login');
+    }
   };
 
   return {

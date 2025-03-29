@@ -47,7 +47,7 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap, onSeatSelectionChan
   }
 
   const handleSeatClick = (seat: Seat, sectionTicketTypeId: string, status: number) => {
-    if (status === 2) return;
+    if (status !== 1) return;
 
     if (selectedTicketType && selectedTicketType !== sectionTicketTypeId) {
       setAlertMessage("Bạn chỉ được chọn chỗ ngồi của 1 loại vé duy nhất.");
@@ -150,9 +150,21 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap, onSeatSelectionChan
 
                 {section.Row?.map((row) =>
                   row.Seat.map((seat) => {
+                    if (seat.status === 0) return null;
                     const isSelected = selectedSeats.has(seat.id);
-                    const fillColor =
-                      seat.status === 2 ? "red" : isSelected ? "#6FEC61" : "gray"; // Đã đặt: đỏ, đang chọn: xanh lá, còn lại: xám
+                    let fillColor: string;
+                    if (seat.status === 1) {
+                      // Ghế trống: nếu chọn thì màu xanh lá, còn lại màu trắng
+                      fillColor = isSelected ? "#6FEC61" : "white";
+                    } else if (seat.status === 2) {
+                      // Vé giấy: hiển thị màu xám
+                      fillColor = "gray";
+                    } else if (seat.status === 3 || seat.status === 4) {
+                      // Vé điện tử hoặc ghế đang khóa: hiển thị màu đỏ
+                      fillColor = "red";
+                    } else {
+                      fillColor = "gray";
+                    }
 
                     const seatNumber = parseInt(seat.name, 10);
                     let labelOffsetX = 0;
@@ -172,7 +184,7 @@ const SeatMapComponent: React.FC<SeatMapProps> = ({ seatMap, onSeatSelectionChan
                           strokeWidth={1}
                           fill={fillColor}
                           onClick={() => handleSeatClick(seat, section.ticketTypeId ?? "", seat.status)}
-                          style={{ cursor: seat.status === 2 ? "not-allowed" : "pointer" }}
+                          style={{ cursor: seat.status === 1 ? "pointer" : "not-allowed" }}
                         />
                         {zoom >= 1.5 && (
                           <text

@@ -36,6 +36,7 @@ interface TicketInforProps {
     selectedTicketType?: TicketType;
     selectedSeatIds?: number[];
     showingId?: string;
+    onClearSelection?: () => void;
 }
 
 export default function TicketInfor({
@@ -46,6 +47,7 @@ export default function TicketInfor({
     selectedTicketType,
     selectedSeatIds,
     showingId,
+    onClearSelection
 }: TicketInforProps) {
     const t = useTranslations('common');
     const { locale } = useI18n();
@@ -76,6 +78,7 @@ export default function TicketInfor({
             const data = await res.json();
             if (!res.ok) {
                 alert(data.message || 'Không thể giữ ghế, vui lòng thử lại.');
+                onClearSelection?.();
                 return;
             }
 
@@ -93,6 +96,7 @@ export default function TicketInfor({
         } catch (error) {
             console.error('Lỗi khi gọi API lock-seat:', error);
             alert('Lỗi hệ thống khi giữ ghế. Vui lòng thử lại.');
+            onClearSelection?.();
         } finally {
             setIsLoading(false);
         }

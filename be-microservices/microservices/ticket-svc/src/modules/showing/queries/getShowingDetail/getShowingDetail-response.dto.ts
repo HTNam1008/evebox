@@ -147,9 +147,6 @@ class ShowingDataDto {
   @ApiProperty({ example: 'book_now', description: 'Showing status' })
   status: string;
 
-  @ApiProperty({ example: 'Offline', description: 'Showing type' })
-  type: string;
-
   @ApiProperty({ example: false, description: 'Is the event free' })
   isFree: boolean;
 

@@ -86,6 +86,9 @@ export class EventOrgDetailResponseDto {
   @ApiProperty({ example: '2024-12-17T07:57:23.528Z' })
   deleteAt: Date;
 
+  @ApiProperty({ example: false, description: 'Is isOnline' })
+  isOnline: boolean;
+
   @ApiProperty({ type: locationDto })
   locations: locationDto;
 }

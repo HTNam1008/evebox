@@ -26,7 +26,7 @@ interface FormInput {
   options?: JsonValue;
 }
 
-interface Form {
+export interface Form {
   id: number;
   name: string;
   FormInput: FormInput[];
