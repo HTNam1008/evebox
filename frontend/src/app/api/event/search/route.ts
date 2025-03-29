@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
-import apiClient from '@/services/apiClient';
 import { ErrorResponse } from '@/types/ErrorResponse';
 import { SearchEventsResponse } from '@/types/model/searchEvents';
+import createApiClient from '@/services/apiClient';
 
 export async function GET(request: Request): Promise<NextResponse<SearchEventsResponse | ErrorResponse>> {
+  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+
   try {
     const { searchParams } = new URL(request.url);
     const title = searchParams.get('title');

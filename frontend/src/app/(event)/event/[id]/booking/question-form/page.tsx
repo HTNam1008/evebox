@@ -16,6 +16,8 @@ import TicketInformation from './components/ticketInfo';
 import Navigation from '../components/navigation';
 import CountdownTimer from '../components/countdownTimer';
 import { TicketType } from '../../../libs/event.interface';
+import { redisInfo, redisInfoResponse } from '@/types/model/redisSeat';
+import createApiClient from '@/services/apiClient';
 
 interface FormInputs {
     id: number;
@@ -28,6 +30,7 @@ interface FormInputs {
 }
 
 export default function QuestionForm() {
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_TICKET_SVC_URL || "");
     const t = useTranslations('common');
     const [event, setEvent] = useState(null);
     const [totalTickets, setTotalTickets] = useState(0);
@@ -38,11 +41,17 @@ export default function QuestionForm() {
     const [formId, setFormId] = useState<number | null>(null);
     const [formInputs, setFormInputs] = useState<FormInputs[]>([]);
     const [formAnswers, setFormAnswers] = useState<{ [formInputId: number]: string }>({});
+    const [redisSeatInfo, setRedisSeatInfo] = useState<redisInfo | null>(null);
+    const [isLoadingForm, setIsLoadingForm] = useState(true);
+    const [allRequiredFilled, setAllRequiredFilled] = useState(false); // New state
+
 
     // const [hasSelectedTickets, setHasSelectedTickets] = useState(false);
 
     useEffect(() => {
         const fetchForm = async () => {
+            if (!showingId) return;
+            setIsLoadingForm(true);
             try {
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_TICKET_SVC_URL}/api/showing/get-form?showingId=${showingId}`);
                 const data = await res.json();
@@ -50,14 +59,37 @@ export default function QuestionForm() {
                     setFormId(data.data.id);
                     setFormInputs(data.data.FormInput);
                 } else {
-                    console.error('Không tìm thấy Form trong Showing');
+                    setFormId(null);
+                    setFormInputs([]);
+                    // console.error('Không tìm thấy Form trong Showing');
                 }
             } catch (error) {
                 console.error('Lỗi khi tải Form:', error);
+            } finally {
+                setIsLoadingForm(false);
             }
         };
 
         if (showingId) fetchForm();
+    }, [showingId]);
+
+    useEffect(() => {
+        const fetchRedisSeatInfo = async () => {
+            if (!showingId) return;
+            try {          
+                const res = await apiClient.get<redisInfoResponse>(`/api/ticket/getRedisSeat?showingId=${showingId}`); // Assuming your API route is /api/me
+                
+                if (res.status == 200) {
+                    setRedisSeatInfo(res.data.data);
+                } else {
+                    console.error('Failed to fetch redisSeatInfo');
+                }
+            } catch (error) {
+                console.error('Error fetching redisSeatInfo:', error);
+            }
+        };
+        
+        fetchRedisSeatInfo();
     }, [showingId]);
 
     useEffect(() => {
@@ -82,13 +114,19 @@ export default function QuestionForm() {
             <Navigation title={`${t("questionForm") || 'Bảng câu hỏi'}`} />
 
             <div className="fixed top-10 right-10 mt-4">
-                <CountdownTimer />
-            </div>
+                <CountdownTimer expiredTime={redisSeatInfo?.expiredTime ? redisSeatInfo?.expiredTime : 0} />           
+             </div>
 
             <div className="px-32 py-0">
                 <div className="row align-items-start mt-4">
-                    <QuestionList onValidationChange={setIsFormValid} onFormChange={(answers) => setFormAnswers(answers)} formInputs={formInputs}/>
-                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} isFormValid={isFormValid} ticketType={ticketType} formData={formAnswers} formId={formId} showingId={showingId} />
+                    <QuestionList 
+                        formInputs={formInputs} 
+                        onValidationChange={setIsFormValid} 
+                        onFormChange={setFormAnswers} 
+                        isLoadingForm={isLoadingForm}
+                        onRequiredFilledChange={setAllRequiredFilled} // New prop
+                    />
+                    <TicketInformation event={event} totalTickets={totalTickets} totalAmount={totalAmount} isFormValid={isFormValid && allRequiredFilled} ticketType={ticketType} formData={formAnswers} formId={formId} showingId={showingId} />
                 </div>
             </div>
         </div>

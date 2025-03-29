@@ -40,6 +40,9 @@ export interface EventDetail {
   venue: string;
   Showing: Showing[];
   minTicketPrice: number;
+  Images_Events_imgLogoIdToImages?: { imageUrl: string };
   Images_Events_imgPosterIdToImages?: { imageUrl: string };
+  orgName: string;
   locationsString: string;
+  orgDescription: string;
 }

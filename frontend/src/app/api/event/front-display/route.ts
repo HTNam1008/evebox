@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import apiClient from '@/services/apiClient';
 import { ErrorResponse } from '@/types/ErrorResponse';
 import { FrontDisplayResponse } from '@/types/model/frontDisplay';
+import createApiClient from '@/services/apiClient';
 
 export async function GET(): Promise<NextResponse<FrontDisplayResponse | ErrorResponse>> {
   try {
-
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
     // Type cho response từ backend
     const response = await apiClient.get<FrontDisplayResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/api/event/front-display`
