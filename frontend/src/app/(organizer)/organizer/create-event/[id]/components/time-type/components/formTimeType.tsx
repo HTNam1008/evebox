@@ -18,6 +18,7 @@ import { updateTicket } from "../../../libs/functions/showing/updateTicket";
 import { addTicket } from "../../../libs/functions/showing/addTicket";
 import { validateStartDate, validateEndDate, validateTimeSelection } from "../../../libs/functions/showing/validationUtils";
 import { toggleExpanded, toggleDialog, toggleEditDialog, toggleDelDialog } from "../../../libs/functions/showing/toggleDialogUtils";
+import FormSettingClientTemp from "./(temp)/formSettingTemp";
 
 export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
     //Chỉnh sửa vé đã tạo
@@ -83,195 +84,200 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     return (
         <>
             <Toaster position="top-center" />
-
-            <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="ticket-form">
-                <div className="relative flex items-center">
-                    <label className="text-xl font-bold mr-4">Thời gian</label>
-                    <div className="relative ml-auto">
-                        <select
-                            className={`text-base block appearance-none w-40 border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 
+            
+            <div className="w-full mt-6">
+                <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="ticket-form">
+                    <div className="relative flex items-center">
+                        <label className="text-xl font-bold mr-4">Thời gian</label>
+                        <div className="relative ml-auto">
+                            <select
+                                className={`text-base block appearance-none w-40 border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 
                                     ${selectedMonth === "" ? "text-gray-400" : "text-black"}`}
-                            value={selectedMonth}
-                            onChange={handleSelectChange}
-                        >
-                            <option value="">Tất cả tháng</option>
-                            {Array.from(new Set(showtimes
-                                .filter(show => show.startDate) // Lọc bỏ các startDate null
-                                .map(show => new Date(show.startDate as Date).getMonth() + 1)
-                            )).map((month) => (
-                                <option key={month} value={month} className="text-black">
-                                    Tháng {month}
-                                </option>
-                            ))}
-                        </select>
-                        <div className="text-gray-400 pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                            <ChevronDown size={20} />
-                        </div>
-                    </div>
-                </div>
-
-                {filteredShowtimes.map((showtime, index) => (
-                    <div key={showtime.id} className="p-4 lg:p-4 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4"
-                        style={{
-                            backgroundColor: "rgba(158, 245, 207, 0.2)",
-                            border: showtime.tickets.length === 0 ? "1px solid red" : "1.5px solid #9EF5CF"
-                        }}>
-                        <div className="relative flex items-center mb-4">
-                            {showtime.isExpanded ? (
-                                <>
-                                    <ChevronUp size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id, setShowtimes)} />
-                                    <label className="text-base font-medium ml-2">Ngày sự kiện</label>
-                                </>
-                            ) : (
-                                <>
-                                    <ChevronDown size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id, setShowtimes)} />
-                                    <div>
-                                        <label className={`text-base font-medium ml-2 ${showtime.tickets.length === 0 ? "text-red-500" : "text-black"}`}>
-                                            {showtime.startDate ? `${showtime.startDate.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })} - ${showtime.startDate.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit" })}`
-                                                : "Vui lòng chọn thông tin xuất diễn"}
-                                        </label>
-                                        <br />
-                                        {showtime.tickets.length === 0 ? (
-                                            showtime.startDate && <span className="text-sm ml-2">Vui lòng tạo ít nhất một loại vé</span>
-                                        ) : (
-                                            <span className="text-sm ml-2">{showtime.tickets.length} Loại vé</span>
-                                        )}
-
-                                    </div>
-                                </>
-                            )}
-                        </div>
-
-                        {showtime.isExpanded && (<>
-                            <div className="flex flex-wrap -mx-3 mb-6">
-                                {/* Thời gian bắt đầu */}
-                                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                    <DateTimePicker
-                                        label="Thời gian bắt đầu"
-                                        selectedDate={showtime.startDate}
-                                        setSelectedDate={(date) => {
-                                            const updatedShowtimes = [...showtimes];
-                                            updatedShowtimes[index].startDate = date;
-                                            setShowtimes(updatedShowtimes);
-                                        }}
-                                        popperPlacement="bottom-end"
-                                        validateDate={(date) => validateStartDate(date, showtime.endDate)}
-                                    />
-                                </div>
-
-                                {/* Thời gian kết thúc */}
-                                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                    <DateTimePicker
-                                        label="Thời gian kết thúc"
-                                        selectedDate={showtime.endDate}
-                                        setSelectedDate={(date) => {
-                                            const updatedShowtimes = [...showtimes];
-                                            updatedShowtimes[index].endDate = date;
-                                            setShowtimes(updatedShowtimes);
-                                        }}
-                                        popperPlacement="bottom-start"
-                                        validateDate={(date) => validateEndDate(date, showtime.startDate)}
-                                    />
-                                </div>
-                            </div>
-
-                            <label className="block text-base font-medium mb-2">
-                                <span className="text-red-500">* </span>Loại vé
-                            </label>
-
-                            {/* Hiển thị các loại vé đã tạo */}
-                            <div className="type_ticket ">
-                                {showtime.tickets.map((ticket, ticketIndex) => (
-                                    <div key={ticketIndex} className="flex items-center justify-between gap-2 p-4 lg:p-6 h-14 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
-                                        <Ticket size={20} />
-
-                                        <span>{ticket.name}</span>
-
-                                        <div className="ml-auto flex items-center gap-2">
-                                            <PencilLine className="p-2 bg-white text-black rounded w-8 h-8 cursor-pointer"
-                                                onClick={() => {
-                                                    setEditShowtimeId(showtime.id);
-                                                    setEditTicketIndex(ticketIndex);
-                                                    toggleEditDialog(showtime.id, setShowtimes);
-                                                }}
-
-                                            />
-
-                                            {showtime.showEditDialog && editShowtimeId === showtime.id && editTicketIndex !== null && (
-                                                <EditTicketDailog
-                                                    open={true}
-                                                    onClose={() => setEditShowtimeId(null)}
-                                                    endDateEvent={showtime.endDate}
-                                                    ticket={showtime.tickets[editTicketIndex]}
-                                                    updateTicket={(updatedTicket) => updateTicket(showtime.id, editTicketIndex, updatedTicket, setShowtimes, setEditShowtimeId, setEditTicketIndex)}
-                                                />)}
-
-                                            <Trash2 className="p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer"
-                                                onClick={() => {
-                                                    setDelShowtimeId(showtime.id);
-                                                    setDelTicketIndex(ticketIndex);
-                                                    toggleDelDialog(showtime.id, setShowtimes);
-                                                }}
-                                            />
-
-                                            {showtime.showConfirmDeleteDialog && delShowtimeId === showtime.id && delTicketIndex !== null &&
-                                                (<ConfirmDeleteTicketDialog
-                                                    open={showtime.showConfirmDeleteDialog}
-                                                    onClose={() => setDelShowtimeId(null)}
-                                                    onConfirm={() => {
-                                                        handleDeleteTicket(showtime.id, delTicketIndex, setShowtimes, setDelShowtimeId, setDelTicketIndex);
-                                                    }}
-                                                />)}
-                                        </div>
-                                    </div>
+                                value={selectedMonth}
+                                onChange={handleSelectChange}
+                            >
+                                <option value="">Tất cả tháng</option>
+                                {Array.from(new Set(showtimes
+                                    .filter(show => show.startDate) // Lọc bỏ các startDate null
+                                    .map(show => new Date(show.startDate as Date).getMonth() + 1)
+                                )).map((month) => (
+                                    <option key={month} value={month} className="text-black">
+                                        Tháng {month}
+                                    </option>
                                 ))}
+                            </select>
+                            <div className="text-gray-400 pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                                <ChevronDown size={20} />
                             </div>
-
-                            <div className="flex justify-center mt-4">
-                                <button type="button" className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
-                                    onClick={() => {
-                                        if (validateTimeSelection(showtime.startDate, showtime.endDate, setErrors)) {
-                                            toggleDialog(showtime.id, setShowtimes);
-                                        }
-                                    }}>
-                                    <CirclePlus size={20} /> Tạo loại vé mới
-                                </button>
-
-                                {showtime.showDialog &&
-                                    <CreateTypeTicketDailog
-                                        open={showtime.showDialog}
-                                        onClose={() =>
-                                            toggleDialog(showtime.id, setShowtimes)}
-                                        startDate={showtime.startDate}
-                                        endDate={showtime.endDate}
-                                        setStartDate={(date) => {
-                                            const updatedShowtimes = [...showtimes];
-                                            updatedShowtimes[index].startDate = date;
-                                            setShowtimes(updatedShowtimes);
-                                        }}
-                                        setEndDate={(date) => {
-                                            const updatedShowtimes = [...showtimes];
-                                            updatedShowtimes[index].endDate = date;
-                                            setShowtimes(updatedShowtimes);
-                                        }}
-                                        addTicket={(newTicket) => addTicket(showtime.id, newTicket, setShowtimes)}
-                                    />}
-                            </div>
-                        </>)}
+                        </div>
                     </div>
-                ))}
 
-                <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+                    {filteredShowtimes.map((showtime, index) => (
+                        <div key={showtime.id} className="p-4 lg:p-4 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4"
+                            style={{
+                                backgroundColor: "rgba(158, 245, 207, 0.2)",
+                                border: showtime.tickets.length === 0 ? "1px solid red" : "1.5px solid #9EF5CF"
+                            }}>
+                            <div className="relative flex items-center mb-4">
+                                {showtime.isExpanded ? (
+                                    <>
+                                        <ChevronUp size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id, setShowtimes)} />
+                                        <label className="text-base font-medium ml-2">Ngày sự kiện</label>
+                                    </>
+                                ) : (
+                                    <>
+                                        <ChevronDown size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id, setShowtimes)} />
+                                        <div>
+                                            <label className={`text-base font-medium ml-2 ${showtime.tickets.length === 0 ? "text-red-500" : "text-black"}`}>
+                                                {showtime.startDate ? `${showtime.startDate.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })} - ${showtime.startDate.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit" })}`
+                                                    : "Vui lòng chọn thông tin xuất diễn"}
+                                            </label>
+                                            <br />
+                                            {showtime.tickets.length === 0 ? (
+                                                showtime.startDate && <span className="text-sm ml-2">Vui lòng tạo ít nhất một loại vé</span>
+                                            ) : (
+                                                <span className="text-sm ml-2">{showtime.tickets.length} Loại vé</span>
+                                            )}
 
-                <div className="flex justify-center mb-6">
-                    <button
-                        type="button" onClick={handleAddShowtime}
-                        className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
-                    >
-                        <CirclePlus size={20} /> Tạo suất diễn
-                    </button>
-                </div>
-            </form >
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
+                            {showtime.isExpanded && (<>
+                                <div className="flex flex-wrap -mx-3 mb-6">
+                                    {/* Thời gian bắt đầu */}
+                                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                        <DateTimePicker
+                                            label="Thời gian bắt đầu"
+                                            selectedDate={showtime.startDate}
+                                            setSelectedDate={(date) => {
+                                                const updatedShowtimes = [...showtimes];
+                                                updatedShowtimes[index].startDate = date;
+                                                setShowtimes(updatedShowtimes);
+                                            }}
+                                            popperPlacement="bottom-end"
+                                            validateDate={(date) => validateStartDate(date, showtime.endDate)}
+                                        />
+                                    </div>
+
+                                    {/* Thời gian kết thúc */}
+                                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                        <DateTimePicker
+                                            label="Thời gian kết thúc"
+                                            selectedDate={showtime.endDate}
+                                            setSelectedDate={(date) => {
+                                                const updatedShowtimes = [...showtimes];
+                                                updatedShowtimes[index].endDate = date;
+                                                setShowtimes(updatedShowtimes);
+                                            }}
+                                            popperPlacement="bottom-start"
+                                            validateDate={(date) => validateEndDate(date, showtime.startDate)}
+                                        />
+                                    </div>
+                                </div>
+
+                                <label className="block text-base font-medium mb-2">
+                                    <span className="text-red-500">* </span>Loại vé
+                                </label>
+
+                                {/* Hiển thị các loại vé đã tạo */}
+                                <div className="type_ticket ">
+                                    {showtime.tickets.map((ticket, ticketIndex) => (
+                                        <div key={ticketIndex} className="flex items-center justify-between gap-2 p-4 lg:p-6 h-14 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
+                                            <Ticket size={20} />
+
+                                            <span>{ticket.name}</span>
+
+                                            <div className="ml-auto flex items-center gap-2">
+                                                <PencilLine className="p-2 bg-white text-black rounded w-8 h-8 cursor-pointer"
+                                                    onClick={() => {
+                                                        setEditShowtimeId(showtime.id);
+                                                        setEditTicketIndex(ticketIndex);
+                                                        toggleEditDialog(showtime.id, setShowtimes);
+                                                    }}
+
+                                                />
+
+                                                {showtime.showEditDialog && editShowtimeId === showtime.id && editTicketIndex !== null && (
+                                                    <EditTicketDailog
+                                                        open={true}
+                                                        onClose={() => setEditShowtimeId(null)}
+                                                        endDateEvent={showtime.endDate}
+                                                        ticket={showtime.tickets[editTicketIndex]}
+                                                        updateTicket={(updatedTicket) => updateTicket(showtime.id, editTicketIndex, updatedTicket, setShowtimes, setEditShowtimeId, setEditTicketIndex)}
+                                                    />)}
+
+                                                <Trash2 className="p-2 bg-red-500 text-white rounded w-8 h-8 cursor-pointer"
+                                                    onClick={() => {
+                                                        setDelShowtimeId(showtime.id);
+                                                        setDelTicketIndex(ticketIndex);
+                                                        toggleDelDialog(showtime.id, setShowtimes);
+                                                    }}
+                                                />
+
+                                                {showtime.showConfirmDeleteDialog && delShowtimeId === showtime.id && delTicketIndex !== null &&
+                                                    (<ConfirmDeleteTicketDialog
+                                                        open={showtime.showConfirmDeleteDialog}
+                                                        onClose={() => setDelShowtimeId(null)}
+                                                        onConfirm={() => {
+                                                            handleDeleteTicket(showtime.id, delTicketIndex, setShowtimes, setDelShowtimeId, setDelTicketIndex);
+                                                        }}
+                                                    />)}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="flex justify-center mt-4">
+                                    <button type="button" className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
+                                        onClick={() => {
+                                            if (validateTimeSelection(showtime.startDate, showtime.endDate, setErrors)) {
+                                                toggleDialog(showtime.id, setShowtimes);
+                                            }
+                                        }}>
+                                        <CirclePlus size={20} /> Tạo loại vé mới
+                                    </button>
+
+                                    {showtime.showDialog &&
+                                        <CreateTypeTicketDailog
+                                            open={showtime.showDialog}
+                                            onClose={() =>
+                                                toggleDialog(showtime.id, setShowtimes)}
+                                            startDate={showtime.startDate}
+                                            endDate={showtime.endDate}
+                                            setStartDate={(date) => {
+                                                const updatedShowtimes = [...showtimes];
+                                                updatedShowtimes[index].startDate = date;
+                                                setShowtimes(updatedShowtimes);
+                                            }}
+                                            setEndDate={(date) => {
+                                                const updatedShowtimes = [...showtimes];
+                                                updatedShowtimes[index].endDate = date;
+                                                setShowtimes(updatedShowtimes);
+                                            }}
+                                            addTicket={(newTicket) => addTicket(showtime.id, newTicket, setShowtimes)}
+                                        />}
+                                </div>
+                            </>)}
+                        </div>
+                    ))}
+
+                    <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+
+                    <div className="flex justify-center mb-6">
+                        <button
+                            type="button" onClick={handleAddShowtime}
+                            className="text-base font-medium flex items-center gap-1 my-2 text-[#2DC275]"
+                        >
+                            <CirclePlus size={20} /> Tạo suất diễn
+                        </button>
+                    </div>
+                </form >
+
+
+                <FormSettingClientTemp />
+            </div>
         </>
     );
 }
