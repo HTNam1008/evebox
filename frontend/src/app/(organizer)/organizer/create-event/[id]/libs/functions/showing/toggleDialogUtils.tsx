@@ -43,3 +43,14 @@ export const toggleDelDialog = (
         )
     );
 };
+
+export const toggleCopyTicketDialog = (
+    id: number,
+    setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>
+) => {
+    setShowtimes((prevShowtimes) =>
+        prevShowtimes.map((showtime) =>
+            showtime.id === id ? { ...showtime, showCopyTicketDialog: !showtime.showCopyTicketDialog } : showtime
+        )
+    );
+};

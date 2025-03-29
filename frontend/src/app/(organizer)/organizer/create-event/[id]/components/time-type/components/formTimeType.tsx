@@ -17,8 +17,9 @@ import { handleDeleteTicket } from "../../../libs/functions/showing/deleteTicket
 import { updateTicket } from "../../../libs/functions/showing/updateTicket";
 import { addTicket } from "../../../libs/functions/showing/addTicket";
 import { validateStartDate, validateEndDate, validateTimeSelection } from "../../../libs/functions/showing/validationUtils";
-import { toggleExpanded, toggleDialog, toggleEditDialog, toggleDelDialog } from "../../../libs/functions/showing/toggleDialogUtils";
+import { toggleExpanded, toggleDialog, toggleEditDialog, toggleDelDialog, toggleCopyTicketDialog } from "../../../libs/functions/showing/toggleDialogUtils";
 import FormSettingClientTemp from "./(temp)/formSettingTemp";
+import CopyTicketDailog from "./dialogs/copyTicket";
 
 export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
     //Chỉnh sửa vé đã tạo
@@ -35,7 +36,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     const [showtimes, setShowtimes] = useState<Showtime[]>([
         {
             id: 1, startDate: null, endDate: null, tickets: [], isExpanded: true, showDialog: false,
-            showEditDialog: false, showConfirmDeleteDialog: false
+            showEditDialog: false, showCopyTicketDialog: false, showConfirmDeleteDialog: false
         }
     ]);
 
@@ -84,7 +85,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     return (
         <>
             <Toaster position="top-center" />
-            
+
             <div className="w-full mt-6">
                 <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="ticket-form">
                     <div className="relative flex items-center">
@@ -181,6 +182,19 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                     <span className="text-red-500">* </span>Loại vé
                                 </label>
 
+                                {showtimes.length >= 2 && showtime.tickets.length === 0 && (
+                                    <div className="flex gap-4 mt-4 mb-4 ml-2">
+                                        <button className="w-40 text-sm border-2 border-[#2DC275] text-white font-bold py-2 px-4 rounded bg-[#2DC275] hover:bg-[#7DF7B8] hover:border-[#7DF7B8] hover:text-white transition-all"
+                                            onClick={() => {
+                                                if (validateTimeSelection(showtime.startDate, showtime.endDate, setErrors)) {
+                                                    toggleCopyTicketDialog(showtime.id, setShowtimes);
+                                                }
+                                            }}>
+                                            Copy loại vé
+                                        </button>
+                                    </div>
+                                )}
+
                                 {/* Hiển thị các loại vé đã tạo */}
                                 <div className="type_ticket ">
                                     {showtime.tickets.map((ticket, ticketIndex) => (
@@ -257,6 +271,15 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                 setShowtimes(updatedShowtimes);
                                             }}
                                             addTicket={(newTicket) => addTicket(showtime.id, newTicket, setShowtimes)}
+                                        />}
+                                    {showtime.showCopyTicketDialog &&
+                                        <CopyTicketDailog
+                                            open={showtime.showCopyTicketDialog}
+                                            onClose={() =>
+                                                toggleCopyTicketDialog(showtime.id, setShowtimes)}  
+                                            showtimes={showtimes}   
+                                            currentShowtimeId={showtime.id}
+                                            setShowtimes={setShowtimes}
                                         />}
                                 </div>
                             </>)}
