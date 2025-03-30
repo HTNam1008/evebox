@@ -67,6 +67,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
         if (field === "ticketNumMin") setTicketNumMin(value);
         if (field === "ticketNumMax") setTicketNumMax(value);
         if (field === "infoOrg") setInfoTicket(value);
+        if (field === "infoTicket") setInfoTicket(value);
 
         if (errors[field]) {
             setErrors((prev) => ({ ...prev, [field]: false }));
