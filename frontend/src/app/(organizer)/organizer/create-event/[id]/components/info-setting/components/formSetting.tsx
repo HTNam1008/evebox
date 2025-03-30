@@ -130,7 +130,7 @@ export default function FormSettingClient({ onNextStep, btnValidate3 }: { onNext
                         </span>
                         <div className="relative mt-2">
                             <textarea
-                                className={`w-full h-32 text-sm block appearance-none w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 ${errors.infoOrg ? "border-red-500" : "border-gray-400"
+                                className={`w-full h-32 text-sm block appearance-none border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 ${errors.infoOrg ? "border-red-500" : "border-gray-400"
                                     }`}
                                 placeholder="Nhập tin nhắn xác nhận"
                                 value={message}
