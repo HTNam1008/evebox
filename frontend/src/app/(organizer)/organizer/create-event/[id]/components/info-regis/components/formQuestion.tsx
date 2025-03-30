@@ -7,8 +7,30 @@ import { useState } from "react";
 import FilterForm from "./filterForm";
 import CreateNewForm from "./createNewForm";
 
+import FormList from "./formTemplate/formList";
+import { Form } from "../../../libs/interface/question.interface";
+
 export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNextStep: () => void, btnValidate4: string }) {
     const [isCreateNewForm, setIsCreateNewForm] = useState(false);
+    const formData = [
+        {
+            id: 12608,
+            name: "Information Form",
+            createdBy: null,
+            FormInput: [
+                { id: 104, fieldName: "Your name", type: "text", required: true, regex: null, options: null },
+                { id: 105, fieldName: "Your address", type: "text", required: false, regex: null, options: null },
+                { id: 106, fieldName: "Your email", type: "email", required: true, regex: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", options: null },
+                { id: 107, fieldName: "Your phone", type: "phone", required: true, regex: "^0\\d{9,10}$", options: null }
+            ]
+        }
+    ]
+    const [forms,] = useState<Form[]>(formData as Form[]);
+    const [selectedForms, setSelectedForms] = useState<number | null>(null);
+
+    const handleSelectForm = (formId: number) => {
+        setSelectedForms((prevSelected) => (prevSelected === formId ? null : formId));
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -34,7 +56,7 @@ export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNex
                     <FilterForm />
 
                     <button className="w-40 text-sm border-2 border-[#2DC275] text-white font-bold py-2 px-4 rounded bg-[#2DC275] hover:bg-[#7DF7B8] hover:border-[#7DF7B8] hover:text-green-600 transition-all"
-                            onClick={() => setIsCreateNewForm(true)}>
+                        onClick={() => setIsCreateNewForm(true)}>
                         Tạo form mới
                     </button>
                 </div>
@@ -42,8 +64,10 @@ export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNex
 
                 <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="ques-form">
                     {isCreateNewForm && <CreateNewForm />}
-                </form>
-            </div>
+
+                    <FormList forms={forms} selectedForms={selectedForms} handleSelectForm={handleSelectForm} />
+                </form >
+            </div >
         </>
     )
 }
