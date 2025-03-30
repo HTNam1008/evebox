@@ -8,10 +8,10 @@ import { EventDto } from '../commands/createEvent/createEvent-response.dto';
 
 @Injectable()
 export class CreateEventRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async createEvent(dto: CreateEventDto, orgId: string, imgLogoId: number, imgPosterId: number, locationId?: number): Promise<Result<EventDto, Error>> {
-    try{
+    try {
       const event = await this.prisma.events.create({
         data: {
           title: dto.title,
@@ -61,11 +61,23 @@ export class CreateEventRepository {
   }
 
   async createEventCategory(eventId: number, categoryIds: number[]): Promise<Result<any, Error>> {
-    try{
+    let parsedCategoryIds: number[];
+
+    if (typeof categoryIds === 'string') {
+      try {
+        parsedCategoryIds = JSON.parse(categoryIds);
+      } catch (error) {
+        return Err(new Error('Invalid categoryIds format'));
+      }
+    } else {
+      parsedCategoryIds = categoryIds;
+    }
+
+    try {
       const categories = await this.prisma.categories.findMany({
         where: {
           id: {
-            in: categoryIds
+            in: parsedCategoryIds
           }
         }
       })
@@ -75,7 +87,7 @@ export class CreateEventRepository {
       const eventCategory = categories.map(category => {
         return {
           eventId: eventId,
-          categoryId: category.id >> 0
+          categoryId: category.id
         }
       })
       await this.prisma.eventCategories.createMany({
