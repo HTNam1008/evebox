@@ -21,4 +21,5 @@ export interface Showtime {
     showEditDialog?: boolean;
     showCopyTicketDialog?: boolean;
     showConfirmDeleteDialog?: boolean;
+    showDeleteShow?: boolean;
 }
