@@ -3,14 +3,14 @@ import ImageUpload from '../../common/form/imageUpload';
 import InputField from '../../common/form/inputCountField';
 import { EventImageUploadProps } from '../../../libs/interface/infoevent.interface';
 
-const EventImageUpload: React.FC<EventImageUploadProps> = ({
+export default function EventImageUpload ({
     background,
     handleUpload,
     imageErrors,
     eventName,
     handleInputChange,
     errors,
-}) => {
+}: EventImageUploadProps) {
     return (
         <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
             <label className="block text-sm font-bold mb-2">
@@ -48,5 +48,3 @@ const EventImageUpload: React.FC<EventImageUploadProps> = ({
         </div>
     );
 };
-
-export default EventImageUpload;

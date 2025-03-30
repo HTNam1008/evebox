@@ -3,7 +3,7 @@ import 'tailwindcss/tailwind.css';
 
 /* Package Application */
 import Sidebar from './sidebar';
-import InformationEventClient from '../create-event/[id]/components/info-event/page';
+import InformationEventClientPage from '../create-event/[id]/components/info-event/page';
 
 export default function OrganizerPage() {
     return (
@@ -13,7 +13,7 @@ export default function OrganizerPage() {
             </div>
 
             <div className="w-full flex flex-col">
-                <InformationEventClient />
+                <InformationEventClientPage />
             </div>
 
         </div>
