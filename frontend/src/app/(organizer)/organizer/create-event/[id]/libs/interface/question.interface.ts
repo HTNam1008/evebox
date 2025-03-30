@@ -1,3 +1,4 @@
+"use client";
 // FormList
 export interface Form {
     id: number;
@@ -18,7 +19,7 @@ export interface FormInput {
     fieldName: string;
     type: string;
     required?: boolean;
-    regex?: string;
+    regex?: string | null;
     options?: { optionText: string }[] | null;
 }
 
