@@ -1,7 +1,7 @@
 "use client";
 
 /* Package System */
-import { ChevronDown, ChevronUp, CirclePlus, PencilLine, Ticket, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, CirclePlus, X, PencilLine, Ticket, Trash2 } from "lucide-react";
 import { useState } from 'react';
 import "react-datepicker/dist/react-datepicker.css";
 import { Toaster } from "react-hot-toast";
@@ -13,13 +13,15 @@ import CreateTypeTicketDailog from "./dialogs/createTicketsDailog";
 import EditTicketDailog from "./dialogs/editTicketDailog";
 import { Showtime } from "../../../libs/interface/idevent.interface";
 import ConfirmDeleteTicketDialog from "./dialogs/confirmDeleteTicket";
+import ConfirmDeleteShowDialog from "./dialogs/confirmDeleteShow";
 import { handleDeleteTicket } from "../../../libs/functions/showing/deleteTicket";
 import { updateTicket } from "../../../libs/functions/showing/updateTicket";
 import { addTicket } from "../../../libs/functions/showing/addTicket";
 import { validateStartDate, validateEndDate, validateTimeSelection } from "../../../libs/functions/showing/validationUtils";
-import { toggleExpanded, toggleDialog, toggleEditDialog, toggleDelDialog, toggleCopyTicketDialog } from "../../../libs/functions/showing/toggleDialogUtils";
+import { toggleExpanded, toggleDialog, toggleEditDialog, toggleDelDialog, toggleCopyTicketDialog, toggleDelShowDialog } from "../../../libs/functions/showing/toggleDialogUtils";
 import FormSettingClientTemp from "./(temp)/formSettingTemp";
 import CopyTicketDailog from "./dialogs/copyTicket";
+import { handleDeleteShow } from "../../../libs/functions/showing/deleteShow";
 
 export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
     //Chỉnh sửa vé đã tạo
@@ -36,7 +38,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     const [showtimes, setShowtimes] = useState<Showtime[]>([
         {
             id: 1, startDate: null, endDate: null, tickets: [], isExpanded: true, showDialog: false,
-            showEditDialog: false, showCopyTicketDialog: false, showConfirmDeleteDialog: false
+            showEditDialog: false, showCopyTicketDialog: false, showConfirmDeleteDialog: false, showDeleteShow: false
         }
     ]);
 
@@ -57,7 +59,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     const handleAddShowtime = () => {
         setShowtimes([...showtimes, {
             id: showtimes.length + 1, startDate: null, endDate: null, tickets: [],
-            showEditDialog: false, showConfirmDeleteDialog: false
+            showEditDialog: false, showConfirmDeleteDialog: false, showDeleteShow: false
         }]);
     };
 
@@ -122,8 +124,16 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                             <div className="relative flex items-center mb-4">
                                 {showtime.isExpanded ? (
                                     <>
-                                        <ChevronUp size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id, setShowtimes)} />
-                                        <label className="text-base font-medium ml-2">Ngày sự kiện</label>
+                                        <div className="flex items-center">
+                                            <ChevronUp size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id, setShowtimes)} />
+                                            <label className="text-base font-medium ml-2">Ngày sự kiện</label>
+                                        </div>
+
+                                        <X className="ml-auto text-red-500 rounded w-5 h-5 cursor-pointer hover:bg-red-100"
+                                            onClick={() => {
+                                                setDelShowtimeId(showtime.id);
+                                                toggleDelShowDialog(showtime.id, setShowtimes);
+                                            }} />
                                     </>
                                 ) : (
                                     <>
@@ -276,15 +286,28 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                         <CopyTicketDailog
                                             open={showtime.showCopyTicketDialog}
                                             onClose={() =>
-                                                toggleCopyTicketDialog(showtime.id, setShowtimes)}  
-                                            showtimes={showtimes}   
+                                                toggleCopyTicketDialog(showtime.id, setShowtimes)}
+                                            showtimes={showtimes}
                                             currentShowtimeId={showtime.id}
                                             setShowtimes={setShowtimes}
                                         />}
                                 </div>
+                                {showtime.showDeleteShow &&
+                                    (<ConfirmDeleteShowDialog
+                                        open={showtime.showDeleteShow}
+                                        onClose={() => setShowtimes(prevShowtimes =>
+                                            prevShowtimes.map(s =>
+                                                s.id === showtime.id ? { ...s, showDeleteShow: false } : s
+                                            )
+                                        )}
+                                        onConfirm={() => {
+                                            handleDeleteShow(showtime.id, setShowtimes, setDelShowtimeId);
+                                        }}
+                                    />)}
                             </>)}
                         </div>
                     ))}
+
 
                     <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
 
