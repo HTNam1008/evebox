@@ -14,7 +14,8 @@ export class GetEventOfOrgRepository {
     try {
       const events = await this.prisma.events.findMany({
         where: {
-          organizerId: organizerId
+          organizerId: organizerId,
+          deleteAt: null,
         },
         select: {
           id: true,

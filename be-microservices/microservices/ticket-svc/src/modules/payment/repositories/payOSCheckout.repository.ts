@@ -63,7 +63,8 @@ export class payOSCheckoutRepository {
     try{
       const showing = await this.prisma.showing.findUnique({
         where: {
-          id: payOSCheckoutDto.showingId
+          id: payOSCheckoutDto.showingId,
+          deleteAt: null,
         },
         select: {
           id: true,

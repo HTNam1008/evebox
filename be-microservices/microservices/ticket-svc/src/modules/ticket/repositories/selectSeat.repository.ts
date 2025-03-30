@@ -10,7 +10,10 @@ export class SelectSeatRepository {
       {
         where: {
           showingId: showingId,
-          id: tickettypeId
+          id: tickettypeId,
+          Showing: {
+            deleteAt: null,
+          }
         },
         select: {
           quantity: true,
@@ -33,7 +36,7 @@ export class SelectSeatRepository {
           showingId: showingId,
           seatId: {
             in: seatId.map(seat => seat.seatId)
-          }
+          },
         },
         select: {
           status: true
@@ -57,7 +60,8 @@ export class SelectSeatRepository {
     try{
       const ticketType = await this.prisma.ticketType.findUnique({
         where: {
-          id: tickettypeId
+          id: tickettypeId,
+          deleteAt: null,
         }
       });
       if(!ticketType){
