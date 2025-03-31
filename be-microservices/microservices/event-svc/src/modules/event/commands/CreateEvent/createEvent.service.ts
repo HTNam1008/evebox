@@ -41,6 +41,7 @@ export class CreateEventService {
         if (!location) {
           return Err(new Error('Failed to create location'));
         }
+        locationId = location.id;
       }
 
       const imgLogoCreated = imgLogoResult.unwrap();
