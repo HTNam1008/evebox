@@ -85,9 +85,7 @@ export default function CreateNewForm({ open, onClose }: { open: boolean; onClos
                     <div className="content mx-4">
                         <GroupRadioOption eventScopeSelected={eventScopeSelected} setEventScopeSelected={setEventScopeSelected} />
                         {questions.length > 0 &&
-
-                            questions.map((question) => (<>
-                                {/* Questions */}
+                            questions.map((question) => (
                                 <div key={question.id} className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-3" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                                     <div className="flex items-center justify-between w-full">
                                         <Equal className="text-[#51DACF]" onClick={() => setIsExpanded((prev) => !prev)} />
@@ -201,7 +199,7 @@ export default function CreateNewForm({ open, onClose }: { open: boolean; onClos
                                         </div>
                                     </>)}
                                 </div>
-                            </>)
+                            )
                             )
                         }
 
