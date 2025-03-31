@@ -16,6 +16,7 @@ export class CreateEventRepository {
         data: {
           title: dto.title,
           description: dto.description,
+          isOnline: typeof dto.isOnline === 'string' ? dto.isOnline.toLowerCase() === 'true' : dto.isOnline,
           locationId: locationId >> 0 || null,
           organizerId: orgId,
           venue: dto.venue,

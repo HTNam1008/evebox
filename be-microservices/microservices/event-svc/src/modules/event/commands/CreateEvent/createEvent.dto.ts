@@ -18,7 +18,7 @@ export class CreateEventDto {
   @ApiProperty({ example: 'Online', description: 'Showing Online or Offline' })
   @IsOptional()
   @IsString({ message: 'Showing type must be a string' })
-  isOnline: boolean;
+  isOnline: string | boolean | null;
 
   @ApiProperty({ example: 1, description: 'District ID' })
   @IsNumber()
