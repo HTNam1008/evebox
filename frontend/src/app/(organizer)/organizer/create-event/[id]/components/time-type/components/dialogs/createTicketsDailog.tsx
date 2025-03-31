@@ -109,6 +109,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
         if (Object.keys(newErrors).length > 0) return;
 
         addTicket({
+            id:"",
             name: ticketName,
             price: ticketPrice,
             total: ticketNum,

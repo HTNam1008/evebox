@@ -1,9 +1,9 @@
 import { Showtime } from "../../../libs/interface/idevent.interface";
 
 export const handleCopyTickets = (
-    selectedShowtimeId: number | null,
+    selectedShowtimeId: string | null,
     showtimes: Showtime[],
-    currentShowtimeId: number,
+    currentShowtimeId: string,
     setShowtimes: (updatedShowtimes: Showtime[]) => void,
     onClose: () => void
 ) => {
@@ -17,11 +17,19 @@ export const handleCopyTickets = (
 
     if (sourceShowtime && targetShowtimeIndex !== -1) {
         const updatedShowtimes = [...showtimes];
+
+        // Copy tickets and reset their id to ""
+        const copiedTickets = sourceShowtime.tickets.map(ticket => ({
+            ...ticket,
+            id: "" // Reset ticket ID
+        }));
+
         updatedShowtimes[targetShowtimeIndex] = {
             ...updatedShowtimes[targetShowtimeIndex],
-            tickets: [...sourceShowtime.tickets] // Copy vé từ suất diễn được chọn
+            tickets: copiedTickets
         };
+
         setShowtimes(updatedShowtimes);
-        onClose();  // Đóng modal sau khi sao chép
+        onClose();  // Close modal after copying
     }
 };

@@ -37,7 +37,7 @@ export default function InformationEventClient() {
     }
 
     const handleNextStep = () => {
-        router.push(`/organizer/create-event/1?step=showing`);
+        router.push(`/organizer/create-event/89961?step=showing`);
     };
 
 

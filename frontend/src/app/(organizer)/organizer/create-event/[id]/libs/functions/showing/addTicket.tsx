@@ -4,7 +4,7 @@ import { TicketProps } from "../../../libs/interface/dialog.interface";
 import { Showtime } from "../../../libs/interface/idevent.interface";
 
 export const addTicket = (
-    showtimeId: number, 
+    showtimeId: string, 
     newTicket: TicketProps,
     setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>
 ) => {

@@ -2,7 +2,7 @@
 
 /* Package System */
 import { ChevronDown, ChevronUp, CirclePlus, X, PencilLine, Ticket, Trash2 } from "lucide-react";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import "react-datepicker/dist/react-datepicker.css";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
@@ -22,14 +22,19 @@ import { toggleExpanded, toggleDialog, toggleEditDialog, toggleDelDialog, toggle
 import FormSettingClientTemp from "./(temp)/formSettingTemp";
 import CopyTicketDailog from "./dialogs/copyTicket";
 import { handleDeleteShow } from "../../../libs/functions/showing/deleteShow";
+import createApiClient from "@/services/apiClient";
+import { ShowingOrgResponse } from "@/types/model/showingOrganizer";
+import { TicketProps } from "../../../libs/interface/dialog.interface";
 
-export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
+export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, setShowingList,eventId }: { onNextStep: () => void, btnValidate2: string, setShowingList: (showtimes: Showtime[]) => void, eventId: string}) {
     //Chỉnh sửa vé đã tạo
-    const [editShowtimeId, setEditShowtimeId] = useState<number | null>(null);
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+
+    const [editShowtimeId, setEditShowtimeId] = useState<string | null>(null);
     const [editTicketIndex, setEditTicketIndex] = useState<number | null>(null);
 
     //Xóa vé
-    const [delShowtimeId, setDelShowtimeId] = useState<number | null>(null);
+    const [delShowtimeId, setDelShowtimeId] = useState<string | null>(null);
     const [delTicketIndex, setDelTicketIndex] = useState<number | null>(null);
 
     const [, setErrors] = useState<{ [key: string]: boolean }>({});
@@ -37,10 +42,60 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     //Tạo suất diễn
     const [showtimes, setShowtimes] = useState<Showtime[]>([
         {
-            id: 1, startDate: null, endDate: null, tickets: [], isExpanded: true, showDialog: false,
+            id: "", startDate: null, endDate: null, tickets: [], isExpanded: true, showDialog: false,
             showEditDialog: false, showCopyTicketDialog: false, showConfirmDeleteDialog: false, showDeleteShow: false
         }
     ]);
+
+    useEffect(() => {
+        const fetchShowtimes = async () => {
+            try {
+                const response = await apiClient.get<ShowingOrgResponse>(`/api/org/showing/${eventId}`);
+                if (!response.data) {
+                    throw new Error("Failed to fetch showtimes");
+                }
+                const data = await response.data.data;
+                const formattedShowtimes: Showtime[] = data.map((show) => ({
+                    id: show.id, // Convert id to number if needed
+                    startDate: new Date(show.startTime),
+                    endDate: new Date(show.endTime),
+                    tickets: show.TicketType.map((ticket) => ({
+                        id: ticket.id,
+                        name: ticket.name,
+                        price: ticket.originalPrice.toString(),
+                        total: ticket.quantity.toString(), 
+                        min: ticket.minQtyPerOrder.toString(),
+                        max: ticket.maxQtyPerOrder.toString(),
+                        startDate: new Date(ticket.startTime),
+                        endDate: new Date(ticket.endTime),
+                        setStartDate: () => {}, // Placeholder function
+                        setEndDate: () => {}, // Placeholder function
+                        information: ticket.description,
+                        image: ticket.imageUrl || null,
+                        free: ticket.isFree,
+                    })) as TicketProps[],
+                    isExpanded: true,
+                    showDialog: false,
+                    showEditDialog: true,
+                    showCopyTicketDialog: false,
+                    showConfirmDeleteDialog: false,
+                    showDeleteShow: false,
+                }));
+    
+                setShowtimes(formattedShowtimes);
+                localStorage.setItem("showtimes", JSON.stringify(formattedShowtimes));
+                console.log("Showtimes saved to local storage", formattedShowtimes);
+            } catch (error) {
+                console.error("Error fetching showtimes:", error);
+            }
+        };
+
+        fetchShowtimes();
+    }, [eventId]); // Re-run when eventId changes
+
+    useEffect(() => {
+        setShowingList(showtimes);
+    }, [showtimes, setShowingList]);
 
     //Filter month of showing
     const [selectedMonth, setSelectedMonth] = useState("");
@@ -58,9 +113,10 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
 
     const handleAddShowtime = () => {
         setShowtimes([...showtimes, {
-            id: showtimes.length + 1, startDate: null, endDate: null, tickets: [],
+            id:"", startDate: null, endDate: null, tickets: [],
             showEditDialog: false, showConfirmDeleteDialog: false, showDeleteShow: false
         }]);
+        console.log('Showtime----',showtimes)
     };
 
     const handleSubmit = () => {
@@ -226,7 +282,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                 {showtime.showEditDialog && editShowtimeId === showtime.id && editTicketIndex !== null && (
                                                     <EditTicketDailog
                                                         open={true}
-                                                        onClose={() => setEditShowtimeId(null)}
+                                                        onClose={() => setEditShowtimeId("")}
                                                         endDateEvent={showtime.endDate}
                                                         ticket={showtime.tickets[editTicketIndex]}
                                                         updateTicket={(updatedTicket) => updateTicket(showtime.id, editTicketIndex, updatedTicket, setShowtimes, setEditShowtimeId, setEditTicketIndex)}
@@ -246,6 +302,8 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                         onClose={() => setDelShowtimeId(null)}
                                                         onConfirm={() => {
                                                             handleDeleteTicket(showtime.id, delTicketIndex, setShowtimes, setDelShowtimeId, setDelTicketIndex);
+
+                                                           console.log(delTicketIndex);
                                                         }}
                                                     />)}
                                             </div>
@@ -302,6 +360,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                         )}
                                         onConfirm={() => {
                                             handleDeleteShow(showtime.id, setShowtimes, setDelShowtimeId);
+                                            
                                         }}
                                     />)}
                             </>)}

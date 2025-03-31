@@ -12,7 +12,7 @@ import { handleCopyTickets } from "../../../../libs/functions/showing/copyTicket
 
 export default function CopyTicketDailog({ open, onClose, showtimes, currentShowtimeId, setShowtimes } : CopyTicketDailogProps) {
     const validShowtimes = showtimes.filter(showtime => showtime.tickets.length > 0);
-    const [selectedShowtimeId, setSelectedShowtimeId] = useState<number | null>(null);
+    const [selectedShowtimeId, setSelectedShowtimeId] = useState<string | null>(null);
 
     return (
         <>
@@ -34,7 +34,7 @@ export default function CopyTicketDailog({ open, onClose, showtimes, currentShow
                                 <select
                                     className="text-sm block w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 appearance-none text-gray-500"
                                     value={selectedShowtimeId || ""}
-                                    onChange={(e) => setSelectedShowtimeId(Number(e.target.value))}
+                                    onChange={(e) => setSelectedShowtimeId(e.target.value)}
                                 >
                                     <option value="" disabled>
                                         --- Chọn suất diễn ---

@@ -14,7 +14,7 @@ export default function Page() {
 
             <div className="w-full flex flex-col">
                 {/* Gán cứng là 1 tuy nhiên sau này sẽ dựa và db tạo event để tạo ID */}
-                <EventStep eventId='1'/>  
+                <EventStep eventId='89961'/>  
             </div>
 
         </div>

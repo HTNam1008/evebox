@@ -10,17 +10,167 @@ import { useRouter } from 'next/navigation';
 /* Package Application */
 import Navigation from '../common/navigation';
 import FormTimeTypeTicketClient from './components/formTimeType';
-import { TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
+import { Showtime, TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
+import createApiClient from '@/services/apiClient';
+import { BaseApiResponse } from '@/types/BaseApiResponse';
+
+async function urlToFile(url: string, filename: string): Promise<File> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: blob.type });
+}
 
 export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps) {
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
     const router = useRouter();
     const [step] = useState(2);
     const [btnValidate2, setBtnValidte2] = useState("");
+    
 
-    const handleSave = () => {
+    // New state to store showtimes received from FormTimeTypeTicketClient
+    const [showingList, setShowingList] = useState<Showtime[]>([]);
+
+    const handleSave = async () => {
         setBtnValidte2("Save");
-    }
+    
+        if (!showingList.length) {
+            alert("No showtimes to save!");
+            return;
+        }
+    
+        try {
+            // Process showings concurrently
+            await Promise.all(
+                showingList.map(async (showing) => {
+                    try {
+                        let response;
+                        const newShowId = showing.id;
 
+                        if (showing.id === "Deleted") {
+                            console.log(`Deleting showtime with ID: ${showing.id}`);
+                            response = await apiClient.delete<BaseApiResponse>(
+                                `/api/org/showing/${showing.id}`
+                            );
+    
+                            if (response.status === 200) {
+                                console.log(`Showtime ${showing.id} deleted successfully!`);
+                            } else {
+                                alert(`Error deleting showtime: ${response.statusText}`);
+                            }
+                            return; 
+                        }
+    
+                        if (!showing.id) {
+                            // Create new showing (POST)
+                            response = await apiClient.post<BaseApiResponse>(
+                                `/api/org/showing/${eventId}`,
+                                {
+                                    startTime: showing.startDate,
+                                    endTime: showing.endDate,
+                                }
+                            );
+    
+                            if (response.status === 201) {
+                                console.log(`Showtime created successfully! ID: ${newShowId}`);
+                            } else {
+                                alert(`Error creating showtime: ${response.statusText}`);
+                                return;
+                            }
+                        } else {
+                            // Update existing showing (PUT)
+                            response = await apiClient.put<BaseApiResponse>(
+                                `/api/org/showing/${showing.id}`,
+                                {
+                                    startTime: showing.startDate,
+                                    endTime: showing.endDate,
+                                }
+                            );
+    
+                            if (response.status === 200) {
+                                console.log(`Showtime ${showing.id} updated successfully!`);
+                            } else {
+                                alert(`Error updating showtime: ${response.statusText}`);
+                                return;
+                            }
+                        }
+    
+                        // Process tickets for the current showtime
+                        await Promise.all(
+                            showing.tickets.map(async (ticket) => {
+                                try {
+                                    let ticketResponse;
+                                    const formData = new FormData();
+                                    formData.append("name", ticket.name);
+                                    formData.append("description", ticket.information);
+                                    formData.append("color", "#000000"); // Placeholder
+                                    formData.append("isFree", String(ticket.free));
+                                    formData.append("originalPrice", ticket.price);
+                                    formData.append("startTime", (ticket.startDate ?? new Date()).toISOString());
+                                    formData.append("endTime", (ticket.endDate ?? new Date()).toISOString());
+                                    formData.append("position", "0"); // Placeholder
+                                    formData.append("quantity", "100"); // Placeholder
+                                    formData.append("maxQtyPerOrder", ticket.max);
+                                    formData.append("minQtyPerOrder", ticket.min);
+                                    formData.append("isHidden", "false"); // Placeholder
+
+                                    if (typeof ticket.image === "string" && ticket.image.startsWith("http")) {
+                                        ticket.image = await urlToFile(ticket.image, "ticket-image.png");
+                                    }
+                        
+                                    if (ticket.image instanceof File) {
+                                        formData.append("file", ticket.image);
+                                    } else {
+                                        console.warn("Skipping image upload: ticket.image is not a File");
+                                    }
+    
+                                    if (!ticket.id) {
+                                        // Create new ticket (POST)
+                                        ticketResponse = await apiClient.post<BaseApiResponse>(
+                                            `/api/org/ticketType/create/${newShowId}`,
+                                            formData,
+                                            { headers: { "Content-Type": "multipart/form-data" } }
+                                        );
+    
+                                        if (ticketResponse.status === 201) {
+                                            console.log(`Ticket created successfully!`);
+                                        } else {
+                                            alert(`Error creating ticket: ${ticketResponse.statusText}`);
+                                        }
+                                    } else {
+                                        // Update existing ticket (PUT)
+                                        ticketResponse = await apiClient.put<BaseApiResponse>(
+                                            `/api/org/ticketType/${ticket.id}`,
+                                            formData,
+                                            { headers: { "Content-Type": "multipart/form-data" } }
+                                        );
+    
+                                        if (ticketResponse.status === 200) {
+                                            console.log(`Ticket ${ticket.id} updated successfully!`);
+                                        } else {
+                                            alert(`Error updating ticket: ${ticketResponse.statusText}`);
+                                        }
+                                    }
+                                } catch (error) {
+                                    console.error(`Failed to process ticket:`, error);
+                                    alert(`Error saving ticket data.`);
+                                }
+                            })
+                        );
+                    } catch (error) {
+                        console.error(`Failed to process showtime:`, error);
+                        alert(`Error saving showtime data.`);
+                    }
+                })
+            );
+    
+            console.log("All showtimes and tickets processed.");
+        } catch (error) {
+            console.error("Error saving data:", error);
+            alert("Unexpected error occurred. Please try again.");
+        }
+    };
+    
+    
     const handleContinue = () => {
         setBtnValidte2("Continue");
     }
@@ -59,7 +209,7 @@ export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps)
             </div>
 
             <div className="flex justify-center">
-                <FormTimeTypeTicketClient onNextStep={handleNextStep} btnValidate2={btnValidate2} />
+                <FormTimeTypeTicketClient onNextStep={handleNextStep} btnValidate2={btnValidate2} setShowingList={setShowingList} eventId={eventId}/>
             </div>
         </>
     );
