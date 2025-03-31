@@ -1,7 +1,7 @@
 "use client";
 
 /* Package System */
-import React from "react";
+import React, { useEffect } from "react";
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
@@ -96,6 +96,12 @@ export default function TextEditor({ content, onChange }: TextEditorProps) {
             onChange(editor.getHTML());
         }
     })
+
+    useEffect(() => {
+        if (editor && content !== editor.getHTML()) {
+          editor.commands.setContent(content);
+        }
+      }, [content, editor]);
 
     return (
         <div>

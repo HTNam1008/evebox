@@ -25,9 +25,9 @@ export default function EventStep({ eventId, setEventId }: EventStepProps) {
     useEffect(() => {
         const validSteps = ["info", "showing", "setting", "questions", "payment"];
         if (step && !validSteps.includes(step)) {
-            router.replace("/organizer/create-event?step=info");
+            router.replace(`/organizer/create-event/${eventId}?step=info`);
         }
-    }, [step, router]);
+    }, [step, router, eventId]);
 
     return (
         <>
