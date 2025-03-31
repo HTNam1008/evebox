@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Res, HttpStatus, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Param, Res, HttpStatus, UseGuards, Request } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
@@ -31,7 +31,7 @@ export class GetUserTicketByIdController {
   async getShowing(
     @Request() req,
     @Res() res: Response,
-    @Query('id') id: string,
+    @Param('id') id: string,
     ) {
     const email = req.user.email;
     // const email = 'dattruong01082@gmail.com';
