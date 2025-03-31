@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+  // User Registration
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {}
+  
+  // User Login
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {}
+  
+  // Verify OTP
+  rpc VerifyOTP(VerifyOTPRequest) returns (VerifyOTPResponse) {}
+  
+  // Reset Password
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse) {}
+  
+  // Refresh Token
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
+
+  // Logout User
+  rpc LogoutUser() returns (LogoutUserResponse) {}
+  
+  // Resend OTP
+  rpc ResendOTP(ResendOTPRequest) returns (ResendOTPResponse) {}
+  
+  // Forgot Password
+  rpc ForgotPassword(ForgotPasswordRequest) returns (ForgotPasswordResponse) {}
+}
+
+// Registration
+message RegisterUserRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+  string re_password = 4;
+  string phone = 5;
+  int32 role_id = 6;
+  int32 province_id = 7;
+}
+
+message RegisterUserResponse {
+  int32 status_code = 1;
+  string message = 2;
+  RegisterData data = 3;
+}
+
+message RegisterData {
+  string request_token = 1;
+  int32 remaining_attempts = 2;
+  int32 resend_allowed_in = 3;
+}
+
+// Login
+message LoginUserRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginUserResponse {
+  int32 status_code = 1;
+  string message = 2;
+  LoginUserData data = 3;
+}
+
+message LoginUserData {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+// Verify OTP
+message VerifyOTPRequest {
+  string email = 1;
+  string otp = 2;
+  string type = 3;
+  string request_token = 4;
+}
+
+message VerifyOTPResponse {
+  int32 status_code = 1;
+  string message = 2;
+  VerifyOTPData data = 3;
+}
+
+message VerifyOTPData {
+  string token = 1;
+}
+
+// Reset Password
+message ResetPasswordRequest {
+  string resetToken = 1;
+  string newPassword = 2;
+  string confirmPassword = 3;
+}
+
+message ResetPasswordResponse {
+  int32 status_code = 1;
+  string message = 2;
+  ResetPasswordData data = 3;
+}
+
+message ResetPasswordData {
+//   string email = 1;
+}
+
+// Refresh Token
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  int32 status_code = 1;
+  string message = 2;
+  RefreshTokenData data = 3;
+}
+
+message RefreshTokenData {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+// Logout
+// message LogoutUserRequest {
+// //   string email = 1;
+// }
+
+message LogoutUserResponse {
+  int32 status_code = 1;
+  string message = 2;
+}
+
+// Resend OTP
+message ResendOTPRequest {
+  string email = 1;
+  string type = 2;
+  string request_token = 3;
+}
+
+message ResendOTPResponse {
+  int32 status_code = 1;
+  string message = 2;
+  ResendOTPData data = 3;
+}
+
+message ResendOTPData {
+  int32 remaining_attempts = 1;
+  int32 resend_allowed_in = 2;
+}
+
+// Forgot Password
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ForgotPasswordResponse {
+  int32 status_code = 1;
+  string message = 2;
+  ForgotPasswordData data = 3;
+}
+
+message ForgotPasswordData {
+  string request_token = 1;
+  int32 remaining_attempts = 2;
+  int32 resend_allowed_in = 3;
+}
