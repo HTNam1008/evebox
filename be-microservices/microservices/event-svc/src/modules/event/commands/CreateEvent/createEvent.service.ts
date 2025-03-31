@@ -35,7 +35,7 @@ export class CreateEventService {
       }
 
       let locationId : number;
-      if (dto.isOnline)
+      if (!dto.isOnline)
         {
         const location = await this.locationService.createLocation(dto.streetString, dto.wardString, dto.districtId);
         if (!location) {
