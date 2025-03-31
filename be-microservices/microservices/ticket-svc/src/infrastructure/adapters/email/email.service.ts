@@ -109,7 +109,6 @@ export class EmailService implements OnModuleInit {
           };
         }),
       });
-      console.log(res);
     }
     catch (error) {
       console.error('Failed to send ticket email:', error);
