@@ -6,14 +6,14 @@ export interface TicketType {
     description: string;
     color: string;
     isFree: boolean;
-    price: number;
     originalPrice: number;
     maxQtyPerOrder: number;
     minQtyPerOrder: number;
-    effectiveFrom: string;
-    effectiveTo: string;
+    startTime: string;
+    endTime: string;
     imageUrl?: string;
     isHidden: boolean;
+    quantity: number;
 }
   
 export interface Showing {
