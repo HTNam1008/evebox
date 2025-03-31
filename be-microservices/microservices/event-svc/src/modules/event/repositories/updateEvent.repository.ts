@@ -26,7 +26,9 @@ export class UpdateEventRepository {
       if (imgPosterId) updateData.imgPosterId = imgPosterId;
       if (dto.orgName) updateData.orgName = dto.orgName;
       if (dto.orgDescription) updateData.orgDescription = dto.orgDescription;
-      if (dto.isOnline) updateData.isOnline = dto.isOnline;
+      if (dto.isOnline !== undefined) {
+        updateData.isOnline = typeof dto.isOnline === 'string' ? dto.isOnline.toLowerCase() === 'true' : dto.isOnline;
+      }
       // Add additional fields as needed, e.g., updating timestamps
       updateData.createdAt = new Date();
 
@@ -65,23 +67,35 @@ export class UpdateEventRepository {
   }
 
   async updateEventCategory(eventId: number, categoryIds: number[]): Promise<Result<any, Error>> {
+    let parsedCategoryIds: number[];
+
+    if (typeof categoryIds === 'string') {
+      try {
+        parsedCategoryIds = JSON.parse(categoryIds);
+      } catch (error) {
+        return Err(new Error('Invalid categoryIds format'));
+      }
+    } else {
+      parsedCategoryIds = categoryIds;
+    }
+
     try {
       // Remove all existing event categories
       await this.prisma.eventCategories.deleteMany({
-        where: { eventId }
+        where: { eventId: eventId >> 0 },
       });
       // If new categories are provided, add them
-      if (categoryIds.length > 0) {
+      if (parsedCategoryIds.length > 0) {
         const categories = await this.prisma.categories.findMany({
           where: {
-            id: { in: categoryIds }
+            id: { in: parsedCategoryIds }
           }
         });
         if (categories.length === 0) {
           return Err(new Error('Categories not found'));
         }
         const eventCategory = categories.map(category => ({
-          eventId,
+          eventId: eventId >> 0,
           categoryId: category.id
         }));
         await this.prisma.eventCategories.createMany({
