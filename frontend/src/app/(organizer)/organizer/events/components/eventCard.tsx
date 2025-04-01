@@ -24,10 +24,16 @@ export default function EventCard({ event }: { event: DisplayEvent }) {
                     <p className="text-sm flex items-center mt-3 text-[#51DACF]">
                         📅 {new Date(event.startTime).toLocaleString("vi-VN")}
                     </p>
-                    <p className="text-sm flex items-center mt-2">
-                        📍{event.location} <br />
-                        {event.address}
-                    </p>
+                    {event.location && event.address ? (
+                        <p className="text-sm flex items-center mt-2">
+                            📍 {event.location} <br />
+                            {event.address}
+                        </p>
+                    ) : (
+                        <p className="text-sm flex items-center mt-2">
+                            📍 {event.location || "Online"} {/* Nếu location rỗng hoặc null, hiển thị "Online" */}
+                        </p>
+                    )}
                 </div>
             </div>
             <hr className="border-t border-white opacity-30 my-4" />
