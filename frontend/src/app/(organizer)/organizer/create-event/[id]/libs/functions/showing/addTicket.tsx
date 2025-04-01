@@ -11,7 +11,12 @@ export const addTicket = (
     setShowtimes((prevShowtimes) =>
         prevShowtimes.map((showtime) =>
             showtime.id === showtimeId
-                ? { ...showtime, tickets: [...showtime.tickets, newTicket] }
+                ? { 
+                    ...showtime, 
+                    tickets: [...showtime.tickets, newTicket].sort((a, b) => 
+                        parseFloat(a.price) - parseFloat(b.price)
+                    ) 
+                }
                 : showtime
         )
     );

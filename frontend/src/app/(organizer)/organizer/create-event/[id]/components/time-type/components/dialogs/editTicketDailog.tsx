@@ -51,6 +51,7 @@ export default function EditTicketDailog({ open, onClose, endDateEvent, ticket, 
 
 
     const [ticketData, setTicketData] = useState({
+        id: ticket.id,
         name: ticket.name,
         price: ticket.price,
         total: ticket.total,
@@ -110,6 +111,7 @@ export default function EditTicketDailog({ open, onClose, endDateEvent, ticket, 
         if (Object.keys(newErrors).length > 0 || !isStartValid || !isEndValid) return;
 
         updateTicket({
+            id: ticketData.id,
             name: ticketData.name,
             price: ticketData.price,
             total: ticketData.total,
@@ -287,14 +289,15 @@ export default function EditTicketDailog({ open, onClose, endDateEvent, ticket, 
                                     Hình ảnh vé
                                 </label>
                                 <div className="h-full flex items-center justify-center">
-                                    <ImageUpload
-                                        image={ticketData.image || null}
-                                        onUpload={(e) => handleUpload(e, "image")}
-                                        placeholderText="Thêm"
-                                        dimensions="1MB"
-                                        height="h-32"
-                                        error={imageErrors.image}
-                                    />
+                                <ImageUpload
+    image={""}
+    onUpload={(e) => handleUpload(e, "image")}
+    placeholderText="Thêm"
+    dimensions="1MB"
+    height="h-32"
+    error={imageErrors.image}
+/>
+
                                 </div>
                             </div>
                         </div>

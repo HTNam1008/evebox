@@ -13,6 +13,7 @@ import FormTimeTypeTicketClient from './components/formTimeType';
 import { Showtime, TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
 import createApiClient from '@/services/apiClient';
 import { BaseApiResponse } from '@/types/BaseApiResponse';
+import AlertDialog from './components/dialogs/alertDialog';
 
 async function urlToFile(url: string, filename: string): Promise<File> {
     const response = await fetch(url);
@@ -25,6 +26,7 @@ export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps)
     const router = useRouter();
     const [step] = useState(2);
     const [btnValidate2, setBtnValidte2] = useState("");
+    const [isDialogOpen, setIsDialogOpen] = useState(false); // State for dialog visibility
     
 
     // New state to store showtimes received from FormTimeTypeTicketClient
@@ -34,7 +36,7 @@ export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps)
         setBtnValidte2("Save");
     
         if (!showingList.length) {
-            alert("No showtimes to save!");
+            console.log("No showtimes to save!");
             return;
         }
     
@@ -162,7 +164,7 @@ export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps)
                     }
                 })
             );
-    
+            setIsDialogOpen(true);
             console.log("All showtimes and tickets processed.");
         } catch (error) {
             console.error("Error saving data:", error);
@@ -211,6 +213,10 @@ export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps)
             <div className="flex justify-center">
                 <FormTimeTypeTicketClient onNextStep={handleNextStep} btnValidate2={btnValidate2} setShowingList={setShowingList} eventId={eventId}/>
             </div>
+            {/* Success Dialog */}
+            <AlertDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} onConfirm={function (): void {
+                throw new Error('Function not implemented.');
+            } } />
         </>
     );
 }
