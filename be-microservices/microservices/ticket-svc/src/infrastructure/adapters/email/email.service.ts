@@ -122,13 +122,16 @@ export class EmailService implements OnModuleInit {
                 <p>Hotline: 1900.6408 (Thứ 2 - Thứ 6, 08:30 - 18:30)</p>
 
                 <h2 style="color: #333; font-size: 18px; text-align: center;">Thông tin người mua</h2>
-                <p><strong>Khách hàng:</strong>  ${data.FormResponse.FormAnswer.map(answer => answer.value).join(', ')}</p>
-                <p><strong>Email:</strong> Mail</p>
-                <p><strong>Số điện thoại:</strong> phone</p>
+                <p><strong>Khách hàng:</strong>  ${data.FormResponse.FormAnswer[0].FormInput.fieldName}</p>
+                <p><strong>Email:</strong>  
+                  ${data.FormResponse.FormAnswer[0]?.value || 'Không có dữ liệu'}
+                </p>
+
+                <p><strong>Số điện thoại: </strong> phone</p>
 
                 <h2 style="color: #333; font-size: 18px; text-align: center;">Chi tiết đơn hàng</h2>
                 <p><strong>Phương thức thanh toán:</strong> ${data.PaymentInfo.method}</p>
-                <p><strong>Thời gian đặt vé:</strong>${new Date(data.PaymentInfo.paidAt).toLocaleTimeString()}, ${new
+                <p><strong>Thời gian đặt vé: </strong>${new Date(data.PaymentInfo.paidAt).toLocaleTimeString()}, ${new
                 Date(data.PaymentInfo.paidAt).toLocaleDateString()}</p>
 
                 <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
