@@ -5,11 +5,13 @@ import { User, Ticket, Calendar, LogOut } from 'lucide-react';
 import { Menu } from 'lucide-react';
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
-import apiClient from '@/services/apiClient';
 import { SidebarProps } from '../../libs/interface/dashboard.interface';
 import { useTranslations } from "next-intl";
+import createApiClient from '@/services/apiClient';
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const t = useTranslations("common");

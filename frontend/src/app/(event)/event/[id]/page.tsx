@@ -6,9 +6,10 @@ export default async function Page({params}: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const time = 'week';
   const dataEvent = await fetchEventDetail(id);
   const event = dataEvent.data || {};
-  const dataRecommendedEvents = await fetchRecommendEvents();
+  const dataRecommendedEvents = await fetchRecommendEvents(time);
   const recommendedEvents = dataRecommendedEvents.data || [];
   
   return (

@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import apiClient from '@/services/apiClient';
 import { UserInfoResponse } from '@/types/model/userInfo';
 import { ErrorResponse } from '@/types/ErrorResponse';
 import { authOptions } from '@/lib/authOptions';
+import createApiClient from '@/services/apiClient';
 
 export async function GET(): Promise<NextResponse<UserInfoResponse | ErrorResponse>> {
+  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+  
   try {
     const session = await getServerSession(authOptions);
     console.log('Session route api me:', session);
