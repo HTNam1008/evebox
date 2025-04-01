@@ -18,7 +18,7 @@ export interface EventLocationInputProps {
     errors: { [key: string]: boolean }; 
     provinces: string[]; 
     districts: string[]; 
-    wards: string[]; 
+    // wards: string[]; 
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void; 
     handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>, field: string) => void; 
     setEventTypeSelected: React.Dispatch<React.SetStateAction<string>>; 

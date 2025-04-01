@@ -190,6 +190,16 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
                                                 setDelShowtimeId(showtime.id);
                                                 toggleDelShowDialog(showtime.id, setShowtimes);
                                             }} />
+                                        <div className="flex items-center">
+                                            <ChevronUp size={20} className="cursor-pointer" onClick={() => toggleExpanded(showtime.id, setShowtimes)} />
+                                            <label className="text-base font-medium ml-2">Ngày sự kiện</label>
+                                        </div>
+
+                                        <X className="ml-auto text-red-500 rounded w-5 h-5 cursor-pointer hover:bg-red-100"
+                                            onClick={() => {
+                                                setDelShowtimeId(showtime.id);
+                                                toggleDelShowDialog(showtime.id, setShowtimes);
+                                            }} />
                                     </>
                                 ) : (
                                     <>

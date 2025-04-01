@@ -2,16 +2,16 @@
 
 //Package System
 import { useRouter } from 'next/navigation';
-// import { useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Check } from 'lucide-react';
 
 //Package App
 
 export default function Navigation({ step }: { step: number }) {
     const router = useRouter();
-    // const searchParams = useSearchParams();
-    // const eventId = searchParams.get('eventId') || '';
-    const eventId = 1; //Gán cứng tạm thời
+    const params = useParams();
+    const eventId = params?.id || '';
+    // const eventId = 1; //Gán cứng tạm thời
 
     const steps = [
         { number: 1, label: "Thông tin sự kiện", key: "info" },

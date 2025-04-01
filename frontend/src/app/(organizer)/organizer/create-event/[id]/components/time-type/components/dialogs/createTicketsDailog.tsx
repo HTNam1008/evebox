@@ -272,7 +272,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                                 </label>
                                 <div className="relative">
                                     <textarea
-                                        className="w-full h-32 text-sm block appearance-none w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400"
+                                        className="w-full h-32 text-sm block appearance-none border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400"
                                         placeholder="Mô tả"
                                         value={infoTicket}
                                         onChange={(e) => handleInputChange(e, "infoTicket")}

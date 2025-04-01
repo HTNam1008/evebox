@@ -2,7 +2,7 @@ import React from "react";
 import { InputFieldProps } from "../../../libs/interface/comform.interface";
 
 
-const InputCountField: React.FC<InputFieldProps> = ({
+export default function InputCountField ({
     label,
     placeholder,
     value,
@@ -10,7 +10,7 @@ const InputCountField: React.FC<InputFieldProps> = ({
     error = false,
     maxLength,
     required = false,
-}) => {
+}: InputFieldProps) {
     return (
         <>
             <label className="block text-sm font-bold mb-2">
@@ -35,5 +35,3 @@ const InputCountField: React.FC<InputFieldProps> = ({
         </>
     );
 };
-
-export default InputCountField;

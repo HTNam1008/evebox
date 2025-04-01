@@ -4,8 +4,8 @@ export const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
     type: string,
     setImageErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>,
-    setBackground: React.Dispatch<React.SetStateAction<string | null>>,
-    setLogoOrg: React.Dispatch<React.SetStateAction<string | null>>
+    setImageUrl: React.Dispatch<React.SetStateAction<string | null>>,
+    setImageFile: React.Dispatch<React.SetStateAction<File | null>>
 ) => {
     const file = event.target.files?.[0];
 
@@ -27,13 +27,9 @@ export const handleImageUpload = (
                     setImageErrors((prev) => ({ ...prev, [type]: 'Kích thước ảnh không đúng' }));
                     toast.error('Kích thước ảnh không đúng!', { duration: 10000 });
                 } else {
-                    setImageErrors((prev) => ({ ...prev, [type]: '' }));
-                    // Lưu ảnh vào state tương ứng
-                    if (type === 'background') {
-                        setBackground(reader.result as string);
-                    } else if (type === 'logoOrg') {
-                        setLogoOrg(reader.result as string);
-                    }
+                    setImageErrors(prev => ({ ...prev, [type]: '' }));
+                    setImageUrl(reader.result as string);
+                    setImageFile(file);
                 }
             };
         };

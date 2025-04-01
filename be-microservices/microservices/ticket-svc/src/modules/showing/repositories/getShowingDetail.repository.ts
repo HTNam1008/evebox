@@ -11,6 +11,7 @@ export class getShowingDetailRepository {
     const showing = await this.prisma.showing.findUnique({
       where: {
         id: showingId,
+        deleteAt: null,
       },
       select: {
         id: true,

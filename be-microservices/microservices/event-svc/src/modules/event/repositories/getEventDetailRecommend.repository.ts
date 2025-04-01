@@ -10,7 +10,9 @@ export class GetEventDetailRecommendRepository {
 
   async getRecommendedEventsInDetail(eventId: number, limit: string) {
     const event = await this.prisma.events.findUnique({
-      where: { id: eventId },
+      where: { id: eventId,
+        deleteAt: null,
+       },
       select: {
         locations: {
           select: {
@@ -43,6 +45,7 @@ export class GetEventDetailRecommendRepository {
           },
         },
         id: { not: eventId }, 
+        deleteAt: null,
       },
       orderBy: [
         { lastScore: 'desc' }, 
@@ -66,6 +69,7 @@ export class GetEventDetailRecommendRepository {
           startTime: {
             gte: now,
           },
+          deleteAt: null,
         },
         select: {
           id: true,
