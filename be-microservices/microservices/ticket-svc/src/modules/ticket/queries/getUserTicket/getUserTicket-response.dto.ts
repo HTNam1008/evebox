@@ -4,8 +4,14 @@ class UserEventDto {
   @ApiProperty( {example: 'The Batman', description: 'The title of the event' })
   title: string;
 
-  @ApiProperty( {example: 'The Batman is a 2022 American superhero film based on the DC Comics character Batman.', description: 'The description of the event' })
-  description: string;
+  @ApiProperty( {example: 'Nhà hát kịch Idecaf', description: 'The venue of the event' })
+  venue: string;
+
+  @ApiProperty( {example: '130 Nguyen Dinh Chieu, Da Kao Ward, District 1, Ho Chi Minh City', description: 'The address of the event' })
+  locationsString: string;
+
+  // @ApiProperty( {example: 'The Batman is a 2022 American superhero film based on the DC Comics character Batman.', description: 'The description of the event' })
+  // description: string;
 }
 
 class UserShowingDto {
@@ -19,23 +25,23 @@ class UserShowingDto {
   Events: UserEventDto;
 }
 
-class UserFormInputDto {
-  @ApiProperty( {example: 'name', description: 'The field name of the form input' })
-  fieldName: string;
-}
+// class UserFormInputDto {
+//   @ApiProperty( {example: 'name', description: 'The field name of the form input' })
+//   fieldName: string;
+// }
 
-class UserFormAnserDto {
-  @ApiProperty( {type: UserFormInputDto, description: 'The form input of the form answer' })
-  formInput: UserFormInputDto;
+// class UserFormAnserDto {
+//   @ApiProperty( {type: UserFormInputDto, description: 'The form input of the form answer' })
+//   formInput: UserFormInputDto;
 
-  @ApiProperty( {example: 'Duong Ngoc Thai Bao', description: 'The value of the form answer' })
-  value: string;
-}
+//   @ApiProperty( {example: 'Duong Ngoc Thai Bao', description: 'The value of the form answer' })
+//   value: string;
+// }
 
-class UserFormResponseDto {
-  @ApiProperty( {type: UserFormAnserDto, description: 'The answers of the form response' })
-  answers: UserFormAnserDto[];
-}
+// class UserFormResponseDto {
+//   @ApiProperty( {type: UserFormAnserDto, description: 'The answers of the form response' })
+//   answers: UserFormAnserDto[];
+// }
 
 class PaymentInfoDto {
   @ApiProperty( {example: '2021-10-10T10:00:00Z', description: 'The paid time of the ticket' })
@@ -78,8 +84,8 @@ export class UserTicketDto {
   @ApiProperty( {type: UserShowingDto, description: 'The showing of the ticket' })
   Showing?: UserShowingDto;
 
-  @ApiProperty( {type: UserFormResponseDto, description: 'The form response of the ticket' })
-  FormResponse: UserFormResponseDto;
+  // @ApiProperty( {type: UserFormResponseDto, description: 'The form response of the ticket' })
+  // FormResponse: UserFormResponseDto;
 }
 
 export class GetUserTicketResponseDto {
