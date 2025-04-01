@@ -1,13 +1,29 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Image from 'next/image';
-import { IUserTicketById } from '@/types/model/ticketInfoById';
+import { ArrowLeft } from 'lucide-react';
+
+import { useTicketById } from '@/app/(ticket)/libs/hooks/useTicketById';
 
 interface TicketDetailProps {
-    ticket: IUserTicketById;
+    ticketId: string;
 }
 
-const TicketDetailClient = ({ ticket }: TicketDetailProps) => {
+const TicketDetailClient = ({ ticketId }: TicketDetailProps) => {
+    const { ticket, loading, error } = useTicketById(ticketId);
+    const [currentTicketIndex, setCurrentTicketIndex] = useState(0);
+    const router = useRouter();
+
+    if (loading) {
+        return <div className="text-white text-center">Đang tải...</div>;
+    }
+
+    if (error || !ticket) {
+        return <div className="text-white text-center">Không tìm thấy vé</div>;
+    }
+
     const getStatusInfo = (status: number) => {
         switch (status) {
             case 0: return { text: 'Đã hủy', color: 'text-red-500' };
@@ -23,8 +39,31 @@ const TicketDetailClient = ({ ticket }: TicketDetailProps) => {
 
     const { text, color } = getStatusInfo(ticket.status);
 
+    const allTickets = ticket.TicketQRCode || [];
+    const totalTickets = allTickets.length;
+
+    const currentTicket = allTickets[currentTicketIndex];
+
+    let seatInfo = { section: "-", row: "-", seat: "-" };
+    if (currentTicket?.seatId) {
+        const seat = ticket.seats.find(seat => seat.id === currentTicket.seatId);
+        if (seat) {
+            seatInfo = {
+                section: seat.Row?.Section?.name || "-",
+                row: seat.Row?.name || "-",
+                seat: seat.name || "-",
+            };
+        }
+    }
+
     return (
         <div className="mt-8 min-h-screen flex justify-center items-center px-4">
+            {/* <button
+                onClick={() => router.back()}
+                className="p-1.5 border-2 border-[#0C4762] rounded-md hover:bg-gray-200 absolute top-4 left-4"
+            >
+                <ArrowLeft size={20} className="text-[#0C4762]" />
+            </button> */}
             <div className="flex flex-row gap-4 w-full">
                 {/* Ticket Details */}
                 <div className="bg-[#0C4762] text-white w-1/2 p-6 rounded-lg shadow-lg">
@@ -47,11 +86,11 @@ const TicketDetailClient = ({ ticket }: TicketDetailProps) => {
                         </div>
                         <div>
                             <p className="text-sm text-gray-300">Khu vực</p>
-                            <p className="text-[#9EF5CF] font-semibold">{ticket.seats[0]?.Row.Section.name || "-"}</p>
+                            <p className="text-[#9EF5CF] font-semibold">{seatInfo.section}</p>
                         </div>
                         <div>
                             <p className="text-sm text-gray-300">Hàng: Ghế</p>
-                            <p className="text-[#9EF5CF] font-semibold">{ticket.seats[0]?.Row.name}: {ticket.seats[0]?.name || "-"}</p>
+                            <p className="text-[#9EF5CF] font-semibold">{seatInfo.row} : {seatInfo.seat}</p>
                         </div>
                         <div>
                             <p className="text-sm text-gray-300">Thời gian</p>
@@ -64,30 +103,42 @@ const TicketDetailClient = ({ ticket }: TicketDetailProps) => {
                         </div>
                     </div>
 
-                    <div className="flex justify-end mt-6">
-                        <div className="bg-[#9EF5CF] p-2 rounded-lg flex flex-col items-center gap-2">
-                            {ticket.TicketQRCode && ticket.TicketQRCode.length > 0 ? (
-                                ticket.TicketQRCode.map((ticketQR, index) => (
-                                    <Image
-                                        key={index}
-                                        src={ticketQR.qrCode.startsWith('data:image') ? ticketQR.qrCode : `data:image/png;base64,${ticketQR.qrCode}`}
-                                        alt="QR Code"
-                                        width={100}
-                                        height={100}
-                                        className="border border-gray-400 rounded-lg"
-                                    />
-                                ))
-                            ) : (
-                                <span className="text-sm text-[#0C4762]">
-                                    Vui lòng tải app Ticketbox để xem mã QR vé
-                                </span>
-                            )}
-                            {/* Dòng chữ nằm dưới mã QR */}
-                            {ticket.TicketQRCode && ticket.TicketQRCode.length > 0 && (
+                    {/* QR Code */}
+                    {currentTicket?.qrCode && currentTicket.qrCode !== "Unknow" && (
+                        <div className="mt-6 flex justify-center">
+                            <div className="bg-[#9EF5CF] p-2 rounded-lg flex flex-col items-center gap-2">
                                 <span className="text-sm text-[#0C4762] font-semibold">Mã QR vé</span>
-                            )}
+                                <Image
+                                    src={currentTicket.qrCode.startsWith('data:image') ? currentTicket.qrCode : `data:image/png;base64,${currentTicket.qrCode}`}
+                                    alt="QR Code"
+                                    width={100}
+                                    height={100}
+                                    className="border border-gray-400 rounded-lg"
+                                />
+                            </div>
                         </div>
-                    </div>
+                    )}
+
+                    {/* Điều hướng giữa các vé */}
+                    {totalTickets > 1 && (
+                        <div className="flex justify-between mt-4">
+                            <button
+                                className="bg-[#51DACF] text-[#0C4762] px-4 py-2 rounded-lg disabled:opacity-50"
+                                onClick={() => setCurrentTicketIndex((prev) => Math.max(0, prev - 1))}
+                                disabled={currentTicketIndex === 0}
+                            >
+                                Trước
+                            </button>
+                            <span className="flex items-center justify-center">Vé {currentTicketIndex + 1} / {totalTickets}</span>
+                            <button
+                                className="bg-[#51DACF] text-[#0C4762] px-4 py-2 rounded-lg disabled:opacity-50"
+                                onClick={() => setCurrentTicketIndex((prev) => Math.min(totalTickets - 1, prev + 1))}
+                                disabled={currentTicketIndex === totalTickets - 1}
+                            >
+                                Sau
+                            </button>
+                        </div>
+                    )}
 
                 </div>
 
