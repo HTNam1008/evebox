@@ -20,14 +20,22 @@ export class UpdateEventRepository {
       const updateData: any = {};
       if (dto.title) updateData.title = dto.title;
       if (dto.description) updateData.description = dto.description;
-      if (locationId) updateData.locationId = locationId;
-      if (dto.venue) updateData.venue = dto.venue;
+      // if (locationId) updateData.locationId = locationId;
+      // if (dto.venue) updateData.venue = dto.venue;
       if (imgLogoId) updateData.imgLogoId = imgLogoId;
       if (imgPosterId) updateData.imgPosterId = imgPosterId;
       if (dto.orgName) updateData.orgName = dto.orgName;
       if (dto.orgDescription) updateData.orgDescription = dto.orgDescription;
       if (dto.isOnline !== undefined) {
         updateData.isOnline = typeof dto.isOnline === 'string' ? dto.isOnline.toLowerCase() === 'true' : dto.isOnline;
+        if (updateData.isOnline) {
+          updateData.locationId = null;
+          updateData.venue = "";
+        }
+        else {
+          updateData.locationId = locationId;
+          updateData.venue = dto.venue;
+        }
       }
       // Add additional fields as needed, e.g., updating timestamps
       updateData.createdAt = new Date();
