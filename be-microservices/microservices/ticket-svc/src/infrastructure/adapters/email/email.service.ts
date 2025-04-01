@@ -81,8 +81,15 @@ export class EmailService implements OnModuleInit {
     }
   }
 
-  async sendTicketEmail(data: UserTicketByIdDto, pdf: { name: string; content: Buffer; type: string }[]){
+  async sendTicketEmail(data: UserTicketByIdDto, pdf: { name: string; content: Buffer; type: string }[]) {
     const receive_email = "thanhhue12155@gmail.com"
+
+    let formAnswersHtml = '';
+
+    for (const answer of data.FormResponse.FormAnswer) {
+      formAnswersHtml += `<p><strong>${answer.FormInput.fieldName}:</strong> ${answer.value}</p>\n`;
+    }
+
     // console.log(this.configService.get<string>('EMAIL_USER', 'sp.bs.evebox@gmail.com'))
     // console.log(this.configService.get<string>('EMAIL_HOST', 'smtp.gmail.com'))
     // console.log(this.configService.get<string>('EMAIL_PORT', '587'))
@@ -122,19 +129,12 @@ export class EmailService implements OnModuleInit {
                 <p>Hotline: 1900.6408 (Thứ 2 - Thứ 6, 08:30 - 18:30)</p>
 
                 <h2 style="color: #333; font-size: 18px; text-align: center;">Thông tin người mua</h2>
-                <p><strong>Khách hàng:</strong>  ${data.FormResponse.FormAnswer[0].value}</p>
-                <p><strong>Email:</strong>  
-                  ${data.FormResponse.FormAnswer[0].value}
-                </p>
-
-                <p><strong>Số điện thoại: </strong> 
-                  ${data.FormResponse.FormAnswer[1].value}
-                </p>
+                ${formAnswersHtml}
 
                 <h2 style="color: #333; font-size: 18px; text-align: center;">Chi tiết đơn hàng</h2>
                 <p><strong>Phương thức thanh toán:</strong> ${data.PaymentInfo.method}</p>
                 <p><strong>Thời gian đặt vé: </strong>${new Date(data.PaymentInfo.paidAt).toLocaleTimeString()}, ${new
-                Date(data.PaymentInfo.paidAt).toLocaleDateString()}</p>
+            Date(data.PaymentInfo.paidAt).toLocaleDateString()}</p>
 
                 <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p><strong>Sản phẩm</strong> 
