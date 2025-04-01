@@ -19,6 +19,7 @@ export class GetEventOfOrgRepository {
         select: {
           id: true,
           title: true,
+          venue: true,
           Images_Events_imgLogoIdToImages: true,
           Images_Events_imgPosterIdToImages: true,
           deleteAt: true,
