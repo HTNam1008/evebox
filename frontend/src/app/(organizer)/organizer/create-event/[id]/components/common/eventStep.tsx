@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 /* Package Application */
 import InformationEventClientPage from '../info-event/page';
 import TimeAndTypeTickets from '../time-type/page';
-// import Setting from '../info-setting/page';
+import Setting from '../info-setting/page';
 import CreateQuestions from '../info-regis/page';
 import InformationPaymentClient from '../info-payment/page';
 
@@ -33,7 +33,7 @@ export default function EventStep({ eventId, setEventId }: EventStepProps) {
         <>
             {step === 'info' && <InformationEventClientPage setEventId={setEventId} />}
             {step === 'showing' && <TimeAndTypeTickets eventId={eventId} />}
-            {/* {step === 'setting' && <Setting eventId={eventId} />} */}
+            {step === 'setting' && <Setting eventId={eventId} />}
             {step === 'questions' && <CreateQuestions eventId={eventId} />}
             {step === 'payment' && <InformationPaymentClient />}
         </>

@@ -1,29 +1,28 @@
 "use client";
+
+/* Package System */
 import { BarChart3, Users, Package, LayoutGrid, Edit } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
-interface Event {
-    id: number;
-    title: string;
-    time: string;
-    location: string;
-    address: string;
-    image: string;
-}
+/* Package Application */
+import { DisplayEvent } from "../libs/interface/displayEvent";
 
-export default function EventCard({ event }: { event: Event }) {
+export default function EventCard({ event }: { event: DisplayEvent }) {
     return (
         <div className="bg-[#0C4762] p-4 rounded-xl shadow-lg text-white flex flex-col">
-            <div className="flex">
-                <img
+            <div className="flex items-center">
+                <Image
                     src={event.image}
                     alt={event.title}
-                    className="w-40 h-24 object-cover rounded-lg"
+                    width={160}
+                    height={96}
+                    className="object-cover rounded-lg"
                 />
                 <div className="ml-4 flex-1">
                     <h2 className="text-xl font-semibold">{event.title}</h2>
                     <p className="text-sm flex items-center mt-3 text-[#51DACF]">
-                        📅 {event.time}
+                        📅 {new Date(event.startTime).toLocaleString("vi-VN")}
                     </p>
                     <p className="text-sm flex items-center mt-2">
                         📍{event.location} <br />
