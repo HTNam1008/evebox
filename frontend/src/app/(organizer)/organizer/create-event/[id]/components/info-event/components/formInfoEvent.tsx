@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 /* Package Application */
 import SelectField from "../../common/form/selectField";
@@ -38,6 +39,8 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
     const router = useRouter();
     const params = useParams();
     const currentEventId = params?.id;
+
+    const { data: session } = useSession();
 
     const [background, setBackground] = useState<string | null>(null);
     const [backgroundFile, setBackgroundFile] = useState<File | null>(null);
@@ -235,7 +238,33 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleUpdateEvent = async (formData: FormData) => {
+        const accessToken = session?.user?.accessToken;
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/org/event/${currentEventId}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    // Không set Content-Type khi gửi FormData
+                },
+                body: formData,
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                toast.error(errorData.message || "Có lỗi xảy ra khi cập nhật sự kiện. Vui lòng thử lại sau.");
+                return;
+            }
+
+            toast.success("Cập nhật sự kiện thành công, chuyển sang bước tiếp theo!", { duration: 5000 });
+            router.push(`/organizer/create-event/${currentEventId}?step=showing`);
+        } catch (error) {
+            console.error("Error updating event:", error);
+            toast.error("Lỗi khi cập nhật sự kiện!", { duration: 5000 });
+        }
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const newErrors: { [key: string]: boolean } = {};
 
@@ -270,11 +299,11 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            if (currentEventId) {
-                toast.success("Thông tin sự kiện đã tồn tại, chuyển sang bước tiếp theo.");
-                router.push(`/organizer/create-event/${currentEventId}?step=showing`);
-                return;
-            }
+            // if (currentEventId) {
+            //     toast.success("Thông tin sự kiện đã tồn tại, chuyển sang bước tiếp theo.");
+            //     router.push(`/organizer/create-event/${currentEventId}?step=showing`);
+            //     return;
+            // }
             const formData = new FormData();
             formData.append("title", eventName);
             formData.append("description", post);
@@ -307,13 +336,18 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                 }
             }
 
-            if (btnValidate === "Save") {
-                alert("Form hợp lệ!");
-                onNextStep(formData);
-                toast.success("Đã lưu thông tin sự kiện!", { duration: 5000 });
-            } else if (btnValidate === "Continue") {
-                alert("Form hợp lệ! Gửi dữ liệu...");
-                onNextStep(formData);
+            if (currentEventId) {
+                await handleUpdateEvent(formData);
+            }
+            else {
+                if (btnValidate === "Save") {
+                    toast.success("Form hợp lệ! Đã lưu thông tin sự kiện!", { duration: 5000 });
+                    onNextStep(formData);
+                    toast.success("Đã lưu thông tin sự kiện!", { duration: 5000 });
+                } else if (btnValidate === "Continue") {
+                    toast.success("Form hợp lệ! Sẽ chuyển sang bước tiếp theo!", { duration: 5000 });
+                    onNextStep(formData);
+                }
             }
         }
     };
