@@ -153,17 +153,25 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                     setEventName(eventData.title);
                     setPost(eventData.description);
                     setEventTypeSelected(eventData.isOnline ? "online" : "offline");
-                    setEventAddress(eventData.venue);
                     setNameOrg(eventData.orgName);
                     setInfoOrg(eventData.orgDescription);
-                    if (eventData.locations) {
-                        setStreet(eventData.locations.street);
-                        setWard(eventData.locations.ward);
-
-                        if (eventData.locations.districts) {
-                            setDistrict(eventData.locations.districts.name);
-                            setProvince(eventData.locations.districts.province.name);
+                    if (eventTypeSelected === "offline" || eventTypeSelected === "Offline") {
+                        setEventAddress(eventData.venue);
+                        if (eventData.locations) {
+                            setStreet(eventData.locations.street);
+                            setWard(eventData.locations.ward);
+    
+                            if (eventData.locations.districts) {
+                                setDistrict(eventData.locations.districts.name);
+                                setProvince(eventData.locations.districts.province.name);
+                            }
                         }
+                    } else {
+                        setEventAddress("");
+                        setStreet("");
+                        setWard("");
+                        setDistrict("");
+                        setProvince("");
                     }
                     if (eventData.Images_Events_imgPosterIdToImages) {
                         setBackground(eventData.Images_Events_imgPosterIdToImages.imageUrl);
@@ -324,22 +332,37 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                 formData.append("imgLogo", logoOrgFile);
             }
 
-            if (eventTypeSelected === "offline" || eventTypeSelected === "Offline") {
-                formData.append("wardString", ward);
-                formData.append("streetString", street);
-                const selectedProvince = allProvinces.find((p) => p.name === province);
-                const selectedDistrict = selectedProvince?.districts.find((d) => d.name === district);
-                if (selectedDistrict) {
-                    formData.append("districtId", selectedDistrict.id.toString());
+            if (currentEventId) {
+                if (eventTypeSelected === "offline" || eventTypeSelected === "Offline") {
+                    formData.append("wardString", ward);
+                    formData.append("streetString", street);
+                    const selectedProvince = allProvinces.find((p) => p.name === province);
+                    const selectedDistrict = selectedProvince?.districts.find((d) => d.name === district);
+                    if (selectedDistrict) {
+                        formData.append("districtId", selectedDistrict.id.toString());
+                    } else {
+                        formData.append("districtId", "");
+                    }
                 } else {
+                    formData.append("wardString", "");
+                    formData.append("streetString", "");
                     formData.append("districtId", "");
                 }
-            }
-
-            if (currentEventId) {
                 await handleUpdateEvent(formData);
             }
             else {
+                if (eventTypeSelected === "offline" || eventTypeSelected === "Offline") {
+                    formData.append("wardString", ward);
+                    formData.append("streetString", street);
+                    const selectedProvince = allProvinces.find((p) => p.name === province);
+                    const selectedDistrict = selectedProvince?.districts.find((d) => d.name === district);
+                    if (selectedDistrict) {
+                        formData.append("districtId", selectedDistrict.id.toString());
+                    } else {
+                        formData.append("districtId", "");
+                    }
+                }
+
                 if (btnValidate === "Save") {
                     toast.success("Form hợp lệ! Đã lưu thông tin sự kiện!", { duration: 5000 });
                     onNextStep(formData);
