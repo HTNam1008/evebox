@@ -3,15 +3,14 @@ import ImageUpload from '../../common/form/imageUpload';
 import InputField from '../../common/form/inputCountField';
 import { EventImageUploadProps } from '../../../libs/interface/infoevent.interface';
 
-const EventImageUpload: React.FC<EventImageUploadProps> = ({
-    logo,
+export default function EventImageUpload ({
     background,
     handleUpload,
     imageErrors,
     eventName,
     handleInputChange,
     errors,
-}) => {
+}: EventImageUploadProps) {
     return (
         <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
             <label className="block text-sm font-bold mb-2">
@@ -19,20 +18,8 @@ const EventImageUpload: React.FC<EventImageUploadProps> = ({
             </label>
 
             <div className="flex flex-wrap -mx-3 mb-6">
-                {/* Upload Logo */}
-                <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                    <ImageUpload
-                        image={logo}
-                        onUpload={(e) => handleUpload(e, "logo")}
-                        placeholderText="Thêm logo sự kiện"
-                        dimensions="(720x958)"
-                        height="h-96"
-                        error={imageErrors.logo}
-                    />
-                </div>
-
                 {/* Upload Background */}
-                <div className="w-full md:w-3/4 px-3 mb-6 md:mb-0">
+                <div className="w-full px-3">
                     <ImageUpload
                         image={background}
                         onUpload={(e) => handleUpload(e, "background")}
@@ -61,5 +48,3 @@ const EventImageUpload: React.FC<EventImageUploadProps> = ({
         </div>
     );
 };
-
-export default EventImageUpload;

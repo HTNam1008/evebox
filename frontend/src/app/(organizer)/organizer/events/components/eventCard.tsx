@@ -1,6 +1,7 @@
 "use client";
 import { BarChart3, Users, Package, LayoutGrid, Edit } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Event {
     id: number;
@@ -14,11 +15,13 @@ interface Event {
 export default function EventCard({ event }: { event: Event }) {
     return (
         <div className="bg-[#0C4762] p-4 rounded-xl shadow-lg text-white flex flex-col">
-            <div className="flex">
-                <img
+            <div className="flex items-center">
+                <Image
                     src={event.image}
                     alt={event.title}
-                    className="w-40 h-24 object-cover rounded-lg"
+                    width={160} // Adjusted width to match "w-40"
+                    height={96} // Adjusted height to match "h-24"
+                    className="object-cover rounded-lg"
                 />
                 <div className="ml-4 flex-1">
                     <h2 className="text-xl font-semibold">{event.title}</h2>

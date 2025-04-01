@@ -6,29 +6,34 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 /* Package Application */
-import InformationEventClient from '../info-event/page';
+import InformationEventClientPage from '../info-event/page';
 import TimeAndTypeTickets from '../time-type/page';
-import Setting from '../info-setting/page';
+// import Setting from '../info-setting/page';
 import CreateQuestions from '../info-regis/page';
 import InformationPaymentClient from '../info-payment/page';
 
-export default function EventStep({ eventId }: { eventId: string }) {
+interface EventStepProps {
+    eventId: number;
+    setEventId: (id: number) => void;
+}
+
+export default function EventStep({ eventId, setEventId }: EventStepProps) {
     const searchParams = useSearchParams();
-    const step = searchParams.get('step') || 'info';
+    const step = searchParams?.get('step') || 'info';
     const router = useRouter();
 
     useEffect(() => {
         const validSteps = ["info", "showing", "setting", "questions", "payment"];
         if (step && !validSteps.includes(step)) {
-            router.replace("/organizer/create-event?step=info");
+            router.replace(`/organizer/create-event/${eventId}?step=info`);
         }
-    }, [step, router]);
+    }, [step, router, eventId]);
 
     return (
         <>
-            {step === 'info' && <InformationEventClient />}
+            {step === 'info' && <InformationEventClientPage setEventId={setEventId} />}
             {step === 'showing' && <TimeAndTypeTickets eventId={eventId} />}
-            {step === 'setting' && <Setting eventId={eventId} />}
+            {/* {step === 'setting' && <Setting eventId={eventId} />} */}
             {step === 'questions' && <CreateQuestions eventId={eventId} />}
             {step === 'payment' && <InformationPaymentClient />}
         </>

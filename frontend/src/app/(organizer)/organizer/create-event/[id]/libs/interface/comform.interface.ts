@@ -59,3 +59,16 @@ export interface SelectFieldProps {
     required?: boolean;
 }
 
+interface EventCategory {
+    id: number;
+    name: string;
+}
+
+export interface SelectEventCategoryProps {
+    label: string;
+    options: EventCategory[];
+    value: EventCategory | null;
+    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    error?: boolean;
+    required?: boolean;
+}

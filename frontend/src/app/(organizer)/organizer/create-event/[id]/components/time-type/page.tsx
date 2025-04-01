@@ -26,7 +26,9 @@ export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps)
     }
 
     const handleNextStep = () => {
-        router.push(`/organizer/create-event/${eventId}?step=setting`);
+        //Tạm ẩn bước 3
+        // router.push(`/organizer/create-event/${eventId}?step=setting`);
+        router.push(`/organizer/create-event/${eventId}?step=questions`);
     };
 
     return (

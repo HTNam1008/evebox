@@ -9,7 +9,7 @@ interface SourceCodeModalProps {
     handleSaveSourceCode: () => void;
 }
 
-const SourceCodeModal = ({ isModalOpen, setIsModalOpen, sourceCode, setSourceCode, handleSaveSourceCode } : SourceCodeModalProps) => {
+export default function SourceCodeModal ({ isModalOpen, setIsModalOpen, sourceCode, setSourceCode, handleSaveSourceCode } : SourceCodeModalProps) {
     return (
         isModalOpen && (
             <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
@@ -39,5 +39,3 @@ const SourceCodeModal = ({ isModalOpen, setIsModalOpen, sourceCode, setSourceCod
         )
     );
 };
-
-export default SourceCodeModal;

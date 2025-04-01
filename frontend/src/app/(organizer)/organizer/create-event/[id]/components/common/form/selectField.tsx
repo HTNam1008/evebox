@@ -2,14 +2,14 @@ import React from "react";
 import { ChevronDown } from "lucide-react";
 import { SelectFieldProps } from "../../../libs/interface/comform.interface";
 
-const SelectField: React.FC<SelectFieldProps> = ({
+export default function SelectField({
     label,
     options,
     value,
     onChange,
     error = false,
     required = false,
-}) => {
+}: SelectFieldProps){
     return (
         <>
             <label className="block text-sm font-bold mb-2">
@@ -40,5 +40,3 @@ const SelectField: React.FC<SelectFieldProps> = ({
         </>
     );
 };
-
-export default SelectField;

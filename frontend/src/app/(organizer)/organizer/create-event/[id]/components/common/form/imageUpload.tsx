@@ -2,14 +2,14 @@ import Image from "next/image";
 import { ImagePlus } from "lucide-react";
 import { ImageUploadProps } from "../../../libs/interface/comform.interface";
 
-const ImageUpload: React.FC<ImageUploadProps> = ({
+export default function ImageUpload ({
     image,
     onUpload,
     placeholderText,
     dimensions,
     height,
     error,
-}) => {
+}: ImageUploadProps) {
     return (
         <>
             <label className={`w-full bg-white border-2 border-dashed border-gray-400 p-4 flex flex-col items-center justify-center ${height} cursor-pointer`}>
@@ -35,5 +35,3 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         </>
     );
 };
-
-export default ImageUpload;

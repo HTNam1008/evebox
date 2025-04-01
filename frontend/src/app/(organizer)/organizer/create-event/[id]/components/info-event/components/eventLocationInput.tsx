@@ -3,21 +3,21 @@ import InputField from '../../common/form/inputCountField';
 import SelectField from '../../common/form/selectField';
 import { EventLocationInputProps } from '../../../libs/interface/infoevent.interface';
 
-const EventLocationInput: React.FC<EventLocationInputProps > = ({ 
-    eventTypeSelected, 
-    eventAddress, 
-    province, 
-    district, 
-    ward, 
-    street, 
-    errors, 
-    provinces, 
-    districts, 
-    wards, 
-    handleInputChange, 
-    handleSelectChange,
-    setEventTypeSelected,
- }) => {
+export default function EventLocationInput({
+  eventTypeSelected,
+  eventAddress,
+  province,
+  district,
+  ward,
+  street,
+  errors,
+  provinces,
+  districts,
+  // wards, 
+  handleInputChange,
+  handleSelectChange,
+  setEventTypeSelected,
+}: EventLocationInputProps) {
   return (
     <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
       <label className="block text-sm font-bold mb-2">
@@ -93,6 +93,8 @@ const EventLocationInput: React.FC<EventLocationInputProps > = ({
                 options={districts}
                 value={district}
                 onChange={(e) => handleSelectChange(e, "district")}
+                error={errors.district}
+                required
               />
             </div>
           </div>
@@ -100,11 +102,14 @@ const EventLocationInput: React.FC<EventLocationInputProps > = ({
           {/* Phường/Xã */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-              <SelectField
+              <InputField
                 label="Phường/Xã"
-                options={wards}
+                placeholder="Nhập phường/xã"
                 value={ward}
-                onChange={(e) => handleSelectChange(e, "ward")}
+                onChange={(e) => handleInputChange(e, "ward")}
+                error={errors.ward}
+                maxLength={80}
+                required
               />
             </div>
 
@@ -126,5 +131,3 @@ const EventLocationInput: React.FC<EventLocationInputProps > = ({
     </div>
   );
 };
-
-export default EventLocationInput;

@@ -13,7 +13,7 @@ export class CreateEventService {
     private readonly createEventRepository: CreateEventRepository,
     private readonly imagesService: ImagesService,
     private readonly locationService: LocationService,
-  ) {}
+  ) { }
 
   async execute(dto: CreateEventDto, organizerId: string, imgLogo: Express.Multer.File, imgPoster: Express.Multer.File): Promise<Result<EventDto, Error>> {
     try {
@@ -22,24 +22,29 @@ export class CreateEventService {
         return Err(new Error('Categories not found'));
       }
 
-
-
       const imgLogoResult = await this.imagesService.uploadImage(imgLogo.buffer, imgLogo.originalname, organizerId);
       if (imgLogoResult.isErr()) {
         return Err(new Error('Failed to upload logo image'));
       }
-      
+
       const imgPosterResult = await this.imagesService.uploadImage(imgPoster.buffer, imgPoster.originalname, organizerId);
       if (imgPosterResult.isErr()) {
         return Err(new Error('Failed to upload poster image'));
       }
 
-      let locationId : number;
-      if (dto.isOnline)
-        {
-        const location = await this.locationService.createLocation(dto.streetString, dto.wardString, dto.districtId);
-        if (!location) {
-          return Err(new Error('Failed to create location'));
+      let locationId: number;
+      if (dto.isOnline !== undefined) {
+        dto.isOnline = typeof dto.isOnline === 'string' ? dto.isOnline.toLowerCase() === 'true' : dto.isOnline;
+        
+        if (!dto.isOnline) {
+          if (!dto.streetString || !dto.wardString || !dto.districtId) {
+            return Err(new Error('Location information is required'));
+          }
+          const location = await this.locationService.createLocation(dto.streetString, dto.wardString, dto.districtId);
+          if (!location) {
+            return Err(new Error('Failed to create location'));
+          }
+          locationId = location.id;
         }
       }
 
@@ -57,7 +62,7 @@ export class CreateEventService {
       }
 
       return Ok(eventResult.unwrap());
-      
+
     } catch (error) {
       console.error(error);
       return Err(new Error('Failed to create event'));

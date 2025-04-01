@@ -1,45 +1,81 @@
 'use client';
 
 /* Package System */
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useState } from 'react';
 // import { useRef } from 'react';
 import { Divider } from '@nextui-org/react';
-import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 /* Package Application */
 import NoteDialog from '../dialogs/noteDialog';
 import FormInformationEventClient from './components/formInfoEvent';
 import Navigation from '../common/navigation';
+import toast from 'react-hot-toast';
 
-export default function InformationEventClient() {
+interface InformationEventClientPageProps {
+    setEventId?: (id: number) => void;
+}
+
+export default function InformationEventClientPage({ setEventId } : InformationEventClientPageProps) {
+    const { data: session } = useSession();
     const router = useRouter();
     const [open, setOpen] = useState(true);
     const [step] = useState(1);
-    const [btnValidate, setBtnValidte] = useState("");
+    const [btnValidate, setBtnValidate] = useState("");
 
-    const searchParams = useSearchParams();
+    const searchParams = useSearchParams(); 
     useEffect(() => {
-        if (!searchParams.get('step')) {
+        if (!searchParams?.get('step')) {
             router.replace('/organizer/create-event?step=infor');
         }
     }, [searchParams, router]);
 
     const handleSave = () => {
-        setBtnValidte("Save");
+        setBtnValidate("Save");
     }
 
     const handleContinue = () => {
-        setBtnValidte("Continue");
+        setBtnValidate("Continue");
     }
 
-    const handleNextStep = () => {
-        router.push(`/organizer/create-event/1?step=showing`);
-    };
+    const handleNextStep = async (formData: FormData) => {
+        // router.push(`/organizer/create-event/1?step=showing`);
+        const access_token = session?.user?.accessToken;
+        if (!access_token) return;
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/org/event`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+                body: formData
+            });
 
+            if (!res.ok) {
+                const errorData = await res.json();
+                toast.error(errorData.message || "Có lỗi xảy ra trong quá trình tạo sự kiện. Vui lòng thử lại sau.");
+                return;
+            }
+
+            const result = await res.json();
+            const newEventId: number = result?.data?.id;
+            if (setEventId) {
+                setEventId(newEventId);
+            }
+            if (btnValidate === "Continue") {
+                router.push(`/organizer/create-event/${newEventId}?step=showing`);
+            }
+            else {
+                toast.success("Tạo sự kiện thành công!");
+            }
+        } catch (error) {
+            toast.error("Có lỗi xảy ra trong quá trình tạo sự kiện. Vui lòng thử lại sau.");
+            console.error("Error creating event:", error);
+        }
+    };
 
     return (
         <>
