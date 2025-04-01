@@ -82,7 +82,7 @@ export class EmailService implements OnModuleInit {
   }
 
   async sendTicketEmail(data: UserTicketByIdDto, pdf: { name: string; content: Buffer; type: string }[]){
-    const receive_email = "dattruong01082@gmail.com"
+    const receive_email = "thanhhue12155@gmail.com"
     // console.log(this.configService.get<string>('EMAIL_USER', 'sp.bs.evebox@gmail.com'))
     // console.log(this.configService.get<string>('EMAIL_HOST', 'smtp.gmail.com'))
     // console.log(this.configService.get<string>('EMAIL_PORT', '587'))
@@ -102,7 +102,7 @@ export class EmailService implements OnModuleInit {
                 <p><strong>${data.Showing.Events.title}</strong></p>
                 <p><strong>⏰ ${new Date(data.Showing.startTime).toLocaleTimeString()} - ${new Date(data.Showing.startTime).toLocaleDateString()}</strong></p>
                 <p>📍 <strong>${data.Showing.Events.venue}</strong></p>
-                <P>${data.Showing.Events.venue}</p>
+                <p>${data.Showing.Events.locationsString}</p>
 
                 <div style="background-color: #51DACF; color: #0C4762; text-align: center; padding: 10px; border-radius: 4px; font-weight: bold;">
                   Vé đã mua
@@ -122,12 +122,14 @@ export class EmailService implements OnModuleInit {
                 <p>Hotline: 1900.6408 (Thứ 2 - Thứ 6, 08:30 - 18:30)</p>
 
                 <h2 style="color: #333; font-size: 18px; text-align: center;">Thông tin người mua</h2>
-                <p><strong>Khách hàng:</strong>  ${data.FormResponse.FormAnswer[0].FormInput.fieldName}</p>
+                <p><strong>Khách hàng:</strong>  ${data.FormResponse.FormAnswer[0].value}</p>
                 <p><strong>Email:</strong>  
-                  ${data.FormResponse.FormAnswer[0]?.value || 'Không có dữ liệu'}
+                  ${data.FormResponse.FormAnswer[0].value}
                 </p>
 
-                <p><strong>Số điện thoại: </strong> phone</p>
+                <p><strong>Số điện thoại: </strong> 
+                  ${data.FormResponse.FormAnswer[1].value}
+                </p>
 
                 <h2 style="color: #333; font-size: 18px; text-align: center;">Chi tiết đơn hàng</h2>
                 <p><strong>Phương thức thanh toán:</strong> ${data.PaymentInfo.method}</p>
@@ -136,19 +138,21 @@ export class EmailService implements OnModuleInit {
 
                 <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p><strong>Sản phẩm</strong> 
-                      <span style="float: right; font-weight: bold;">
-                        ${(data.ticketType.price * data.count).toLocaleString()} vnđ
-                      </span>
+                      
                     </p>
                     <p>${data.ticketType.name}</p>
-                    <p>${data.ticketType.price.toLocaleString()} x ${data.count}</p>
+                    <p>${data.ticketType.price.toLocaleString()} x ${data.count}
+                      <span style="float: right; font-weight: bold;">
+                        ${(data.ticketType.price * data.count).toLocaleString()} VNĐ
+                      </span>
+                    </p>
                     <hr>
-                    <p><strong>Phí giao hàng</strong> <span style="float: right;">0vnđ</span></p>
-                    <p><strong>Phí dịch vụ</strong> <span style="float: right;">0vnđ</span></p>
+                    <p><strong>Phí giao hàng</strong> <span style="float: right;">0 VNĐ</span></p>
+                    <p><strong>Phí dịch vụ</strong> <span style="float: right;">0 VNĐ</span></p>
                     <hr>
                     <p style="font-weight: bold; color: #0C4762; font-size: 18px;">Tổng tiền 
                       <span style="float: right;">
-                        ${(data.ticketType.price * data.count).toLocaleString()} VND
+                        ${(data.ticketType.price * data.count).toLocaleString()} VNĐ
                       </span>
                     </p>
                 </div>
