@@ -180,6 +180,8 @@ export class getUserTicketRepository {
         return null;
       }
 
+      console.log(userTicket.id)
+
       const { ticketTypeId } = userTicket.TicketQRCode[0] || {};
       const seatIds = userTicket.TicketQRCode.map(ticket => ticket.seatId).filter(seatId => seatId !== null);
       const ticketType = ticketTypeId ? await this.prisma.ticketType.findFirst({
@@ -239,8 +241,9 @@ export class getUserTicketRepository {
         count: userTicket.TicketQRCode.length,
       }
     }
-    catch{
-
+    catch (error){
+      console.error(error);
+      return null;
     }
   }
 }

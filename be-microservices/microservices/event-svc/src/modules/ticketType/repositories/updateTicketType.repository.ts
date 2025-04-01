@@ -11,11 +11,13 @@ export class UpdateTicketTypeRepository {
     try {
       // Verify ticket type exists
       const existing = await this.prisma.ticketType.findUnique({
-        where: { id },
+        where: { id, 
+          deleteAt: null,
+         },
         select: {
           startTime: true,
           endTime: true,
-        }
+        },
       });
       if (!existing) {
         return Err(new Error('Ticket type not found'));

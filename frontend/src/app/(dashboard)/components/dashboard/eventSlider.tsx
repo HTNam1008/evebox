@@ -58,7 +58,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
         <h2 className="text-xl md:text-2xl font-bold">
-          {t(`${title || ""}`) ?? title}  {subtitle && <span className="text-teal-400"> {t(`${subtitle || ""}`) ?? subtitle}</span>}
+          {title =="" ? '': t(`${title || ""}`)}  {subtitle && <span className="text-teal-400"> {t(`${subtitle || ""}`) ?? subtitle}</span>}
         </h2>
       </div>
 
@@ -113,7 +113,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
                         'đ'} */}
                       {event.status === 'available' ? 
                         'Từ ' + event.minTicketPrice?.toLocaleString('vi-VN') + 'đ' :
-                        event.status === 'event_over' ? 'Đã kết thúc' : 'Chưa có thông tin vé'
+                        event.status === 'event_over' ? 'Đã kết thúc' : event.status === 'sold_out' ? 'Hết vé' : 'Vé chưa mở bán'
                       }
                     </span>
                   </div>

@@ -8,8 +8,10 @@ import { useRouter } from "next/navigation";
 /* Package Application */
 import { Showing } from "../libs/event.interface";
 import { useTranslations } from "next-intl";
+import { EventDetail } from '../libs/event.interface';
 
-const TicketDetails = ({ showings }: { showings: Showing[] }) => {
+
+const TicketDetails = ({ showings, event }: { showings: Showing[], event: EventDetail}) => {
   const [expandedShowId, setExpandedShowId] = useState<string | null>(null);
   // const [isTicketInfoExpanded, setIsTicketInfoExpanded] = useState(false);
   // const [isTicketNoteExpanded, setIsTicketNoteExpanded] = useState(false);
@@ -105,13 +107,34 @@ const TicketDetails = ({ showings }: { showings: Showing[] }) => {
 
       {/* Contact Section */}
       <div className="flex justify-center mt-8 ml-2">
-        <div className="w-full md:w-5/6">
-          <h2 className="text-xl md:text-2xl font-bold">{t('contactOrganizer')}</h2>
-          <p className="card-text mt-2">
-            {t('navigatorSentence1')} <a href="#">www.sneakypeeks.com</a> {t('navigatorSentence2')}
-          </p>
-        </div>
+  <div className="w-full md:w-5/6">
+    <h2 className="text-xl md:text-2xl font-bold">{t('contactOrganizer')}</h2>
+
+    {/* Organizer Section */}
+    <div className="flex items-center mt-4">
+      {/* Organizer Image */}
+      <div className="w-20 h-20 flex-shrink-0">
+        <Image
+          width={200} 
+          height={160} 
+          src={event.Images_Events_imgLogoIdToImages?.imageUrl || ''}
+          alt={event.orgName}
+          className="object-cover rounded-md"
+        />
       </div>
+
+      {/* Organizer Details */}
+      <div className="ml-4">
+        <h2 className="text-xl px-2 md:text-xl font-bold">{event.orgName}</h2>
+        <div
+          className="prose max-w-none px-2 text-gray-800"
+          dangerouslySetInnerHTML={{ __html: event.orgDescription }}
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
     </>
   )
 };

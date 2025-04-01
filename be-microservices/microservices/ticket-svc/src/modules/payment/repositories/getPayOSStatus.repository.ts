@@ -46,6 +46,15 @@ export class GetPayOSStatusRepository {
         return null;
       }
 
+      await this.prisma.paymentInfo.update({
+        where: {
+          id: paymentInfo.id
+        },
+        data: {
+          paidAt: new Date(),
+        }
+      });
+
       const orderInfo = await this.prisma.orderInfo.findUnique({
         where: {
           id: paymentInfo.orderInfoId
@@ -59,7 +68,8 @@ export class GetPayOSStatusRepository {
       
       const formId = await this.prisma.showing.findFirst({
         where: {
-          id: showingId
+          id: showingId,
+          deleteAt: null,
         },
         select: {
           formId: true,
@@ -74,7 +84,8 @@ export class GetPayOSStatusRepository {
       if(seatId && seatId.length > 0){
         const showingData = await this.prisma.showing.findUnique({
           where: {
-            id: showingId
+            id: showingId,
+            deleteAt: null,
           },
           select: {
             TicketType: {
@@ -189,7 +200,8 @@ export class GetPayOSStatusRepository {
         if(!quantity || !ticketTypeId || !showingId)return null;
         const ticketType = await this.prisma.ticketType.findUnique({
           where: {
-            id: ticketTypeId
+            id: ticketTypeId,
+            deleteAt: null,
           },
           select: {
             price: true,

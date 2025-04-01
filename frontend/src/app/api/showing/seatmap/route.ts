@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import apiClient from "@/services/apiClient";
 import { ErrorResponse } from "@/types/ErrorResponse";
 import { SeatMapResponse } from "@/types/model/seatmap";
+import createApiClient from "@/services/apiClient";
 
 export async function GET(request: Request): Promise<NextResponse<SeatMapResponse | ErrorResponse>> {
+  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+
   try {
     const { searchParams } = new URL(request.url);
     const showingId = searchParams.get("showingId");

@@ -1,7 +1,7 @@
-export const fetchRecommendEvents = async () => {
+export const fetchRecommendEvents = async (time: string) => {
     try {
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/event/recommended-events?timeWindow=week`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/event/recommended-events?timeWindow=${time}`,
             {
                 next: {
                     revalidate: 60 // ISR: Cập nhật dữ liệu mỗi 60s
