@@ -9,7 +9,9 @@ export class GetEventDetailRepository {
   async getEventDetail(eventId: number) {
     const nowDate = new Date();
     const event = await this.prisma.events.findUnique({
-        where: { id: eventId },
+        where: { id: eventId,
+          deleteAt: null,
+         },
         select: {
             id: true,
             title: true,
@@ -137,6 +139,12 @@ export class GetEventDetailRepository {
     }
     if (showings.some(showing => showing.status === "sale_closed")) {
         return "sale_closed";
+    }
+    if (showings.some(showing => showing.status === "register_closed")) {
+        return "register_closed";
+    }
+    if (showings.some(showing => showing.status === "sold_out")) {
+        return "sold_out";
     }
     return "event_over"; // Không có showing nào
   }
