@@ -181,7 +181,7 @@ export class getUserTicketRepository {
       }
 
       console.log(userTicket.id)
-
+      
       const { ticketTypeId } = userTicket.TicketQRCode[0] || {};
       const seatIds = userTicket.TicketQRCode.map(ticket => ticket.seatId).filter(seatId => seatId !== null);
       const ticketType = ticketTypeId ? await this.prisma.ticketType.findFirst({
