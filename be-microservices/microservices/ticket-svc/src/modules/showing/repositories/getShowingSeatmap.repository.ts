@@ -14,6 +14,7 @@ export class getShowingSeatmapRepository {
     const seatmapId = await this.prisma.showing.findUnique({
       where: {
         id: showingId,
+        deleteAt: null,
       },
       select:{
         seatMapId: true,

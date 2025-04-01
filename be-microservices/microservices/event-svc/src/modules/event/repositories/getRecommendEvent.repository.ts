@@ -18,7 +18,8 @@ export class GetRecommendEventRepository {
               lte: lte
             }
           }
-        }
+        },
+        deleteAt: null,
       },
       orderBy: {
         lastScore: 'desc',

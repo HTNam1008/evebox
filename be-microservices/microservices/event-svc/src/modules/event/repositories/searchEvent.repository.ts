@@ -15,6 +15,7 @@ export class SearchEventRepository {
           contains: title,
           mode: 'insensitive',
         },
+        deleteAt: null,
       },
       select: {
         id: true,
@@ -81,6 +82,7 @@ export class SearchEventRepository {
               },
             }
           : undefined,
+        deleteAt: null,
       },
       select: {
         id: true,
@@ -147,6 +149,7 @@ export class SearchEventRepository {
           contains: title,
           mode: 'insensitive',
         },
+        deleteAt: null,
         EventCategories: categories.length > 0
           ? {
               some: {
@@ -235,6 +238,7 @@ export class SearchEventRepository {
           contains: title,
           mode: 'insensitive',
         },
+        deleteAt: null,
         EventCategories: categories.length > 0
           ? {
               some: {
