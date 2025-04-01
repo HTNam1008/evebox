@@ -18,6 +18,9 @@ class UserEventDto {
 
   @ApiProperty( {type: ImagesResponseData, description: 'The image of the event' })
   Images_Events_imgPosterIdToImages: ImagesResponseData;
+
+  @ApiProperty( {example: '130 Nguyen Dinh Chieu, Da Kao Ward, District 1, Ho Chi Minh City', description: 'The address of the event' })
+  locationsString: string;
 }
 
 class UserShowingDto {

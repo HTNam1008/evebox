@@ -82,7 +82,7 @@ export class EmailService implements OnModuleInit {
   }
 
   async sendTicketEmail(data: UserTicketByIdDto, pdf: { name: string; content: Buffer; type: string }[]){
-    const receive_email = "thanhhue12155@gmail.com"
+    const receive_email = "dattruong01082@gmail.com"
     // console.log(this.configService.get<string>('EMAIL_USER', 'sp.bs.evebox@gmail.com'))
     // console.log(this.configService.get<string>('EMAIL_HOST', 'smtp.gmail.com'))
     // console.log(this.configService.get<string>('EMAIL_PORT', '587'))
@@ -92,7 +92,7 @@ export class EmailService implements OnModuleInit {
     try {
       const res = await this.transporter.sendMail({
         from: `EveBox <${this.configService.get<string>('EMAIL_USER', 'sp.bs.evebox@gmail.com')}>`,
-        to: receive_email,
+        to: [receive_email, "baobao11062003@gmail.com"],
         subject: `Your ticket for ${data.Showing.Events.title}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
