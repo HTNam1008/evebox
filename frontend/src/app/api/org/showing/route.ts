@@ -5,8 +5,9 @@ import { authOptions } from '@/lib/authOptions';
 import createApiClient from '@/services/apiClient';
 import { BaseApiResponse } from '@/types/BaseApiResponse';
 import { ShowingOrgResponse } from '@/types/model/showingOrganizer';
+import { CreateShowingResponse } from '@/types/model/CreateShowingResponse';
 
-export async function POST(request: Request): Promise<NextResponse<BaseApiResponse | ErrorResponse>> {
+export async function POST(request: Request): Promise<NextResponse<CreateShowingResponse | ErrorResponse>> {
   const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
 
   try {
@@ -41,7 +42,7 @@ export async function POST(request: Request): Promise<NextResponse<BaseApiRespon
     }
 
     // API call with eventId in the path instead of query parameters
-    const response = await apiClient.post<BaseApiResponse>(
+    const response = await apiClient.post<CreateShowingResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/api/org/showing/${eventId}`, 
       { startTime, endTime } 
     );

@@ -23,7 +23,7 @@ export const handleDeleteShow = async (
                                 );
         
       if (response.status === 200) {
-        toast.error(`Showtime ${showtimeId} deleted successfully!`);
+        console.log(`Showtime ${showtimeId} deleted successfully!`);
                                 } else {
                                     toast.error(`Error deleting showtime: ${response.statusText}`);
                                 }

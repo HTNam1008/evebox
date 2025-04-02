@@ -16,6 +16,7 @@ import { BaseApiResponse } from '@/types/BaseApiResponse';
 import AlertDialog from './components/dialogs/alertDialog';
 import { Showtime } from '../../libs/interface/idevent.interface';
 import toast from 'react-hot-toast';
+import { CreateShowingResponse } from '@/types/model/CreateShowingResponse';
 
 async function urlToFile(url: string, filename: string): Promise<File> {
     const response = await fetch(url);
@@ -36,21 +37,40 @@ export default function TimeAndTypeTickets() {
     // New state to store showtimes received from FormTimeTypeTicketClient
     const [showingList, setShowingList] = useState<Showtime[]>([]);
 
-    const processShowtimeAndTickets = async (showing: Showtime, newShowId: string) => {
+    const fetchShowtimes = async () => {
+        try {
+            const response = await apiClient.get<BaseApiResponse<Showtime[]>>(`/api/org/showing/${eventId}`);
+            
+            if (response.status === 200 && response.data) {
+                setShowingList(response.data.data); // Update the state with new data
+                console.log("Showtimes refreshed.");
+            } else {
+                toast.error("Failed to fetch updated showtimes.");
+            }
+        } catch (error) {
+            console.error("Error fetching showtimes:", error);
+            toast.error("Error refreshing showtimes.");
+        }
+    };
+    
+
+    const processShowtimeAndTickets = async (showing: Showtime, newShowId?: string) => {
         try {
             let response;
-
+            let showtimeId = showing.id; // Use existing ID or new one
     
             // Handle Showtime creation or update
-            if (!showing.id) {
+            if (!newShowId) {
                 // Create new showing (POST)
-                response = await apiClient.post<BaseApiResponse>(`/api/org/showing/${eventId}`, {
+                response = await apiClient.post<CreateShowingResponse>(`/api/org/showing/${eventId}`, {
                     startTime: showing.startDate,
                     endTime: showing.endDate,
                 });
     
                 if (response.status === 201) {
-                    console.log(`Showtime created successfully! ID: ${newShowId}`);
+                    console.log("------",response.data);
+                    showtimeId = response.data.data; // Extract new Showtime ID from response
+                    console.log(`Showtime created successfully! ID: ${showtimeId}`);
                 } else {
                     toast.error(`Error creating showtime: ${response.statusText}`);
                     return;
@@ -68,6 +88,12 @@ export default function TimeAndTypeTickets() {
                     toast.error(`Error updating showtime: ${response.statusText}`);
                     return;
                 }
+            }
+    
+            // Ensure `showtimeId` is valid
+            if (!showtimeId) {
+                console.error("Showtime ID is missing after creation!");
+                return;
             }
     
             // Process tickets for the current showtime
@@ -101,9 +127,9 @@ export default function TimeAndTypeTickets() {
     
                         if (!ticket.id) {
                             // Create new ticket (POST)
-                            console.log(newShowId)
+                            console.log("New showtime ID:", showtimeId);
                             ticketResponse = await apiClient.post<BaseApiResponse>(
-                                `/api/org/ticketType/create/${newShowId}`,
+                                `/api/org/ticketType/create/${showtimeId}`, // Use updated ID
                                 formData,
                                 { headers: { "Content-Type": "multipart/form-data" } }
                             );
@@ -139,6 +165,7 @@ export default function TimeAndTypeTickets() {
         }
     };
     
+    
 
     const handleSave = async () => {
         setBtnValidte2("Save");
@@ -157,6 +184,8 @@ export default function TimeAndTypeTickets() {
                 })
             );
             console.log("All showtimes and tickets processed.");
+             // Refresh showing list after saving
+            await fetchShowtimes(); 
             return true;  // Indicate success
         } catch (error) {
             console.error("Error saving data:", error);

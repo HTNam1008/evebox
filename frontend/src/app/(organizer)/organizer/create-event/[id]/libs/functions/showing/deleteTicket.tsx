@@ -31,7 +31,7 @@ export const handleDeleteTicket = async (
                             }
                         })
                         .catch((error) => {
-                            toast.error("Error deleting ticket:", error);
+                            toast.error("Error deleting ticket:"+error);
                         });
                 }
 
