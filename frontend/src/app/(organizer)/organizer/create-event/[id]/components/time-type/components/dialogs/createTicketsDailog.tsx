@@ -113,7 +113,7 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
             id:"",
             name: ticketName,
             price: ticketPrice,
-            total: ticketNum,
+            quantity: ticketNum,
             min: ticketNumMin,
             max: ticketNumMax,
             startDate: selectedStartDate,

@@ -22,7 +22,7 @@ export interface TicketProps {
     id: string;
     name:string;
     price: string;
-    total: string;
+    quantity: string;
     min: string;
     max: string;
     startDate: Date | null;  

@@ -54,7 +54,7 @@ export default function EditTicketDailog({ open, onClose, endDateEvent, ticket, 
         id: ticket.id,
         name: ticket.name,
         price: ticket.price,
-        total: ticket.total,
+        quantity: ticket.quantity,
         min: ticket.min,
         max: ticket.max,
         info: ticket.information,
@@ -114,7 +114,7 @@ export default function EditTicketDailog({ open, onClose, endDateEvent, ticket, 
             id: ticketData.id,
             name: ticketData.name,
             price: ticketData.price,
-            total: ticketData.total,
+            quantity: ticketData.quantity,
             min: ticketData.min,
             max: ticketData.max,
             startDate,
@@ -203,11 +203,11 @@ export default function EditTicketDailog({ open, onClose, endDateEvent, ticket, 
                             <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
                                 <InputNumberField
                                     label="Tổng số lượng vé"
-                                    value={ticketData.total}
+                                    value={ticketData.quantity}
                                     placeholder=""
-                                    error={errors.total}
+                                    error={errors.quantity}
                                     required
-                                    onChange={(e) => handleInputChange(e, "total")}
+                                    onChange={(e) => handleInputChange(e, "quantity")}
                                 />
                             </div>
 
@@ -272,7 +272,7 @@ export default function EditTicketDailog({ open, onClose, endDateEvent, ticket, 
                                 </label>
                                 <div className="relative">
                                     <textarea
-                                        className="w-full h-32 text-sm block appearance-none w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400"
+                                        className="w-full h-32 text-sm block appearance-none border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400"
                                         placeholder="Mô tả"
                                         value={ticketData.info}
                                         onChange={(e) => handleInputChange(e, "info")}

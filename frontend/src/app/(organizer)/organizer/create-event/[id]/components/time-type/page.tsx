@@ -13,7 +13,6 @@ import FormTimeTypeTicketClient from './components/formTimeType';
 // import { Showtime, TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
 import createApiClient from '@/services/apiClient';
 import { BaseApiResponse } from '@/types/BaseApiResponse';
-import AlertDialog from './components/dialogs/alertDialog';
 import { Showtime } from '../../libs/interface/idevent.interface';
 import toast from 'react-hot-toast';
 import { CreateShowingResponse } from '@/types/model/CreateShowingResponse';
@@ -31,7 +30,6 @@ export default function TimeAndTypeTickets() {
     const router = useRouter();
     const [step] = useState(2);
     const [btnValidate2, setBtnValidte2] = useState("");
-    const [isDialogOpen, setIsDialogOpen] = useState(false); // State for dialog visibility
     
 
     // New state to store showtimes received from FormTimeTypeTicketClient
@@ -110,7 +108,7 @@ export default function TimeAndTypeTickets() {
                         formData.append("startTime", (ticket.startDate ?? new Date()).toISOString());
                         formData.append("endTime", (ticket.endDate ?? new Date()).toISOString());
                         formData.append("position", "0"); // Placeholder
-                        formData.append("quantity", "100"); // Placeholder
+                        formData.append("quantity", ticket.quantity);
                         formData.append("maxQtyPerOrder", ticket.max);
                         formData.append("minQtyPerOrder", ticket.min);
                         formData.append("isHidden", "false"); // Placeholder
@@ -255,10 +253,6 @@ export default function TimeAndTypeTickets() {
             <div className="flex justify-center">
                 <FormTimeTypeTicketClient onNextStep={handleNextStep} btnValidate2={btnValidate2} setShowingList={setShowingList} eventId={eventId}/>
             </div>
-            {/* Success Dialog */}
-            <AlertDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} onConfirm={function (): void {
-                throw new Error('Function not implemented.');
-            } } />
         </>
     );
 }
