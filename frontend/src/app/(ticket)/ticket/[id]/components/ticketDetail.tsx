@@ -1,11 +1,16 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+/* Package System */
+// import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Image from 'next/image';
-import { ArrowLeft } from 'lucide-react';
+// import { ArrowLeft } from 'lucide-react';
+import jsQR from 'jsqr';
 
+/* Package Application */
 import { useTicketById } from '@/app/(ticket)/libs/hooks/useTicketById';
+import { decrypt } from '@/utils/helpers';
+
 
 interface TicketDetailProps {
     ticketId: string;
@@ -14,7 +19,8 @@ interface TicketDetailProps {
 const TicketDetailClient = ({ ticketId }: TicketDetailProps) => {
     const { ticket, loading, error } = useTicketById(ticketId);
     const [currentTicketIndex, setCurrentTicketIndex] = useState(0);
-    const router = useRouter();
+    const [qrDecodedData, setQrDecodedData] = useState(null);
+    // const router = useRouter();
 
     if (loading) {
         return <div className="text-white text-center">Đang tải...</div>;
@@ -54,6 +60,41 @@ const TicketDetailClient = ({ ticketId }: TicketDetailProps) => {
                 seat: seat.name || "-",
             };
         }
+    }
+
+    const handleDecodeQR = () => {
+        const base64 = currentTicket?.qrCode.startsWith('data:image')
+            ? currentTicket.qrCode
+            : `data:image/png;base64,${currentTicket?.qrCode}`;
+
+        const img = document.createElement('img');
+        img.src = base64;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            ctx.drawImage(img, 0, 0);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const qr = jsQR(imageData.data, imageData.width, imageData.height);
+            if (qr) {
+                try {
+                    const encryptedText = qr.data;
+                    const decryptedContent = decrypt(encryptedText);
+                    const parsedData = JSON.parse(decryptedContent);
+                    setQrDecodedData(parsedData);
+                } catch (error) {
+                    console.error('Lỗi khi giải mã hoặc parse QR:', error);
+                    alert('Có lỗi xảy ra khi giải mã QR.');
+                }
+            } else {
+                alert('Không tìm thấy dữ liệu QR.');
+            }
+        };
+        img.onerror = (event: string | Event) => {
+            console.error('Lỗi khi load ảnh QR:', event);
+        };
     }
 
     return (
@@ -116,6 +157,29 @@ const TicketDetailClient = ({ ticketId }: TicketDetailProps) => {
                                     className="border border-gray-400 rounded-lg"
                                 />
                             </div>
+                        </div>
+                    )}
+
+                    {/* Nút giải mã QR */}
+                    <div className="mt-4 flex justify-center">
+                        <button
+                            onClick={handleDecodeQR}
+                            className="bg-[#51DACF] text-[#0C4762] px-4 py-2 rounded-lg"
+                        >
+                            Giải mã QR
+                        </button>
+                    </div>
+                    {/* Hiển thị dữ liệu giải mã được dưới dạng danh sách */}
+                    {qrDecodedData && (
+                        <div className="mt-4 bg-gray-800 p-4 rounded-lg">
+                            <h3 className="text-white font-semibold mb-2">Nội dung QR:</h3>
+                            <ul className="text-white text-sm list-disc pl-5">
+                                {Object.entries(qrDecodedData).map(([key, value]) => (
+                                    <li key={key}>
+                                        <strong>{key}:</strong> {String(value)}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     )}
 
