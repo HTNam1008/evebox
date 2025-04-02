@@ -26,7 +26,7 @@ import createApiClient from "@/services/apiClient";
 import { ShowingOrgResponse } from "@/types/model/showingOrganizer";
 import { TicketProps } from "../../../libs/interface/dialog.interface";
 
-export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, setShowingList,eventId }: { onNextStep: () => void, btnValidate2: string, setShowingList: (showtimes: Showtime[]) => void, eventId: string}) {
+export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, setShowingList,eventId }: { onNextStep: () => void, btnValidate2: string, setShowingList: (showtimes: Showtime[]) => void, eventId: number}) {
     //Chỉnh sửa vé đã tạo
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
 
@@ -52,9 +52,16 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
             try {
                 const response = await apiClient.get<ShowingOrgResponse>(`/api/org/showing/${eventId}`);
                 if (!response.data) {
-                    throw new Error("Failed to fetch showtimes");
+                    toast.error("Failed to fetch showtimes");
                 }
                 const data = await response.data.data;
+                if (data.length==0){
+                    setShowtimes([ {
+                        id: "", startDate: null, endDate: null, tickets: [], isExpanded: true, showDialog: false,
+                        showEditDialog: false, showCopyTicketDialog: false, showConfirmDeleteDialog: false, showDeleteShow: false
+                    }])
+                }
+                else{
                 const formattedShowtimes: Showtime[] = data.map((show) => ({
                     id: show.id, // Convert id to number if needed
                     startDate: new Date(show.startTime),
@@ -85,9 +92,11 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
                 setShowtimes(formattedShowtimes);
                 localStorage.setItem("showtimes", JSON.stringify(formattedShowtimes));
                 console.log("Showtimes saved to local storage", formattedShowtimes);
+               };
             } catch (error) {
-                console.error("Error fetching showtimes:", error);
+                toast.error("Error fetching showtimes:"+error);
             }
+            
         };
 
         fetchShowtimes();
@@ -131,11 +140,11 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
 
         // Nếu nút là "Save"
         if (btnValidate2 === "Save") {
-            alert("Form hợp lệ!");
+            toast.success("Form hợp lệ");
         }
         // Nếu nút là "Continue"
         else if (btnValidate2 === "Continue") {
-            alert("Form hợp lệ! Chuyển sang bước tiếp theo...");
+            toast.success("Form hợp lệ! Chuyển sang bước tiếp theo...");
             onNextStep();
         }
     };

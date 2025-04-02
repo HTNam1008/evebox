@@ -3,6 +3,7 @@
 import { Showtime } from "../../../libs/interface/idevent.interface";
 import { BaseApiResponse } from "@/types/BaseApiResponse";
 import createApiClient from '@/services/apiClient';
+import toast from "react-hot-toast";
 
 
 const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
@@ -24,13 +25,13 @@ export const handleDeleteTicket = async (
                     apiClient.delete<BaseApiResponse>(`/api/org/ticketType/${ticketToDelete.id}`)
                         .then((response) => {
                             if (response.status === 200) {
-                                console.log(`Ticket ${ticketToDelete.id} deleted successfully.`);
+                                toast.success(`Ticket ${ticketToDelete.id} deleted successfully.`);
                             } else {
-                                console.error(`Failed to delete ticket: ${response.statusText}`);
+                                toast.error(`Failed to delete ticket: ${response.statusText}`);
                             }
                         })
                         .catch((error) => {
-                            console.error("Error deleting ticket:", error);
+                            toast.error("Error deleting ticket:", error);
                         });
                 }
 

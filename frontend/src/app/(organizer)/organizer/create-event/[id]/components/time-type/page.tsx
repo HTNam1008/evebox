@@ -14,6 +14,8 @@ import FormTimeTypeTicketClient from './components/formTimeType';
 import createApiClient from '@/services/apiClient';
 import { BaseApiResponse } from '@/types/BaseApiResponse';
 import AlertDialog from './components/dialogs/alertDialog';
+import { Showtime } from '../../libs/interface/idevent.interface';
+import toast from 'react-hot-toast';
 
 async function urlToFile(url: string, filename: string): Promise<File> {
     const response = await fetch(url);
@@ -23,7 +25,7 @@ async function urlToFile(url: string, filename: string): Promise<File> {
 
 export default function TimeAndTypeTickets() {
     const params = useParams();
-    const eventId = params?.id;
+    const eventId = parseInt(params?.id?.toString() || "");
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
     const router = useRouter();
     const [step] = useState(2);
@@ -37,19 +39,7 @@ export default function TimeAndTypeTickets() {
     const processShowtimeAndTickets = async (showing: Showtime, newShowId: string) => {
         try {
             let response;
-    
-            // Handle Showtime deletion
-            if (showing.id === "Deleted") {
-                console.log(`Deleting showtime with ID: ${showing.id}`);
-                response = await apiClient.delete<BaseApiResponse>(`/api/org/showing/${showing.id}`);
-    
-                if (response.status === 200) {
-                    console.log(`Showtime ${showing.id} deleted successfully!`);
-                } else {
-                    alert(`Error deleting showtime: ${response.statusText}`);
-                }
-                return;
-            }
+
     
             // Handle Showtime creation or update
             if (!showing.id) {
@@ -62,7 +52,7 @@ export default function TimeAndTypeTickets() {
                 if (response.status === 201) {
                     console.log(`Showtime created successfully! ID: ${newShowId}`);
                 } else {
-                    alert(`Error creating showtime: ${response.statusText}`);
+                    toast.error(`Error creating showtime: ${response.statusText}`);
                     return;
                 }
             } else {
@@ -75,7 +65,7 @@ export default function TimeAndTypeTickets() {
                 if (response.status === 200) {
                     console.log(`Showtime ${showing.id} updated successfully!`);
                 } else {
-                    alert(`Error updating showtime: ${response.statusText}`);
+                    toast.error(`Error updating showtime: ${response.statusText}`);
                     return;
                 }
             }
@@ -111,6 +101,7 @@ export default function TimeAndTypeTickets() {
     
                         if (!ticket.id) {
                             // Create new ticket (POST)
+                            console.log(newShowId)
                             ticketResponse = await apiClient.post<BaseApiResponse>(
                                 `/api/org/ticketType/create/${newShowId}`,
                                 formData,
@@ -120,7 +111,7 @@ export default function TimeAndTypeTickets() {
                             if (ticketResponse.status === 201) {
                                 console.log(`Ticket created successfully!`);
                             } else {
-                                alert(`Error creating ticket: ${ticketResponse.statusText}`);
+                                toast.error(`Error creating ticket: ${ticketResponse.statusText}`);
                             }
                         } else {
                             // Update existing ticket (PUT)
@@ -133,18 +124,18 @@ export default function TimeAndTypeTickets() {
                             if (ticketResponse.status === 200) {
                                 console.log(`Ticket ${ticket.id} updated successfully!`);
                             } else {
-                                alert(`Error updating ticket: ${ticketResponse.statusText}`);
+                                toast.error(`Error updating ticket: ${ticketResponse.statusText}`);
                             }
                         }
                     } catch (error) {
                         console.error(`Failed to process ticket:`, error);
-                        alert(`Error saving ticket data.`);
+                        toast.error(`Error saving ticket data.`);
                     }
                 })
             );
         } catch (error) {
             console.error(`Failed to process showtime:`, error);
-            alert(`Error saving showtime data.`);
+            toast.error(`Error saving showtime data.`);
         }
     };
     
@@ -153,7 +144,7 @@ export default function TimeAndTypeTickets() {
         setBtnValidte2("Save");
     
         if (!showingList.length) {
-            console.log("No showtimes to save!");
+            toast.error("No showtimes to save!");
             return;
         }
     
@@ -169,7 +160,7 @@ export default function TimeAndTypeTickets() {
             return true;  // Indicate success
         } catch (error) {
             console.error("Error saving data:", error);
-            alert("Unexpected error occurred. Please try again.");
+            toast.error("Unexpected error occurred. Please try again.");
             return false;  // Indicate failure
         }
     };
