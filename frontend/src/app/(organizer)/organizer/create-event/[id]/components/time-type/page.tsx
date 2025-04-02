@@ -5,14 +5,16 @@ import React from 'react';
 import 'tailwindcss/tailwind.css';
 import { useState } from 'react';
 import { Divider } from '@nextui-org/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 /* Package Application */
 import Navigation from '../common/navigation';
 import FormTimeTypeTicketClient from './components/formTimeType';
-import { TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
+// import { TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
 
-export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps) {
+export default function TimeAndTypeTickets() {
+    const params = useParams();
+    const eventId = params?.id;
     const router = useRouter();
     const [step] = useState(2);
     const [btnValidate2, setBtnValidte2] = useState("");

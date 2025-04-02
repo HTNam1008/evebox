@@ -32,7 +32,7 @@ export default function EventStep({ eventId, setEventId }: EventStepProps) {
     return (
         <>
             {step === 'info' && <InformationEventClientPage setEventId={setEventId} />}
-            {step === 'showing' && <TimeAndTypeTickets eventId={eventId} />}
+            {step === 'showing' && <TimeAndTypeTickets />}
             {/* {step === 'setting' && <Setting eventId={eventId} />} */}
             {step === 'questions' && <CreateQuestions eventId={eventId} />}
             {step === 'payment' && <InformationPaymentClient />}
