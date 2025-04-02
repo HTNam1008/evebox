@@ -51,7 +51,7 @@ export class GetUserTicketByIdService {
 
   async genPdfTicket(data: UserTicketByIdDto): Promise<{ filename: string; buffer: Buffer }[]> {
     const pdfFiles: { filename: string; buffer: Buffer }[] = [];
-    const fontPath = path.resolve(__dirname, './Roboto.ttf');
+    const fontPath = path.resolve(__dirname, '../../../../assets/fonts/Roboto.ttf');
     if (!data.TicketQRCode || data.TicketQRCode.length === 0) {
       throw new Error('No TicketQrCode found in the ticket data.');
     }

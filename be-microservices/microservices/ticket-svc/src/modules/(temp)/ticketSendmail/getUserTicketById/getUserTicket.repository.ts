@@ -54,7 +54,7 @@ export class getUserTicketRepository {
                             },
                         },
                     },
-                },
+                  },
                 }
               }
             }
@@ -136,7 +136,22 @@ export class getUserTicketRepository {
                     select: {
                       imageUrl: true,
                     }
-                  }
+                  },
+                  locations: {
+                    select: {
+                        id: true,
+                        street: true,
+                        ward: true,
+                        districtId: true,
+                        createdAt: true,
+                        districts: {
+                            select: {
+                                name: true,
+                                province: { select: { name: true } },
+                            },
+                        },
+                    },
+                  },
                 },
               }
             }
@@ -179,6 +194,12 @@ export class getUserTicketRepository {
       if(!userTicket){
         return null;
       }
+
+      // Xử lý địa chỉ
+      const { street, ward, districts } = userTicket.Showing.Events.locations ?? {};
+      const districtName = districts?.name || '';
+      const provinceName = districts?.province?.name || '';
+      const locationsString = `${street || ''}, ${ward || ''}, ${districtName}, ${provinceName}`;
 
       const { ticketTypeId } = userTicket.TicketQRCode[0] || {};
       const seatIds = userTicket.TicketQRCode.map(ticket => ticket.seatId).filter(seatId => seatId !== null);
@@ -226,6 +247,13 @@ export class getUserTicketRepository {
           } : null,
           seats: seats ? seats : [],
           count: userTicket.TicketQRCode.length,
+          Showing: {
+            ...userTicket.Showing,
+            Events: {
+              ...userTicket.Showing.Events,
+              locationsString: locationsString,
+            }
+          },
         }
       }
       return {
@@ -237,6 +265,13 @@ export class getUserTicketRepository {
         } : null,
         seats: [],
         count: userTicket.TicketQRCode.length,
+        Showing: {
+          ...userTicket.Showing,
+          Events: {
+            ...userTicket.Showing.Events,
+            locationsString: locationsString,
+          }
+        },
       }
     }
     catch{
