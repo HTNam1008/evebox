@@ -5,12 +5,12 @@ import React from 'react';
 import 'tailwindcss/tailwind.css';
 import { useState } from 'react';
 import { Divider } from '@nextui-org/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 /* Package Application */
 import Navigation from '../common/navigation';
 import FormTimeTypeTicketClient from './components/formTimeType';
-import { Showtime, TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
+// import { Showtime, TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
 import createApiClient from '@/services/apiClient';
 import { BaseApiResponse } from '@/types/BaseApiResponse';
 import AlertDialog from './components/dialogs/alertDialog';
@@ -21,7 +21,9 @@ async function urlToFile(url: string, filename: string): Promise<File> {
     return new File([blob], filename, { type: blob.type });
 }
 
-export default function TimeAndTypeTickets({ eventId }: TimeAndTypeTicketsProps) {
+export default function TimeAndTypeTickets() {
+    const params = useParams();
+    const eventId = params?.id;
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
     const router = useRouter();
     const [step] = useState(2);
