@@ -13,7 +13,7 @@ import ImageUpload from "../../../common/form/imageUpload";
 import InputNumberField from "../../../common/form/inputNumberField";
 import { CreateTypeTicketDailogProps } from "../../../../libs/interface/dialog.interface";
 
-export default function CreateTypeTicketDailog({ open, onClose, startDate, endDate, setStartDate, setEndDate, addTicket }: CreateTypeTicketDailogProps) {
+export default function CreateTypeTicketDailog({ open, onClose, startDate, endDate, addTicket }: CreateTypeTicketDailogProps) {
     const [ticketName, setTicketName] = useState("");
     const [ticketPrice, setTicketPrice] = useState("");
     const [ticketNum, setTicketNum] = useState("");
@@ -24,36 +24,37 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
     const [imageTicket, setImageTicket] = useState<string | null>(null);
     const [imageErrors, setImageErrors] = useState<{ [key: string]: string }>({});
     const [isFree, setIsFree] = useState(false);
+    const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(new Date());
+    const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(startDate);
     
-    const [dateErrors, setDateErrors] = useState<{ startDate?: string, endDate?: string }>({});
+    const [dateErrors, setDateErrors] = useState<{ selectedStartDate?: string, selectedEndDate?: string }>({});
 
     const validateStartDate = (date: Date | null) => {
-        if (!date || !endDate) return true;
-        if (date > endDate) {
-            setDateErrors((prev) => ({ ...prev, startDate: "Thời gian bắt đầu bán vé phải nhỏ hơn hạn cuối bán vé" }));
+        if (!date || !selectedEndDate) return true;
+        if (date > selectedEndDate) {
+            setDateErrors((prev) => ({ ...prev, selectedStartDate: "Thời gian bắt đầu bán vé phải nhỏ hơn hạn cuối bán vé" }));
             return false;
         }
-        setDateErrors((prev) => ({ ...prev, startDate: undefined }));
+        setDateErrors((prev) => ({ ...prev, selectedStartDate: undefined }));
         return true;
     };
 
     const validateEndDate = (date: Date | null) => {
-        if (!date || !startDate) return true;
+        if (!date || !selectedStartDate) return true;
 
-        if (date < startDate) {
-            setEndDate(null);
-            setDateErrors((prev) => ({ ...prev, startDate: "Thời gian bắt đầu bán vé phải nhỏ hơn hạn cuối bán vé" }));
-            setDateErrors((prev) => ({ ...prev, endDate: "Hạn cuối bán vé phải lớn hơn thời gian hiện bắt đầu" }));
+        if (date < selectedStartDate) {
+            setDateErrors((prev) => ({ ...prev, selectedStartDate: "Thời gian bắt đầu bán vé phải nhỏ hơn hạn cuối bán vé" }));
+            setDateErrors((prev) => ({ ...prev, selectedEndDate: "Hạn cuối bán vé phải lớn hơn thời gian hiện bắt đầu" }));
             return false;
         }
 
-        if (endDate && date > endDate) {
-            setDateErrors((prev) => ({ ...prev, endDate: "Hạn cuối bán vé phải nhỏ hơn thời gian sự kiện kết thúc" }));
+        if (startDate && endDate && date > startDate && date > endDate) {
+            setDateErrors((prev) => ({ ...prev, selectedEndDate: "Hạn cuối bán vé phải trước thời gian sự kiện bắt đầu" }));
             return false;
         }
 
-        setDateErrors((prev) => ({ ...prev, endDate: undefined }));
-        setDateErrors((prev) => ({ ...prev, startDate: undefined }));
+        setDateErrors((prev) => ({ ...prev, selectedStartDate: undefined }));
+        setDateErrors((prev) => ({ ...prev, selectedEndDate: undefined }));
 
         return true;
     };
@@ -115,10 +116,10 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
             total: ticketNum,
             min: ticketNumMin,
             max: ticketNumMax,
-            startDate,
-            endDate,
-            setStartDate,
-            setEndDate,
+            startDate: selectedStartDate,
+            endDate: selectedEndDate,
+            setSelectedStartDate,
+            setSelectedEndDate,
             information: infoTicket,
             image: imageTicket,
             free: isFree,
@@ -241,26 +242,26 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
                             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                                 <DateTimePicker
                                     label="Thời gian bắt đầu"
-                                    selectedDate={startDate}
-                                    setSelectedDate={setStartDate}
+                                    selectedDate={selectedStartDate}
+                                    setSelectedDate={setSelectedStartDate}
                                     popperPlacement="bottom-end"
                                     validateDate={validateStartDate}
                                     required
                                 />
-                                 {dateErrors.startDate && <p className="text-red-500 text-sm ml-1">{dateErrors.startDate}</p>}
+                                 {dateErrors.selectedStartDate && <p className="text-red-500 text-sm ml-1">{dateErrors.selectedStartDate}</p>}
                             </div>
 
                             {/* Thời gian kết thúc */}
                             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                                 <DateTimePicker
                                     label="Thời gian kết thúc"
-                                    selectedDate={endDate}
-                                    setSelectedDate={setEndDate}
+                                    selectedDate={selectedEndDate}
+                                    setSelectedDate={setSelectedEndDate}
                                     popperPlacement="bottom-start"
                                     validateDate={validateEndDate}
                                     required
                                 />
-                                 {dateErrors.endDate && <p className="text-red-500 text-sm ml-1">{dateErrors.endDate}</p>}
+                                 {dateErrors.selectedEndDate && <p className="text-red-500 text-sm ml-1">{dateErrors.selectedEndDate}</p>}
                             </div>
                         </div>
 

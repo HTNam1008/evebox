@@ -70,13 +70,13 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
                         id: ticket.id,
                         name: ticket.name,
                         price: ticket.originalPrice.toString(),
-                        total: ticket.quantity.toString(), 
+                        total: ticket.quantity.toString(),
                         min: ticket.minQtyPerOrder.toString(),
                         max: ticket.maxQtyPerOrder.toString(),
                         startDate: new Date(ticket.startTime),
                         endDate: new Date(ticket.endTime),
-                        setStartDate: () => {}, // Placeholder function
-                        setEndDate: () => {}, // Placeholder function
+                        setSelectedStartDate: () => { }, // Placeholder function
+                        setSelectedEndDate: () => { }, // Placeholder function
                         information: ticket.description,
                         image: ticket.imageUrl || null,
                         free: ticket.isFree,
@@ -347,16 +347,6 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
                                                 toggleDialog(showtime.id, setShowtimes)}
                                             startDate={showtime.startDate}
                                             endDate={showtime.endDate}
-                                            setStartDate={(date) => {
-                                                const updatedShowtimes = [...showtimes];
-                                                updatedShowtimes[index].startDate = date;
-                                                setShowtimes(updatedShowtimes);
-                                            }}
-                                            setEndDate={(date) => {
-                                                const updatedShowtimes = [...showtimes];
-                                                updatedShowtimes[index].endDate = date;
-                                                setShowtimes(updatedShowtimes);
-                                            }}
                                             addTicket={(newTicket) => addTicket(showtime.id, newTicket, setShowtimes)}
                                         />}
                                     {showtime.showCopyTicketDialog &&
