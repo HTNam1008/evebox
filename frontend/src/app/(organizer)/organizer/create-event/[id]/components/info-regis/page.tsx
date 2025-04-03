@@ -1,8 +1,11 @@
 import QuestionsPage from "./components/questionPage";
-import { CreateQuestionsProps } from "../../libs/interface/idevent.interface"; 
 
-export default function CreateQuestions({ eventId }: CreateQuestionsProps) {
+interface CreateQuestionsProps {
+    showingIds: string[];
+}
+
+export default function CreateQuestions({ showingIds }: CreateQuestionsProps) {
     return(
-        <QuestionsPage eventId={eventId}/>
+        <QuestionsPage showingIds={showingIds} />
     )
 }
