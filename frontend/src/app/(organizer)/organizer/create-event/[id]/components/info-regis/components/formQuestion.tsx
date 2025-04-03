@@ -1,7 +1,7 @@
 "use client";
 
 /* Package System */
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 
 /* Package Application */
 import FilterForm from "./filterForm";
@@ -44,6 +44,8 @@ export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNex
         }
     ]
 
+    const [newForms, setNewForms] = useState<Form[]>([]);
+
     const forms = selectedCategory === "sample" ? sampleForms : createdForms;
     const [selectedForms, setSelectedForms] = useState<number | null>(null);
 
@@ -51,7 +53,7 @@ export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNex
         setSelectedForms((prevSelected) => (prevSelected === formId ? null : formId));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         const newErrors: { [key: string]: boolean } = {};
 
@@ -83,7 +85,7 @@ export default function FormQuestionClient({ onNextStep, btnValidate4 }: { onNex
 
                 <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="ques-form">
                     {isCreateNewOpen && 
-                        <CreateNewForm open={isCreateNewOpen} onClose={() => setIsCreateNewOpen(false)}/>}
+                        <CreateNewForm newForms={newForms} setNewForms={setNewForms} open={isCreateNewOpen} onClose={() => setIsCreateNewOpen(false)}/>}
 
                     <FormList forms={forms} selectedForms={selectedForms} handleSelectForm={handleSelectForm} />
                 </form >
