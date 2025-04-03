@@ -1,7 +1,4 @@
 import { TicketProps } from "./dialog.interface";
-export interface CreateQuestionsProps {
-    eventId: number;
-}
 
 export interface SettingProps {
     eventId: number;
