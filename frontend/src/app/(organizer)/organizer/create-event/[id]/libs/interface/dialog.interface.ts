@@ -14,22 +14,23 @@ export interface CopyTicketDailogProps {
     open: boolean; 
     onClose: () => void; 
     showtimes: Showtime[]; 
-    currentShowtimeId: number; 
+    currentShowtimeId: string; 
     setShowtimes: (updatedShowtimes: Showtime[]) => void;
 }
 
 export interface TicketProps {
+    id: string;
     name:string;
     price: string;
-    total: string;
+    quantity: string;
     min: string;
     max: string;
     startDate: Date | null;  
     endDate: Date | null;    
-    setStartDate: (date: Date | null) => void;
-    setEndDate: (date: Date | null) => void;
+    setSelectedStartDate: (date: Date | null) => void;
+    setSelectedEndDate: (date: Date | null) => void;
     information: string;
-    image?: string | null;
+    image?: string | File | null;
     free: boolean;
 }
 
@@ -38,8 +39,6 @@ export interface CreateTypeTicketDailogProps {
     onClose: () => void;
     startDate: Date | null;
     endDate: Date | null;
-    setStartDate: (date: Date | null) => void;
-    setEndDate: (date: Date | null) => void;
     addTicket: (ticket: TicketProps) => void;
 }
 
