@@ -49,7 +49,7 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
                             {input.required && <span className="text-red-500">* </span>} {input.fieldName}
                         </label>
                         <div className="flex items-center ml-3">
-                            <input type="checkbox" className="w-3.5 h-3.5 accent-blue-500" />
+                            <input type="radio" className="w-3.5 h-3.5 accent-blue-500" />
                             <span className="text-sm ml-2">
                                 {input.options?.map((opt, i) => (
                                     <span key={`input-${input.id}-option-${i}`}>{opt.optionText}</span>
@@ -68,7 +68,7 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
                         <div className="flex flex-wrap items-center ml-3">
                             {input.options?.map((opt, i) => (
                                 <label key={`input-${input.id}-option-${i}`} className="flex items-center mr-4">
-                                    <input type="checkbox" className="w-3.5 h-3.5 accent-blue-500" />
+                                    <input type="radio"  name={`radio-group-${input.id}`} className="w-3.5 h-3.5 accent-blue-500" />
                                     <span className="text-sm ml-2">{opt.optionText}</span>
                                 </label>
                             ))}
