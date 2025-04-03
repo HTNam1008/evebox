@@ -24,7 +24,6 @@ import CopyTicketDailog from "./dialogs/copyTicket";
 import { handleDeleteShow } from "../../../libs/functions/showing/deleteShow";
 import createApiClient from "@/services/apiClient";
 import { ShowingOrgResponse } from "@/types/model/showingOrganizer";
-import { TicketProps } from "../../../libs/interface/dialog.interface";
 
 export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, setShowingList,eventId }: { onNextStep: () => void, btnValidate2: string, setShowingList: (showtimes: Showtime[]) => void, eventId: number}) {
     //Chỉnh sửa vé đã tạo
@@ -49,58 +48,68 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
 
     useEffect(() => {
         const fetchShowtimes = async () => {
-            try {
-                const response = await apiClient.get<ShowingOrgResponse>(`/api/org/showing/${eventId}`);
-                if (!response.data) {
-                    toast.error("Failed to fetch showtimes");
-                }
-                const data = await response.data.data;
-                if (data.length==0){
-                    setShowtimes([ {
-                        id: "", startDate: null, endDate: null, tickets: [], isExpanded: true, showDialog: false,
-                        showEditDialog: false, showCopyTicketDialog: false, showConfirmDeleteDialog: false, showDeleteShow: false
-                    }])
-                }
-                else{
-                const formattedShowtimes: Showtime[] = data.map((show) => ({
-                    id: show.id, // Convert id to number if needed
-                    startDate: new Date(show.startTime),
-                    endDate: new Date(show.endTime),
-                    tickets: show.TicketType.map((ticket) => ({
-                        id: ticket.id,
-                        name: ticket.name,
-                        price: ticket.originalPrice.toString(),
-                        quantity: ticket.quantity.toString(),
-                        min: ticket.minQtyPerOrder.toString(),
-                        max: ticket.maxQtyPerOrder.toString(),
-                        startDate: new Date(ticket.startTime),
-                        endDate: new Date(ticket.endTime),
-                        setSelectedStartDate: () => { }, // Placeholder function
-                        setSelectedEndDate: () => { }, // Placeholder function
-                        information: ticket.description,
-                        image: ticket.imageUrl || null,
-                        free: ticket.isFree,
-                    })) as TicketProps[],
-                    isExpanded: true,
-                    showDialog: false,
-                    showEditDialog: true,
-                    showCopyTicketDialog: false,
-                    showConfirmDeleteDialog: false,
-                    showDeleteShow: false,
-                }));
-    
-                setShowtimes(formattedShowtimes);
-                localStorage.setItem("showtimes", JSON.stringify(formattedShowtimes));
-                console.log("Showtimes saved to local storage", formattedShowtimes);
-               };
-            } catch (error) {
-                toast.error("Error fetching showtimes:"+error);
+          try {
+            const response = await apiClient.get<ShowingOrgResponse>(`/api/org/showing/${eventId}`);
+            if (!response.data) {
+              toast.error("Failed to fetch showtimes");
+              return;
             }
-            
+            const data = response.data.data;
+            if (data.length === 0) {
+              setShowtimes([{
+                id: "",
+                startDate: null,
+                endDate: null,
+                tickets: [],
+                isExpanded: true,
+                showDialog: false,
+                showEditDialog: false,
+                showCopyTicketDialog: false,
+                showConfirmDeleteDialog: false,
+                showDeleteShow: false
+              }]);
+            } else {
+              const formattedShowtimes: Showtime[] = data.map((show) => ({
+                id: show.id,
+                startDate: new Date(show.startTime),
+                endDate: new Date(show.endTime),
+                tickets: show.TicketType
+                  .map((ticket) => ({
+                    id: ticket.id,
+                    name: ticket.name,
+                    price: ticket.originalPrice.toString(),
+                    quantity: ticket.quantity.toString(),
+                    min: ticket.minQtyPerOrder.toString(),
+                    max: ticket.maxQtyPerOrder.toString(),
+                    startDate: new Date(ticket.startTime),
+                    endDate: new Date(ticket.endTime),
+                    setSelectedStartDate: () => { }, // Placeholder function
+                    setSelectedEndDate: () => { }, // Placeholder function
+                    information: ticket.description,
+                    image: ticket.imageUrl || null,
+                    free: ticket.isFree,
+                    position: ticket.position // Ensure position is included
+                  }))
+                  .sort((a, b) => a.position - b.position), // Sort tickets by position
+                isExpanded: true,
+                showDialog: false,
+                showEditDialog: true,
+                showCopyTicketDialog: false,
+                showConfirmDeleteDialog: false,
+                showDeleteShow: false,
+              }));
+      
+              setShowtimes(formattedShowtimes);
+              localStorage.setItem("showtimes", JSON.stringify(formattedShowtimes));
+              console.log("Showtimes saved to local storage", formattedShowtimes);
+            }
+          } catch (error) {
+            toast.error("Error fetching showtimes: " + error);
+          }
         };
-
+      
         fetchShowtimes();
-    }, [eventId]); // Re-run when eventId changes
+      }, [eventId]);
 
     useEffect(() => {
         setShowingList(showtimes);
