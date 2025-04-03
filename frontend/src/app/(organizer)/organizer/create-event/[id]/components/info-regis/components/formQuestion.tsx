@@ -85,7 +85,9 @@ export default function FormQuestionClient({ onNextStep, btnValidate4, showingId
             return;
         }
 
-        const validShowingIds = showingIds.filter(id => id.trim() !== "");
+        const validShowingIds = Array.from(
+            new Set(showingIds.filter(id => id.trim() !== ""))
+        );
         if (validShowingIds.length === 0) {
             toast.error("Không có showing hợp lệ để kết nối.");
             return;

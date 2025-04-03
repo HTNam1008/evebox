@@ -84,6 +84,8 @@ export default function TimeAndTypeTickets({ setShowingIds }: TimeAndTypeTickets
                     startTime: showing.startDate,
                     endTime: showing.endDate,
                 });
+
+                setShowingIds([...showingList.map(show => show.id), showing.id]);
     
                 if (response.status === 200) {
                     console.log(`Showtime ${showing.id} updated successfully!`);
