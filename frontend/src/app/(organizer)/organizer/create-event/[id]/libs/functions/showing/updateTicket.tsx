@@ -4,11 +4,11 @@ import { TicketProps } from "../../../libs/interface/dialog.interface";
 import { Showtime } from "../../../libs/interface/idevent.interface";
 
 export const updateTicket = (
-    showtimeId: number, 
+    showtimeId: string, 
     ticketIndex: number, 
     updatedTicket: TicketProps,
     setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>,
-    setEditShowtimeId: React.Dispatch<React.SetStateAction<number | null>>,
+    setEditShowtimeId: React.Dispatch<React.SetStateAction<string | null>>,
     setEditTicketIndex: React.Dispatch<React.SetStateAction<number | null>>
 ) => {
     setShowtimes((prevShowtimes) =>
@@ -23,6 +23,6 @@ export const updateTicket = (
                 : showtime
         )
     );
-    setEditShowtimeId(null);
+    setEditShowtimeId("");
     setEditTicketIndex(null);
 };

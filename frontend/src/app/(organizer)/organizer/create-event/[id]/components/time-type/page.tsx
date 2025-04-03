@@ -10,22 +10,217 @@ import { useRouter, useParams } from 'next/navigation';
 /* Package Application */
 import Navigation from '../common/navigation';
 import FormTimeTypeTicketClient from './components/formTimeType';
-// import { TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
+// import { Showtime, TimeAndTypeTicketsProps } from '../../libs/interface/idevent.interface';
+import createApiClient from '@/services/apiClient';
+import { BaseApiResponse } from '@/types/BaseApiResponse';
+import { Showtime } from '../../libs/interface/idevent.interface';
+import toast from 'react-hot-toast';
+import { CreateShowingResponse } from '@/types/model/CreateShowingResponse';
 
-export default function TimeAndTypeTickets() {
+async function urlToFile(url: string, filename: string): Promise<File> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: blob.type });
+}
+
+interface TimeAndTypeTicketsProps {
+    setShowingIds: (ids: string[]) => void;
+}
+
+export default function TimeAndTypeTickets({ setShowingIds }: TimeAndTypeTicketsProps) {
     const params = useParams();
-    const eventId = params?.id;
+    const eventId = parseInt(params?.id?.toString() || "");
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
     const router = useRouter();
     const [step] = useState(2);
     const [btnValidate2, setBtnValidte2] = useState("");
+    
 
-    const handleSave = () => {
+    // New state to store showtimes received from FormTimeTypeTicketClient
+    const [showingList, setShowingList] = useState<Showtime[]>([]);
+
+    const fetchShowtimes = async () => {
+        try {
+            const response = await apiClient.get<BaseApiResponse<Showtime[]>>(`/api/org/showing/${eventId}`);
+            
+            if (response.status === 200 && response.data) {
+                setShowingList(response.data.data); // Update the state with new data
+                console.log("Showtimes refreshed.");
+            } else {
+                toast.error("Failed to fetch updated showtimes.");
+            }
+        } catch (error) {
+            console.error("Error fetching showtimes:", error);
+            toast.error("Error refreshing showtimes.");
+        }
+    };
+    
+
+    const processShowtimeAndTickets = async (showing: Showtime, newShowId?: string) => {
+        try {
+            let response;
+            let showtimeId = showing.id; // Use existing ID or new one
+    
+            // Handle Showtime creation or update
+            if (!newShowId) {
+                // Create new showing (POST)
+                response = await apiClient.post<CreateShowingResponse>(`/api/org/showing/${eventId}`, {
+                    startTime: showing.startDate,
+                    endTime: showing.endDate,
+                });
+    
+                if (response.status === 201) {
+                    console.log("------",response.data);
+                    showtimeId = response.data.data; // Extract new Showtime ID from response
+                    setShowingIds([...showingList.map(show => show.id), showtimeId]); // Update showing IDs state
+                    console.log(`Showtime created successfully! ID: ${showtimeId}`);
+                } else {
+                    toast.error(`Error creating showtime: ${response.statusText}`);
+                    return;
+                }
+            } else {
+                // Update existing showing (PUT)
+                response = await apiClient.put<BaseApiResponse>(`/api/org/showing/${showing.id}`, {
+                    startTime: showing.startDate,
+                    endTime: showing.endDate,
+                });
+    
+                if (response.status === 200) {
+                    console.log(`Showtime ${showing.id} updated successfully!`);
+                } else {
+                    toast.error(`Error updating showtime: ${response.statusText}`);
+                    return;
+                }
+            }
+    
+            // Ensure `showtimeId` is valid
+            if (!showtimeId) {
+                console.error("Showtime ID is missing after creation!");
+                return;
+            }
+    
+            // Process tickets for the current showtime
+            await Promise.all(
+                showing.tickets.map(async (ticket) => {
+                    try {
+                        let ticketResponse;
+                        const formData = new FormData();
+                        formData.append("name", ticket.name);
+                        formData.append("description", ticket.information);
+                        formData.append("color", "#000000"); // Placeholder
+                        formData.append("isFree", String(ticket.free));
+                        formData.append("originalPrice", ticket.price);
+                        formData.append("startTime", (ticket.startDate ?? new Date()).toISOString());
+                        formData.append("endTime", (ticket.endDate ?? new Date()).toISOString());
+                        formData.append("position", "0"); // Placeholder
+                        formData.append("quantity", ticket.quantity);
+                        formData.append("maxQtyPerOrder", ticket.max);
+                        formData.append("minQtyPerOrder", ticket.min);
+                        formData.append("isHidden", "false"); // Placeholder
+    
+                        if (typeof ticket.image === "string" && ticket.image.startsWith("http")) {
+                            ticket.image = await urlToFile(ticket.image, "ticket-image.png");
+                        }
+    
+                        if (ticket.image instanceof File) {
+                            formData.append("file", ticket.image);
+                        } else {
+                            console.warn("Skipping image upload: ticket.image is not a File");
+                        }
+    
+                        if (!ticket.id) {
+                            // Create new ticket (POST)
+                            console.log("New showtime ID:", showtimeId);
+                            ticketResponse = await apiClient.post<BaseApiResponse>(
+                                `/api/org/ticketType/create/${showtimeId}`, // Use updated ID
+                                formData,
+                                { headers: { "Content-Type": "multipart/form-data" } }
+                            );
+    
+                            if (ticketResponse.status === 201) {
+                                console.log(`Ticket created successfully!`);
+                            } else {
+                                toast.error(`Error creating ticket: ${ticketResponse.statusText}`);
+                            }
+                        } else {
+                            // Update existing ticket (PUT)
+                            ticketResponse = await apiClient.put<BaseApiResponse>(
+                                `/api/org/ticketType/${ticket.id}`,
+                                formData,
+                                { headers: { "Content-Type": "multipart/form-data" } }
+                            );
+    
+                            if (ticketResponse.status === 200) {
+                                console.log(`Ticket ${ticket.id} updated successfully!`);
+                            } else {
+                                toast.error(`Error updating ticket: ${ticketResponse.statusText}`);
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`Failed to process ticket:`, error);
+                        toast.error(`Error saving ticket data.`);
+                    }
+                })
+            );
+        } catch (error) {
+            console.error(`Failed to process showtime:`, error);
+            toast.error(`Error saving showtime data.`);
+        }
+    };
+    
+    
+
+    const handleSave = async () => {
         setBtnValidte2("Save");
-    }
+    
+        if (!showingList.length) {
+            toast.error("No showtimes to save!");
+            return;
+        }
+    
+        try {
+            // Process showings and tickets concurrently
+            await Promise.all(
+                showingList.map(async (showing) => {
+                    const newShowId = showing.id;
+                    await processShowtimeAndTickets(showing, newShowId);
+                })
+            );
+            console.log("All showtimes and tickets processed.");
+             // Refresh showing list after saving
+            await fetchShowtimes(); 
+            return true;  // Indicate success
+        } catch (error) {
+            console.error("Error saving data:", error);
+            toast.error("Unexpected error occurred. Please try again.");
+            return false;  // Indicate failure
+        }
+    };
+    
+    const handleContinue = async () => {
+        setBtnValidte2("Continue"); 
 
-    const handleContinue = () => {
-        setBtnValidte2("Continue");
-    }
+        if (!showingList.length) {
+            console.log("No showtimes to save!");
+            return;
+        }
+    
+        try {
+            // Process showings and tickets concurrently
+            await Promise.all(
+                showingList.map(async (showing) => {
+                    const newShowId = showing.id;
+                    await processShowtimeAndTickets(showing, newShowId);
+                })
+            );
+            console.log("All showtimes and tickets processed.");
+            return true;  // Indicate success
+        } catch (error) {
+            console.error("Error saving data:", error);
+            alert("Unexpected error occurred. Please try again.");
+            return false;  // Indicate failure
+        }
+    };
 
     const handleNextStep = () => {
         //Tạm ẩn bước 3
@@ -61,7 +256,7 @@ export default function TimeAndTypeTickets() {
             </div>
 
             <div className="flex justify-center">
-                <FormTimeTypeTicketClient onNextStep={handleNextStep} btnValidate2={btnValidate2} />
+                <FormTimeTypeTicketClient onNextStep={handleNextStep} btnValidate2={btnValidate2} setShowingList={setShowingList} eventId={eventId}/>
             </div>
         </>
     );
