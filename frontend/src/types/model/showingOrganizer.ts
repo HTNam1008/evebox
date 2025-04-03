@@ -14,6 +14,7 @@ export interface TicketType {
     imageUrl?: string;
     isHidden: boolean;
     quantity: number;
+    position: number;
 }
   
 export interface Showing {

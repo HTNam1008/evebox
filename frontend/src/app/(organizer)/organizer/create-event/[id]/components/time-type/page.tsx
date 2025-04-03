@@ -101,7 +101,7 @@ export default function TimeAndTypeTickets({ setShowingIds }: TimeAndTypeTickets
     
             // Process tickets for the current showtime
             await Promise.all(
-                showing.tickets.map(async (ticket) => {
+                showing.tickets.map(async (ticket, index) => {
                     try {
                         let ticketResponse;
                         const formData = new FormData();
@@ -112,7 +112,7 @@ export default function TimeAndTypeTickets({ setShowingIds }: TimeAndTypeTickets
                         formData.append("originalPrice", ticket.price);
                         formData.append("startTime", (ticket.startDate ?? new Date()).toISOString());
                         formData.append("endTime", (ticket.endDate ?? new Date()).toISOString());
-                        formData.append("position", "0"); // Placeholder
+                        formData.append("position", String(index)); // Placeholder
                         formData.append("quantity", ticket.quantity);
                         formData.append("maxQtyPerOrder", ticket.max);
                         formData.append("minQtyPerOrder", ticket.min);
@@ -167,8 +167,6 @@ export default function TimeAndTypeTickets({ setShowingIds }: TimeAndTypeTickets
             toast.error(`Error saving showtime data.`);
         }
     };
-    
-    
 
     const handleSave = async () => {
         setBtnValidte2("Save");
