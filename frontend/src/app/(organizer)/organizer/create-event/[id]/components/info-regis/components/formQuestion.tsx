@@ -23,6 +23,7 @@ export default function FormQuestionClient({ onNextStep, btnValidate4, showingId
 
     const [selectedCategory, setSelectedCategory] = useState("sample");
     const [isCreateNewOpen, setIsCreateNewOpen] = useState(false);
+    const [newForms, setNewForms] = useState<Form[]>([]);
 
     const [sampleForms, setSampleForms] = useState<Form[]>([]);
     const [createdForms, setCreatedForms] = useState<Form[]>([]);
@@ -153,7 +154,7 @@ export default function FormQuestionClient({ onNextStep, btnValidate4, showingId
 
                 <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="ques-form">
                     {isCreateNewOpen &&
-                        <CreateNewForm open={isCreateNewOpen} onClose={() => setIsCreateNewOpen(false)} />}
+                        <CreateNewForm newForms={newForms} setNewForms={setNewForms} open={isCreateNewOpen} onClose={() => setIsCreateNewOpen(false)}/>}
 
                     {isLoading ? (
                         <div className="flex justify-center items-center h-64">
