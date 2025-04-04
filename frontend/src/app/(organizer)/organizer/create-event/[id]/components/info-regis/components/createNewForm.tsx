@@ -41,7 +41,17 @@ export default function CreateNewForm({ newForms, setNewForms, open, onClose }: 
     const [eventScopeSelected, setEventScopeSelected] = useState("all");
     const [quesText, setQuesText] = useState("quesText");
     const [errors,] = useState<{ [key: string]: boolean }>({});
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [expandedQuestions, setExpandedQuestions] = useState<{ [key: number]: boolean }>({
+        1: true, 
+    });
+    
+
+    const toggleExpand = (id: number) => {
+        setExpandedQuestions((prev) => ({
+            ...prev,
+            [id]: !prev[id], 
+        }));
+    };
 
     // One Answer
     const [oneTexts, setOneTexts] = useState<string[]>(["", "", ""]);
@@ -116,7 +126,7 @@ export default function CreateNewForm({ newForms, setNewForms, open, onClose }: 
                             questions.map((question) => (
                                 <div key={question.id} className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-3" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                                     <div className="flex items-center justify-between w-full">
-                                        <Equal className="text-[#51DACF]" onClick={() => setIsExpanded((prev) => !prev)} />
+                                        <Equal className="text-[#51DACF]" onClick={() => toggleExpand(question.id)} />
 
                                         <div className="ml-2">
                                             <div className="relative flex items-center space-x-2">
@@ -133,7 +143,7 @@ export default function CreateNewForm({ newForms, setNewForms, open, onClose }: 
                                             onClick={() => handleDeleteQuestion(question.id)} />
                                     </div>
 
-                                    {isExpanded && (<>
+                                    {expandedQuestions[question.id] && (<>
                                         {/* Input Question */}
                                         <div className="flex flex-wrap items-center -mx-3 mt-4">
                                             <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
