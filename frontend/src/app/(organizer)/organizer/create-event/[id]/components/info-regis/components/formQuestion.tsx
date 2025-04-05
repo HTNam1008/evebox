@@ -23,7 +23,7 @@ export default function FormQuestionClient({ onNextStep, btnValidate4, showingId
 
     const [selectedCategory, setSelectedCategory] = useState("sample");
     const [isCreateNewOpen, setIsCreateNewOpen] = useState(false);
-    const [newForms, setNewForms] = useState<Form[]>([]);
+    const [createdForm, setCreatedForm] = useState<Form | null>(null);
 
     const [sampleForms, setSampleForms] = useState<Form[]>([]);
     const [createdForms, setCreatedForms] = useState<Form[]>([]);
@@ -31,44 +31,52 @@ export default function FormQuestionClient({ onNextStep, btnValidate4, showingId
     const [selectedForm, setSelectedForm] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchForms = async () => {
-            setIsLoading(true);
+    const fetchForms = async () => {
+        setIsLoading(true);
 
-            try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/org/showing/form/all`, {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${access_token}`,
-                    }
-                })
-
-                if (!res.ok) {
-                    const errorData = await res.json();
-                    toast.error(errorData.message || "Có lỗi xảy ra trong quá trình tải form. Vui lòng thử lại sau.");
-                    return;
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/org/showing/form/all`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
                 }
-                const data = await res.json();
-                const fetchedForms: Form[] = data?.data?.forms || [];
-                const sampleFormsData = fetchedForms.filter((form) => form.createdBy === null);
-                const createdFormsData = fetchedForms.filter((form) => form.createdBy !== null);
-                setSampleForms(sampleFormsData);
-                setCreatedForms(createdFormsData);
-            } catch (error) {
-                toast.error("Có lỗi xảy ra trong quá trình tải form. Vui lòng thử lại sau.");
-                console.error("Error fetching forms:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+            })
 
+            if (!res.ok) {
+                const errorData = await res.json();
+                toast.error(errorData.message || "Có lỗi xảy ra trong quá trình tải form. Vui lòng thử lại sau.");
+                return;
+            }
+            const data = await res.json();
+            const fetchedForms: Form[] = data?.data?.forms || [];
+            const sampleFormsData = fetchedForms.filter((form) => form.createdBy === null);
+            const createdFormsData = fetchedForms.filter((form) => form.createdBy !== null);
+            setSampleForms(sampleFormsData);
+            setCreatedForms(createdFormsData);
+        } catch (error) {
+            toast.error("Có lỗi xảy ra trong quá trình tải form. Vui lòng thử lại sau.");
+            console.error("Error fetching forms:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchForms();
     }, [access_token]);
 
     useEffect(() => {
         const forms = selectedCategory === "sample" ? sampleForms : createdForms;
         setForms(forms);
-    }, [selectedCategory, sampleForms, createdForms]);
+
+        if (selectedForm && !forms.find(f => f.id === selectedForm)) {
+            const allForms = [...sampleForms, ...createdForms];
+            const newlyCreated = allForms.find(f => f.id === selectedForm);
+            if (newlyCreated) {
+                setForms(prev => [...prev, newlyCreated]);
+            }
+        }
+    }, [selectedCategory, sampleForms, createdForms, selectedForm]);
 
     const handleSelectForm = (formId: number) => {
         setSelectedForm((prevSelected) => (prevSelected === formId ? null : formId));
@@ -154,7 +162,35 @@ export default function FormQuestionClient({ onNextStep, btnValidate4, showingId
 
                 <form className="w-full max-w-4xl mx-auto" onSubmit={handleSubmit} id="ques-form">
                     {isCreateNewOpen &&
-                        <CreateNewForm newForms={newForms} setNewForms={setNewForms} open={isCreateNewOpen} onClose={() => setIsCreateNewOpen(false)}/>}
+                        <CreateNewForm
+                            key={createdForm?.id ?? 'new'}
+                            form={createdForm || {
+                                id: Date.now(),
+                                name: "New Form",
+                                createdBy: null,
+                                FormInput: [
+                                    {
+                                        id: Date.now(),
+                                        fieldName: "Họ và tên",
+                                        type: "text",
+                                        required: true,
+                                        regex: null,
+                                        options: [],
+                                    },
+                                ],
+                            }}
+                            setForm={setCreatedForm}
+                            open={isCreateNewOpen}
+                            onClose={() => setIsCreateNewOpen(false)}
+                            onFormCreated={async (newForm) => {
+                                await fetchForms(); // Refresh the list of forms after creating a new one
+                                setCreatedForm(newForm);
+                                setSelectedForm(newForm.id);
+                                setSelectedCategory("created");
+                                setIsCreateNewOpen(false);
+                            }}
+                        />
+                    }
 
                     {isLoading ? (
                         <div className="flex justify-center items-center h-64">

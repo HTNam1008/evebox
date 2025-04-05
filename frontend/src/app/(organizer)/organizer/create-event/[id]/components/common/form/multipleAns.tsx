@@ -1,7 +1,7 @@
 import { Trash2 } from "lucide-react";
 import { InputItemProps } from "../../../libs/interface/comform.interface";
 
-const MultipleAnswer: React.FC<InputItemProps> = ({ value, checked, onChange, onToggle, onDelete }) => {
+export default function MultipleAnswer({ value, checked, onChange, onToggle, onDelete }: InputItemProps) {
     return (
         <div className="flex items-center space-x-2 p-2">
             {/* Checkbox */}
@@ -41,5 +41,3 @@ const MultipleAnswer: React.FC<InputItemProps> = ({ value, checked, onChange, on
         </div>
     );
 };
-
-export default MultipleAnswer;

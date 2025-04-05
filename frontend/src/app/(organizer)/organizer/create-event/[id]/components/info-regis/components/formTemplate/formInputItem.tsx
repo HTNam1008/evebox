@@ -9,15 +9,15 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
                 <div key={input.id} className="flex items-center space-x-2 ml-2">
                     <label className="text-base font-bold"> Câu {index + 1}: </label>
 
-                    {(input.type === "text" || input.type === "email" || input.type === "phone" || input.type === "1")
+                    {(input.type === "text" || input.type === "email" || input.type === "phone" || input.type === "1" || input.type === "quesText")
                         && (<span>Câu hỏi dạng văn bản</span>)}
-                    {(input.type === "2") && <span>Câu trả lời bắt buộc</span>}
-                    {(input.type === "3") && <span>Câu hỏi một lựa chọn</span>}
+                    {(input.type === "2" || input.type === "oneAns" || input.type === "3") && <span>Câu trả lời bắt buộc</span>}
+                    {(input.type === "4") && <span>Câu hỏi nhiều lựa chọn</span>}
                 </div>
             </div>
 
             <div className="flex items-center -mx-3 mt-4">
-                {(input.type === "text" || input.type === "email" || input.type === "phone")
+                {(input.type === "text" || input.type === "email" || input.type === "phone" || input.type === "1" || input.type === "quesText")
                     && (<>
                         <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
                             <label className="block text-sm font-bold mb-2 text-right">
@@ -43,7 +43,7 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
                     </>)
                 }
 
-                {(input.type === "2") && (<>
+                {(input.type === "2" || input.type === "oneAns" || input.type === "3") && (<>
                     <div className="w-full px-3 ml-6">
                         <label className="block text-sm font-bold mb-2 ">
                             {input.required && <span className="text-red-500">* </span>} {input.fieldName}
@@ -68,7 +68,7 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
                         <div className="flex flex-wrap items-center ml-3">
                             {input.options?.map((opt, i) => (
                                 <label key={`input-${input.id}-option-${i}`} className="flex items-center mr-4">
-                                    <input type="radio"  name={`radio-group-${input.id}`} className="w-3.5 h-3.5 accent-blue-500" />
+                                    <input type="checkbox"  name={`checkbox-group-${input.id}`} className="w-3.5 h-3.5 accent-blue-500" />
                                     <span className="text-sm ml-2">{opt.optionText}</span>
                                 </label>
                             ))}
@@ -76,6 +76,24 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
                     </div>
                 </>)
                 }
+
+                {(input.type === "4" || input.type === "multiAns") && (
+                    <>
+                        <div className="w-full px-3 ml-6">
+                            <label className="block text-sm font-bold mb-2 ">
+                                {input.required && <span className="text-red-500">* </span>} {input.fieldName}
+                            </label>
+                            <div className="flex flex-wrap items-center ml-3">
+                                {input.options?.map((opt, i) => (
+                                    <label key={`input-${input.id}-option-${i}`} className="flex items-center mr-4">
+                                        <input type="checkbox" name={`checkbox-group-${input.id}`} className="w-3.5 h-3.5 accent-blue-500" />
+                                        <span className="text-sm ml-2">{opt.optionText}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
 
             {input.regex && (
