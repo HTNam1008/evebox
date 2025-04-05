@@ -16,6 +16,7 @@ import { BaseApiResponse } from '@/types/BaseApiResponse';
 import { Showtime } from '../../libs/interface/idevent.interface';
 import toast from 'react-hot-toast';
 import { CreateShowingResponse } from '@/types/model/CreateShowingResponse';
+import { ShowingOrgResponse } from '@/types/model/showingOrganizer';
 
 async function urlToFile(url: string, filename: string): Promise<File> {
     const response = await fetch(url);
@@ -36,22 +37,66 @@ export default function TimeAndTypeTickets() {
     const [showingList, setShowingList] = useState<Showtime[]>([]);
 
     const fetchShowtimes = async () => {
-        try {
-            const response = await apiClient.get<BaseApiResponse<Showtime[]>>(`/api/org/showing/${eventId}`);
-            
-            if (response.status === 200 && response.data) {
-                setShowingList(response.data.data); // Update the state with new data
-                console.log("Showtimes refreshed.");
-            } else {
-                toast.error("Failed to fetch updated showtimes.");
-            }
-        } catch (error) {
-            console.error("Error fetching showtimes:", error);
-            toast.error("Error refreshing showtimes.");
-        }
+       try {
+                   const response = await apiClient.get<ShowingOrgResponse>(`/api/org/showing/${eventId}`);
+                   if (!response.data) {
+                     toast.error("Failed to fetch showtimes");
+                     return;
+                   }
+                   const data = response.data.data;
+                   if (data.length === 0) {
+                     setShowingList([{
+                       id: "",
+                       startDate: null,
+                       endDate: null,
+                       tickets: [],
+                       isExpanded: true,
+                       showDialog: false,
+                       showEditDialog: false,
+                       showCopyTicketDialog: false,
+                       showConfirmDeleteDialog: false,
+                       showDeleteShow: false
+                     }]);
+                   } else {
+                     const formattedShowtimes: Showtime[] = data.map((show) => ({
+                       id: show.id,
+                       startDate: new Date(show.startTime),
+                       endDate: new Date(show.endTime),
+                       tickets: show.TicketType
+                         .map((ticket) => ({
+                           id: ticket.id,
+                           name: ticket.name,
+                           price: ticket.originalPrice.toString(),
+                           quantity: ticket.quantity.toString(),
+                           min: ticket.minQtyPerOrder.toString(),
+                           max: ticket.maxQtyPerOrder.toString(),
+                           startDate: new Date(ticket.startTime),
+                           endDate: new Date(ticket.endTime),
+                           setSelectedStartDate: () => { }, // Placeholder function
+                           setSelectedEndDate: () => { }, // Placeholder function
+                           information: ticket.description,
+                           image: ticket.imageUrl || null,
+                           free: ticket.isFree,
+                           position: ticket.position // Ensure position is included
+                         }))
+                         .sort((a, b) => a.position - b.position), // Sort tickets by position
+                       isExpanded: true,
+                       showDialog: false,
+                       showEditDialog: true,
+                       showCopyTicketDialog: false,
+                       showConfirmDeleteDialog: false,
+                       showDeleteShow: false,
+                     }));
+             
+                     setShowingList(formattedShowtimes);
+                     localStorage.setItem("showtimes", JSON.stringify(formattedShowtimes));
+                     console.log("Showtimes saved to local storage", formattedShowtimes);
+                   }
+                 } catch (error) {
+                   toast.error("Error fetching showtimes: " + error);
+                 }
     };
     
-
     const processShowtimeAndTickets = async (showing: Showtime, newShowId?: string) => {
         try {
             let response;

@@ -190,7 +190,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
                     </div>
 
                     {filteredShowtimes.map((showtime, index) => (
-                        <div key={showtime.id} className="p-4 lg:p-4 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4"
+                        <div key={`${showtime.id}-${index}`} className="p-4 lg:p-4 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4"
                             style={{
                                 backgroundColor: "rgba(158, 245, 207, 0.2)",
                                 border: showtime.tickets.length === 0 ? "1px solid red" : "1.5px solid #9EF5CF"
@@ -282,7 +282,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
                                 {/* Hiển thị các loại vé đã tạo */}
                                 <div className="type_ticket ">
                                     {showtime.tickets.map((ticket, ticketIndex) => (
-                                        <div key={ticketIndex} className="flex items-center justify-between gap-2 p-4 lg:p-6 h-14 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
+                                        <div key={`${showtime.id}-${ticket.id}`} className="flex items-center justify-between gap-2 p-4 lg:p-6 h-14 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                                             <Ticket size={20} />
 
                                             <span>{ticket.name}</span>
@@ -355,6 +355,8 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
                                                 toggleCopyTicketDialog(showtime.id, setShowtimes)}
                                             showtimes={showtimes}
                                             currentShowtimeId={showtime.id}
+                                            startDate={showtime.startDate}
+                                            endDate={showtime.endDate}
                                             setShowtimes={setShowtimes}
                                         />}
                                 </div>
@@ -367,7 +369,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, set
                                             )
                                         )}
                                         onConfirm={() => {
-                                            handleDeleteShow(showtime.id, setShowtimes, setDelShowtimeId);
+                                            handleDeleteShow(showtime.id, showtime.startDate, showtime.endDate, setShowtimes, setDelShowtimeId);
                                             
                                         }}
                                     />)}
