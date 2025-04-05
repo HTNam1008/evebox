@@ -10,12 +10,17 @@ const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
 
 
 export const handleDeleteShow = async (
-    showtimeId: string, 
+showtimeId: string, startDate: Date | null, endDate: Date | null, 
     setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>,
     setDelShowtimeId: React.Dispatch<React.SetStateAction<string | null>>,
 ) => {
+    // Filter out the showtime with matching id, startDate, and endDate
     setShowtimes((prevShowtimes) =>
-        prevShowtimes.filter((showtime) => showtime.id !== showtimeId) 
+        prevShowtimes.filter((showtime) =>
+            showtime.id !== showtimeId || 
+            (showtime.startDate?.toISOString() !== startDate?.toISOString() || 
+             showtime.endDate?.toISOString() !== endDate?.toISOString())
+        )
     );
     toast.success(`Deleting showtime with ID: ${showtimeId}`);
      const response = await apiClient.delete<BaseApiResponse>(
