@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
 
-import { generateQRCode } from 'src/utils/utils';
+import { generateQRCode, encrypt } from 'src/utils/utils';
 
 @Injectable()
 export class GetPayOSStatusRepository {
-  constructor(private readonly prisma: PrismaService) {}
-  async updatePayOSStatus(orderCode: number, status: string){
+  constructor(private readonly prisma: PrismaService) { }
+  async updatePayOSStatus(orderCode: number, status: string) {
     return await this.prisma.payOSInfo.update({
       where: {
         orderCode: orderCode
@@ -16,25 +16,25 @@ export class GetPayOSStatusRepository {
       }
     });
   }
-  async getPayOSPaymentLink(orderCode: number){
+  async getPayOSPaymentLink(orderCode: number) {
     return await this.prisma.payOSInfo.findUnique({
       where: {
-        orderCode: orderCode>>0
+        orderCode: orderCode >> 0
       }
     });
   }
-  async createTicket(orderCode: number){
-    try{
+  async createTicket(orderCode: number) {
+    try {
       const payOSInfo = await this.prisma.payOSInfo.findUnique({
         where: {
-          orderCode: orderCode>>0
+          orderCode: orderCode >> 0
         }
       });
       if (!payOSInfo) {
         return null;
       }
       console.log(payOSInfo);
-      
+
       const paymentInfo = await this.prisma.paymentInfo.findFirst({
         where: {
           paymentCode: orderCode >> 0,
@@ -65,7 +65,7 @@ export class GetPayOSStatusRepository {
         return null;
       }
       var { userId, showingId, ticketTypeId, seatId, quantity } = orderInfo;
-      
+
       const formId = await this.prisma.showing.findFirst({
         where: {
           id: showingId,
@@ -77,11 +77,11 @@ export class GetPayOSStatusRepository {
         }
       });
 
-      const formResponseId = formId.formId ? await this.getFormResponseId(showingId, userId): null;
-      if(!formResponseId && formId.formId){
+      const formResponseId = formId.formId ? await this.getFormResponseId(showingId, userId) : null;
+      if (!formResponseId && formId.formId) {
         return null;
       }
-      if(seatId && seatId.length > 0){
+      if (seatId && seatId.length > 0) {
         const showingData = await this.prisma.showing.findUnique({
           where: {
             id: showingId,
@@ -112,7 +112,7 @@ export class GetPayOSStatusRepository {
         if (!ticket) {
           return null;
         }
-        for(const seat of seatId){
+        for (const seat of seatId) {
           const row = await this.prisma.seat.findUnique({
             where: {
               id: seat
@@ -172,15 +172,10 @@ export class GetPayOSStatusRepository {
             ticketId: ticket.id,
           }
           const qrContent = JSON.stringify(qrData);
-          const qrCode = await generateQRCode(qrContent);
-          let qrCodeContent = "";
-          if (!qrCode) {
-            qrCodeContent = "Unknow";
-          }
-          else {
-            qrCodeContent = qrCode;
-          }
-          
+          const encryptedQrContent = encrypt(qrContent);
+          const qrCode = await generateQRCode(encryptedQrContent);
+          const qrCodeContent = qrCode || "Unknow";
+
           const ticketQRCode = await this.prisma.ticketQRCode.create({
             data: {
               seatId: seat,
@@ -196,8 +191,8 @@ export class GetPayOSStatusRepository {
         }
         return ticket;
       }
-      else{
-        if(!quantity || !ticketTypeId || !showingId)return null;
+      else {
+        if (!quantity || !ticketTypeId || !showingId) return null;
         const ticketType = await this.prisma.ticketType.findUnique({
           where: {
             id: ticketTypeId,
@@ -237,14 +232,9 @@ export class GetPayOSStatusRepository {
             ticketId: ticket.id,
           }
           const qrContent = JSON.stringify(qrData);
-          const qrCode = await generateQRCode(qrContent);
-          let qrCodeContent = "";
-          if (!qrCode) {
-            qrCodeContent = "Unknow";
-          }
-          else {
-            qrCodeContent = qrCode;
-          }
+          const encryptedQrContent = encrypt(qrContent);
+          const qrCode = await generateQRCode(encryptedQrContent);
+          const qrCodeContent = qrCode || "Unknow";
           const ticketQRCode = await this.prisma.ticketQRCode.create({
             data: {
               ticketId: ticket.id,
@@ -266,8 +256,8 @@ export class GetPayOSStatusRepository {
       return null;
     }
   }
-  async getFormResponseId(showingId: string, userId: string){
-    try{
+  async getFormResponseId(showingId: string, userId: string) {
+    try {
       const formResponse = await this.prisma.formResponse.findFirst({
         where: {
           userId: userId,
@@ -281,7 +271,7 @@ export class GetPayOSStatusRepository {
         return null;
       }
       return formResponse.id;
-    }catch (error) {
+    } catch (error) {
       console.error(error);
       return null;
     }

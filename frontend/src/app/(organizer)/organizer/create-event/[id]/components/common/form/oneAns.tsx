@@ -1,7 +1,7 @@
 import { Trash2 } from "lucide-react";
 import { InputItemProps } from "../../../libs/interface/comform.interface";
 
-const OneAnswer: React.FC<InputItemProps> = ({ value, checked, onChange, onToggle, onDelete }) => {
+export default function OneAnswer({ value, checked, onChange, onToggle, onDelete }: InputItemProps) {
     return (
         <div className="flex items-center space-x-2 p-2">
             {/* Custom Radio Button */}
@@ -29,5 +29,3 @@ const OneAnswer: React.FC<InputItemProps> = ({ value, checked, onChange, onToggl
         </div>
     );
 };
-
-export default OneAnswer;
