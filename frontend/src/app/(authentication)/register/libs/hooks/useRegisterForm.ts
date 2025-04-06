@@ -1,10 +1,15 @@
 'use client'
 
+
+/* Package System */
 import { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
+
+/* Package Application */
+import { register } from '@/lib/server/auth.api';
 import { OtpConstants } from '@/app/(authentication)/verify-otp/libs/constants/otpConstants';
 import { ErrorResponse } from '@/types/ErrorResponse';
 
@@ -39,7 +44,7 @@ export const useRegisterForm = () => {
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
-        const result = await axios.post('/api/user/register', values);
+        const result = await register(values);
         if (result.status === 200) {
           setError('');
           localStorage.setItem('verifyData', JSON.stringify({

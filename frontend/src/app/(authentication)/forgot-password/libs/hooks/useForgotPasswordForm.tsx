@@ -1,10 +1,14 @@
+/* Package System */
 import { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
+
+/* Package Application */
 import { ErrorResponse } from '@/types/ErrorResponse';
 import { OtpConstants } from '@/app/(authentication)/verify-otp/libs/constants/otpConstants';
+import { forgotPassword } from '@/lib/server/auth.api';
 
 export const useForgotPasswordForm = () => {
   const [error, setError] = useState('');
@@ -23,7 +27,7 @@ export const useForgotPasswordForm = () => {
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
-        const result = await axios.post('/api/user/forgot-password', values);
+        const result = await forgotPassword(values.email);
         if (result.status === 200) {
           setError('');
           localStorage.setItem('verifyData', JSON.stringify({
