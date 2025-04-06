@@ -1,15 +1,19 @@
-import axios, {
-  AxiosError,
-  AxiosHeaders,
-  AxiosInstance,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from "axios";
+import axios, { AxiosError, AxiosHeaders, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { getSession, signOut } from "next-auth/react";
+import axiosRetry from "axios-retry";
 
 const createApiClient = (baseUrl: string): AxiosInstance => {
-  const apiClient = axios.create({
-    baseURL: baseUrl,
+  const apiClient = axios.create({ baseURL: baseUrl });
+
+  axiosRetry(apiClient, {
+    retries: 2,
+    retryDelay: (retryCount) => {
+      console.log(`Retry attempt #${retryCount}`);
+      return retryCount * 1000; // Exponential backoff
+    },
+    retryCondition: (error) => {
+      return axiosRetry.isNetworkOrIdempotentRequestError(error) || error.code === "ECONNABORTED"
+    }
   });
 
   apiClient.interceptors.request.use(
@@ -20,7 +24,6 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
         if (!config.headers) {
           config.headers = new AxiosHeaders();
         }
-        // Set the Authorization header
         config.headers.set("Authorization", `Bearer ${token}`);
       }
       return config;
@@ -31,7 +34,7 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
   );
 
   apiClient.interceptors.response.use(
-    (response: AxiosResponse) => response,
+    (response: AxiosResponse) => response, 
     async (error: AxiosError) => {
       const originalRequest = error.config as InternalAxiosRequestConfig & {
         _retry?: boolean;
@@ -42,7 +45,6 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
 
         try {
           const session = await getSession();
-          console.log("Session:", session);
           const refreshToken = session?.user?.refreshToken;
           if (!refreshToken) {
             throw new Error("No refresh token available");
@@ -52,19 +54,19 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
             `${baseUrl}/api/user/refresh-token`,
             { refresh_token: refreshToken }
           );
-          const { access_token, refresh_token } = refreshResponse.data.data;
 
-          // Store new tokens
+          const { access_token, refresh_token } = refreshResponse.data.data;
           console.log("New token:", access_token);
 
           session.user.accessToken = access_token;
           session.user.refreshToken = refresh_token;
-
-          // Retry the original request with the new token
+          
           if (!originalRequest.headers) {
             originalRequest.headers = new AxiosHeaders();
           }
+
           originalRequest.headers.set("Authorization", `Bearer ${access_token}`);
+
           return apiClient(originalRequest);
         } catch (refreshError) {
           console.error("Refresh token failed", refreshError);
@@ -83,6 +85,6 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
   );
 
   return apiClient;
-};
+}
 
 export default createApiClient;
