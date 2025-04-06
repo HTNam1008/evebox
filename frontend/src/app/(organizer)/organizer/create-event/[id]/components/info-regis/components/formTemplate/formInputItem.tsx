@@ -17,22 +17,7 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
             </div>
 
             <div className="flex items-center -mx-3 mt-4">
-                {(input.type === "text" || input.type === "email" || input.type === "phone" || input.type === "1" || input.type === "quesText")
-                    && (<>
-                        <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
-                            <label className="block text-sm font-bold mb-2 text-right">
-                                {input.required && <span className="text-red-500">* </span>} {input.fieldName}
-                            </label>
-                        </div>
-                        <div className="w-full md:w-5/6 px-3 mb-6 md:mb-0">
-                            <div className="relative">
-                                <input className="text-sm block w-full border rounded py-3 px-4 mb-1 focus:outline-black-400 border-gray-400" readOnly />
-                            </div>
-                        </div>
-                    </>)
-                }
-
-                {(input.type === "1")
+                {(input.type === "text" || input.type === "email" || input.type === "phone" || input.type === "quesText" || input.type === "1")
                     && (<>
                         <div className="w-full px-3 ml-6">
                             <label className="block text-sm font-bold mb-2 text-left">
@@ -43,7 +28,7 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
                     </>)
                 }
 
-                {(input.type === "2" || input.type === "oneAns" || input.type === "3") && (<>
+                {(input.type === "2" || input.type === "oneAns") && (<>
                     <div className="w-full px-3 ml-6">
                         <label className="block text-sm font-bold mb-2 ">
                             {input.required && <span className="text-red-500">* </span>} {input.fieldName}
@@ -68,7 +53,7 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
                         <div className="flex flex-wrap items-center ml-3">
                             {input.options?.map((opt, i) => (
                                 <label key={`input-${input.id}-option-${i}`} className="flex items-center mr-4">
-                                    <input type="checkbox"  name={`checkbox-group-${input.id}`} className="w-3.5 h-3.5 accent-blue-500" />
+                                    <input type="radio"  name={`checkbox-group-${input.id}`} className="w-3.5 h-3.5 accent-blue-500" />
                                     <span className="text-sm ml-2">{opt.optionText}</span>
                                 </label>
                             ))}
@@ -97,12 +82,12 @@ export default function FormInputItem({ input, index }: FormInputItemProps) {
             </div>
 
             {input.regex && (
-                <div className="flex flex-wrap -mx-3 mt-4">
-                    <div className="w-full md:w-1/6 px-3 mb-6 md:mb-0">
-                        <label className="block text-sm font-bold text-right"> Mô tả: </label>
+                <div className="w-full px-3 ml-6 mt-3">
+                    <div className="mb-6 md:mb-0">
+                        <label className="block text-sm font-bold"> Mô tả: </label>
                     </div>
 
-                    <div className="w-full md:w-5/6 px-3 mb-6 md:mb-0">
+                    <div className="px-10 mb-6 md:mb-0 ml-2">
                         {input.type === "email" && (<>
                             <p>- Bắt đầu bằng chữ cái, số hoặc các ký tự . _ % + -</p>
                             <p>- Tiếp theo phải có ký tự @</p>
