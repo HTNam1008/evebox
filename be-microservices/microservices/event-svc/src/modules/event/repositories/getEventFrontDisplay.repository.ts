@@ -13,6 +13,14 @@ export class GetEventFrontDisplayRepository {
     const events = await this.prisma.events.findMany({
       where: {
         isSpecial: true,
+        deleteAt: null,
+        Showing: {
+          some: {
+            startTime: {
+              gte: new Date(),
+            },
+          },
+        }
       },
       select: {
         id: true,
@@ -55,6 +63,14 @@ export class GetEventFrontDisplayRepository {
     const events = await this.prisma.events.findMany({
       where: {
         isOnlyOnEve: true,
+        deleteAt: null,
+        Showing: {
+          some: {
+            startTime: {
+              gte: new Date(),
+            },
+          },
+        }
       },
       select: {
         id: true,
@@ -106,6 +122,16 @@ export class GetEventFrontDisplayRepository {
         where: {
           categoryId: category.id,
           isSpecial: true,
+          Events: {
+            deleteAt: null,
+            Showing: {
+              some: {
+                startTime: {
+                  gte: new Date(),
+                },
+              },
+            }
+          },
         },
         select: {
           Categories: {
@@ -172,6 +198,16 @@ export class GetEventFrontDisplayRepository {
   
     // Lấy dữ liệu từ Prisma
     const events = await this.prisma.events.findMany({
+      where: {
+        deleteAt: null,
+        Showing: {
+          some: {
+            startTime: {
+              gte: now,
+            },
+          },
+        },
+      },
       select: {
         id: true,
         title: true,
@@ -224,7 +260,8 @@ export class GetEventFrontDisplayRepository {
   }
 
   async caculateEvents(showings: any[]) {
-    let startTime = new Date();
+    let nowDate = new Date();
+    let startTime = new Date("9999-12-31T23:59:59.999Z");
     let minTicketPrice = Number.MAX_VALUE;
 
     let updatedShowings = [];
@@ -232,7 +269,7 @@ export class GetEventFrontDisplayRepository {
     for (const showing of showings) {
         const showingStatus = await this.getEventDetailRepository.getShowingStatus(showing.id);
 
-        if (new Date(showing.startTime) < startTime) {
+        if (new Date(showing.startTime) < startTime && showing.startTime > nowDate) {
             startTime = new Date(showing.startTime);
         }
 

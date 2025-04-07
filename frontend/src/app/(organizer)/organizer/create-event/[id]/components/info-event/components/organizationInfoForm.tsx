@@ -1,9 +1,8 @@
-import React from "react";
 import ImageUpload from "../../common/form/imageUpload";
 import InputField from "../../common/form/inputCountField";
 import { OrganizationInfoFormProps } from "../../../libs/interface/infoevent.interface";
 
-const OrganizationInfoForm: React.FC<OrganizationInfoFormProps> = ({
+export default function OrganizationInfoForm({
     logoOrg,
     nameOrg,
     infoOrg,
@@ -11,7 +10,7 @@ const OrganizationInfoForm: React.FC<OrganizationInfoFormProps> = ({
     handleInputChange,
     errors,
     imageLogoErrors,
-}) => {
+}: OrganizationInfoFormProps) {
     return (
         <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mb-8" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
             <div className="flex flex-wrap -mx-3 mb-6">
@@ -52,8 +51,7 @@ const OrganizationInfoForm: React.FC<OrganizationInfoFormProps> = ({
                         </label>
                         <div className="relative">
                             <textarea
-                                className={`w-full h-32 text-sm block appearance-none w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 ${errors.infoOrg ? "border-red-500" : "border-gray-400"
-                                    }`}
+                                className={`w-full h-32 text-sm block appearance-none border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 ${errors.infoOrg ? "border-red-500" : "border-gray-400"}`}
                                 placeholder="Nhập thông tin ban tổ chức"
                                 value={infoOrg}
                                 onChange={(e) => handleInputChange(e, "infoOrg")}
@@ -68,6 +66,4 @@ const OrganizationInfoForm: React.FC<OrganizationInfoFormProps> = ({
             </div>
         </div>
     );
-};
-
-export default OrganizationInfoForm;
+}

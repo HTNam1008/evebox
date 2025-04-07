@@ -11,7 +11,8 @@ export class GetEventOfOrgDetailRepository {
     try{
       const event = await this.prisma.events.findUnique({
         where: {
-          id: eventId >> 0
+          id: eventId >> 0,
+          deleteAt: null,
         },
         select: {
           id: true,

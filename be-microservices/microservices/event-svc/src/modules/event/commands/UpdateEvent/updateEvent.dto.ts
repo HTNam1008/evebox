@@ -11,7 +11,7 @@ export class UpdateEventDto {
   @ApiProperty({ example: 'Online', description: 'Showing Online or Offline' })
   @IsOptional()
   @IsString({ message: 'Showing type must be a string' })
-  isOnline?: boolean;
+  isOnline?: string | boolean | null;
 
   @ApiPropertyOptional({ example: 'A technology conference for developers', description: 'Event description' })
   @IsOptional()

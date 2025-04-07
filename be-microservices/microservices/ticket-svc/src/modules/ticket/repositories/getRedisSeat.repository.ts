@@ -8,7 +8,8 @@ export class getRedisSeatRepository {
     try{
       const showing = await this.prisma.showing.findUnique({
         where: {
-          id: showingId
+          id: showingId,
+          deleteAt: null,
         },
         select: {
           seatMapId: true,
@@ -104,7 +105,8 @@ export class getRedisSeatRepository {
       }
       const ticketType = await this.prisma.ticketType.findUnique({
         where: {
-          id: ticketTypeId
+          id: ticketTypeId,
+          deleteAt: null,
         },
         select: {
           price: true,

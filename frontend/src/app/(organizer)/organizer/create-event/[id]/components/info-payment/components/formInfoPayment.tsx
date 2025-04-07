@@ -5,6 +5,7 @@ import { useState } from 'react';
 import InputCountField from '../../common/form/inputCountField';
 import InputField from '../../common/form/inputField';
 import SelectField from '../../common/form/selectField';
+import NotificationDialog from './dialog/notifiDialog';
 
 export default function FormInfoPaymentClient({ onNextStep, btnValidate5 }: { onNextStep: () => void, btnValidate5: string }) {
     const [accName, setAccName] = useState("");
@@ -18,6 +19,8 @@ export default function FormInfoPaymentClient({ onNextStep, btnValidate5 }: { on
     const [companyName, setCompanyName] = useState("");
     const [companyAddress, setCompanyAddress] = useState("");
     const [companyTaxCode, setCompanyTaxCode] = useState("");
+    const [open, setOpen] = useState(false); //Notification Dialog 
+    const [shouldProceed, setShouldProceed] = useState(false); // Trạng thái kiểm tra khi đóng Dialog
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
         const value = e.target.value;
@@ -50,9 +53,17 @@ export default function FormInfoPaymentClient({ onNextStep, btnValidate5 }: { on
             }
             // Nếu nút là "Continue"
             else if (btnValidate5 === "Continue") {
-                alert("Form hợp lệ! Chuyển sang bước tiếp theo...");
-                onNextStep();
+                setOpen(true);
+                setShouldProceed(true);         
             }
+        }
+    };
+
+    const handleCloseDialog = () => {
+        setOpen(false);
+        if (shouldProceed) {
+            onNextStep(); 
+            setShouldProceed(false); 
         }
     };
 
@@ -278,6 +289,7 @@ export default function FormInfoPaymentClient({ onNextStep, btnValidate5 }: { on
                             </div>
                         )}
                     </div>
+                    {open && <NotificationDialog open={open} onClose={handleCloseDialog} />}
                 </form>
             </div>
         </>

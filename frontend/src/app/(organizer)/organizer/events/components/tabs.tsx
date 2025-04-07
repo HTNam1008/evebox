@@ -1,37 +1,16 @@
 "use client";
 
-import EventCard from "./eventCard";
-
+/* Package System */
 import { useState } from "react";
 import { Search } from "lucide-react";
 
+/* Package Application */
+import EventCard from "./eventCard";
+import { DisplayEvent } from "../libs/interface/displayEvent";
 
-const events = [
-    {
-        id: 1,
-        title: "Nhớ Trịnh Công Sơn 1 - Quang Dũng - Cẩm Vân - Khắc Triệu",
-        time: "20:00 - 23:00, 25 tháng 10, 2024",
-        location: "Đình Hoa Sơn",
-        address: "123 Lê Văn Duyệt, Phường 01, Quận Bình Thạnh, Thành phố Hồ Chí Minh",
-        image: "/images/event.png"
-    },
-    {
-        id: 2,
-        title: "Nhớ Trịnh Công Sơn 2 - Quang Dũng - Cẩm Vân",
-        time: "20:00 - 23:00, 25 tháng 10, 2024",
-        location: "Đình Hoa Sơn",
-        address: "123 Lê Văn Duyệt, Phường 01, Quận Bình Thạnh, Thành phố Hồ Chí Minh",
-        image: "/images/event.png"
-    },
-    {
-        id: 3,
-        title: "Nhớ Trịnh Công Sơn 3 - Quang Dũng - Cẩm Vân - Khắc Triệu - Cece Trương",
-        time: "20:00 - 23:00, 25 tháng 10, 2024",
-        location: "Đình Hoa Sơn",
-        address: "123 Lê Văn Duyệt, Phường 01, Quận Bình Thạnh, Thành phố Hồ Chí Minh",
-        image: "/images/event.png"
-    }
-];
+interface TabsProps {
+    events: DisplayEvent[];
+}
 
 const tabs = [
     { id: "sap-toi", label: "Sắp tới" },
@@ -40,7 +19,7 @@ const tabs = [
     { id: "nhap", label: "Nháp" }
 ];
 
-export default function Tabs() {
+export default function Tabs({ events }: TabsProps) {
     const [activeTab, setActiveTab] = useState("sap-toi");
 
     const [searchQuery, setSearchQuery] = useState("");

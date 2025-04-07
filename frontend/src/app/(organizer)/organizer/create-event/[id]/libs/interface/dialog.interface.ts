@@ -1,3 +1,4 @@
+import { Showtime } from "./idevent.interface";
 export interface NoteDialogProps {
     open: boolean;
     onClose: () => void;
@@ -7,6 +8,14 @@ export interface ConfirmDialogProps {
     open: boolean;
     onClose: () => void;
     onConfirm: () => void;
+}
+
+export interface CopyTicketDailogProps {
+    open: boolean; 
+    onClose: () => void; 
+    showtimes: Showtime[]; 
+    currentShowtimeId: number; 
+    setShowtimes: (updatedShowtimes: Showtime[]) => void;
 }
 
 export interface TicketProps {

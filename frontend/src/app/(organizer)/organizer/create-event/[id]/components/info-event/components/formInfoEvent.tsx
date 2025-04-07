@@ -1,10 +1,10 @@
 "use client";
 
 /* Package System */
-import { useState } from "react";
-import { Toaster } from "react-hot-toast";
-import { toast } from "react-hot-toast";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Toaster, toast } from "react-hot-toast";
+import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 /* Package Application */
 import SelectField from "../../common/form/selectField";
@@ -14,10 +14,39 @@ import OrganizationInfoForm from "./organizationInfoForm";
 import EventLocationInput from "./eventLocationInput";
 import EventImageUpload from "./eventImageUpload";
 
-export default function FormInformationEventClient({ onNextStep, btnValidate }: { onNextStep: () => void, btnValidate: string }) {
-    const [logo, setLogo] = useState<string | null>(null);
+interface Category {
+    id: number;
+    name: string;
+}
+
+interface Province {
+    id: number;
+    name: string;
+    districts: { id: number; name: string }[];
+}
+
+interface FormInformationEventClientProps {
+    onNextStep: (formData: FormData) => void;
+    btnValidate: string;
+}
+
+interface EventType {
+    id: number;
+    name: string;
+}
+
+export default function FormInformationEventClient({ onNextStep, btnValidate }: FormInformationEventClientProps) {
+    const router = useRouter();
+    const params = useParams();
+    const currentEventId = params?.id;
+
+    const { data: session } = useSession();
+
     const [background, setBackground] = useState<string | null>(null);
+    const [backgroundFile, setBackgroundFile] = useState<File | null>(null);
     const [logoOrg, setLogoOrg] = useState<string | null>(null);
+    const [logoOrgFile, setLogoOrgFile] = useState<File | null>(null);
+
     const [eventName, setEventName] = useState("");
     const [nameOrg, setNameOrg] = useState("");
     const [infoOrg, setInfoOrg] = useState("");
@@ -25,18 +54,13 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
     const [eventAddress, setEventAddress] = useState("");
     const [province, setProvince] = useState("");
     const [district, setDistrict] = useState("");
-    const [typeEvent, setTypeEvent] = useState("");
     const [ward, setWard] = useState("");
     const [street, setStreet] = useState("");
-    const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
-    const [imageErrors, setImageErrors] = useState<{ [key: string]: string }>({});
-    const [imageLogoErrors, setImageLogoErrors] = useState<{ [key: string]: string }>({});
 
     //********Call api**********
-    const provinces = ["Hồ Chí Minh", "Hà Nội", "Đà Nẵng"]
-    const districts = ["Quận 1", "Quận 3", "Quận 7"];
-    const typeEvents = ["Nhạc sống", "Sân khấu & Nghệ thuật", "Thể thao", "Khác"];
-    const wards = ["Phường 1", "Phường 2", "Phường 3"];
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+    const [allProvinces, setAllProvinces] = useState<Province[]>([]);
 
     //Nội dung sẵn trong Thông tin sự kiện
     const [post, setPost]
@@ -69,44 +93,130 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                 <p>Lưu ý về điều khoản trẻ em</p>
                 <p>Lưu ý về điều khoản VAT</p>`);
 
-    //Lấy nội dung đã lưu trong LocalStorage
-    useEffect(() => {
-        const savedEvent = localStorage.getItem("event_1"); //Nếu không phải gán cứng thì sẽ là event_id
+    const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+    const [imageErrors, setImageErrors] = useState<{ [key: string]: string }>({});
+    const [imageLogoErrors, setImageLogoErrors] = useState<{ [key: string]: string }>({});
 
-        if (savedEvent) {
-            const eventData = JSON.parse(savedEvent);
-            setEventName(eventData.eventName);
-            setNameOrg(eventData.nameOrg);
-            setInfoOrg(eventData.infoOrg);
-            setEventTypeSelected(eventData.eventTypeSelected);
-            setEventAddress(eventData.eventAddress);
-            setProvince(eventData.province);
-            setDistrict(eventData.district);
-            setWard(eventData.ward);
-            setStreet(eventData.street);
-            setTypeEvent(eventData.typeEvent);
-            setPost(eventData.post);
-            setLogo(eventData.logo);
-            setBackground(eventData.background);
-            setLogoOrg(eventData.logoOrg);
+    useEffect(() => {
+        const fetchEventTypes = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`);
+                if (!res.ok) {
+                    throw new Error("Failed to fetch event types");
+                }
+
+                const data = await res.json();
+                const eventTypes = data.map((item: EventType) => ({
+                    id: item.id,
+                    name: item.name,
+                }));
+                setCategories(eventTypes);
+            } catch (error) {
+                console.error("Error fetching event types:", error);
+                toast.error("Lỗi khi tải danh sách thể loại sự kiện!", { duration: 5000 });
+            }
         }
+
+        fetchEventTypes();
     }, []);
 
+    useEffect(() => {
+        const fetchProvinces = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/all-districts`);
+                if (!res.ok) {
+                    throw new Error("Failed to fetch provinces");
+                }
+
+                const data = await res.json();
+                setAllProvinces(data);
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+                toast.error("Lỗi khi tải danh sách tỉnh thành phố!", { duration: 5000 });
+            }
+        };
+
+        fetchProvinces();
+    }, []);
+
+    useEffect(() => {
+        if (currentEventId) {
+            const fetchEventDetail = async () => {
+                try {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/event/detail?eventId=${currentEventId}`);
+                    if (!res.ok) {
+                        throw new Error("Failed to fetch event details");
+                    }
+                    const data = await res.json();
+                    const eventData = data.data;
+
+                    setEventName(eventData.title);
+                    setPost(eventData.description);
+                    setEventTypeSelected(eventData.isOnline ? "online" : "offline");
+                    setNameOrg(eventData.orgName);
+                    setInfoOrg(eventData.orgDescription);
+                    if (eventTypeSelected === "offline" || eventTypeSelected === "Offline") {
+                        setEventAddress(eventData.venue);
+                        if (eventData.locations) {
+                            setStreet(eventData.locations.street);
+                            setWard(eventData.locations.ward);
+    
+                            if (eventData.locations.districts) {
+                                setDistrict(eventData.locations.districts.name);
+                                setProvince(eventData.locations.districts.province.name);
+                            }
+                        }
+                    } else {
+                        setEventAddress("");
+                        setStreet("");
+                        setWard("");
+                        setDistrict("");
+                        setProvince("");
+                    }
+                    if (eventData.Images_Events_imgPosterIdToImages) {
+                        setBackground(eventData.Images_Events_imgPosterIdToImages.imageUrl);
+                    }
+                    if (eventData.Images_Events_imgLogoIdToImages) {
+                        setLogoOrg(eventData.Images_Events_imgLogoIdToImages.imageUrl);
+                    }
+                    // Nếu có category, bạn có thể set selectedCategory theo thông tin từ BE
+                    if (eventData.EventCategories && eventData.EventCategories.length > 0) {
+                        const cat = eventData.EventCategories[0].Categories;
+                        setSelectedCategory({ id: cat.id, name: cat.name });
+                    }
+                } catch (error) {
+                    console.error("Error fetching event detail:", error);
+                    toast.error("Lỗi khi tải thông tin sự kiện!", { duration: 5000 });
+                }
+            }
+
+            fetchEventDetail();
+        };
+    }, [currentEventId]);
+
     const handleUpload = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
-        handleImageUpload(event, type, setImageErrors, setLogo, setBackground, setLogoOrg);
+        handleImageUpload(event, type, setImageErrors, setBackground, setBackgroundFile);
     };
 
     const handleUploadLogo = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
-        handleImageUpload(event, type, setImageLogoErrors, setLogo, setBackground, setLogoOrg);
+        handleImageUpload(event, type, setImageLogoErrors, setLogoOrg, setLogoOrgFile);
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, field: string) => {
         const value = e.target.value;
 
+        if (field === "province") {
+            setProvince(value);
+            setDistrict("");
+        }
+
         if (field === "province") setProvince(value);
         if (field === "district") setDistrict(value);
         if (field === "ward") setWard(value);
-        if (field === "typeEvent") setTypeEvent(value);
+        if (field === "typeEvent") {
+            const cat = categories.find((c) => c.name === value) || null;
+            setSelectedCategory(cat);
+        }
 
         // Xóa lỗi nếu chọn lại giá trị
         if (errors[field]) {
@@ -125,68 +235,142 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         if (field === "street") setStreet(value);
         if (field === "nameOrg") setNameOrg(value);
         if (field === "infoOrg") setInfoOrg(value);
+        if (field === "ward") setWard(value);
+        if (field === "logoOrg") setLogoOrg(value);
+        // if (field === "logoOrgFile") setLogoOrgFile(value);
+        if (field === "background") setBackground(value);
+        // if (field === "backgroundFile") setBackgroundFile(value);
 
         if (errors[field]) {
             setErrors((prev) => ({ ...prev, [field]: false }));
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleUpdateEvent = async (formData: FormData) => {
+        const accessToken = session?.user?.accessToken;
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/org/event/${currentEventId}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    // Không set Content-Type khi gửi FormData
+                },
+                body: formData,
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                toast.error(errorData.message || "Có lỗi xảy ra khi cập nhật sự kiện. Vui lòng thử lại sau.");
+                return;
+            }
+
+            toast.success("Cập nhật sự kiện thành công, chuyển sang bước tiếp theo!", { duration: 5000 });
+            router.push(`/organizer/create-event/${currentEventId}?step=showing`);
+        } catch (error) {
+            console.error("Error updating event:", error);
+            toast.error("Lỗi khi cập nhật sự kiện!", { duration: 5000 });
+        }
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const newErrors: { [key: string]: boolean } = {};
 
-        if (!typeEvent) newErrors.typeEvent = true;
+        if (!selectedCategory) newErrors.typeEvent = true;
         if (!eventName.trim()) newErrors.eventName = true;
         if (!nameOrg.trim()) newErrors.nameOrg = true;
         if (!infoOrg.trim()) newErrors.infoOrg = true;
 
-
-        if (!background) {
-            setImageErrors((prev) => ({ ...prev, background: "Vui lòng tải lên ảnh nền sự kiện" }));
-            toast.error("Vui lòng tải lên ảnh nền sự kiện!", { duration: 5000 });
+        if (!currentEventId) {
+            if (!background || !backgroundFile) {
+                setImageErrors((prev) => ({ ...prev, background: "Vui lòng tải lên ảnh nền sự kiện" }));
+                toast.error("Vui lòng tải lên ảnh nền sự kiện!", { duration: 5000 });
+            }
+            if (!logoOrg || !logoOrgFile) {
+                setImageLogoErrors((prev) => ({ ...prev, logoOrg: "Vui lòng tải lên logo ban tổ chức" }));
+                toast.error("Vui lòng tải lên logo ban tổ chức!", { duration: 5000 });
+            }
         }
 
-        if (!logoOrg) {
-            setImageLogoErrors((prev) => ({ ...prev, background: "Vui lòng tải lên logo ban tổ chức" }));
-            toast.error("Vui lòng tải lên logo ban tổ chức!", { duration: 5000 });
-        }
-
-        if (eventTypeSelected === "offline") {
+        if (eventTypeSelected === "offline" || eventTypeSelected === "Offline") {
             if (!eventAddress.trim()) newErrors.eventAddress = true;
             if (!province) newErrors.province = true;
+            if (!district) newErrors.district = true;
+            if (!ward) newErrors.ward = true;
             if (!street.trim()) newErrors.street = true;
+
+            if (!eventAddress.trim() || !province || !district || !ward || !street.trim()) {
+                toast.error("Vui lòng nhập đầy đủ thông tin địa điểm sự kiện!", { duration: 5000 });
+            }
         }
 
         setErrors(newErrors);
 
-        // Lưu dữ liệu vào LocalStorage
-        const eventData = {
-            id: 1,  // ID đang tạm thời gán cứng
-            eventName,
-            nameOrg,
-            infoOrg,
-            eventTypeSelected,
-            eventAddress,
-            province,
-            district,
-            ward,
-            street,
-            typeEvent,
-            post,
-            logo,
-            background,
-            logoOrg,
-        };
-
-        localStorage.setItem("event_1", JSON.stringify(eventData));
-
         if (Object.keys(newErrors).length === 0) {
+            // if (currentEventId) {
+            //     toast.success("Thông tin sự kiện đã tồn tại, chuyển sang bước tiếp theo.");
+            //     router.push(`/organizer/create-event/${currentEventId}?step=showing`);
+            //     return;
+            // }
+            const formData = new FormData();
+            formData.append("title", eventName);
+            formData.append("description", post);
+            formData.append("isOnline", (eventTypeSelected === "online" || eventTypeSelected === "Online") ? "true" : "false");
+            formData.append("venue", eventAddress); // Nếu offline, dùng tên địa điểm
+            formData.append("orgName", nameOrg);
+            formData.append("orgDescription", infoOrg);
+            // Ví dụ categoryIds (bổ sung dữ liệu thật nếu có)
 
-            if (btnValidate === "Save") {
-                alert("Form hợp lệ!");
-            } else if (btnValidate === "Continue") {
-                alert("Form hợp lệ! Gửi dữ liệu...");
-                onNextStep();
+            if (selectedCategory) {
+                formData.append("categoryIds", JSON.stringify([selectedCategory.id]));
+            }
+
+            if (backgroundFile) {
+                formData.append("imgPoster", backgroundFile);
+            }
+            if (logoOrgFile) {
+                formData.append("imgLogo", logoOrgFile);
+            }
+
+            if (currentEventId) {
+                if (eventTypeSelected === "offline" || eventTypeSelected === "Offline") {
+                    formData.append("wardString", ward);
+                    formData.append("streetString", street);
+                    const selectedProvince = allProvinces.find((p) => p.name === province);
+                    const selectedDistrict = selectedProvince?.districts.find((d) => d.name === district);
+                    if (selectedDistrict) {
+                        formData.append("districtId", selectedDistrict.id.toString());
+                    } else {
+                        formData.append("districtId", "");
+                    }
+                } else {
+                    formData.append("wardString", "");
+                    formData.append("streetString", "");
+                    formData.append("districtId", "");
+                }
+                await handleUpdateEvent(formData);
+            }
+            else {
+                if (eventTypeSelected === "offline" || eventTypeSelected === "Offline") {
+                    formData.append("wardString", ward);
+                    formData.append("streetString", street);
+                    const selectedProvince = allProvinces.find((p) => p.name === province);
+                    const selectedDistrict = selectedProvince?.districts.find((d) => d.name === district);
+                    if (selectedDistrict) {
+                        formData.append("districtId", selectedDistrict.id.toString());
+                    } else {
+                        formData.append("districtId", "");
+                    }
+                }
+
+                if (btnValidate === "Save") {
+                    toast.success("Form hợp lệ! Đã lưu thông tin sự kiện!", { duration: 5000 });
+                    onNextStep(formData);
+                    toast.success("Đã lưu thông tin sự kiện!", { duration: 5000 });
+                } else if (btnValidate === "Continue") {
+                    toast.success("Form hợp lệ! Sẽ chuyển sang bước tiếp theo!", { duration: 5000 });
+                    onNextStep(formData);
+                }
             }
         }
     };
@@ -197,7 +381,6 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
             <div className="flex justify-center mb-6">
                 <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="event-form">
                     <EventImageUpload
-                        logo={logo}
                         background={background}
                         handleUpload={handleUpload}
                         imageErrors={imageErrors}
@@ -209,7 +392,13 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                     <EventLocationInput
                         eventTypeSelected={eventTypeSelected} eventAddress={eventAddress}
                         province={province} district={district} ward={ward} street={street}
-                        errors={errors} provinces={provinces} districts={districts} wards={wards}
+                        errors={errors} provinces={allProvinces.map((p) => p.name)}
+                        districts={
+                            province
+                                ? allProvinces.find((p) => p.name === province)?.districts.map((d) => d.name) || []
+                                : []
+                        }
+                        // wards={wards}
                         handleInputChange={handleInputChange}
                         handleSelectChange={handleSelectChange}
                         setEventTypeSelected={setEventTypeSelected}
@@ -221,8 +410,8 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                             <div className="w-full px-3">
                                 <SelectField
                                     label="Thể loại sự kiện"
-                                    options={typeEvents}
-                                    value={typeEvent}
+                                    options={categories.map((cat) => cat.name)}
+                                    value={selectedCategory ? selectedCategory.name : ""}
                                     onChange={(e) => handleSelectChange(e, "typeEvent")}
                                     error={errors.typeEvent}
                                     required

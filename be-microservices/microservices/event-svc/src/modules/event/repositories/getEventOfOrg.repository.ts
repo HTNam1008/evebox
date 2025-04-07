@@ -14,11 +14,13 @@ export class GetEventOfOrgRepository {
     try {
       const events = await this.prisma.events.findMany({
         where: {
-          organizerId: organizerId
+          organizerId: organizerId,
+          deleteAt: null,
         },
         select: {
           id: true,
           title: true,
+          venue: true,
           Images_Events_imgLogoIdToImages: true,
           Images_Events_imgPosterIdToImages: true,
           deleteAt: true,
