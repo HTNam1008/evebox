@@ -9,16 +9,17 @@ import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
 import { CategorySpecial } from '@/types/model/frontDisplay';
-import { fetchEvents } from './libs/server/fetchEvents';
-import { fetchRecommendEvents } from './libs/server/fetchRecommendEvents';
+// import { fetchEvents } from './libs/server/fetchEvents';
+// import { fetchRecommendEvents } from './libs/server/fetchRecommendEvents';
+import { getFrontDisplayEvents, getRecommendedEvents } from '@/lib/server/event.api';
 import TabSwitcher from '../(dashboard)/components/dashboard/tabSwitcher'; // Import the new client component
 
 const Dashboard = async () => {
-    const data = await fetchEvents();
+    const data = await getFrontDisplayEvents();
     const weekTime = 'week';
     const monthTime = 'month';
-    const dataMonthlyRecommendedEvent = await fetchRecommendEvents(monthTime);
-    const dataImageSlider = await fetchRecommendEvents(weekTime);
+    const dataMonthlyRecommendedEvent = await getRecommendedEvents(monthTime);
+    const dataImageSlider = await getRecommendedEvents(weekTime);
 
     const events = {
         specialEvents: data.data.specialEvents || [],
