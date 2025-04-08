@@ -5,23 +5,96 @@ import React from 'react';
 import 'tailwindcss/tailwind.css';
 import { useState } from 'react';
 import { Divider } from '@nextui-org/react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 /* Package Application */
 import Navigation from '../common/navigation';
 import FormInfoPaymentClient from './components/formInfoPayment';
+import { PaymentForm } from '../../libs/interface/paymentForm.interface';
+import toast from 'react-hot-toast';
+import createApiClient from '@/services/apiClient';
+import { BaseApiResponse } from '@/types/BaseApiResponse';
 
 export default function InformationPaymentClient() {
+    const params = useParams();
+    const eventId = parseInt(params?.id?.toString() || "");
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+    const [paymentForm, setPaymentForm] = useState<PaymentForm>({
+        id: "",
+        accName: "",
+        accNum: "0",
+        bankName: "",
+        bankBranch: "",
+        typeBusiness: "Cá nhân",
+        perName: "",
+        perAddress: "",
+        taxCode: "",
+        companyName: "",
+        companyAddress: "",
+        companyTaxCode: "",
+    });
     const router = useRouter();
     const [step] = useState(5);
     const [btnValidate5, setBtnValidte5] = useState("");
 
-    const handleSave = () => {
+    const processPaymentForm = async (paymentForm: PaymentForm, eventId?: number) => {
+        try {
+            console.log("Processing Payment Information:", paymentForm);
+    
+            const { id, accName, accNum, bankName, bankBranch, typeBusiness, perName, perAddress, taxCode, companyName, companyAddress, companyTaxCode } = paymentForm;
+    
+            // Validate required fields
+            if (!accName || !accNum || !bankName || !bankBranch || !typeBusiness) {
+                toast.error("Vui lòng nhập đầy đủ thông tin tài khoản!");
+                return;
+            }
+    
+            // Prepare payload
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const payload: any = {
+                accountName: accName,
+                accountNumber: accNum,
+                bankName,
+                branch: bankBranch,
+                businessType: typeBusiness === "Cá nhân" ? 1 : 2,
+                fullName: typeBusiness === "Cá nhân" ? perName : companyName,
+                address: typeBusiness === "Cá nhân" ? perAddress : companyAddress,
+                taxCode: typeBusiness === "Cá nhân" ? taxCode : companyTaxCode,
+            };
+    
+            let response;
+            if (id) {
+                // Update existing record via PUT request (exclude eventId)
+                response = await apiClient.put<BaseApiResponse>(`/api/org/payment/${id}`, payload);
+            } else {
+                // Create a new record via POST request (include eventId)
+                payload.eventId = eventId;
+                response = await apiClient.post<BaseApiResponse>(`/api/org/payment`, payload);
+            }
+    
+            if (response.data) {
+                toast.success("Thông tin thanh toán đã được lưu thành công!");
+                console.log("Response:", response.data);
+            } else {
+                toast.error(`Lỗi khi lưu: ${response.statusText}`);
+            }
+    
+            return response.data;
+        } catch (error) {
+            console.error("API Error:", error);
+            toast.error("Có lỗi xảy ra khi lưu thông tin thanh toán!");
+            return null;
+        }
+    };
+
+    const handleSave = async () => {
         setBtnValidte5("Save");
+        await processPaymentForm(paymentForm, eventId);
     }
 
-    const handleContinue = () => {
+    const handleContinue = async () => {
         setBtnValidte5("Continue");
+        await processPaymentForm(paymentForm, eventId);
     }
 
 
@@ -58,7 +131,8 @@ export default function InformationPaymentClient() {
             </div>
 
             <div className="flex justify-center">
-                <FormInfoPaymentClient onNextStep={handleNextStep} btnValidate5={btnValidate5}/>
+                <FormInfoPaymentClient onNextStep={handleNextStep}  paymentForm={paymentForm} 
+                   setPaymentForm={setPaymentForm}  btnValidate5={btnValidate5}/>
             </div>
         </>
     );

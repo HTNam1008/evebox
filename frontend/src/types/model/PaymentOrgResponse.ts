@@ -18,4 +18,4 @@ export interface PaymentInfo {
 }
 
 // Response cho API /user/me
-export type PaymentOrgResponse = BaseApiResponse<PaymentInfo[]>;
+export type PaymentOrgResponse = BaseApiResponse<PaymentInfo>;
