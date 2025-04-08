@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @db.VarChar(255)
+  name          String         @db.VarChar(255)
+  email         String         @unique @db.VarChar(255)
+  phone         String         @db.VarChar(10)
+  password      String         @db.VarChar(255)
+  role_id       Int?
+  created_at    DateTime       @default(now())
+  refreshTokens RefreshToken[]
+  userProvince  UserProvince[]
+  role          Role?          @relation(fields: [role_id], references: [id])
+
+  @@map("users")
+}
+
+
+model Role {
+  id        Int    @id
+  role_name String @db.VarChar(50)
+  users     User[]
+
+  @@map("role")
+}
+
+model Province {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(100)
+  created_at   DateTime       @default(now())
+  userProvince UserProvince[]
+  districts      districts[]
+
+  @@map("province")
+}
+
+model UserProvince {
+  userId     String
+  provinceId Int
+  province   Province @relation(fields: [provinceId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, provinceId])
+  @@map("user_provinces")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  email     String
+  revoked   Boolean  @default(false)
+  expiresAt DateTime
+  user      User     @relation(fields: [email], references: [email], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model Otp {
+  id           String   @id
+  email        String
+  otp          String
+  type         OTPType
+  expiresAt    DateTime
+  isUsed       Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  attempts     Int
+  requestToken String   @unique
+
+  @@index([email])
+  @@index([otp])
+  @@map("otps")
+}
+
+model districts {
+  id         Int         @id @default(autoincrement())
+  name       String      @db.VarChar(100)
+  provinceId Int
+  createdAt  DateTime    @default(now())
+  province   Province    @relation(fields: [provinceId], references: [id], onDelete: Cascade)
+  locations  locations[]
+}
+
+model locations {
+  id         Int       @id @default(autoincrement())
+  street     String    @db.VarChar(255)
+  ward       String    @db.VarChar(100)
+  districtId Int
+  createdAt  DateTime  @default(now())
+  districts  districts @relation(fields: [districtId], references: [id], onDelete: Cascade)
+}
+
+
+enum OTPType {
+  FORGOT_PASSWORD
+  REGISTER
+}
+

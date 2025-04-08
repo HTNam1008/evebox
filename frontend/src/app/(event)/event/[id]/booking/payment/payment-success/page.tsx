@@ -6,6 +6,7 @@ import 'tailwindcss/tailwind.css';
 
 /* Package Application */
 import { authOptions } from '@/lib/authOptions';
+import PaymentSuccess from './components/paymentSuccess';
 
 interface PageProps {
   searchParams: { orderCode?: string };
@@ -26,7 +27,7 @@ async function getPaymentStatus(orderCode: string, token: string) {
     const data = await res.json();
     return data?.status;
   } catch (err) {
-    console.error("Error fetching status:", err);
+    //console.error("Error fetching status:", err);
     return null;
   }
 }
@@ -52,22 +53,6 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 py-10 bg-gradient-to-b from-teal-50 to-white text-center">
-      <div className="text-green-500 text-6xl mb-4 animate-bounce">
-        🎉
-      </div>
-      <h2 className="text-2xl md:text-3xl font-bold text-[#0C4762] mb-2">
-        Thanh toán thành công!
-      </h2>
-      <p className="text-gray-700 text-base md:text-lg mb-6 max-w-xl">
-        Cảm ơn bạn đã đặt vé với <span className="font-semibold text-[#0C4762]">Evebox</span>. Hẹn gặp bạn tại sự kiện nhé!
-      </p>
-      <a
-        href="/"
-        className="inline-block bg-[#51DACF] hover:bg-[#3BB8AE] text-[#0C4762] font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-md"
-      >
-        Về trang chủ
-      </a>
-    </div>
+    <PaymentSuccess />
   );
 }
