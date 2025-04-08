@@ -4,6 +4,7 @@ import { useState } from "react";
 
 /* Package Application */
 import { User } from "../lib/interface/acctable.interface";
+import ConfirmActiveDialog from "@/app/(showing)/showing/components/confirmActive";
 
 export default function AccountTable() {
     const data: User[] = [
@@ -52,6 +53,15 @@ export default function AccountTable() {
     // Slice dữ liệu hiển thị theo trang
     const paginatedData = data.slice(startItem - 1, endItem);
 
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [, setSelectedUser] = useState<User | null>(null);
+
+    const handleStatusClick = (user: User) => {
+        setSelectedUser(user);
+        setIsDialogOpen(true);
+    };
+
+
     return (
         <>
             <div className="overflow-x-auto rounded-xl shadow-md mt-6">
@@ -77,8 +87,9 @@ export default function AccountTable() {
                                 <td className="px-4 py-3 text-center">
                                     <span className={`min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border 
                                                     ${user.status === 'Active'
-                                                        ? 'bg-teal-100 text-teal-500 border-teal-500'
-                                                        : 'bg-gray-200 text-gray-500 border-gray-500'}`}>
+                                            ? 'bg-teal-100 text-teal-500 border-teal-500'
+                                            : 'bg-gray-200 text-gray-500 border-gray-500'}`}
+                                            onClick={() => handleStatusClick(user)}>
                                         {user.status}
                                     </span>
                                 </td>
@@ -116,6 +127,12 @@ export default function AccountTable() {
                     </button>
                 </div>
             </div>
+
+            <ConfirmActiveDialog
+                open={isDialogOpen}
+                onClose={() => setIsDialogOpen(false)}
+                onConfirm={() => {setIsDialogOpen(false)}}
+            />
         </>
     )
 }
