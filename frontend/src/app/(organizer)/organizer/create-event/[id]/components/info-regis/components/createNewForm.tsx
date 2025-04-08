@@ -90,7 +90,7 @@ export default function CreateNewForm({ form, setForm, open, onClose, onFormCrea
             id: Date.now(),
             fieldName: `Câu hỏi mới`,
             type: quesText,
-            required: false,
+            required: true,
             regex: null,
             options: (quesText === "oneAns" || quesText === "multiAns")
                 ? Array(3).fill(null).map(() => ({ optionText: "" }))
@@ -104,6 +104,14 @@ export default function CreateNewForm({ form, setForm, open, onClose, onFormCrea
 
         setExpandedQuestionId(newQuestion.id);
     };
+
+    const handleCheckBoxChange = (e: ChangeEvent<HTMLInputElement>, id: number) => {
+        const checked = e.target.checked;
+        const updatedQuestions = currentForm.FormInput.map(q =>
+            q.id === id ? { ...q, required: checked } : q
+        );
+        setCurrentForm(prev => ({ ...prev, FormInput: updatedQuestions }));
+    }
 
     // Hàm thêm newForm vào newForms
     const handleSaveForm = async () => {
@@ -140,9 +148,9 @@ export default function CreateNewForm({ form, setForm, open, onClose, onFormCrea
                 toast.error(errData.message || "Lỗi tạo form mới");
                 return;
             }
-
+            
             const data = await res.json();
-            const newFormId = data?.data?.id;
+            const newFormId = data?.data?.formId;
             if (!newFormId) {
                 toast.error("Không nhận được ID của form mới.");
                 return;
@@ -236,7 +244,7 @@ export default function CreateNewForm({ form, setForm, open, onClose, onFormCrea
 
                                             <div className="w-full ml-4 mr-4">
                                                 <GroupRadioButton
-                                                    quesText={question.type}
+                                                    quesText={question.type || "text"}
                                                     setQuesText={(newType) => {
                                                         const updatedQuestions = currentForm.FormInput.map(q =>
                                                             q.id === question.id ? { ...q, type: newType } : q
@@ -276,7 +284,6 @@ export default function CreateNewForm({ form, setForm, open, onClose, onFormCrea
                                                     </div>
                                                 )}
 
-
                                                 {(question.type === "multiAns" || question.type === "4") && (
                                                     <div className="border p-4 bg-white mt-4 rounded">
                                                         {(question.options || []).map((opt, optIdx) => (
@@ -309,10 +316,14 @@ export default function CreateNewForm({ form, setForm, open, onClose, onFormCrea
                                                     </div>
                                                 )}
 
-
                                                 <div className="flex justify-end mt-3">
                                                     <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input type="checkbox" className="w-4 h-4 border border-black" />
+                                                        <input 
+                                                            type="checkbox" 
+                                                            className="w-4 h-4 border border-black"
+                                                            checked={question.required} 
+                                                            onChange={(e) => handleCheckBoxChange(e, question.id)}
+                                                        />
                                                         <span className="text-sm">Yêu cầu trả lời</span>
                                                     </label>
                                                 </div>

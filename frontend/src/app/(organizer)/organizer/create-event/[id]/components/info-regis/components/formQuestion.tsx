@@ -66,10 +66,10 @@ export default function FormQuestionClient({ onNextStep, btnValidate4, showingId
     }, [access_token]);
 
     useEffect(() => {
-        const forms = selectedCategory === "sample" ? sampleForms : createdForms;
-        setForms(forms);
+        const categorizedForms = selectedCategory === "sample" ? sampleForms : createdForms;
+        setForms(categorizedForms);
 
-        if (selectedForm && !forms.find(f => f.id === selectedForm)) {
+        if (selectedForm && !categorizedForms.find(f => f.id === selectedForm)) {
             const allForms = [...sampleForms, ...createdForms];
             const newlyCreated = allForms.find(f => f.id === selectedForm);
             if (newlyCreated) {
