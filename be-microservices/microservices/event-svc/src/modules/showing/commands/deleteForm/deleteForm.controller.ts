@@ -1,6 +1,6 @@
-import { Controller, Delete, Param, Res, HttpStatus, Query } from "@nestjs/common";
+import { Controller, Delete, Param, Res, HttpStatus, Request } from "@nestjs/common";
 import { Response } from "express";
-import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiQuery } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiQuery, ApiHeader } from "@nestjs/swagger";
 import { DeleteFormService } from "./deleteForm.service";
 import { DeleteFormResponseDto } from "./deleteForm-response.dto";
 import { DeleteFormDto } from "./deleteForm.dto";
@@ -11,14 +11,19 @@ export class DeleteFormController {
   constructor(private readonly deleteFormService: DeleteFormService) {}
 
   @Delete('form/:id')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true,
+  })
   @ApiOperation({ summary: 'Soft delete a form' })
   @ApiParam({ name: 'id', type: Number, description: 'Form ID to delete' })
-  @ApiQuery({ name: 'createdBy', type: String, description: 'Organizer email (creator of the form)' })
   @ApiResponse({ status: 200, description: 'Form deleted successfully', type: DeleteFormResponseDto })
-  async deleteForm(@Param('id') id: string, @Query('createdBy') createdBy: string, @Res() res: Response) {
+  async deleteForm(@Param('id') id: string, @Res() res: Response, @Request() req) {
     const numberId = Number(id);
-    const dto: DeleteFormDto = { id: numberId, createdBy };
-    const result = await this.deleteFormService.execute(dto);
+    const dto: DeleteFormDto = { id: numberId };
+    const user = req.user;
+    const result = await this.deleteFormService.execute(dto, user?.email);
     if (result.isErr()) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         statusCode: HttpStatus.BAD_REQUEST,
