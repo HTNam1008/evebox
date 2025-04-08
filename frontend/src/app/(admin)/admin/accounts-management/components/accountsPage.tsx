@@ -1,3 +1,4 @@
+"use client";
 /* Package System */
 import 'tailwindcss/tailwind.css';
 
