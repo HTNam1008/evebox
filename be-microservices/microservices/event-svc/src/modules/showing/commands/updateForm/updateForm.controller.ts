@@ -1,6 +1,6 @@
-import { Controller, Patch, Put, Param, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Patch, Put, Param, Body, Res, HttpStatus, Request } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiHeader } from '@nestjs/swagger';
 import { UpdateFormService } from './updateForm.service';
 import { UpdateFormDto } from './updateForm.dto';
 import { UpdateFormResponseDto } from './updateForm-response.dto';
@@ -11,18 +11,29 @@ export class UpdateFormController {
   constructor(private readonly updateFormService: UpdateFormService) {}
 
   @Put('form/:id')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for authorization (`Bearer <token>`)',
+    required: true,
+  })
   @ApiOperation({ summary: 'Update form of a showing' })
   @ApiParam({ name: 'id', description: 'Form ID need update' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Form updated successfully', type: UpdateFormResponseDto })
   async updateForm(
+    @Request() req,
     @Param('id') id: string,
     @Body() dto: UpdateFormDto,
     @Res() res: Response,
   ) {
     try {
+      const user = req.user;
       const idNumber = Number(id);
       // Tạo đối tượng payload bao gồm id từ URL và dữ liệu từ body
-      const updatePayload = { id: Number(idNumber), ...dto };
+      const updatePayload = {
+        ...dto,
+        id: idNumber,
+        organizerId: user.email,
+      };
 
       const result = await this.updateFormService.execute(updatePayload);
       if (result.isErr()) {
