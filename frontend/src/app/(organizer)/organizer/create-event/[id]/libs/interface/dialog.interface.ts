@@ -15,6 +15,8 @@ export interface CopyTicketDailogProps {
     onClose: () => void; 
     showtimes: Showtime[]; 
     currentShowtimeId: string; 
+    startDate: Date | null;
+    endDate: Date | null
     setShowtimes: (updatedShowtimes: Showtime[]) => void;
 }
 
