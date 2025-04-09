@@ -5,15 +5,17 @@ import { useState } from "react";
 /* Package Application */
 import { User } from "../lib/interface/acctable.interface";
 import ConfirmActiveDialog from "@/app/(showing)/showing/components/confirmActive";
+import { sortUsers } from "../lib/function/sortUsers";
+import SortIcon from "./sortIcon";
 
 export default function AccountTable() {
     const data: User[] = [
         {
             id: '1',
             name: 'Nguyễn Văn A',
-            email: 'nguyentlong@gmail.com',
+            email: 'nguyenvana@gmail.com',
             role: 'Chủ sự kiện',
-            createdAt: '01/10/2024',
+            createdAt: '2024-10-01T00:00:00.000Z',
             status: 'Active',
         },
         {
@@ -21,15 +23,15 @@ export default function AccountTable() {
             name: 'Nguyễn Thành Long',
             email: 'nguyentlong@gmail.com',
             role: 'Quản lý',
-            createdAt: '01/10/2024',
+            createdAt: '2025-10-01T00:00:00.000Z',
             status: 'Deactivated',
         },
         {
             id: '3',
             name: 'Hồ Văn Nam',
-            email: 'nguyentlong@gmail.com',
+            email: 'hovannam@gmail.com',
             role: 'Customer',
-            createdAt: '01/10/2024',
+            createdAt: '2024-10-25T00:00:00.000Z',
             status: 'Active',
         },
     ];
@@ -39,9 +41,19 @@ export default function AccountTable() {
     const [currentPage, setCurrentPage] = useState(1);
     const totalItems = data.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-
     const startItem = (currentPage - 1) * itemsPerPage + 1;
     const endItem = Math.min(startItem + itemsPerPage - 1, totalItems);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof User; direction: 'asc' | 'desc' } | null>(null);
+
+    const handleSort = (key: keyof User) => {
+        setSortConfig((prev) => {
+            if (prev?.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+            } else {
+                return { key, direction: 'asc' }; // Mặc định là asc
+            }
+        });
+    };
 
     const handlePrevious = () => {
         if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -51,9 +63,9 @@ export default function AccountTable() {
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    // Slice dữ liệu hiển thị theo trang
-    const paginatedData = users.slice(startItem - 1, endItem);
-
+    const sortedUsers = sortUsers(users, sortConfig);
+    
+    const paginatedData = sortedUsers.slice(startItem - 1, endItem);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
@@ -68,17 +80,12 @@ export default function AccountTable() {
         setUsers(prev =>
             prev.map(user =>
                 user.id === selectedUser.id
-                    ? {
-                        ...user,
-                        status: user.status === 'Active' ? 'Deactivated' : 'Active'
-                    }
-                    : user
-            )
+                    ? {...user, status: user.status === 'Active' ? 'Deactivated' : 'Active'}
+                    : user)
         );
 
         setIsDialogOpen(false);
     };
-
 
     return (
         <>
@@ -87,11 +94,21 @@ export default function AccountTable() {
                     <thead>
                         <tr className="bg-[#0C4762] text-white text-sm text-left rounded-t-lg">
                             <th className="px-4 py-3 text-center">STT</th>
-                            <th className="px-4 py-3">Họ và tên</th>
-                            <th className="px-4 py-3">Email</th>
-                            <th className="px-4 py-3 text-center">Vai trò</th>
-                            <th className="px-4 py-3 text-center">Ngày tạo</th>
-                            <th className="px-4 py-3 text-center">Trạng thái</th> {/* Cột cuối không cần border-r */}
+                            <th className="px-4 py-3 cursor-pointer" onClick={() => handleSort('name')}>
+                                Họ và tên <SortIcon field="name" sortConfig={sortConfig} />
+                            </th>
+                            <th className="px-4 py-3 cursor-pointer" onClick={() => handleSort('email')}>
+                                Email <SortIcon field="email" sortConfig={sortConfig} />
+                            </th>
+                            <th className="px-4 py-3  cursor-pointer" onClick={() => handleSort('role')}>
+                                Vai trò <SortIcon field="role" sortConfig={sortConfig} />
+                            </th>
+                            <th className="px-4 py-3  cursor-pointer text-center" onClick={() => handleSort('createdAt')}>
+                                Ngày tạo <SortIcon field="createdAt" sortConfig={sortConfig} />
+                            </th>
+                            <th className="px-4 py-3  cursor-pointer text-center" onClick={() => handleSort('status')}>
+                                Trạng thái <SortIcon field="status" sortConfig={sortConfig} />
+                            </th> 
                         </tr>
                     </thead>
                     <tbody className="text-sm">
@@ -101,7 +118,10 @@ export default function AccountTable() {
                                 <td className="px-4 py-3 border-r border-gray-200">{user.name}</td>
                                 <td className="px-4 py-3 border-r border-gray-200">{user.email}</td>
                                 <td className="px-4 py-3 border-r border-gray-200">{user.role}</td>
-                                <td className="px-4 py-3 text-center border-r border-gray-200">{user.createdAt}</td>
+                        
+                                <td className="px-4 py-3 text-center border-r border-gray-200">
+                                    {new Date(user.createdAt).toLocaleDateString('vi-VN')}
+                                </td>
                                 <td className="px-4 py-3 text-center cursor-pointer">
                                     <span className={`min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border 
                                                     ${user.status === 'Active'

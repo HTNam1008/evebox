@@ -13,3 +13,13 @@ export interface ConfirmActiveProps {
     onConfirm: () => void;
     currentStatus: 'Active' | 'Deactivated';
 }
+
+export interface SortConfig<T> {
+    key: keyof T;
+    direction: 'asc' | 'desc';
+}
+
+export interface SortIconProps<T> {
+    field: keyof T;
+    sortConfig: SortConfig<T> | null;
+}
