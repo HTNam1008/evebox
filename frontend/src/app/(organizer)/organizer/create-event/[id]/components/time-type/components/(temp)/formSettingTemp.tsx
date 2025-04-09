@@ -2,33 +2,33 @@
 
 /* Package System */
 import { useState } from "react";
-import { Mail, LayoutList, ToggleLeft, ToggleRight } from "lucide-react";
+import { LayoutList, ToggleLeft, ToggleRight } from "lucide-react";
 
 /* Package Application */
 
 export default function FormSettingClientTemp() {
-    const [eventName, setEventName] = useState("name-of-event");
-    const [message, setMessage] = useState("");
-    const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+    // const [eventName, setEventName] = useState("name-of-event");
+    // const [message, setMessage] = useState("");
+    // const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
     const [isToggleOn, setIsToggleOn] = useState(false);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
-        const value = e.target.value;
-        if (field === "eventName") setEventName(value);
-        if (field === "message") setMessage(value);
+    // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
+    //     const value = e.target.value;
+    //     if (field === "eventName") setEventName(value);
+    //     if (field === "message") setMessage(value);
 
-        if (errors[field]) {
-            setErrors((prev) => ({ ...prev, [field]: false }));
-        }
-    };
+    //     if (errors[field]) {
+    //         setErrors((prev) => ({ ...prev, [field]: false }));
+    //     }
+    // };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const newErrors: { [key: string]: boolean } = {};
+        // const newErrors: { [key: string]: boolean } = {};
 
-        if (!eventName.trim()) newErrors.eventName = true;
+        // if (!eventName.trim()) newErrors.eventName = true;
 
-        setErrors(newErrors);
+        // setErrors(newErrors);
     };
 
 
@@ -36,12 +36,11 @@ export default function FormSettingClientTemp() {
         <>
             <div className="flex justify-center w-full mb-6">
                 <form className="w-full max-w-4xl mx-auto mb-6" onSubmit={handleSubmit} id="setting-form">
-                    <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
+                    {/* <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <label className="block text-base font-bold mb-2">
                             <span className="text-red-500">* </span> Link dẫn đến sự kiện
                         </label>
 
-                        {/* Tùy chỉnh đường dẫn */}
                         <div className="flex flex-wrap -mx-3 mb-6">
                             <div className="w-full md:w-1/4 px-3 mb-6 md:mb-0">
                                 <label className="block text-sm font-bold mb-2">
@@ -99,7 +98,7 @@ export default function FormSettingClientTemp() {
                                 0/500
                             </p>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-3 mb-6" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                         <div className="relative flex items-center space-x-2">
