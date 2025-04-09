@@ -2,7 +2,6 @@ import createApiClient from "@/services/apiClient";
 import { IGetUserTicketByIdResponse } from '@/types/model/ticketInfoById';
 
 const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_TICKET_SVC_URL || "");
-
 export async function fetchTicketById(id: string) {
   try {
     const response = await apiClient.get<IGetUserTicketByIdResponse>(`/api/ticket/getUserTicketById/${id}`);

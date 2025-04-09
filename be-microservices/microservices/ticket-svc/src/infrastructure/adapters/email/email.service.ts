@@ -84,6 +84,9 @@ export class EmailService implements OnModuleInit {
   async sendTicketEmail(data: UserTicketByIdDto, pdf: { name: string; content: Buffer; type: string }[]) {
     const receive_email = "thanhhue12155@gmail.com"
 
+    const webUrl = this.configService.get<string>('WEB_URL', 'http://localhost:3000');
+    const ticketLink = `${webUrl}/ticket/${data.id}`;
+
     let formAnswersHtml = '';
 
     for (const answer of data.FormResponse.FormAnswer) {
@@ -111,9 +114,10 @@ export class EmailService implements OnModuleInit {
                 <p>📍 <strong>${data.Showing.Events.venue}</strong></p>
                 <p>${data.Showing.Events.locationsString}</p>
 
-                <div style="background-color: #51DACF; color: #0C4762; text-align: center; padding: 10px; border-radius: 4px; font-weight: bold;">
+                <a style="display: block; margin: 0 auto; background-color: #51DACF; color: #0C4762; text-align: center; padding: 10px; border-radius: 4px; font-weight: bold; text-decoration: none;"
+                  target="_blank" href="${ticketLink}">
                   Vé đã mua
-                </div>
+                </a>
 
                 <p style="margin-top: 15px;">Vé điện tử của bạn cũng được đính kèm trong email này. Vui lòng chuẩn bị sẵn vé điện tử tại nơi soát vé.</p>
                 
