@@ -166,7 +166,7 @@ export default function FormQuestionClient({ onNextStep, btnValidate4, showingId
                             key={createdForm?.id ?? 'new'}
                             form={createdForm || {
                                 id: Date.now(),
-                                name: "New Form",
+                                name: `New Form_${Date.now()}`,
                                 createdBy: null,
                                 FormInput: [
                                     {
