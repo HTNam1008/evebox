@@ -6,6 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prestart": "npx prisma generate",
+    "prestart:dev": "npx prisma generate",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -39,8 +41,8 @@
     "@types/date-fns": "^2.6.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "date-fns": "^4.1.0",
     "crypto": "^1.0.1",
+    "date-fns": "^4.1.0",
     "ioredis": "^5.6.0",
     "jsqr": "^1.4.0",
     "nodemailer": "^6.10.0",

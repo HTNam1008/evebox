@@ -14,7 +14,7 @@ export default function GroupRadioButton({quesText, setQuesText} : QuestionTypeS
             <div className="TypeOfQuestion flex justify-between items-center w-full mt-2 mb-2">
                 <div className="flex-1 flex justify-start">
                     <CustomRadioButton
-                        value="quesText" selectedValue={quesText}
+                        value="text" selectedValue={quesText}
                         onChange={setQuesText} label="Thêm câu hỏi dạng văn bản"
                     />
                 </div>
@@ -28,7 +28,7 @@ export default function GroupRadioButton({quesText, setQuesText} : QuestionTypeS
 
                 <div className="flex-1 flex justify-end">
                     <CustomRadioButton
-                        value="multAns" selectedValue={quesText}
+                        value="multiAns" selectedValue={quesText}
                         onChange={setQuesText} label="Thêm câu hỏi ‘nhiều câu trả lời’"
                     />
                 </div>

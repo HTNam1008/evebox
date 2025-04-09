@@ -23,8 +23,11 @@ async function urlToFile(url: string, filename: string): Promise<File> {
     const blob = await response.blob();
     return new File([blob], filename, { type: blob.type });
 }
+interface TimeAndTypeTicketsProps {
+    setShowingIds: (ids: string[]) => void;
+}
 
-export default function TimeAndTypeTickets() {
+export default function TimeAndTypeTickets({ setShowingIds }: TimeAndTypeTicketsProps) {
     const params = useParams();
     const eventId = parseInt(params?.id?.toString() || "");
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
@@ -113,6 +116,7 @@ export default function TimeAndTypeTickets() {
                 if (response.status === 201) {
                     console.log("------",response.data);
                     showtimeId = response.data.data; // Extract new Showtime ID from response
+                    setShowingIds([...showingList.map(show => show.id), showtimeId]); // Update showing IDs state
                     console.log(`Showtime created successfully! ID: ${showtimeId}`);
                 } else {
                     toast.error(`Error creating showtime: ${response.statusText}`);

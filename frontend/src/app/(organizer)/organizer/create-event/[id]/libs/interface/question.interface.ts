@@ -9,7 +9,7 @@ export interface Form {
 
 export interface FormListProps {
     forms: Form[];
-    selectedForms: number | null;
+    selectedForm: number | null;
     handleSelectForm: (formId: number) => void;
 }
 

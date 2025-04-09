@@ -2,7 +2,7 @@
 
 /* Package System */
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 /* Package Application */
@@ -22,6 +22,8 @@ export default function EventStep({ eventId, setEventId }: EventStepProps) {
     const step = searchParams?.get('step') || 'info';
     const router = useRouter();
 
+    const [showingIds, setShowingIds] = useState<string[]>([]);
+
     useEffect(() => {
         const validSteps = ["info", "showing", "setting", "questions", "payment"];
         if (step && !validSteps.includes(step)) {
@@ -32,9 +34,9 @@ export default function EventStep({ eventId, setEventId }: EventStepProps) {
     return (
         <>
             {step === 'info' && <InformationEventClientPage setEventId={setEventId} />}
-            {step === 'showing' && <TimeAndTypeTickets />}
+            {step === 'showing' && <TimeAndTypeTickets setShowingIds={setShowingIds} />}
             {/* {step === 'setting' && <Setting eventId={eventId} />} */}
-            {step === 'questions' && <CreateQuestions eventId={eventId} />}
+            {step === 'questions' && <CreateQuestions showingIds={showingIds} />}
             {step === 'payment' && <InformationPaymentClient />}
         </>
     );
