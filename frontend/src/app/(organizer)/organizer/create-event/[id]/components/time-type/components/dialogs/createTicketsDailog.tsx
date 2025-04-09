@@ -124,6 +124,8 @@ export default function CreateTypeTicketDailog({ open, onClose, startDate, endDa
             image: imageTicket,
             free: isFree,
         });
+
+        console.log("Freee:",isFree);
         onClose();
     }
 
