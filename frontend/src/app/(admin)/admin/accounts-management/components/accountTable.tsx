@@ -9,7 +9,7 @@ import ConfirmActiveDialog from "@/app/(showing)/showing/components/confirmActiv
 export default function AccountTable() {
     const data: User[] = [
         {
-            id: 1,
+            id: '1',
             name: 'Nguyễn Văn A',
             email: 'nguyentlong@gmail.com',
             role: 'Chủ sự kiện',
@@ -17,7 +17,7 @@ export default function AccountTable() {
             status: 'Active',
         },
         {
-            id: 2,
+            id: '2',
             name: 'Nguyễn Thành Long',
             email: 'nguyentlong@gmail.com',
             role: 'Quản lý',
@@ -25,7 +25,7 @@ export default function AccountTable() {
             status: 'Deactivated',
         },
         {
-            id: 3,
+            id: '3',
             name: 'Hồ Văn Nam',
             email: 'nguyentlong@gmail.com',
             role: 'Customer',
@@ -34,6 +34,7 @@ export default function AccountTable() {
         },
     ];
 
+    const [users, setUsers] = useState<User[]>(data);
     const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const totalItems = data.length;
@@ -51,14 +52,31 @@ export default function AccountTable() {
     };
 
     // Slice dữ liệu hiển thị theo trang
-    const paginatedData = data.slice(startItem - 1, endItem);
+    const paginatedData = users.slice(startItem - 1, endItem);
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [, setSelectedUser] = useState<User | null>(null);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     const handleStatusClick = (user: User) => {
         setSelectedUser(user);
         setIsDialogOpen(true);
+    };
+
+    const handleConfirmStatusChange = () => {
+        if (!selectedUser) return;
+
+        setUsers(prev =>
+            prev.map(user =>
+                user.id === selectedUser.id
+                    ? {
+                        ...user,
+                        status: user.status === 'Active' ? 'Deactivated' : 'Active'
+                    }
+                    : user
+            )
+        );
+
+        setIsDialogOpen(false);
     };
 
 
@@ -84,7 +102,7 @@ export default function AccountTable() {
                                 <td className="px-4 py-3 border-r border-gray-200">{user.email}</td>
                                 <td className="px-4 py-3 border-r border-gray-200">{user.role}</td>
                                 <td className="px-4 py-3 text-center border-r border-gray-200">{user.createdAt}</td>
-                                <td className="px-4 py-3 text-center">
+                                <td className="px-4 py-3 text-center cursor-pointer">
                                     <span className={`min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border 
                                                     ${user.status === 'Active'
                                             ? 'bg-teal-100 text-teal-500 border-teal-500'
@@ -128,11 +146,14 @@ export default function AccountTable() {
                 </div>
             </div>
 
-            <ConfirmActiveDialog
-                open={isDialogOpen}
-                onClose={() => setIsDialogOpen(false)}
-                onConfirm={() => {setIsDialogOpen(false)}}
-            />
+            {selectedUser && (
+                <ConfirmActiveDialog
+                    open={isDialogOpen}
+                    onClose={() => setIsDialogOpen(false)}
+                    onConfirm={handleConfirmStatusChange}
+                    currentStatus={selectedUser.status}
+                />
+            )}
         </>
     )
 }

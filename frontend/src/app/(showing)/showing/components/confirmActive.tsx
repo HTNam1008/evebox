@@ -2,13 +2,17 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { ConfirmDialogProps } from "@/app/(organizer)/organizer/create-event/[id]/libs/interface/dialog.interface";
+import { ConfirmActiveProps } from "@/app/(admin)/admin/accounts-management/lib/interface/acctable.interface";
 
-export default function ConfirmActiveDialog({ open, onClose, onConfirm }: ConfirmDialogProps) {
+export default function ConfirmActiveDialog({ open, onClose, onConfirm, currentStatus }: ConfirmActiveProps) {
+    const nextStatus = currentStatus === "Active" ? "Deactivated" : "Active";
+
     return (
         <Dialog open={open} onClose={onClose}>
             <div className="text-white dialog-header px-6 py-4 justify-center items-center flex relative" style={{ background: '#0C4762' }}>
-                <DialogTitle className="!m-0 !p-0 text-lg text-center font-bold">Vô hiệu hóa tài khoản</DialogTitle>
+                <DialogTitle className="!m-0 !p-0 text-lg text-center font-bold">
+                    {nextStatus === "Active" ? "Kích hoạt tài khoản" : "Vô hiệu hóa tài khoản"}
+                </DialogTitle>
                 <button onClick={onClose} className="absolute right-2 top-2 px-1 py-1 close-btn">
                     <Icon icon="ic:baseline-close" width="20" height="20" />
                 </button>
@@ -18,8 +22,8 @@ export default function ConfirmActiveDialog({ open, onClose, onConfirm }: Confir
                 <Icon icon="material-symbols:warning" width="50" height="50" color="#f59e0b" className="relative z-50" />
 
                 <div className="content mx-4 mt-2 mb-4 text-center">
-                    <p>Bạn có chắc chắn muốn <strong>vô hiệu hóa tài khoản</strong> này không?</p>
-                    <p>Người dùng sẽ không thể đăng nhập hoặc sử dụng hệ thống sau khi bị vô hiệu hóa.</p>
+                    <p>Bạn có chắc chắn muốn <strong>{nextStatus === "Active" ? "kích hoạt tài khoản" : "vô hiệu hóa tài khoản"}</strong> này không?</p> 
+                    <p>{nextStatus === "Active" ? "Người dùng sẽ có thể sử dụng lại hệ thống." : "Người dùng sẽ không thể đăng nhập hoặc sử dụng hệ thống sau khi bị vô hiệu hóa."}</p>
                 </div>
 
                 <div className="flex gap-4 mt-4 mb-4">
