@@ -24,6 +24,12 @@ async function urlToFile(url: string, filename: string): Promise<File> {
     return new File([blob], filename, { type: blob.type });
 }
 
+async function urlToFile(url: string, filename: string): Promise<File> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: blob.type });
+}
+
 interface TimeAndTypeTicketsProps {
     setShowingIds: (ids: string[]) => void;
 }
@@ -117,7 +123,6 @@ export default function TimeAndTypeTickets({ setShowingIds }: TimeAndTypeTickets
                 if (response.status === 201) {
                     console.log("------",response.data);
                     showtimeId = response.data.data; // Extract new Showtime ID from response
-                    setShowingIds([...showingList.map(show => show.id), showtimeId]); // Update showing IDs state
                     console.log(`Showtime created successfully! ID: ${showtimeId}`);
                 } else {
                     toast.error(`Error creating showtime: ${response.statusText}`);
@@ -129,8 +134,6 @@ export default function TimeAndTypeTickets({ setShowingIds }: TimeAndTypeTickets
                     startTime: showing.startDate,
                     endTime: showing.endDate,
                 });
-
-                setShowingIds([...showingList.map(show => show.id), showing.id]);
     
                 if (response.status === 200) {
                     console.log(`Showtime ${showing.id} updated successfully!`);
