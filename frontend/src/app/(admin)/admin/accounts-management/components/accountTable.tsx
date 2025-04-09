@@ -1,6 +1,8 @@
-"use client";
+'use client'
+
 /* Package System */
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import { User } from "../lib/interface/acctable.interface";
@@ -37,6 +39,7 @@ export default function AccountTable() {
     ];
 
     const [users, setUsers] = useState<User[]>(data);
+    const router = useRouter();
     const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const totalItems = data.length;
@@ -113,9 +116,10 @@ export default function AccountTable() {
                     </thead>
                     <tbody className="text-sm">
                         {paginatedData.map((user, index) => (
-                            <tr key={user.id} className="border-t border-gray-200">
+                            <tr key={user.id} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200"
+                                onClick={() => router.push(`/admin/accounts-management/${user.id}`)}>
                                 <td className="px-4 py-3 text-center border-r border-gray-200">{index + 1}</td>
-                                <td className="px-4 py-3 border-r border-gray-200">{user.name}</td>
+                                <td className="px-4 py-3 border-r border-gray-200 cursor-pointer">{user.name}</td>
                                 <td className="px-4 py-3 border-r border-gray-200">{user.email}</td>
                                 <td className="px-4 py-3 border-r border-gray-200">{user.role}</td>
                         
