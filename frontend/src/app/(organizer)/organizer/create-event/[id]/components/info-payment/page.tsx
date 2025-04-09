@@ -44,10 +44,21 @@ export default function InformationPaymentClient() {
             const { id, accName, accNum, bankName, bankBranch, typeBusiness, perName, perAddress, taxCode, companyName, companyAddress, companyTaxCode } = paymentForm;
     
             // Validate required fields
-            if (!accName || !accNum || !bankName || !bankBranch || !typeBusiness) {
+            if (!accName || !accNum || !bankName || !bankBranch || !typeBusiness ) {
                 toast.error("Vui lòng nhập đầy đủ thông tin tài khoản!");
-                return;
+                return null;
             }
+
+            if (typeBusiness=="Cá nhân" && (!perName || !perAddress || !taxCode)) {
+                toast.error("Vui lòng nhập đầy đủ thông tin tài khoản!");
+                return null;
+            }
+
+            if (typeBusiness!="Cá nhân" && (!companyName || !companyAddress || !companyTaxCode)) {
+                toast.error("Vui lòng nhập đầy đủ thông tin tài khoản!");
+                return null;
+            }
+
     
             // Prepare payload
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,11 +86,12 @@ export default function InformationPaymentClient() {
             if (response.data) {
                 toast.success("Thông tin thanh toán đã được lưu thành công!");
                 console.log("Response:", response.data);
+                return response.data;
             } else {
                 toast.error(`Lỗi khi lưu: ${response.statusText}`);
+                return null;
             }
     
-            return response.data;
         } catch (error) {
             console.error("API Error:", error);
             toast.error("Có lỗi xảy ra khi lưu thông tin thanh toán!");
@@ -89,12 +101,18 @@ export default function InformationPaymentClient() {
 
     const handleSave = async () => {
         setBtnValidte5("Save");
-        await processPaymentForm(paymentForm, eventId);
+        const result = await processPaymentForm(paymentForm, eventId);
+        if (!result) {
+            setBtnValidte5(""); // Reset button if there's an error
+        }
     }
 
     const handleContinue = async () => {
         setBtnValidte5("Continue");
-        await processPaymentForm(paymentForm, eventId);
+        const result = await processPaymentForm(paymentForm, eventId);
+        if (!result) {
+            setBtnValidte5(""); // Reset button if there's an error
+        }
     }
 
 
