@@ -1,11 +1,10 @@
 /* Package System */
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 /* Package Application */
 import InputCountField from '../../common/form/inputCountField';
 import InputField from '../../common/form/inputField';
 import SelectField from '../../common/form/selectField';
-import NotificationDialog from './dialog/notifiDialog';
 import { PaymentForm } from '../../../libs/interface/paymentForm.interface';
 import { Toaster } from "react-hot-toast";
 import toast from 'react-hot-toast';
@@ -21,11 +20,10 @@ interface Props {
 }
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function FormInfoPaymentClient({ paymentForm, setPaymentForm, onNextStep, btnValidate5 }: Props) {
     const params = useParams();
     const eventId = parseInt(params?.id?.toString() || "");
-    const [open, setOpen] = useState(false); //Notification Dialog 
-    const [shouldProceed, setShouldProceed] = useState(false); // Trạng thái kiểm tra khi đóng Dialog
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field:  keyof PaymentForm) => {
@@ -75,17 +73,8 @@ export default function FormInfoPaymentClient({ paymentForm, setPaymentForm, onN
             }
             // Nếu nút là "Continue"
             else if (btnValidate5 === "Continue") {
-                setOpen(true);
-                setShouldProceed(true);         
+                toast.success("Chuyển tiếp qua bước tiếp theo!");
             }
-        }
-    };
-
-    const handleCloseDialog = () => {
-        setOpen(false);
-        if (shouldProceed) {
-            onNextStep(); 
-            setShouldProceed(false); 
         }
     };
 
@@ -351,7 +340,6 @@ export default function FormInfoPaymentClient({ paymentForm, setPaymentForm, onN
                             </div>
                         )}
                     </div>
-                    {open && <NotificationDialog open={open} onClose={handleCloseDialog} />}
                 </form>
             </div>
         </>
