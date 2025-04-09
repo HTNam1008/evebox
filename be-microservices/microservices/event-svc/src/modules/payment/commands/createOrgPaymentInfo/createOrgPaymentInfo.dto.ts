@@ -33,15 +33,15 @@ export class CreateOrgPaymentInfoDto {
   @ApiPropertyOptional({ example: 'Nguyen Van A', description: 'Full name (only for red invoice, businessType = 2)' })
   @IsOptional()
   @IsString()
-  fullName?: string;
+  fullName: string;
 
   @ApiPropertyOptional({ example: '123 ABC Street, HCMC', description: 'Address (only for red invoice, businessType = 2)' })
   @IsOptional()
   @IsString()
-  address?: string;
+  address: string;
 
   @ApiPropertyOptional({ example: '0101234567', description: 'Tax code (only for red invoice, businessType = 2)' })
   @IsOptional()
   @IsString()
-  taxCode?: string;
+  taxCode: string;
 }

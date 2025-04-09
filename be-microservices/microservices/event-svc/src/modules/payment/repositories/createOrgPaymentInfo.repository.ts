@@ -18,9 +18,9 @@ export class CreateOrgPaymentInfoRepository {
           bankName: dto.bankName,
           branch: dto.branch,
           businessType: dto.businessType,
-          fullName: dto.fullName ?? '',
-          address: dto.address ?? '',
-          taxCode: dto.taxCode ?? '',
+          fullName: dto.fullName,
+          address: dto.address,
+          taxCode: dto.taxCode,
         },
       });
       if (!orgPayment) {
