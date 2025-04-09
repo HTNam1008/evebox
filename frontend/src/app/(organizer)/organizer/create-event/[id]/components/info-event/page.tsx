@@ -8,12 +8,12 @@ import { useState } from 'react';
 import { Divider } from '@nextui-org/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 /* Package Application */
 import NoteDialog from '../dialogs/noteDialog';
 import FormInformationEventClient from './components/formInfoEvent';
 import Navigation from '../common/navigation';
-import toast from 'react-hot-toast';
 
 interface InformationEventClientPageProps {
     setEventId?: (id: number) => void;

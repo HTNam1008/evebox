@@ -18,15 +18,8 @@ export class CreateOrgPaymentInfoService {
       if (!dto.accountName.trim() || !dto.accountNumber.trim() || !dto.bankName.trim() || !dto.branch.trim()) {
         return Err(new Error('Bank account information is required.'));
       }
-      if (dto.businessType === 2) {
-        if (!dto.fullName || !dto.address || !dto.taxCode) {
-          return Err(new Error('For business/organizer: fullName, address, and taxCode are required.'));
-        }
-      }
-      else {
-        dto.fullName = '';
-        dto.address = '';
-        dto.taxCode = '';
+      if (!dto.fullName || !dto.address || !dto.taxCode) {
+        return Err(new Error('FullName, Address, and Tax code are required.'));
       }
       const result = await this.createOrgPaymentInfoRepository.createOrgPaymentInfo(dto, organizerId);
       if (result.isErr()) {

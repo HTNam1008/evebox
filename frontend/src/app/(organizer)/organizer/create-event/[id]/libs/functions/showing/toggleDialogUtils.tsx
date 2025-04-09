@@ -1,7 +1,7 @@
 import { Showtime } from "../../../libs/interface/idevent.interface";
 
 export const toggleExpanded = (
-    id: number,
+    id: string,
     setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>
 ) => {
     setShowtimes((prevShowtimes) =>
@@ -12,7 +12,7 @@ export const toggleExpanded = (
 };
 
 export const toggleDialog = (
-    id: number,
+    id: string,
     setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>
 ) => {
     setShowtimes((prevShowtimes) =>
@@ -23,7 +23,7 @@ export const toggleDialog = (
 };
 
 export const toggleEditDialog = (
-    id: number,
+    id: string,
     setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>
 ) => {
     setShowtimes((prevShowtimes) =>
@@ -34,7 +34,7 @@ export const toggleEditDialog = (
 };
 
 export const toggleDelDialog = (
-    id: number,
+    id: string,
     setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>
 ) => {
     setShowtimes((prevShowtimes) =>
@@ -45,7 +45,7 @@ export const toggleDelDialog = (
 };
 
 export const toggleDelShowDialog = (
-    id: number,
+    id: string,
     setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>
 ) => {
     setShowtimes((prevShowtimes) =>
@@ -59,7 +59,7 @@ export const toggleDelShowDialog = (
 };
 
 export const toggleCopyTicketDialog = (
-    id: number,
+    id: string,
     setShowtimes: React.Dispatch<React.SetStateAction<Showtime[]>>
 ) => {
     setShowtimes((prevShowtimes) =>

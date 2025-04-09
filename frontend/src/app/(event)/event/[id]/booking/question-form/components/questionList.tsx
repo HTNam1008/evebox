@@ -61,10 +61,10 @@ export default function QuestionList({
 
     const handleChange = (id: number, value: string, regex: string | null, required: boolean) => {
         const hashedValue = regex ? hashInput(value) : value;
-        
+
         let isValid = true;
         let errorMessage = null;
-    
+
         // Check required field
         if (required && (!value || value.trim() === "")) {
             isValid = false;
@@ -74,7 +74,7 @@ export default function QuestionList({
             isValid = false;
             errorMessage = `Invalid format:${hashedValue}`;
         }
-    
+
         setAnswers((prev) => ({ ...prev, [id]: hashedValue }));
         setErrors((prev) => ({ ...prev, [id]: errorMessage }));
     };
@@ -91,12 +91,12 @@ export default function QuestionList({
 
                     {!isLoadingForm ? (
                         formInputs.length > 0 ? (
-                            formInputs.map((input) => (
+                            formInputs.map((input: FormInput) => (
                                 <div className="col-md-12" key={input.id}>
                                     <label htmlFor={`input-${input.id}`} className="form-label d-flex justify-content-start">
                                         <b>{input.required && <span className="red-star">*</span>} {input.fieldName}</b>
                                     </label>
-                                    {input.type === "2" ? (
+                                    {(input.type === "2" || input.type === "oneAns") ? (
                                         // Radio button handling
                                         <div className="form-check d-flex justify-content-start">
                                             {input.options && input.options.length > 0 ? (
@@ -119,19 +119,89 @@ export default function QuestionList({
                                         </div>
                                     ) : (
                                         // Other input fields
-                                    <>
+                                        <>
                                             <input
                                                 type={input.type}
                                                 className="form-control custom-input"
                                                 id={`input-${input.id}`}
                                                 placeholder="Điền câu trả lời của bạn"
                                                 value={answers[input.id] || ''}
-                                                onChange={(e) => handleChange(input.id, e.target.value, input.regex,input.required)}
+                                                onChange={(e) => handleChange(input.id, e.target.value, input.regex, input.required)}
                                                 required={input.required}
                                             />
-                                        {errors[input.id] && <div className="text-danger text-start mt-1">{errors[input.id]}</div>}
-                                    </>
+                                            {errors[input.id] && <div className="text-danger text-start mt-1">{errors[input.id]}</div>}
+                                        </>
                                     )}
+                                    {(input.type === "2" || input.type === "oneAns") ? (
+                                        // Radio button
+                                        <div className="form-check d-flex justify-content-start">
+                                            {input.options && input.options.length > 0 ? (
+                                                <>
+                                                    <input
+                                                        className="form-check-input mr-2"
+                                                        type="radio"
+                                                        id={`input-${input.id}`}
+                                                        checked={answers[input.id] === input.options[0].optionText}
+                                                        onChange={() =>
+                                                            input.options && handleChange(input.id, input.options[0].optionText, input.regex, input.required)
+                                                        }
+                                                        required={input.required}
+                                                    />
+                                                    <label className="form-check-label" htmlFor={`input-${input.id}`}>
+                                                        {input.options[0].optionText}
+                                                    </label>
+                                                </>
+                                            ) : (
+                                                <span>Không có lựa chọn</span>
+                                            )}
+                                        </div>
+                                    ) : input.type === "multiAns" || input.type === "4" ? (
+                                        // Checkbox: nhiều lựa chọn
+                                        <>
+                                            {input.options && input.options.length > 0 ? (
+                                                input.options.map((opt, optIdx) => (
+                                                    <div className="form-check" key={optIdx}>
+                                                        <input
+                                                            className="form-check-input"
+                                                            type="checkbox"
+                                                            id={`input-${input.id}-${optIdx}`}
+                                                            checked={
+                                                                answers[input.id]?.split(';').includes(opt.optionText) ?? false
+                                                            }
+                                                            onChange={(e) => {
+                                                                const current = answers[input.id]?.split(';') || [];
+                                                                const updated = e.target.checked
+                                                                    ? [...current, opt.optionText]
+                                                                    : current.filter(item => item !== opt.optionText);
+                                                                handleChange(input.id, updated.join(';'), input.regex, input.required);
+                                                            }}
+                                                        />
+                                                        <label className="form-check-label" htmlFor={`input-${input.id}-${optIdx}`}>
+                                                            {opt.optionText}
+                                                        </label>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <span>Không có lựa chọn</span>
+                                            )}
+                                            {errors[input.id] && <div className="text-danger text-start mt-1">{errors[input.id]}</div>}
+                                        </>
+                                    ) : (
+                                        // Default: text/email/phone input
+                                        <>
+                                            <input
+                                                type={input.type}
+                                                className="form-control custom-input"
+                                                id={`input-${input.id}`}
+                                                placeholder="Điền câu trả lời của bạn"
+                                                value={answers[input.id] || ''}
+                                                onChange={(e) => handleChange(input.id, e.target.value, input.regex, input.required)}
+                                                required={input.required}
+                                            />
+                                            {errors[input.id] && <div className="text-danger text-start mt-1">{errors[input.id]}</div>}
+                                        </>
+                                    )}
+
                                     <div className="valid-feedback">Looks good!</div>
                                 </div>
                             ))

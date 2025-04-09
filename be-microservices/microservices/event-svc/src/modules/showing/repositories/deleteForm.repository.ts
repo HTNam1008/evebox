@@ -10,7 +10,7 @@ export class DeleteFormRepository {
   async deleteForm(dto: DeleteFormDto): Promise<Result<number, Error>> {
     try {
       const form = await this.prisma.form.findFirst({
-        where: { id: dto.id, createdBy: dto.createdBy, deleteAt: null },
+        where: { id: dto.id, deleteAt: null },
       });
       if (!form) {
         return Err(new Error('Form not found or no permission to delete'));
@@ -30,6 +30,23 @@ export class DeleteFormRepository {
       return Ok(dto.id);
     } catch (error) {
       return Err(new Error('Failed to delete form'));
+    }
+  }
+
+  async checkAuthor(id: number, userId: string): Promise<Result<boolean, Error>> {
+    try {
+      const form = await this.prisma.form.findUnique({
+        where: { id: id >> 0 },
+        select: { createdBy: true }
+      });
+
+      if (form && form.createdBy === userId) {
+        return Ok(true);
+      }
+
+      return Ok(false);
+    } catch (error) {
+      return Err(new Error('Failed to check author'));
     }
   }
 }
