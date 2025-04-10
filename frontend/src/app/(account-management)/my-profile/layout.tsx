@@ -3,7 +3,7 @@ import DashboardLoading from "@/app/(dashboard)/loading"
 import { Providers } from "@/app/provider"
 import { Suspense } from "react"
 
-export default function RootLayout({
+export default function DefaultLayout({
   children,
 }: {
   children: React.ReactNode

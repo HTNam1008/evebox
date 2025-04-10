@@ -4,7 +4,7 @@ import NavigationBar from "./components/common/navigationBar"
 import DashboardLoading from "./loading"
 import { Providers } from "../provider"
 
-export default function RootLayout({
+export default function DefaultLayout({
   children,
 }: {
   children: React.ReactNode
