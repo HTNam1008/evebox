@@ -7,7 +7,7 @@ import { ArrowLeft} from "lucide-react"
 /* Package Application */
 import Sidebar from '../../components/sidebar';
 
-export default function AccountPage() {
+export default function AccountDetailPage() {
     const router = useRouter();
 
     return (

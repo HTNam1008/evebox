@@ -1,10 +1,10 @@
 /* Package System */
 
 /* Package Application */
-import AccountPage from "../components/accountsPage"
+import AccountDetailPage from "./components/accountPage"
 
 export default function Page() {
     return (
-        <AccountPage />
+        <AccountDetailPage />
     )
 }

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,7 +8,7 @@ const Sidebar = () => {
   const pathName = usePathname();
   const menuSections = [
     { text: 'Dashboard', href: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
-    { text: 'Quản lý Account', href: '/admin/accounts-management', icon: <UserRoundCog size={20} /> },
+    { text: 'Quản lý Account', href: '/admin/account-management', icon: <UserRoundCog size={20} /> },
     { text: 'Quản lý Sự kiện', href: '/admin/event-management', icon: <CalendarPlus size={20} /> },
     { text: 'Quản lý Showing', href: '/admin/showing-management', icon: <Ticket size={20} /> },
     { text: 'Cập nhật Sự kiện đặc biệt', href: '/admin/event-special', icon: <FilePenLine size={20} /> },
