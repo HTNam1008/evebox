@@ -1,0 +1,17 @@
+import Sidebar from "./components/sidebar";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="flex min-h-screen flex-col md:flex-row">
+            {/* Sidebar */}
+            <div className="block md:block w-64 bg-gray-900 text-white z-20 absolute md:relative h-full md:h-auto">
+                <Sidebar />
+            </div>
+
+            {/* Page content */}
+            <div className="flex-1 p-6 bg-gray-100 text-black">
+                {children}
+            </div>
+        </div>
+    );
+}
