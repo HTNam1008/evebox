@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 
 /* Package Application */
-import { register } from '@/lib/server/auth.api';
+import { register } from '@/services/auth.service';
 import { OtpConstants } from '@/app/(authentication)/verify-otp/libs/constants/otpConstants';
 import { ErrorResponse } from '@/types/ErrorResponse';
 
@@ -49,9 +49,9 @@ export const useRegisterForm = () => {
           setError('');
           localStorage.setItem('verifyData', JSON.stringify({
             ...values,
-            request_token: result.data.data.request_token,
-            remaining_attempts: result.data.data.remaining_attempts,
-            resend_allowed_in: result.data.data.resend_allowed_in,
+            request_token: result.data.request_token,
+            remaining_attempts: result.data.remaining_attempts,
+            resend_allowed_in: result.data.resend_allowed_in,
             type: OtpConstants.REGISTER,
           }));
           router.push('/verify-otp');

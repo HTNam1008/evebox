@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 /* Package Application */
 import { OtpConstants } from '../constants/otpConstants';
 import { ErrorResponse } from '@/types/ErrorResponse';
-import { verifyOtp } from '@/lib/server/auth.api';
+import { verifyOtp } from '@/services/auth.service';
 
 const TIMELEFT = 60;
 const ATTEMPTS = 5;

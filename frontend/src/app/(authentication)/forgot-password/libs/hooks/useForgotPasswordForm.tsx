@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 /* Package Application */
 import { ErrorResponse } from '@/types/ErrorResponse';
 import { OtpConstants } from '@/app/(authentication)/verify-otp/libs/constants/otpConstants';
-import { forgotPassword } from '@/lib/server/auth.api';
+import { forgotPassword } from '@/services/auth.service';
 
 export const useForgotPasswordForm = () => {
   const [error, setError] = useState('');
@@ -32,9 +32,9 @@ export const useForgotPasswordForm = () => {
           setError('');
           localStorage.setItem('verifyData', JSON.stringify({
             ...values,
-            request_token: result.data.data.request_token,
-            remaining_attempts: result.data.data.remaining_attempts,
-            resend_allowed_in: result.data.data.resend_allowed_in,
+            request_token: result.data.request_token,
+            remaining_attempts: result.data.remaining_attempts,
+            resend_allowed_in: result.data.resend_allowed_in,
             type: OtpConstants.FORGOT_PASSWORD,
           }));
           router.push('/verify-otp');
