@@ -1,10 +1,12 @@
+// evebox.module.ts
 import { Module } from '@nestjs/common';
-// import { EveboxService } from './evebox.service';
-// import { PrismaModule } from '../prisma/prisma.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EveBoxRepository } from './evebox.repository';
+import { EveBoxService } from './evebox.service';
+import { PrismaModule } from 'src/infrastructure/database/prisma/prisma.module';
 
 @Module({
-  imports: [],
-  providers: [],
-  exports: [],
+  imports: [ScheduleModule.forRoot(), PrismaModule],
+  providers: [EveBoxRepository, EveBoxService],
 })
 export class EveboxModule {}
