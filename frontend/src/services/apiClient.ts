@@ -2,6 +2,8 @@ import axios, { AxiosError, AxiosHeaders, AxiosInstance, AxiosResponse, Internal
 import { getSession, signOut } from "next-auth/react";
 import axiosRetry from "axios-retry";
 
+let cachedSession: Awaited<ReturnType<typeof getSession>> | null = null;
+
 const createApiClient = (baseUrl: string): AxiosInstance => {
   const apiClient = axios.create({ baseURL: baseUrl });
 
@@ -18,8 +20,9 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
 
   apiClient.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
-      const session = await getSession();
-      const token = session?.user?.accessToken;
+      if (!cachedSession) cachedSession = await getSession();
+
+      const token = cachedSession?.user?.accessToken;
       if (token) {
         if (!config.headers) {
           config.headers = new AxiosHeaders();
@@ -44,8 +47,8 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
         originalRequest._retry = true;
 
         try {
-          const session = await getSession();
-          const refreshToken = session?.user?.refreshToken;
+          cachedSession = await getSession();
+          const refreshToken = cachedSession?.user?.refreshToken;
           if (!refreshToken) {
             throw new Error("No refresh token available");
           }
@@ -58,8 +61,10 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
           const { access_token, refresh_token } = refreshResponse.data.data;
           console.log("New token:", access_token);
 
-          session.user.accessToken = access_token;
-          session.user.refreshToken = refresh_token;
+          if (cachedSession?.user) {
+            cachedSession.user.accessToken = access_token;
+            cachedSession.user.refreshToken = refresh_token;
+          }
           
           if (!originalRequest.headers) {
             originalRequest.headers = new AxiosHeaders();
@@ -70,6 +75,7 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
           return apiClient(originalRequest);
         } catch (refreshError) {
           console.error("Refresh token failed", refreshError);
+          cachedSession = null;
 
           await signOut({
             redirect: true,
