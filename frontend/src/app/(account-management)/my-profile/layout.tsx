@@ -9,15 +9,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>
-        <Providers>
-          <Suspense fallback={<DashboardLoading />}>
-            <NavigationBar/>
-            <main>{children}</main>
-          </Suspense>
-        </Providers>
-      </body>
-    </html>
+    <Providers>
+      <Suspense fallback={<DashboardLoading />}>
+        <NavigationBar/>
+        <main>{children}</main>
+      </Suspense>
+    </Providers>  
   )
 }

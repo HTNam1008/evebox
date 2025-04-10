@@ -13,16 +13,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <Providers>
-          <NavigationBar />
-          <Suspense fallback={<Loading />}>
-            <main>{children}</main>
-          </Suspense>
-          <Footer />
-        </Providers>
-      </body>
-    </html>
+    <Providers>
+      <NavigationBar />
+      <Suspense fallback={<Loading />}>
+        <main>{children}</main>
+      </Suspense>
+      <Footer />
+    </Providers>
   );
 }
