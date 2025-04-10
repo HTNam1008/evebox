@@ -2,8 +2,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { EveBoxRepository } from './evebox.repository';
-// import { VectorStoreService } from 'src/infrastructure/vector/vector-store.service';
-// import { Document } from 'langchain/document';
+import { VectorStoreService } from 'src/infrastructure/vector/vector_store.service';
+import { Document } from 'langchain/document';
 
 @Injectable()
 export class EveBoxService {
@@ -11,7 +11,7 @@ export class EveBoxService {
 
   constructor(
     private readonly eveBoxRepo: EveBoxRepository,
-    // private readonly vectorStore: VectorStoreService,
+    private readonly vectorStore: VectorStoreService,
   ) {}
 
   @Cron('0 0 * * 1') // Mỗi thứ 2 lúc 0h
@@ -24,17 +24,17 @@ export class EveBoxService {
       return;
     }
 
-    // const documents: Document[] = events.map((event) => {
-    //   const metadata = { ...event };
-    //   const pageContent = Object.entries(event)
-    //     .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
-    //     .join('\n');
+    const documents: Document[] = events.map((event) => {
+      const metadata = { ...event };
+      const pageContent = Object.entries(event)
+        .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+        .join('\n');
 
-    //   return new Document({ pageContent, metadata });
-    // });
+      return new Document({ pageContent, metadata });
+    });
 
-    // await this.vectorStore.embedDocuments(documents, 'evebox-events');
+    await this.vectorStore.embedDocuments(documents, 'evebox-events');
 
-    // this.logger.log(`✅ Đã embed ${documents.length} events vào vector store.`);
+    this.logger.log(`✅ Đã embed ${documents.length} events vào vector store.`);
   }
 }
