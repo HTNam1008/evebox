@@ -54,7 +54,7 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
           }
 
           const refreshResponse = await axios.post(
-            `${baseUrl}/api/user/refresh-token`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/user/refresh-token`,
             { refresh_token: refreshToken }
           );
 
