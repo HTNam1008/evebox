@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import SearchLoading from "./loading"
 
-export default function RootLayout({
+export default function DefaultLayout({
     children,
 }: {
     children: React.ReactNode

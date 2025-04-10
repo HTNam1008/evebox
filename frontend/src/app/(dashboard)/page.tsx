@@ -1,3 +1,5 @@
+"use client"
+
 /* Package System */
 import 'tailwindcss/tailwind.css';
 import 'swiper/css';
@@ -9,28 +11,27 @@ import EventSlider from './components/dashboard/eventSlider';
 import ImageSlider from './components/dashboard/imageSlider';
 import SearchControls from './components/dashboard/searchControls';
 import { CategorySpecial } from '@/types/model/frontDisplay';
-import { fetchEvents } from './libs/server/fetchEvents';
-import { fetchRecommendEvents } from './libs/server/fetchRecommendEvents';
+// import { getFrontDisplayEvents, getRecommendedEvents } from '@/lib/server/event.api';
+import { useFrontDisplayEvents } from '../../lib/swr/useFrontDisplayEvents';
+import { useRecommendedEvents } from '../../lib/swr/useRecommendedEvents';
 import TabSwitcher from '../(dashboard)/components/dashboard/tabSwitcher'; // Import the new client component
 
-const Dashboard = async () => {
-    const data = await fetchEvents();
-    const weekTime = 'week';
-    const monthTime = 'month';
-    const dataMonthlyRecommendedEvent = await fetchRecommendEvents(monthTime);
-    const dataImageSlider = await fetchRecommendEvents(weekTime);
+const Dashboard = () => {
+    const { frontDisplayEvents } = useFrontDisplayEvents();
+    const { recommendedEvents: dataImageSlider } = useRecommendedEvents('week');
+    const { recommendedEvents: dataMonthlyRecommendedEvent } = useRecommendedEvents('month');
 
     const events = {
-        specialEvents: data.data.specialEvents || [],
-        trendingEvents: data.data.trendingEvents || [],
-        onlyOnEve: data.data.onlyOnEve || [],
-        categorySpecial: data.data.categorySpecial as CategorySpecial[] || [],
+        specialEvents: Array.isArray(frontDisplayEvents) ? [] : frontDisplayEvents.specialEvents || [],
+        trendingEvents: Array.isArray(frontDisplayEvents) ? [] : frontDisplayEvents.trendingEvents || [],
+        onlyOnEve: Array.isArray(frontDisplayEvents) ? [] : frontDisplayEvents.onlyOnEve || [],
+        categorySpecial: !Array.isArray(frontDisplayEvents) && frontDisplayEvents.categorySpecial ? frontDisplayEvents.categorySpecial as CategorySpecial[] : [],
     };
 
-    const sliderMontlyEvents = dataMonthlyRecommendedEvent.data || [];
+    const sliderMontlyEvents = dataMonthlyRecommendedEvent || [];
 
 
-    const sliderEvents = dataImageSlider.data || [];
+    const sliderEvents = dataImageSlider || [];
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -56,7 +57,7 @@ const Dashboard = async () => {
                         </div>
 
                         {/* Client-side TabSwitcher */}
-                        <TabSwitcher 
+                        <TabSwitcher
                             sliderEvents={sliderEvents}
                             dataMonthlyRecommendedEvent={sliderMontlyEvents}
                         />
