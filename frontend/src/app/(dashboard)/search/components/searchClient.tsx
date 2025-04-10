@@ -18,7 +18,7 @@ import { Category } from '@/types/model/frontDisplay';
 import mapCategoryName from '@/app/(dashboard)/libs/functions/mapCategoryName';
 import { fetchSearchEvents } from '@/app/(dashboard)/libs/server/fetchSearchEvents';
 import { useRouter } from 'next/navigation';
-import { getAllCategories } from '@/lib/server/event.api';
+import { useCategories } from '../../../../lib/swr/useCategories';
 
 interface SearchClientProps {
   events: SearchEventsResponse;
@@ -40,18 +40,13 @@ export default function SearchClient({ events: initialEvents }: SearchClientProp
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const currentQuery = searchParams.get('q') || '';
 
+  const { categories: categoriesData } = useCategories();
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await getAllCategories();
-        setCategories(response.data || []);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-        setCategories([]);
-      }
-    };
-    fetchCategories();
-  }, []);
+    if (categoriesData) {
+      setCategories(categoriesData);
+    }
+  }, [categoriesData]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
