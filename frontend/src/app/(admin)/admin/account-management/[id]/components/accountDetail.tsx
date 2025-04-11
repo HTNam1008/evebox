@@ -10,7 +10,7 @@ import { ChevronDown } from "lucide-react";
 
 export default function AccountDetailForm({ user }: { user: User }) {
     return (
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8 mt-10 mb-10">
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-12 mt-10 mb-10">
             <div className="flex justify-center mb-8">
                 <div className="relative w-24 h-24">
                     <Image src="" alt="Avatar"
@@ -19,7 +19,7 @@ export default function AccountDetailForm({ user }: { user: User }) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <FormInput label="Họ và tên" value={user.name} disabled type="text" />
                 <FormInput label="Địa chỉ email" value={user.email} disabled type="email" />
                 <FormInput label="Số điện thoại" value={user.phone} disabled type="phone" />

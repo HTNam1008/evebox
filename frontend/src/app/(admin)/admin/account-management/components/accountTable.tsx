@@ -119,10 +119,12 @@ export default function AccountTable() {
                     </thead>
                     <tbody className="text-sm">
                         {paginatedData.map((user, index) => (
-                            <tr key={user.id} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200"
-                                onClick={() => router.push(`/admin/account-management/${user.id}`)}>
+                            <tr key={user.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                 <td className="px-4 py-3 text-center border-r border-gray-200">{index + 1}</td>
-                                <td className="px-4 py-3 border-r border-gray-200 cursor-pointer">{user.name}</td>
+                                <td className="px-4 py-3 border-r border-gray-200 cursor-pointer" 
+                                    onClick={() => router.push(`/admin/account-management/${user.id}`)}>
+                                    {user.name}
+                                </td>
                                 <td className="px-4 py-3 border-r border-gray-200">{user.email}</td>
                                 <td className="px-4 py-3 border-r border-gray-200">{user.role}</td>
                         
