@@ -2,13 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/database/prisma/prisma.service";
 import { Result, Ok, Err } from "oxide.ts";
 import { SummaryQueryDto } from "../queries/getSummary/getSummary.dto";
-import { EventSummaryResponse } from "../queries/getSummary/getSummary-response.dto";
+import { EventSummaryData } from "../queries/getSummary/getSummary-response.dto";
 
 @Injectable()
 export class GetEventSummaryRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
-  async getEventSummary(eventId: number, dto: SummaryQueryDto, organizerId: string): Promise<Result<EventSummaryResponse, Error>> {
+  async getEventSummary(eventId: number, dto: SummaryQueryDto, organizerId: string): Promise<Result<EventSummaryData, Error>> {
     const event = await this.prisma.events.findUnique({
       where: {
         id: Number(eventId),
@@ -20,11 +20,11 @@ export class GetEventSummaryRepository {
       console.log('not found event');
       return null;
     }
-    
+
     const whereShowing: any = {
       eventId: Number(eventId)
     };
-    
+
     if (dto.fromDate && dto.toDate) {
       whereShowing.startTime = {
         gte: dto.fromDate,
@@ -44,7 +44,7 @@ export class GetEventSummaryRepository {
       return null;
     }
 
-    const ticketTypeData = showings.flatMap(showing => 
+    const ticketTypeData = showings.flatMap(showing =>
       showing.TicketType.map(tt => ({
         ticketTypeId: tt.id,
         typeName: tt.name,
@@ -96,17 +96,13 @@ export class GetEventSummaryRepository {
     const totalTickets = ticketTypeData.reduce((sum, tt) => sum + tt.quantity, 0);
 
     return Ok({
-      data: {
-        eventId: event.id,
-        eventTitle: event.title,
-        totalRevenue,
-        ticketsSold,
-        totalTickets,
-        percentageSold: totalTickets ? ticketsSold / totalTickets : 0,
-        byTicketType: summary.map(({ revenue, ...rest }) => rest)
-      },
-      statusCode: 200,
-      message: "Event summary retrieved successfully"
+      eventId: event.id,
+      eventTitle: event.title,
+      totalRevenue,
+      ticketsSold,
+      totalTickets,
+      percentageSold: totalTickets ? ticketsSold / totalTickets : 0,
+      byTicketType: summary.map(({ revenue, ...rest }) => rest)
     });
   }
 }

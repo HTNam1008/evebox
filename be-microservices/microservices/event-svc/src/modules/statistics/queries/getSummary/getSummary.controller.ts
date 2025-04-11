@@ -55,7 +55,7 @@ export class GetEventSummaryController {
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: 'Event summary retrieved successfully',
-        data: { formId: result.unwrap() },
+        data: result.unwrap()
       });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
