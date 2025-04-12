@@ -25,10 +25,25 @@ export interface SortIconProps<T> {
     sortConfig: SortConfig<T> | null;
 }
 
+//Search 
 export interface SearchBarProps {
     onSearch: (keyword: string) => void;
 }
 
 export interface AccountTableProps {
     searchKeyword: string;
+    roleFilter: string;
+    dateFrom: string;
+    dateTo: string;
+}
+
+//Filter
+export interface FilterProps {
+    roleFilter: string;
+    onRoleChange: (value: string) => void;
+    dateFrom: string;
+    dateTo: string;
+    onDateFromChange: (value: string) => void;
+    onDateToChange: (value: string) => void;
+    onReset: () => void;
 }

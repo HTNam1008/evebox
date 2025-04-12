@@ -11,7 +11,7 @@ import { sortUsers } from "../lib/function/sortUsers";
 import SortIcon from "./sortIcon";
 import { AccountTableProps } from "../lib/interface/acctable.interface";
 
-export default function AccountTable({ searchKeyword }: AccountTableProps) {
+export default function AccountTable({ searchKeyword, roleFilter, dateFrom, dateTo }: AccountTableProps) {
     const data: User[] = [
         {
             id: '1',
@@ -70,13 +70,21 @@ export default function AccountTable({ searchKeyword }: AccountTableProps) {
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchKeyword.toLowerCase())
-    );
+    const filteredUsers = users.filter(user => {
+        const matchSearch = user.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchKeyword.toLowerCase())
+
+        const matchRole = roleFilter ? user.role === roleFilter : true;
+
+        const createdDate = new Date(user.createdAt).toISOString().split('T')[0];
+        const matchDateFrom = dateFrom ? createdDate >= dateFrom : true;
+        const matchDateTo = dateTo ? createdDate <= dateTo : true;
+
+        return matchSearch && matchRole && matchDateFrom && matchDateTo;
+    });
 
     const sortedUsers = sortUsers(filteredUsers, sortConfig);
-    
+
     const paginatedData = sortedUsers.slice(startItem - 1, endItem);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -92,7 +100,7 @@ export default function AccountTable({ searchKeyword }: AccountTableProps) {
         setUsers(prev =>
             prev.map(user =>
                 user.id === selectedUser.id
-                    ? {...user, status: user.status === 'Active' ? 'Deactivated' : 'Active'}
+                    ? { ...user, status: user.status === 'Active' ? 'Deactivated' : 'Active' }
                     : user)
         );
 
@@ -120,20 +128,20 @@ export default function AccountTable({ searchKeyword }: AccountTableProps) {
                             </th>
                             <th className="px-4 py-3  cursor-pointer text-center" onClick={() => handleSort('status')}>
                                 Trạng thái <SortIcon field="status" sortConfig={sortConfig} />
-                            </th> 
+                            </th>
                         </tr>
                     </thead>
                     <tbody className="text-sm">
                         {paginatedData.map((user, index) => (
                             <tr key={user.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                 <td className="px-4 py-3 text-center border-r border-gray-200">{index + 1}</td>
-                                <td className="px-4 py-3 border-r border-gray-200 cursor-pointer" 
+                                <td className="px-4 py-3 border-r border-gray-200 cursor-pointer"
                                     onClick={() => router.push(`/admin/account-management/${user.id}`)}>
                                     {user.name}
                                 </td>
                                 <td className="px-4 py-3 border-r border-gray-200">{user.email}</td>
                                 <td className="px-4 py-3 border-r border-gray-200">{user.role}</td>
-                        
+
                                 <td className="px-4 py-3 text-center border-r border-gray-200">
                                     {new Date(user.createdAt).toLocaleDateString('vi-VN')}
                                 </td>
@@ -142,7 +150,7 @@ export default function AccountTable({ searchKeyword }: AccountTableProps) {
                                                     ${user.status === 'Active'
                                             ? 'bg-teal-100 text-teal-500 border-teal-500'
                                             : 'bg-gray-200 text-gray-500 border-gray-500'}`}
-                                            onClick={() => handleStatusClick(user)}>
+                                        onClick={() => handleStatusClick(user)}>
                                         {user.status}
                                     </span>
                                 </td>
