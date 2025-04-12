@@ -9,8 +9,9 @@ import { User } from "../lib/interface/acctable.interface";
 import ConfirmActiveDialog from "@/app/(admin)/admin/account-management/components/dialog/confirmActive";
 import { sortUsers } from "../lib/function/sortUsers";
 import SortIcon from "./sortIcon";
+import { AccountTableProps } from "../lib/interface/acctable.interface";
 
-export default function AccountTable() {
+export default function AccountTable({ searchKeyword }: AccountTableProps) {
     const data: User[] = [
         {
             id: '1',
@@ -69,7 +70,12 @@ export default function AccountTable() {
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    const sortedUsers = sortUsers(users, sortConfig);
+    const filteredUsers = users.filter(user =>
+        user.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+
+    const sortedUsers = sortUsers(filteredUsers, sortConfig);
     
     const paginatedData = sortedUsers.slice(startItem - 1, endItem);
     const [isDialogOpen, setIsDialogOpen] = useState(false);

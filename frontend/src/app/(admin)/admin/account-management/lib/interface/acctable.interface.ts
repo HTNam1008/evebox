@@ -24,3 +24,11 @@ export interface SortIconProps<T> {
     field: keyof T;
     sortConfig: SortConfig<T> | null;
 }
+
+export interface SearchBarProps {
+    onSearch: (keyword: string) => void;
+}
+
+export interface AccountTableProps {
+    searchKeyword: string;
+}
