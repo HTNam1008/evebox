@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import { User } from "../lib/interface/acctable.interface";
-import ConfirmActiveDialog from "@/app/(showing)/showing/components/confirmActive";
+import ConfirmActiveDialog from "@/app/(admin)/admin/account-management/components/dialog/confirmActive";
 import { sortUsers } from "../lib/function/sortUsers";
 import SortIcon from "./sortIcon";
 

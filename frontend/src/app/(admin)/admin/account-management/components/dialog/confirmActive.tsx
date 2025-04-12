@@ -2,8 +2,7 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { ConfirmActiveProps } from "@/app/(admin)/admin/accounts-management/lib/interface/acctable.interface";
-
+import { ConfirmActiveProps } from "../../lib/interface/acctable.interface";
 export default function ConfirmActiveDialog({ open, onClose, onConfirm, currentStatus }: ConfirmActiveProps) {
     const nextStatus = currentStatus === "Active" ? "Deactivated" : "Active";
 
