@@ -38,4 +38,8 @@ export class END_POINT_LIST {
   static readonly ORG_PAYMENT = {
     PAYMENT: "/api/org/payment",
   }
+
+  static readonly ORG_STATISTICS = {
+    GET_SUMMARY: "/api/org/statistics/{eventId}/summary",
+  };
 }
