@@ -50,4 +50,32 @@ export class GetEventSummaryController {
       })
     }
   }
+
+  @Get('orders/showingId')
+  async getOrders(
+    @Res() res: Response,
+  )
+  {
+    try{
+      const result = await this.getEventSummaryService.getOrders('412949459297', 'dattruong01082@gmail.com')
+      if (result.isErr()) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: result.unwrapErr().message,
+        });
+      }
+      return res.status(HttpStatus.OK).json({
+        statusCode: HttpStatus.OK,
+        message: 'Event summary retrieved successfully',
+        data: result.unwrap()
+      });
+    }
+    catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Internal server error',
+      })
+    }
+  }
+
 }

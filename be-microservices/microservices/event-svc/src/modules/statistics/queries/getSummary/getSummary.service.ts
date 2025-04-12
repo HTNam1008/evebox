@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { GetEventSummaryRepository } from '../../repositories/getSummary.repository';
 import { EventSummaryData } from './getSummary-response.dto';
 import { Err, Result, Ok } from 'oxide.ts';
+import { GetOrdersRepository } from '../../repositories/getOrders.repository';
 
 @Injectable()
 export class GetEventSummaryService {
-  constructor(private readonly getEventSummaryRepository: GetEventSummaryRepository) {}
+  constructor(
+    private readonly getEventSummaryRepository: GetEventSummaryRepository,
+    private readonly getOrdersRepository: GetOrdersRepository,
+  ) {}
 
   async getEventSummary(showingId: string, organizerId: string): Promise<Result<EventSummaryData, Error>> {
     try {
@@ -27,6 +31,22 @@ export class GetEventSummaryService {
       return Ok(result.unwrap());
     } catch (error) {
       return Err(new Error('Failed to get event summary'));
+    }
+  }
+
+  async getOrders(showingId: string, organizerId: string): Promise<Result<any[], Error>> {
+    try {
+      if (!showingId) {
+        return Err(new Error('Showing ID is required'));
+      }
+
+      if (!organizerId) {
+        return Err(new Error('Unauthorized user'));
+      }
+
+      return await this.getOrdersRepository.getOrders(showingId, organizerId);
+    } catch (error) {
+      return Err(new Error('Failed to get orders'));
     }
   }
 }
