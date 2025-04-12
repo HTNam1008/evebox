@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { GetEventSummaryRepository } from '../../repositories/getSummary.repository';
-import { SummaryQueryDto } from './getSummary.dto';
 import { EventSummaryData } from './getSummary-response.dto';
 import { Err, Result, Ok } from 'oxide.ts';
 
@@ -8,17 +7,17 @@ import { Err, Result, Ok } from 'oxide.ts';
 export class GetEventSummaryService {
   constructor(private readonly getEventSummaryRepository: GetEventSummaryRepository) {}
 
-  async getEventSummary(eventId: number, dto: SummaryQueryDto, organizerId: string): Promise<Result<EventSummaryData, Error>> {
+  async getEventSummary(showingId: string, organizerId: string): Promise<Result<EventSummaryData, Error>> {
     try {
-      if (!eventId || isNaN(eventId)) {
-        return Err(new Error('Event not found'));
+      if (!showingId) {
+        return Err(new Error('Showing ID is required'));
       }
 
       if (!organizerId) {
         return Err(new Error('Unauthorized user'));
       }
 
-      const result = await this.getEventSummaryRepository.getEventSummary(eventId, dto, organizerId);
+      const result = await this.getEventSummaryRepository.getEventSummary(showingId, organizerId);
 
       if(result.isErr()) {
         console.log('error after repo');

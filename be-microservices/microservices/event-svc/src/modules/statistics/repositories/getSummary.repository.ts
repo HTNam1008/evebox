@@ -1,42 +1,37 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/database/prisma/prisma.service";
 import { Result, Ok, Err } from "oxide.ts";
-import { SummaryQueryDto } from "../queries/getSummary/getSummary.dto";
 import { EventSummaryData } from "../queries/getSummary/getSummary-response.dto";
 
 @Injectable()
 export class GetEventSummaryRepository {
   constructor(private readonly prisma: PrismaService) { }
 
-  async getEventSummary(eventId: number, dto: SummaryQueryDto, organizerId: string): Promise<Result<EventSummaryData, Error>> {
-    const event = await this.prisma.events.findUnique({
+  async getEventSummary(showingId: string, organizerId: string): Promise<Result<EventSummaryData, Error>> {
+    if (!showingId) {
+      return Err(new Error('Showing ID is required'));
+    }
+
+    const showings = await this.prisma.showing.findUnique({
       where: {
-        id: Number(eventId),
-        // organizerId: organizerId
-      }
-    });
-
-    if (!event) {
-      console.log('not found event');
-      return null;
-    }
-
-    const whereShowing: any = {
-      eventId: Number(eventId)
-    };
-
-    if (dto.fromDate && dto.toDate) {
-      whereShowing.startTime = {
-        gte: dto.fromDate,
-        lte: dto.toDate
-      };
-    }
-
-    const showings = await this.prisma.showing.findMany({
-      where: whereShowing,
+        id: showingId,
+        deleteAt: null,
+        // Events: {
+        //   organizerId: organizerId,
+        //   deleteAt: null,
+        // }
+      },
       select: {
         id: true,
-        TicketType: true
+        TicketType: true,
+        Events: {
+          select: {
+            id: true,
+            title: true,
+          }
+        },
+        startTime: true,
+        endTime: true,
       }
     });
 
@@ -44,15 +39,13 @@ export class GetEventSummaryRepository {
       return null;
     }
 
-    const ticketTypeData = showings.flatMap(showing =>
-      showing.TicketType.map(tt => ({
-        ticketTypeId: tt.id,
-        typeName: tt.name,
-        price: tt.price,
-        showingId: tt.showingId,
-        quantity: tt.quantity || 0,
-      }))
-    );
+    const ticketTypeData = showings.TicketType.map(tt => ({
+      ticketTypeId: tt.id,
+      typeName: tt.name,
+      price: tt.price,
+      showingId: tt.showingId,
+      quantity: tt.quantity || 0,
+    }));
     if (!ticketTypeData) {
       return null;
     }
@@ -60,9 +53,7 @@ export class GetEventSummaryRepository {
     const tickets = await this.prisma.ticket.findMany({
       where: {
         status: 1,
-        showingId: {
-          in: showings.map(s => s.id)
-        }
+        showingId: showingId,
       },
       select: {
         type: true,
@@ -96,8 +87,11 @@ export class GetEventSummaryRepository {
     const totalTickets = ticketTypeData.reduce((sum, tt) => sum + tt.quantity, 0);
 
     return Ok({
-      eventId: event.id,
-      eventTitle: event.title,
+      eventId: showings.Events.id,
+      eventTitle: showings.Events.title,
+      showingId: showings.id,
+      startTime: showings.startTime,
+      endTime: showings.endTime,
       totalRevenue,
       ticketsSold,
       totalTickets,

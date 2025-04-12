@@ -22,6 +22,15 @@ export class EventSummaryData {
   @ApiProperty({ example: 'Đêm nhạc Acoustic 2025', description: 'Event title' })
   eventTitle: string;
 
+  @ApiProperty({ example: '1041811243642', description: 'Showing time ID' })
+  showingId: string;
+
+  @ApiProperty({ example: '2024-12-28T13:00:00.000Z', description: 'Start time of the showing in ISO format' })
+  startTime: Date;
+
+  @ApiProperty({ example: '2024-12-28T15:00:00.000Z', description: 'End time of the showing in ISO format' })
+  endTime: Date;
+
   @ApiProperty({ example: 20000000, description: 'Total revenue' })
   totalRevenue: number;
 
