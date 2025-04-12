@@ -51,6 +51,8 @@ import { AddEventMemberService } from './commands/AddEventMember/addEventMember.
 import { AddEventMemberRepository } from './repositories/addEventMember.repository';
 import { UpdateEventMemberService } from './commands/UpdateEventMember/updateEventMember.service';
 import { UpdateEventMemberController } from './commands/UpdateEventMember/updateEventMember.controller';
+import { GetEventMembersService } from './commands/GetEventMember/getEventMembers.service';
+import { GetEventMemberController } from './commands/GetEventMember/getEventMember.controller';
 
 @Module({
   imports: [ScheduleModule.forRoot(), ImagesModule, LocationModule],
@@ -74,6 +76,7 @@ import { UpdateEventMemberController } from './commands/UpdateEventMember/update
     GetEventOfOrgDetailController,
     AddEventMemberController,
     UpdateEventMemberController,
+    GetEventMemberController
     ],
   providers: [
     // UpdateWeeklyService, 
@@ -118,7 +121,7 @@ import { UpdateEventMemberController } from './commands/UpdateEventMember/update
     AddEventMemberService,
     AddEventMemberRepository,
     UpdateEventMemberService,
-
+    GetEventMembersService,
     ],
 })
 export class EventModule {}
