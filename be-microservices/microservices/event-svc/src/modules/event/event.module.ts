@@ -49,6 +49,8 @@ import { GetEventOfOrgDetailService } from './queries/getEventOfOrgDetail/getEve
 import { AddEventMemberController } from './commands/AddEventMember/addEventMember.controller';
 import { AddEventMemberService } from './commands/AddEventMember/addEventMember.service';
 import { AddEventMemberRepository } from './repositories/addEventMember.repository';
+import { UpdateEventMemberService } from './commands/UpdateEventMember/updateEventMember.service';
+import { UpdateEventMemberController } from './commands/UpdateEventMember/updateEventMember.controller';
 
 @Module({
   imports: [ScheduleModule.forRoot(), ImagesModule, LocationModule],
@@ -71,7 +73,7 @@ import { AddEventMemberRepository } from './repositories/addEventMember.reposito
     GetEventOfOrgController,
     GetEventOfOrgDetailController,
     AddEventMemberController,
-
+    UpdateEventMemberController,
     ],
   providers: [
     // UpdateWeeklyService, 
@@ -115,6 +117,7 @@ import { AddEventMemberRepository } from './repositories/addEventMember.reposito
 
     AddEventMemberService,
     AddEventMemberRepository,
+    UpdateEventMemberService,
 
     ],
 })

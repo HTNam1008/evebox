@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
 import { AddEventMemberDto } from 'src/modules/event/commands/AddEventMember/addEventMember.dto';
 import { EventUserRelationship } from '@prisma/client';
+import { UpdateEventMemberDto } from '../commands/UpdateEventMember/updateEventMember.dto';
 
 @Injectable()
 export class AddEventMemberRepository {
@@ -58,6 +59,24 @@ export class AddEventMemberRepository {
         role: dto.role,
         role_desc,
       },
+    });
+  }
+
+  async updateMember(eventId: number, dto: UpdateEventMemberDto): Promise<EventUserRelationship> {
+    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    if (!user) throw new NotFoundException(`User with email ${dto.email} not found`);
+
+    const role_desc = this.roleMap[dto.role];
+    if (!role_desc) throw new BadRequestException('Invalid role number');
+
+    const existing = await this.prisma.eventUserRelationship.findUnique({
+      where: { eventId_userId: { eventId, userId: user.id } },
+    });
+    if (!existing) throw new NotFoundException('Member not found');
+
+    return this.prisma.eventUserRelationship.update({
+      where: { eventId_userId: { eventId, userId: user.id } },
+      data: { role: dto.role, role_desc },
     });
   }
 }
