@@ -19,9 +19,10 @@ export class GetEventMembersService {
     }
 
     const where = {
-      eventId,
-      ...(query.email ? { email: query.email } : {}),
-    };
+        eventId,
+        isDeleted: false,
+        ...(query.email ? { email: query.email } : {}),
+      };
 
     const members = await this.prisma.eventUserRelationship.findMany({ where });
 
