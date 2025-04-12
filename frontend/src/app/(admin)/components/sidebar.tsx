@@ -2,12 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { CalendarPlus, LayoutDashboard, UserRoundCog, Ticket, FilePenLine, MapPin, TicketPercent, CircleDollarSign, ChartColumnIncreasing } from 'lucide-react';
+import { CalendarPlus, UserRoundCog, Ticket, FilePenLine, MapPin, TicketPercent, CircleDollarSign, ChartColumnIncreasing } from 'lucide-react';
 
 const Sidebar = () => {
   const pathName = usePathname();
   const menuSections = [
-    { text: 'Dashboard', href: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
     { text: 'Quản lý Account', href: '/admin/account-management', icon: <UserRoundCog size={20} /> },
     { text: 'Quản lý Sự kiện', href: '/admin/event-management', icon: <CalendarPlus size={20} /> },
     { text: 'Quản lý Showing', href: '/admin/showing-management', icon: <Ticket size={20} /> },
