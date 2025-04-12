@@ -1,3 +1,7 @@
+/* Package System */
+import { Toaster } from 'react-hot-toast';
+
+/* Package Application */
 import Sidebar from "./components/sidebar";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -11,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {/* Page content */}
             <div className="flex-1 p-6 bg-gray-100 text-black">
                 {children}
+                <Toaster reverseOrder={false} />
             </div>
         </div>
     );

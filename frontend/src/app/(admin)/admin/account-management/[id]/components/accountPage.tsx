@@ -47,7 +47,6 @@ export default function AccountDetailPage() {
 
     if (!user) return <div>Không tìm thấy người dùng.</div>;
 
-
     return (
         <>
             <div className="flex items-center space-x-2">
