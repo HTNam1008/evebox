@@ -29,17 +29,21 @@ import { GetFormRepository } from './repositories/getForm.repository';
 import { ConnectFormController } from './commands/connectShowingToForm/connectShowingToForm.controller';
 import { ConnectFormService } from './commands/connectShowingToForm/connectShowingToForm.service';
 import { ConnectFormRepository } from './repositories/connectShowingToForm.repository';
+import { GetAllShowingTimeOfEventController } from './queries/getAllShowingTimeOfEvent/getAllShowingTimeOfEvent.controller';
+import { GetAllShowingTimeOfEventService } from './queries/getAllShowingTimeOfEvent/getAllShowingTimeOfEvent.service';
+import { GetAllShowingTimeOfEventRepository } from './repositories/getAllShowingTimeOfEvent.repository';
 
 @Module({
   controllers: [
     GetAllFormsController,
     GetFormController,
-    GetAllShowingDetailOfEventController,
     ConnectFormController,
+    GetAllShowingTimeOfEventController,
 
     CreateFormController,
     UpdateFormController,
     DeleteFormController,
+    GetAllShowingDetailOfEventController,
     CreateShowingController,
     UpdateShowingController,
     DeleteShowingController,
@@ -69,6 +73,9 @@ import { ConnectFormRepository } from './repositories/connectShowingToForm.repos
 
     GetAllShowingDetailOfEventService,
     GetAllShowingDetailOfEventRepository,
+
+    GetAllShowingTimeOfEventService,
+    GetAllShowingTimeOfEventRepository,
   ],
 })
 export class ShowingModule {}
