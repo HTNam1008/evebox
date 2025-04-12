@@ -14,7 +14,7 @@ export class EveBoxService {
     private readonly vectorStore: VectorStoreService,
   ) {}
 
-  @Cron('40 1 * * 5') // Mỗi thứ 2 lúc 0h
+  @Cron('05 14 * * 6') // Mỗi thứ 2 lúc 0h
   async handleWeeklyEventEmbedding() {
     this.logger.log('⏳ Bắt đầu sync event vào vector store...');
 
@@ -33,7 +33,7 @@ export class EveBoxService {
       return new Document({ pageContent, metadata });
     });
 
-    await this.vectorStore.embedDocuments(documents, 'evebox-events');
+    await this.vectorStore.embedDocuments(documents, 'eveboxEvents');
 
     this.logger.log(`✅ Đã embed ${documents.length} events vào vector store.`);
   }
