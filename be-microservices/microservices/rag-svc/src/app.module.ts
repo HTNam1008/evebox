@@ -3,6 +3,7 @@
 import { Injectable, Module, NestMiddleware } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
+import { EveboxModule } from './infrastructure/eveBoxService/evebox.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     }),
     ConfigModule,
     CqrsModule,
+    EveboxModule
   ],
   providers: [
   ]

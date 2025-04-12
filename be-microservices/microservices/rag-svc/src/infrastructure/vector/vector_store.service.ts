@@ -1,8 +1,9 @@
 // vector-store.service.ts
 import { Injectable } from '@nestjs/common';
 import { Document } from 'langchain/document';
-import { PGVectorStore } from 'langchain/vectorstores/pgvector';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
+import { OpenAIEmbeddings } from "@langchain/openai";
+
 import { Pool } from 'pg';
 
 @Injectable()
@@ -15,11 +16,15 @@ export class VectorStoreService {
     const embeddings = new OpenAIEmbeddings({
       openAIApiKey: process.env.OPENAI_API_KEY,
     });
-
-    return await PGVectorStore.initialize(this.pool, embeddings, {
+  
+    return await PGVectorStore.initialize(embeddings, {
+      postgresConnectionOptions: {
+        connectionString: process.env.VECTOR_STORE_URL,
+      },
       tableName: collectionName,
     });
   }
+  
 
   async embedDocuments(documents: Document[], collectionName: string) {
     const store = await this.getVectorStore(collectionName);

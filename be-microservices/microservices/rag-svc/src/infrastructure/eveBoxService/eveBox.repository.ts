@@ -28,6 +28,8 @@ export class EveBoxRepository {
           orgName: true,
           orgDescription: true,
           isOnline: true,
+          totalClicks: true,
+          weekClicks: true,
           locations: {
             select: {
                 id: true,
