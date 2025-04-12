@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 /* Package Application */
 import Sidebar from "./components/sidebar";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function DefaultLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="flex min-h-screen flex-col md:flex-row">
             {/* Sidebar */}
