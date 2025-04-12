@@ -7,8 +7,15 @@ import { DeleteFormDto } from "./deleteForm.dto";
 export class DeleteFormService {
   constructor(private readonly deleteFormRepository: DeleteFormRepository) {}
 
-  async execute(dto: DeleteFormDto): Promise<Result<number, Error>> {
+  async execute(dto: DeleteFormDto, organizerId: string): Promise<Result<number, Error>> {
     try {
+      const isAuthor = await this.deleteFormRepository.checkAuthor(dto.id, organizerId);
+      if (isAuthor.isErr()) {
+        return Err(new Error('Failed to check author'));
+      }
+      if (!isAuthor.unwrap()) {
+        return Err(new Error('Unauthorized'));
+      }
       if (!dto.id) {
         return Err(new Error('Form ID is required.'));
       }

@@ -2,7 +2,7 @@
 
 /* Package System */
 import { ChevronDown, ChevronUp, CirclePlus, X, PencilLine, Ticket, Trash2 } from "lucide-react";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import "react-datepicker/dist/react-datepicker.css";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
@@ -22,14 +22,18 @@ import { toggleExpanded, toggleDialog, toggleEditDialog, toggleDelDialog, toggle
 import FormSettingClientTemp from "./(temp)/formSettingTemp";
 import CopyTicketDailog from "./dialogs/copyTicket";
 import { handleDeleteShow } from "../../../libs/functions/showing/deleteShow";
+import createApiClient from "@/services/apiClient";
+import { ShowingOrgResponse } from "@/types/model/showingOrganizer";
 
-export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: { onNextStep: () => void, btnValidate2: string }) {
+export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2, setShowingList,eventId }: { onNextStep: () => void, btnValidate2: string, setShowingList: (showtimes: Showtime[]) => void, eventId: number}) {
     //Chỉnh sửa vé đã tạo
-    const [editShowtimeId, setEditShowtimeId] = useState<number | null>(null);
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+
+    const [editShowtimeId, setEditShowtimeId] = useState<string | null>(null);
     const [editTicketIndex, setEditTicketIndex] = useState<number | null>(null);
 
     //Xóa vé
-    const [delShowtimeId, setDelShowtimeId] = useState<number | null>(null);
+    const [delShowtimeId, setDelShowtimeId] = useState<string | null>(null);
     const [delTicketIndex, setDelTicketIndex] = useState<number | null>(null);
 
     const [, setErrors] = useState<{ [key: string]: boolean }>({});
@@ -37,10 +41,79 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
     //Tạo suất diễn
     const [showtimes, setShowtimes] = useState<Showtime[]>([
         {
-            id: 1, startDate: null, endDate: null, tickets: [], isExpanded: true, showDialog: false,
+            id: "", startDate: null, endDate: null, tickets: [], isExpanded: true, showDialog: false,
             showEditDialog: false, showCopyTicketDialog: false, showConfirmDeleteDialog: false, showDeleteShow: false
         }
     ]);
+
+    useEffect(() => {
+        const fetchShowtimes = async () => {
+          try {
+            const response = await apiClient.get<ShowingOrgResponse>(`/api/org/showing/${eventId}`);
+            if (!response.data) {
+              toast.error("Failed to fetch showtimes");
+              return;
+            }
+            const data = response.data.data;
+            if (data.length === 0) {
+              setShowtimes([{
+                id: "",
+                startDate: null,
+                endDate: null,
+                tickets: [],
+                isExpanded: true,
+                showDialog: false,
+                showEditDialog: false,
+                showCopyTicketDialog: false,
+                showConfirmDeleteDialog: false,
+                showDeleteShow: false
+              }]);
+            } else {
+              const formattedShowtimes: Showtime[] = data.map((show) => ({
+                id: show.id,
+                startDate: new Date(show.startTime),
+                endDate: new Date(show.endTime),
+                tickets: show.TicketType
+                  .map((ticket) => ({
+                    id: ticket.id,
+                    name: ticket.name,
+                    price: ticket.originalPrice.toString(),
+                    quantity: ticket.quantity.toString(),
+                    min: ticket.minQtyPerOrder.toString(),
+                    max: ticket.maxQtyPerOrder.toString(),
+                    startDate: new Date(ticket.startTime),
+                    endDate: new Date(ticket.endTime),
+                    setSelectedStartDate: () => { }, // Placeholder function
+                    setSelectedEndDate: () => { }, // Placeholder function
+                    information: ticket.description,
+                    image: ticket.imageUrl || null,
+                    free: ticket.isFree,
+                    position: ticket.position // Ensure position is included
+                  }))
+                  .sort((a, b) => a.position - b.position), // Sort tickets by position
+                isExpanded: true,
+                showDialog: false,
+                showEditDialog: true,
+                showCopyTicketDialog: false,
+                showConfirmDeleteDialog: false,
+                showDeleteShow: false,
+              }));
+      
+              setShowtimes(formattedShowtimes);
+              localStorage.setItem("showtimes", JSON.stringify(formattedShowtimes));
+              console.log("Showtimes saved to local storage", formattedShowtimes);
+            }
+          } catch (error) {
+            toast.error("Error fetching showtimes: " + error);
+          }
+        };
+      
+        fetchShowtimes();
+      }, [eventId]);
+
+    useEffect(() => {
+        setShowingList(showtimes);
+    }, [showtimes, setShowingList]);
 
     //Filter month of showing
     const [selectedMonth, setSelectedMonth] = useState("");
@@ -58,9 +131,10 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
 
     const handleAddShowtime = () => {
         setShowtimes([...showtimes, {
-            id: showtimes.length + 1, startDate: null, endDate: null, tickets: [],
+            id:"", startDate: null, endDate: null, tickets: [],
             showEditDialog: false, showConfirmDeleteDialog: false, showDeleteShow: false
         }]);
+        console.log('Showtime----',showtimes)
     };
 
     const handleSubmit = () => {
@@ -75,11 +149,11 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
 
         // Nếu nút là "Save"
         if (btnValidate2 === "Save") {
-            alert("Form hợp lệ!");
+            toast.success("Form hợp lệ");
         }
         // Nếu nút là "Continue"
         else if (btnValidate2 === "Continue") {
-            alert("Form hợp lệ! Chuyển sang bước tiếp theo...");
+            toast.success("Form hợp lệ! Chuyển sang bước tiếp theo...");
             onNextStep();
         }
     };
@@ -116,7 +190,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                     </div>
 
                     {filteredShowtimes.map((showtime, index) => (
-                        <div key={showtime.id} className="p-4 lg:p-4 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4"
+                        <div key={`${showtime.id}-${index}`} className="p-4 lg:p-4 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4"
                             style={{
                                 backgroundColor: "rgba(158, 245, 207, 0.2)",
                                 border: showtime.tickets.length === 0 ? "1px solid red" : "1.5px solid #9EF5CF"
@@ -208,7 +282,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                 {/* Hiển thị các loại vé đã tạo */}
                                 <div className="type_ticket ">
                                     {showtime.tickets.map((ticket, ticketIndex) => (
-                                        <div key={ticketIndex} className="flex items-center justify-between gap-2 p-4 lg:p-6 h-14 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
+                                        <div key={`${showtime.id}-${ticket.id}`} className="flex items-center justify-between gap-2 p-4 lg:p-6 h-14 rounded-lg shadow-sm w-full max-w-5xl mx-auto mt-4" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
                                             <Ticket size={20} />
 
                                             <span>{ticket.name}</span>
@@ -226,7 +300,7 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                 {showtime.showEditDialog && editShowtimeId === showtime.id && editTicketIndex !== null && (
                                                     <EditTicketDailog
                                                         open={true}
-                                                        onClose={() => setEditShowtimeId(null)}
+                                                        onClose={() => setEditShowtimeId("")}
                                                         endDateEvent={showtime.endDate}
                                                         ticket={showtime.tickets[editTicketIndex]}
                                                         updateTicket={(updatedTicket) => updateTicket(showtime.id, editTicketIndex, updatedTicket, setShowtimes, setEditShowtimeId, setEditTicketIndex)}
@@ -246,6 +320,8 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                         onClose={() => setDelShowtimeId(null)}
                                                         onConfirm={() => {
                                                             handleDeleteTicket(showtime.id, delTicketIndex, setShowtimes, setDelShowtimeId, setDelTicketIndex);
+
+                                                           console.log(delTicketIndex);
                                                         }}
                                                     />)}
                                             </div>
@@ -270,16 +346,6 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                 toggleDialog(showtime.id, setShowtimes)}
                                             startDate={showtime.startDate}
                                             endDate={showtime.endDate}
-                                            setStartDate={(date) => {
-                                                const updatedShowtimes = [...showtimes];
-                                                updatedShowtimes[index].startDate = date;
-                                                setShowtimes(updatedShowtimes);
-                                            }}
-                                            setEndDate={(date) => {
-                                                const updatedShowtimes = [...showtimes];
-                                                updatedShowtimes[index].endDate = date;
-                                                setShowtimes(updatedShowtimes);
-                                            }}
                                             addTicket={(newTicket) => addTicket(showtime.id, newTicket, setShowtimes)}
                                         />}
                                     {showtime.showCopyTicketDialog &&
@@ -289,6 +355,8 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                                 toggleCopyTicketDialog(showtime.id, setShowtimes)}
                                             showtimes={showtimes}
                                             currentShowtimeId={showtime.id}
+                                            startDate={showtime.startDate}
+                                            endDate={showtime.endDate}
                                             setShowtimes={setShowtimes}
                                         />}
                                 </div>
@@ -301,7 +369,8 @@ export default function FormTimeTypeTicketClient({ onNextStep, btnValidate2 }: {
                                             )
                                         )}
                                         onConfirm={() => {
-                                            handleDeleteShow(showtime.id, setShowtimes, setDelShowtimeId);
+                                            handleDeleteShow(showtime.id, showtime.startDate, showtime.endDate, setShowtimes, setDelShowtimeId);
+                                            
                                         }}
                                     />)}
                             </>)}

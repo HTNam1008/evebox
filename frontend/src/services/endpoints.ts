@@ -1,0 +1,41 @@
+export class END_POINT_LIST {
+  static readonly USER = {
+    LOGIN: "/api/user/login",
+    LOGOUT: "/api/user/logout",
+    REGISTER: "/api/user/register",
+    REFRESH_TOKEN: "/api/user/refresh-token",
+    FORGOT_PASSWORD: "/api/user/forgot-password",
+    CHANGE_PASSWORD: "/api/user/reset-password",
+    VERIFY_OTP: "/api/user/otps/verify-otp",
+    RESEND_OTP: "/api/user/otp/resend-otp",
+    GET_USER_INFO: "/api/user/me",
+    GOOGLE: "/api/user/google",
+    GOOGLE_CALLBACK: "/api/user/google/callback",
+  };
+
+  static readonly EVENT = {
+    GET_EVENT_DETAIL: "/api/event/detail",
+    GET_RECOMMENDED_EVENTS: "/api/event/recommended-events",
+    SEARCH_EVENTS: "/api/event/search",
+    CLICKS: "/api/event/detail/clicks",
+    ALL_CATEGORIES: "/api/categories",
+    GET_FRONT_DISPLAY: "/api/event/front-display",
+  };
+
+  static readonly ORG_EVENT = {
+    EVENT: "/api/org/event",
+  }
+
+  static readonly ORG_SHOWING = {
+    SHOWING_FORM: "/api/org/showing/form",
+    SHOWING: "/api/org/showing",
+  }
+
+  static readonly ORG_TICKETTYPE = {
+    TICKET_TYPE: "/api/org/ticketType",
+  }
+
+  static readonly ORG_PAYMENT = {
+    PAYMENT: "/api/org/payment",
+  }
+}

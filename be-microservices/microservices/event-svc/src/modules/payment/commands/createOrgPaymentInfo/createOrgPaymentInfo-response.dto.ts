@@ -15,8 +15,8 @@ export class CreateOrgPaymentInfoResponseDto extends BaseResponse {
     bankName: string;
     branch: string;
     businessType: number;
-    fullName?: string;
-    address?: string;
-    taxCode?: string;
+    fullName: string;
+    address: string;
+    taxCode: string;
   }
 }

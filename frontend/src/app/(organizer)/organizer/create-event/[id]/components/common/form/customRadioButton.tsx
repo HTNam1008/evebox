@@ -7,7 +7,7 @@ const CustomRadioButton: React.FC<CustomRadioButtonProps> = ({ value, selectedVa
             {/* Radio Input */}
             <input
                 type="radio"
-                name="quesText"
+                name="text"
                 className="peer hidden"
                 value={value}
                 checked={selectedValue === value}

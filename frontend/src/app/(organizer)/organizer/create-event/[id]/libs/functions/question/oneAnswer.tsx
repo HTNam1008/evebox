@@ -12,11 +12,11 @@ export const handleOneDelete = (
     index: number,
     setOneTexts: (value: string[]) => void,
     setOneCheckedItems: (value: boolean[]) => void,
-    oneTexts: string[],
-    oneCheckedItems: boolean[]
+    oneTexts: string[] = [], 
+    oneCheckedItems: boolean[] = [] 
 ) => {
     setOneTexts(oneTexts.filter((_, i) => i !== index));
-    setOneCheckedItems(oneCheckedItems.filter((_, i) => i !== index)); // Xóa trạng thái checked tương ứng
+    setOneCheckedItems(oneCheckedItems.filter((_, i) => i !== index));
 };
 
 export const toggleOneChecked = (
@@ -24,7 +24,7 @@ export const toggleOneChecked = (
     oneCheckedItems: boolean[],
     setOneCheckedItems: (value: boolean[]) => void,
 ) => {
-    const newChecked = [...oneCheckedItems];
-    newChecked[index] = !newChecked[index]; // Đảo trạng thái checked
-    setOneCheckedItems(newChecked);
+    const newOneCheckedItems = [...oneCheckedItems];
+    newOneCheckedItems[index] = !newOneCheckedItems[index];
+    setOneCheckedItems(newOneCheckedItems);
 };

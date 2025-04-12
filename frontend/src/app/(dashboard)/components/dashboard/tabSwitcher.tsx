@@ -10,9 +10,8 @@ interface TabSwitcherProps {
     dataMonthlyRecommendedEvent: Event[];
 }
 
-const TabSwitcher: React.FC<TabSwitcherProps> = ({ sliderEvents, dataMonthlyRecommendedEvent }) => {
+export default function TabSwitcher ({ sliderEvents, dataMonthlyRecommendedEvent }: TabSwitcherProps) {
     const [activeTab, setActiveTab] = useState('weekend');
-    console.log(sliderEvents);
 
     return (
         <>
@@ -47,5 +46,3 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ sliderEvents, dataMonthlyReco
         </>
     );
 };
-
-export default TabSwitcher;
