@@ -14,7 +14,7 @@ export class EveBoxService {
     private readonly vectorStore: VectorStoreService,
   ) {}
 
-  @Cron('05 14 * * 6') // Mỗi thứ 2 lúc 0h
+  @Cron('24 15 * * 6') // Mỗi thứ 2 lúc 0h
   async handleWeeklyEventEmbedding() {
     this.logger.log('⏳ Bắt đầu sync event vào vector store...');
 

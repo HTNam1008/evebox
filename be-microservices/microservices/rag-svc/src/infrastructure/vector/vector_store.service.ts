@@ -35,12 +35,25 @@ export class VectorStoreService {
   }
 
   async embedDocuments(documents: Document[], collectionName: string): Promise<void> {
+    const BATCH_SIZE = 10;
+    const DELAY_MS = 1500; // tăng delay giữa các batch một chút
+
+  
     try {
       const store = await this.getVectorStore(collectionName);
-      await store.addDocuments(documents);
+  
+      for (let i = 0; i < documents.length; i += BATCH_SIZE) {
+        const batch = documents.slice(i, i + BATCH_SIZE);
+        this.logger.log(`🚀 Embedding batch ${i / BATCH_SIZE + 1} (${batch.length} documents)...`);
+        await store.addDocuments(batch);
+        await new Promise((resolve) => setTimeout(resolve, DELAY_MS)); // delay nhỏ
+      }
+  
       this.logger.log(`✅ Successfully embedded ${documents.length} documents to collection '${collectionName}'.`);
     } catch (error) {
+      console.error(`❌ Error embedding documents: ${error.message}`);
       this.logger.error(`❌ Failed to embed documents: ${error.message}`);
     }
   }
+  
 }
