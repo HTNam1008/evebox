@@ -4,6 +4,7 @@ import { Cron } from '@nestjs/schedule';
 import { EveBoxRepository } from './evebox.repository';
 import { VectorStoreService } from 'src/infrastructure/vector/vector_store.service';
 import { Document } from 'langchain/document';
+import { VectorStoreCohereService } from '../vector/vector_store.cohere';
 
 @Injectable()
 export class EveBoxService {
@@ -12,9 +13,10 @@ export class EveBoxService {
   constructor(
     private readonly eveBoxRepo: EveBoxRepository,
     private readonly vectorStore: VectorStoreService,
+    private readonly vectorStoreCohere: VectorStoreCohereService, // Sử dụng Cohere cho vector store
   ) {}
 
-  @Cron('24 15 * * 6') // Mỗi thứ 2 lúc 0h
+  @Cron('30 16 * * 6') // Mỗi thứ 2 lúc 0h
   async handleWeeklyEventEmbedding() {
     this.logger.log('⏳ Bắt đầu sync event vào vector store...');
 
@@ -33,7 +35,7 @@ export class EveBoxService {
       return new Document({ pageContent, metadata });
     });
 
-    await this.vectorStore.embedDocuments(documents, 'eveboxEvents');
+    await this.vectorStoreCohere.embedDocuments(documents, 'eveboxEvents');
 
     this.logger.log(`✅ Đã embed ${documents.length} events vào vector store.`);
   }
