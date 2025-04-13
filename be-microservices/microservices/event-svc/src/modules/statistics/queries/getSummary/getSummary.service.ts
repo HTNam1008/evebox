@@ -34,19 +34,4 @@ export class GetEventSummaryService {
     }
   }
 
-  async getOrders(showingId: string, organizerId: string): Promise<Result<any[], Error>> {
-    try {
-      if (!showingId) {
-        return Err(new Error('Showing ID is required'));
-      }
-
-      if (!organizerId) {
-        return Err(new Error('Unauthorized user'));
-      }
-
-      return await this.getOrdersRepository.getOrders(showingId, organizerId);
-    } catch (error) {
-      return Err(new Error('Failed to get orders'));
-    }
-  }
 }

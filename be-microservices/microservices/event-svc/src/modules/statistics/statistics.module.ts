@@ -4,16 +4,20 @@ import { GetEventSummaryController } from './queries/getSummary/getSummary.contr
 import { GetEventSummaryService } from './queries/getSummary/getSummary.service'
 import { GetEventSummaryRepository } from './repositories/getSummary.repository'
 import { GetOrdersRepository } from './repositories/getOrders.repository'
+import { GetOrdersController } from './queries/getOrders/getOrders.controller'
+import { GetOrdersService } from './queries/getOrders/getOrders.service'
 
 @Module({
   controllers: [
-    GetEventSummaryController
+    GetEventSummaryController,
+    GetOrdersController,
   ],
   providers: [
     GetEventSummaryService,
     GetEventSummaryRepository,
 
     GetOrdersRepository,
+    GetOrdersService,
   ]
 })
 
