@@ -2,7 +2,7 @@
 
 /* Package System */
 import { useState } from "react";
-import { Check, Trash2 } from "lucide-react";
+import { CalendarOff, Check, Trash2 } from "lucide-react";
 
 /* Package Application */
 import { Event } from "../lib/interface/eventtable.interface";
@@ -123,7 +123,7 @@ export default function EventTable() {
                             <th className="px-4 py-3 cursor-pointer">
                                 Trạng thái
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[80px]">Thao tác</th>
+                            <th className="px-4 py-3 cursor-pointer min-w-[85px]">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody className="text-xs">
@@ -160,10 +160,16 @@ export default function EventTable() {
                                 <td className="px-4 py-3 border-r border-gray-200 text-center">
                                     <div className="flex justify-center items-center gap-x-2">
                                         {event.deletedAt === null && event.isApproved === false && (
-                                            <Check className="p-1 bg-teal-400 text-white rounded w-5 h-5 cursor-pointer"
-                                            onClick={() => handleStatusClick(event)} />
+                                            <Check className="p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                onClick={() => handleStatusClick(event)} />
                                         )}
-                                        <Trash2 className="p-1 bg-red-500 text-white rounded w-5 h-5 cursor-pointer" />
+
+                                        {event.deletedAt === null && event.isApproved === true && (
+                                            <CalendarOff className="p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"/>
+                                        )}
+
+                                        {event.deletedAt && (<Trash2 className="p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer" />)}
+
                                     </div>
                                 </td>
                             </tr>
