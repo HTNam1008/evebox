@@ -1,10 +1,12 @@
 'use client'
 
 /* Package System */
+import { useState } from "react";
 import { Check, Trash2 } from "lucide-react";
 
 /* Package Application */
 import { Event } from "../lib/interface/eventtable.interface";
+import ConfirmApprovalDialog from "./dialog/confirmApproval";
 
 export default function EventTable() {
     const data: Event[] = [
@@ -74,6 +76,26 @@ export default function EventTable() {
         },
     ];
 
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+    const handleStatusClick = (user: Event) => {
+        setSelectedEvent(user);
+        setIsDialogOpen(true);
+    };
+
+    const handleConfirmApproval = () => {
+        if (!selectedEvent) return;
+
+        // setUsers(prev =>
+        //     prev.map(user =>
+        //         user.id === selectedUser.id
+        //             ? { ...user, status: user.status === 'Active' ? 'Deactivated' : 'Active' }
+        //             : user)
+        // );
+
+        setIsDialogOpen(false);
+    };
 
     return (
         <>
@@ -137,7 +159,10 @@ export default function EventTable() {
                                 </td>
                                 <td className="px-4 py-3 border-r border-gray-200 text-center">
                                     <div className="flex justify-center items-center gap-x-2">
-                                        <Check className="p-1 bg-teal-400 text-white rounded w-5 h-5 cursor-pointer" />
+                                        {event.deletedAt === null && event.isApproved === false && (
+                                            <Check className="p-1 bg-teal-400 text-white rounded w-5 h-5 cursor-pointer"
+                                            onClick={() => handleStatusClick(event)} />
+                                        )}
                                         <Trash2 className="p-1 bg-red-500 text-white rounded w-5 h-5 cursor-pointer" />
                                     </div>
                                 </td>
@@ -175,6 +200,14 @@ export default function EventTable() {
                     </button> */}
                 </div>
             </div>
+
+            {selectedEvent && (
+                <ConfirmApprovalDialog
+                    open={isDialogOpen}
+                    onClose={() => setIsDialogOpen(false)}
+                    onConfirm={handleConfirmApproval}
+                />
+            )}
         </>
     )
 }
