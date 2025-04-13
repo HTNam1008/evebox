@@ -7,6 +7,7 @@ import { CalendarOff, Check, Trash2 } from "lucide-react";
 /* Package Application */
 import { Event } from "../lib/interface/eventtable.interface";
 import ConfirmApprovalDialog from "./dialog/confirmApproval";
+import ConfirmSupspendDialog from "./dialog/confirmSupspend";
 
 export default function EventTable() {
     const data: Event[] = [
@@ -77,12 +78,13 @@ export default function EventTable() {
     ];
 
     const [events, setEvents] = useState<Event[]>(data);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isApprovalDialogOpen, setIsApprovalDialogOpen] = useState(false);
+    const [isSupspendDialogOpen, setIsSupspendDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
-    const handleStatusClick = (event: Event) => {
+    const handleApprovalClick = (event: Event) => {
         setSelectedEvent(event);
-        setIsDialogOpen(true);
+        setIsApprovalDialogOpen(true);
     };
 
     const handleConfirmApproval = () => {
@@ -93,8 +95,27 @@ export default function EventTable() {
                     ? { ...item, isApproved: true }
                     : item
             );
-    
-            setEvents(updatedData); 
+
+            setEvents(updatedData);
+            setSelectedEvent(null);
+        }
+    };
+
+    const handleSupspendClick = (event: Event) => {
+        setSelectedEvent(event);
+        setIsSupspendDialogOpen(true);
+    };
+
+    const handleConfirmSupspend = () => {
+        if (selectedEvent) {
+            // Update logic
+            const updatedData = events.map(item =>
+                item.id === selectedEvent.id
+                    ? { ...item, isApproved: false }
+                    : item
+            );
+
+            setEvents(updatedData);
             setSelectedEvent(null);
         }
     };
@@ -163,11 +184,12 @@ export default function EventTable() {
                                     <div className="flex justify-center items-center gap-x-2">
                                         {event.deletedAt === null && event.isApproved === false && (
                                             <Check className="p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
-                                                onClick={() => handleStatusClick(event)} />
+                                                onClick={() => handleApprovalClick(event)} />
                                         )}
 
                                         {event.deletedAt === null && event.isApproved === true && (
-                                            <CalendarOff className="p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"/>
+                                            <CalendarOff className="p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                onClick={() => handleSupspendClick(event)} />
                                         )}
 
                                         {event.deletedAt && (<Trash2 className="p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer" />)}
@@ -211,9 +233,17 @@ export default function EventTable() {
 
             {selectedEvent && (
                 <ConfirmApprovalDialog
-                    open={isDialogOpen}
-                    onClose={() => setIsDialogOpen(false)}
+                    open={isApprovalDialogOpen}
+                    onClose={() => setIsApprovalDialogOpen(false)}
                     onConfirm={handleConfirmApproval}
+                />
+            )}
+
+            {selectedEvent && (
+                <ConfirmSupspendDialog
+                    open={isSupspendDialogOpen}
+                    onClose={() => setIsSupspendDialogOpen(false)}
+                    onConfirm={handleConfirmSupspend}
                 />
             )}
         </>
