@@ -1,14 +1,9 @@
 "use client";
 
-interface TicketType {
-  typeName: string;
-  price: number;
-  sold: number;
-  ratio: number;
-}
+import type { ITicketTypeSummary } from "@/types/model/getSummaryOrg"
 
 interface TicketTableProps {
-  ticketTypes: TicketType[];
+  ticketTypes: ITicketTypeSummary[]
 }
 
 export const TicketTable = ({ ticketTypes }: TicketTableProps) => {

@@ -1,13 +1,30 @@
 import { orgService } from "./instance.service";
 import { END_POINT_LIST } from "./endpoints";
-import { EventSummaryResponse } from "@/types/model/getSummaryOrg";
+import { IShowTime, IEventSummaryData } from "@/types/model/getSummaryOrg";
 
-export const getEventSummary = async (eventId: number): Promise<EventSummaryResponse> => {
-  const endpoint = END_POINT_LIST.ORG_STATISTICS.GET_SUMMARY.replace("{eventId}", eventId.toString());
-  
-  const res = await orgService.get(endpoint);
+// Lấy danh sách showing theo eventId
+export const getShowingsByEventId = async (eventId: number): Promise<IShowTime[]> => {
+  // const endpoint = END_POINT_LIST.ORG_SHOWING.SHOWING_TIME.replace("{eventId}", eventId.toString());
+  const res = await orgService.get(`${END_POINT_LIST.ORG_SHOWING.SHOWING_TIME}/${eventId}`);
 
-  if (!res) throw new Error('Failed to fetch event summary');
+  console.log("fetch showingTime")
+  console.log(res)
+  if (!res || !res.data) {
+    throw new Error('Failed to fetch showing times');
+  }
+  return res.data.data;
+};
 
-  return res.data;
+// Lấy summary theo showingId
+export const getSummaryByShowingId = async (showingId: string): Promise<IEventSummaryData> => {
+  // const endpoint = END_POINT_LIST.ORG_STATISTICS.GET_SUMMARY.replace("{showingId}", showingId);
+
+  const res = await orgService.get(`${END_POINT_LIST.ORG_STATISTICS.GET_SUMMARY}/${showingId}`);
+  console.log("fetch sumarry")
+  console.log(res)
+  if (!res || !res.data) {
+    throw new Error('Failed to fetch event summary');
+  }
+
+  return res.data.data;
 };
