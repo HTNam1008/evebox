@@ -76,25 +76,27 @@ export default function EventTable() {
         },
     ];
 
+    const [events, setEvents] = useState<Event[]>(data);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
-    const handleStatusClick = (user: Event) => {
-        setSelectedEvent(user);
+    const handleStatusClick = (event: Event) => {
+        setSelectedEvent(event);
         setIsDialogOpen(true);
     };
 
     const handleConfirmApproval = () => {
-        if (!selectedEvent) return;
-
-        // setUsers(prev =>
-        //     prev.map(user =>
-        //         user.id === selectedUser.id
-        //             ? { ...user, status: user.status === 'Active' ? 'Deactivated' : 'Active' }
-        //             : user)
-        // );
-
-        setIsDialogOpen(false);
+        if (selectedEvent) {
+            // Update logic
+            const updatedData = events.map(item =>
+                item.id === selectedEvent.id
+                    ? { ...item, isApproved: true }
+                    : item
+            );
+    
+            setEvents(updatedData); 
+            setSelectedEvent(null);
+        }
     };
 
     return (
@@ -127,7 +129,7 @@ export default function EventTable() {
                         </tr>
                     </thead>
                     <tbody className="text-xs">
-                        {data.map((event, index) => (
+                        {events.map((event, index) => (
                             <tr key={event.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                 <td className="px-4 py-3 text-center border-r border-gray-200">{event.id}</td>
                                 <td className="px-4 py-3 border-r border-gray-200 cursor-pointer text-center">
