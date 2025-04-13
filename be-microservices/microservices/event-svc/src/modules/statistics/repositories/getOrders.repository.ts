@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/database/prisma/prisma.service";
 import { Result, Ok, Err } from "oxide.ts";
+import { TicketOrderData } from "../queries/getOrders/getOrders-response.dto";
 
 @Injectable()
 export class GetOrdersRepository {
   constructor(private readonly prisma: PrismaService) { }
 
-  async getOrders(showingId: string, organizerId: string): Promise<Result<any[], Error>> {
+  async getOrders(showingId: string, organizerId: string): Promise<Result<TicketOrderData[], Error>> {
     try{
       const tickets = await this.prisma.ticket.findMany({
         where: {
