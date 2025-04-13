@@ -4,11 +4,12 @@ import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetEventSummaryService } from '../getSummary/getSummary.service';
 import { GetOrdersResponse } from './getOrders-response.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
+import { GetOrdersService } from './getOrders.service';
 
 @ApiTags('Org - Statistics')
 @Controller('api/org/statistics')
 export class GetOrdersController {
-  constructor(private readonly getEventSummaryService: GetEventSummaryService) {}
+  constructor(private readonly getOrdersService: GetOrdersService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('orders/:showingId')
@@ -28,7 +29,7 @@ export class GetOrdersController {
     try {
       const user = req.user
 
-      const result = await this.getEventSummaryService.getOrders(
+      const result = await this.getOrdersService.getOrders(
         showingId,
         user.email,
       );
