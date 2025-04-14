@@ -1,10 +1,9 @@
 "use client";
 
 /* Package System */
-import { useState } from "react";
 
 /* Package Application */
-
+import { TabsProps } from "../lib/interface/eventtable.interface";
 
 const tabs = [
     { id: "all", label: "Tất cả" },
@@ -13,9 +12,7 @@ const tabs = [
     { id: "deleted", label: "Đã xóa" }
 ];
 
-export default function Tabs() {
-    const [activeTab, setActiveTab] = useState("all");
-
+export default function Tabs({ activeTab, setActiveTab }: TabsProps ) {
     return (
         <div className="flex justify-end space-x-4 mt-6 text-sm">
             {tabs.map(tab => (

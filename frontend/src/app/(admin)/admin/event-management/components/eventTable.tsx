@@ -10,8 +10,9 @@ import { Event } from "../lib/interface/eventtable.interface";
 import ConfirmApprovalDialog from "./dialog/confirmApproval";
 import ConfirmSupspendDialog from "./dialog/confirmSupspend";
 import ConfirmDeleteDialog from "./dialog/confirmDelete";
+import { EventTableProps } from "../lib/interface/eventtable.interface";
 
-export default function EventTable() {
+export default function EventTable({ activeTab }: EventTableProps) {
     const data: Event[] = [
         {
             id: 1,
@@ -84,6 +85,19 @@ export default function EventTable() {
     const [isSupspendDialogOpen, setIsSupspendDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+    const filteredEvents = events.filter(event => {
+        switch (activeTab) {
+            case "pending":
+                return !event.deletedAt && !event.isApproved;
+            case "approved":
+                return !event.deletedAt && event.isApproved;
+            case "deleted":
+                return event.deletedAt !== null;
+            default:
+                return true;
+        }
+    });
 
     const handleApprovalClick = (event: Event) => {
         setSelectedEvent(event);
@@ -171,7 +185,7 @@ export default function EventTable() {
                         </tr>
                     </thead>
                     <tbody className="text-xs">
-                        {events.map((event, index) => (
+                        {filteredEvents.map((event, index) => (
                             <tr key={event.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                 <td className="px-4 py-3 text-center border-r border-gray-200">{event.id}</td>
                                 <td className="px-4 py-3 border-r border-gray-200 cursor-pointer text-center">

@@ -20,3 +20,14 @@ export interface ConfirmApprovalProps {
   onClose: () => void;
   onConfirm: () => void;
 }
+
+//Tabs
+export interface TabsProps {
+  activeTab: string;
+  setActiveTab: (tabId: string) => void;
+}
+
+
+export interface EventTableProps {
+  activeTab: string;
+}
