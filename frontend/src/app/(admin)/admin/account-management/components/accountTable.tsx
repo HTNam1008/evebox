@@ -132,30 +132,39 @@ export default function AccountTable({ searchKeyword, roleFilter, dateFrom, date
                         </tr>
                     </thead>
                     <tbody className="text-sm">
-                        {paginatedData.map((user, index) => (
-                            <tr key={user.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
-                                <td className="px-4 py-3 text-center border-r border-gray-200">{index + 1}</td>
-                                <td className="px-4 py-3 border-r border-gray-200 cursor-pointer"
-                                    onClick={() => router.push(`/admin/account-management/${user.id}`)}>
-                                    {user.name}
-                                </td>
-                                <td className="px-4 py-3 border-r border-gray-200">{user.email}</td>
-                                <td className="px-4 py-3 border-r border-gray-200">{user.role}</td>
+                        {paginatedData.length > 0 ? (
+                            paginatedData.map((user, index) => (
+                                <tr key={user.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
+                                    <td className="px-4 py-3 text-center border-r border-gray-200">{index + 1}</td>
+                                    <td className="px-4 py-3 border-r border-gray-200 cursor-pointer"
+                                        onClick={() => router.push(`/admin/account-management/${user.id}`)}>
+                                        {user.name}
+                                    </td>
+                                    <td className="px-4 py-3 border-r border-gray-200">{user.email}</td>
+                                    <td className="px-4 py-3 border-r border-gray-200">{user.role}</td>
 
-                                <td className="px-4 py-3 text-center border-r border-gray-200">
-                                    {new Date(user.createdAt).toLocaleDateString('vi-VN')}
-                                </td>
-                                <td className="px-4 py-3 text-center cursor-pointer">
-                                    <span className={`min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border 
+                                    <td className="px-4 py-3 text-center border-r border-gray-200">
+                                        {new Date(user.createdAt).toLocaleDateString('vi-VN')}
+                                    </td>
+                                    <td className="px-4 py-3 text-center cursor-pointer">
+                                        <span className={`min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border 
                                                     ${user.status === 'Active'
-                                            ? 'bg-teal-100 text-teal-500 border-teal-500'
-                                            : 'bg-gray-200 text-gray-500 border-gray-500'}`}
-                                        onClick={() => handleStatusClick(user)}>
-                                        {user.status}
-                                    </span>
+                                                ? 'bg-teal-100 text-teal-500 border-teal-500'
+                                                : 'bg-gray-200 text-gray-500 border-gray-500'}`}
+                                            onClick={() => handleStatusClick(user)}>
+                                            {user.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={9} className="text-center py-4 text-gray-500">
+                                    Không có tài khoản nào khớp với từ khóa tìm kiếm
                                 </td>
                             </tr>
-                        ))}
+                        )
+                        }
                     </tbody>
                 </table>
             </div>
