@@ -1,44 +1,39 @@
 import {
   Controller,
-  Put,
+  Get,
   Query,
-  Body,
+  Param,
   Req,
   Res,
-  UseGuards,
   HttpStatus,
+  UseGuards,
   BadRequestException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
-import { UpdateEventMemberService } from './updateEventMember.service';
-import { UpdateEventMemberDto } from './updateEventMember.dto';
-import {
-  ApiTags,
-  ApiHeader,
-  ApiOperation,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { GetEventMembersService } from './getEventMembers.service';
+import { GetEventMembersQueryDto } from './getEventMembers.query.dto';
+import { ApiTags, ApiHeader, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('Org - EventMember')
 @Controller('org/member')
-export class UpdateEventMemberController {
-  constructor(private readonly updateService: UpdateEventMemberService) {}
+export class GetEventMemberController {
+  constructor(private readonly service: GetEventMembersService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Put()
+  @Get(':eventId')
   @ApiHeader({
     name: 'Authorization',
     description: 'Bearer token for authorization (`Bearer <token>`)',
     required: true,
   })
-  @ApiOperation({ summary: 'Update a member\'s role in an event' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Member updated successfully' })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input or update failed' })
+  @ApiOperation({ summary: 'Get all members of an event (optionally filter by email)' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'List of event members' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })
   @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Internal server error' })
-  async updateMember(
-    @Query('eventId') eventIdRaw: string,
-    @Body() dto: UpdateEventMemberDto,
+  async getMembers(
+    @Param('eventId') eventIdRaw: string,
+    @Query() query: GetEventMembersQueryDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -51,7 +46,7 @@ export class UpdateEventMemberController {
         });
       }
 
-      const result = await this.updateService.execute(eventId, dto, (req.user as any).email);
+      const result = await this.service.execute(eventId, (req.user as any).email, query);
 
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({
@@ -62,7 +57,7 @@ export class UpdateEventMemberController {
 
       return res.status(HttpStatus.OK).json(result.unwrap());
     } catch (error) {
-      console.error('[UpdateEventMemberController] Error:', error);
+      console.error('[GetEventMemberController]', error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Internal server error',

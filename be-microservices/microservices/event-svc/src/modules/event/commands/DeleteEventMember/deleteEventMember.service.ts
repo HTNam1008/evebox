@@ -1,55 +1,45 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
+import { Result, Ok, Err } from 'oxide.ts';
+import { AddEventMemberRepository } from 'src/modules/event/repositories/addEventMember.repository';
 
 @Injectable()
 export class DeleteEventMemberService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly repository: AddEventMemberRepository) {}
 
-  async execute(eventId: number, currentEmail: string, targetEmail: string) {
-    const event = await this.prisma.events.findUnique({
-      where: { id: eventId },
-      select: { organizerId: true },
-    });
+  async execute(eventId: number, currentEmail: string, targetEmail: string): Promise<Result<{ message: string }, Error>> {
+    try {
+      const event = await this.repository.getEventById(eventId);
+      if (!event) {
+        return Err(new Error('Event not found'));
+      }
 
-    if (!event) throw new NotFoundException('Event not found');
-    if (event.organizerId !== currentEmail) {
-      throw new ForbiddenException('Only the organizer can delete members');
+      if (event.organizerId !== currentEmail) {
+        return Err(new Error('Only the organizer can delete members'));
+      }
+
+      const user = await this.repository.getUserByEmail(targetEmail);
+      if (!user) {
+        return Err(new Error('Target user not found'));
+      }
+
+      const member = await this.repository.getMember(eventId, user.id);
+      if (!member) {
+        return Err(new Error('Member not found'));
+      }
+
+      if (member.isDeleted) {
+        return Err(new Error('Member already deleted'));
+      }
+
+      const updated = await this.repository.softDeleteMember(eventId, user.id);
+      if (!updated) {
+        return Err(new Error('Failed to update member'));
+      }
+
+      return Ok({ message: 'Member soft deleted successfully' });
+    } catch (error) {
+      console.error('[DeleteEventMemberService] Error:', error);
+      return Err(new Error('Failed to delete member'));
     }
-
-    const user = await this.prisma.user.findUnique({
-      where: { email: targetEmail },
-    });
-
-    if (!user) throw new NotFoundException('Target user not found');
-
-    const existing = await this.prisma.eventUserRelationship.findUnique({
-      where: {
-        eventId_userId: {
-          eventId,
-          userId: user.id,
-        },
-      },
-    });
-
-    if (!existing) throw new NotFoundException('Member not found');
-
-    if (existing.isDeleted) {
-      throw new BadRequestException('Member already deleted');
-    }
-
-    await this.prisma.eventUserRelationship.update({
-      where: {
-        eventId_userId: {
-          eventId,
-          userId: user.id,
-        },
-      },
-      data: { isDeleted: true },
-    });
-
-    return {
-      statusCode: 200,
-      message: 'Member soft deleted successfully',
-    };
   }
 }
