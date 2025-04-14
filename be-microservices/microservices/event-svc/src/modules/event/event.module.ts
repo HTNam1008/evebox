@@ -46,7 +46,15 @@ import { GetEventOfOrgRepository } from './repositories/getEventOfOrg.repository
 import { GetEventOfOrgDetailController } from './queries/getEventOfOrgDetail/getEventOfOrgDetail.controller';
 import { GetEventOfOrgDetailRepository } from './repositories/getEventOfOrgDetail.repository';
 import { GetEventOfOrgDetailService } from './queries/getEventOfOrgDetail/getEventOfOrgDetail.service';
-
+import { AddEventMemberController } from './commands/AddEventMember/addEventMember.controller';
+import { AddEventMemberService } from './commands/AddEventMember/addEventMember.service';
+import { AddEventMemberRepository } from './repositories/addEventMember.repository';
+import { UpdateEventMemberService } from './commands/UpdateEventMember/updateEventMember.service';
+import { UpdateEventMemberController } from './commands/UpdateEventMember/updateEventMember.controller';
+import { GetEventMembersService } from './queries/getEventMember/getEventMembers.service';
+import { GetEventMemberController } from './queries/getEventMember/getEventMember.controller';
+import { DeleteEventMemberService } from './commands/DeleteEventMember/deleteEventMember.service';
+import { DeleteEventMemberController } from './commands/DeleteEventMember/deleteEventMember.controller';
 
 @Module({
   imports: [ScheduleModule.forRoot(), ImagesModule, LocationModule],
@@ -68,6 +76,10 @@ import { GetEventOfOrgDetailService } from './queries/getEventOfOrgDetail/getEve
 
     GetEventOfOrgController,
     GetEventOfOrgDetailController,
+    AddEventMemberController,
+    UpdateEventMemberController,
+    GetEventMemberController,
+    DeleteEventMemberController,
     ],
   providers: [
     // UpdateWeeklyService, 
@@ -109,6 +121,11 @@ import { GetEventOfOrgDetailService } from './queries/getEventOfOrgDetail/getEve
     GetEventOfOrgDetailRepository,
     GetEventOfOrgDetailService,
 
+    AddEventMemberService,
+    AddEventMemberRepository,
+    UpdateEventMemberService,
+    GetEventMembersService,
+    DeleteEventMemberService,
     ],
 })
 export class EventModule {}
