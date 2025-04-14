@@ -13,7 +13,7 @@ import ConfirmDeleteDialog from "./dialog/confirmDelete";
 import { EventTableProps } from "../lib/interface/eventtable.interface";
 import Pagination from "./common/pagination";
 
-export default function EventTable({ activeTab }: EventTableProps) {
+export default function EventTable({ activeTab, searchKeyword }: EventTableProps) {
     const data: Event[] = [
         {
             id: 1,
@@ -88,16 +88,36 @@ export default function EventTable({ activeTab }: EventTableProps) {
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
     const filteredEvents = events.filter(event => {
+        const matchSearch = event.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            event.id.toString().includes(searchKeyword);
+
+        // switch (activeTab) {
+        //     case "pending":
+        //         return !event.deletedAt && !event.isApproved;
+        //     case "approved":
+        //         return !event.deletedAt && event.isApproved;
+        //     case "deleted":
+        //         return event.deletedAt !== null;
+        //     default:
+        //         return true;
+        // }
+        let matchTab = false;
+
         switch (activeTab) {
             case "pending":
-                return !event.deletedAt && !event.isApproved;
+                matchTab = !event.deletedAt && !event.isApproved;
+                break;
             case "approved":
-                return !event.deletedAt && event.isApproved;
+                matchTab = !event.deletedAt && event.isApproved;
+                break;
             case "deleted":
-                return event.deletedAt !== null;
+                matchTab = event.deletedAt !== null;
+                break;
             default:
-                return true;
+                matchTab = true;
         }
+
+        return matchSearch && matchTab;
     });
 
     const handleApprovalClick = (event: Event) => {
@@ -161,8 +181,8 @@ export default function EventTable({ activeTab }: EventTableProps) {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeTab]);    
-    
+    }, [activeTab]);
+
     const totalItems = filteredEvents.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const startItem = (currentPage - 1) * itemsPerPage + 1;
@@ -208,66 +228,74 @@ export default function EventTable({ activeTab }: EventTableProps) {
                         </tr>
                     </thead>
                     <tbody className="text-xs">
-                        {paginatedData.map((event, index) => (
-                            <tr key={event.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
-                                <td className="px-4 py-3 text-center border-r border-gray-200">{event.id}</td>
-                                <td className="px-4 py-3 border-r border-gray-200 cursor-pointer text-center">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img className="rounded-md object-cover" alt="Event Logo"
-                                        src={event.Images_Events_imgPosterIdToImages?.url || "https://res.cloudinary.com/de66mx8mw/image/upload/v1744458011/defaultImgEvent_spjrst.png"}
-                                        width={50} height={50}
-                                    />
-                                </td>
-                                <td className="px-4 py-3 border-r border-gray-200 cursor-pointer">{event.title}</td>
-                                <td className="px-4 py-3 border-r border-gray-200 text-center">
-                                    {event.isOnline ? "Online" : "Offline"}
-                                </td>
-                                <td className="px-4 py-3 border-r border-gray-200">{event.venue}</td>
-                                <td className="px-4 py-3 border-r border-gray-200">{event.organizerId}</td>
-                                <td className="px-4 py-3 text-center border-r border-gray-200">
-                                    {new Date(event.createdAt).toLocaleDateString('vi-VN')}
-                                </td>
-                                <td className="px-4 py-3 border-r border-gray-200 text-center cursor-pointer">
-                                    <span className={`min-w-[90px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border                                                               
+                        {paginatedData.length > 0 ? (
+                            paginatedData.map((event, index) => (
+                                <tr key={event.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
+                                    <td className="px-4 py-3 text-center border-r border-gray-200">{event.id}</td>
+                                    <td className="px-4 py-3 border-r border-gray-200 cursor-pointer text-center">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img className="rounded-md object-cover" alt="Event Logo"
+                                            src={event.Images_Events_imgPosterIdToImages?.url || "https://res.cloudinary.com/de66mx8mw/image/upload/v1744458011/defaultImgEvent_spjrst.png"}
+                                            width={50} height={50}
+                                        />
+                                    </td>
+                                    <td className="px-4 py-3 border-r border-gray-200 cursor-pointer">{event.title}</td>
+                                    <td className="px-4 py-3 border-r border-gray-200 text-center">
+                                        {event.isOnline ? "Online" : "Offline"}
+                                    </td>
+                                    <td className="px-4 py-3 border-r border-gray-200">{event.venue}</td>
+                                    <td className="px-4 py-3 border-r border-gray-200">{event.organizerId}</td>
+                                    <td className="px-4 py-3 text-center border-r border-gray-200">
+                                        {new Date(event.createdAt).toLocaleDateString('vi-VN')}
+                                    </td>
+                                    <td className="px-4 py-3 border-r border-gray-200 text-center cursor-pointer">
+                                        <span className={`min-w-[90px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border                                                               
                                             ${event.deletedAt
-                                            ? 'bg-gray-200 text-gray-500 border-gray-500'
-                                            : event.isApproved
-                                                ? 'bg-teal-100 text-teal-500 border-teal-500'
-                                                : 'bg-yellow-100 text-yellow-500 border-yellow-500'
-                                        }`}>
-                                        {event.deletedAt ? "Đã xóa" : event.isApproved ? "Đã duyệt" : "Chờ duyệt"}
-                                    </span>
-                                </td>
-                                <td className="px-4 py-3 border-r border-gray-200 text-center">
-                                    <div className="flex justify-center items-center gap-x-2">
-                                        {event.deletedAt === null && event.isApproved === false && (
-                                            <Check className="p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
-                                                onClick={() => handleApprovalClick(event)} />
-                                        )}
+                                                ? 'bg-gray-200 text-gray-500 border-gray-500'
+                                                : event.isApproved
+                                                    ? 'bg-teal-100 text-teal-500 border-teal-500'
+                                                    : 'bg-yellow-100 text-yellow-500 border-yellow-500'
+                                            }`}>
+                                            {event.deletedAt ? "Đã xóa" : event.isApproved ? "Đã duyệt" : "Chờ duyệt"}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-3 border-r border-gray-200 text-center">
+                                        <div className="flex justify-center items-center gap-x-2">
+                                            {event.deletedAt === null && event.isApproved === false && (
+                                                <Check className="p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                    onClick={() => handleApprovalClick(event)} />
+                                            )}
 
-                                        {event.deletedAt === null && event.isApproved === true && (
-                                            <CalendarOff className="p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"
-                                                onClick={() => handleSupspendClick(event)} />
-                                        )}
+                                            {event.deletedAt === null && event.isApproved === true && (
+                                                <CalendarOff className="p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                    onClick={() => handleSupspendClick(event)} />
+                                            )}
 
-                                        {event.deletedAt && (<Trash2 className="p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer"
-                                            onClick={() => handleDeleteClick(event)} />)}
+                                            {event.deletedAt && (<Trash2 className="p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer"
+                                                onClick={() => handleDeleteClick(event)} />)}
 
-                                    </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={9} className="text-center py-4 text-gray-500">
+                                    Không có sự kiện nào khớp với kết quả tìm kiếm
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>
 
             {/* Phân trang */}
-            <Pagination   
+            <Pagination
                 currentPage={currentPage}
                 totalItems={filteredEvents.length}
                 itemsPerPage={itemsPerPage}
                 onPrevious={handlePrevious}
-                onNext={handleNext}/>
+                onNext={handleNext} />
 
             {selectedEvent && (
                 <ConfirmApprovalDialog

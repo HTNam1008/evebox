@@ -30,6 +30,7 @@ export interface TabsProps {
 
 export interface EventTableProps {
   activeTab: string;
+  searchKeyword: string;
 }
 
 //Pagination
@@ -40,4 +41,10 @@ export interface PaginationProps {
   onPrevious: () => void;
   onNext: () => void;
 }
+
+//Search
+export interface SearchBarProps {
+  onSearch: (keyword: string) => void;
+}
+
 
