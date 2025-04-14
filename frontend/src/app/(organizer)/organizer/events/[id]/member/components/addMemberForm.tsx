@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { X, CheckCircle } from 'lucide-react';
 import createApiClient from '@/services/apiClient';
-import { toast } from "react-toastify"; // Optional for feedback
+import toast from 'react-hot-toast';
 
 interface AddMemberFormProps {
     eventId: number;

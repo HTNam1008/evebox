@@ -1,8 +1,8 @@
 "use client";
 
 import { X } from "lucide-react";
-import { toast } from "react-toastify";
 import createApiClient from "@/services/apiClient";
+import toast from "react-hot-toast";
 
 interface DeleteMemberDialogProps {
   eventId: number;

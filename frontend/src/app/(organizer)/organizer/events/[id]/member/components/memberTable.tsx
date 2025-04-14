@@ -9,6 +9,7 @@ import { EventMember } from "@/types/model/EventMemberResponse";
 import { useParams } from "next/navigation";
 import EditMemberDialog from "./editMemberDialog";
 import DeleteMemberDialog from "./deleteMemberDialog";
+import { Toaster } from "react-hot-toast";
 
 const MemberTable = () => {
     const params = useParams();
@@ -19,15 +20,16 @@ const MemberTable = () => {
     const [deletingMember, setDeletingMember] = useState<EventMember | null>(null);
     const [members, setMembers] = useState<EventMember[]>([]);
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+    
 
-    const fetchMembers = async () => {
+    const fetchMembers = async (emailFilter = "") => {
         try {
           if (!eventId) return;
-    
+      
           const response = await apiClient.get(`/org/member/${eventId}`, {
-            params: {}, // or add email here later
+            params: emailFilter ? { email: emailFilter } : {},
           });
-    
+      
           if (response.data?.data) {
             setMembers(response.data.data);
           }
@@ -49,6 +51,7 @@ const MemberTable = () => {
 
     return (
         <div>
+            <Toaster position="top-center" />
             <div className="flex justify-between items-center">
                 <div className="flex items-center border border-gray-300 rounded-md overflow-hidden w-1/3 bg-white">
                     <input
@@ -95,14 +98,12 @@ const MemberTable = () => {
                             <td className="border px-4 py-2">{member.role_desc}</td>
                             <td className="border px-2 py-2 text-center w-40">
                             <button onClick={() => setEditingMember(member)}> <FaEdit /></button>
-                            {editingMember && (
-  <EditMemberDialog
-    eventId={eventId}
-    member={editingMember}
-    onClose={() => setEditingMember(null)}
-    onSuccess={fetchMembers}
-  />
-)}
+                            {editingMember && (<EditMemberDialog eventId={eventId}
+                                member={editingMember}
+                                onClose={() => setEditingMember(null)}
+                                onSuccess={fetchMembers}
+                            />
+                            )}
 
                             <button onClick={() => setDeletingMember(member)} className="text-red-500 hover:text-red-700 mx-1"><FaTrash /></button>
                             {deletingMember && (<DeleteMemberDialog eventId={eventId} email={deletingMember.email} onClose={() => setDeletingMember(null)} onSuccess={fetchMembers}/>
