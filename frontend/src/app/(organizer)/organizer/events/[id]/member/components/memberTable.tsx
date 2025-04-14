@@ -67,7 +67,13 @@ const MemberTable = () => {
                         Thêm thành viên
                     </button>
                 </div>
-                {isAddingMember && <AddMemberForm onClose={() => setIsAddingMember(false)} />}
+                {isAddingMember && (
+                  <AddMemberForm
+                        eventId={eventId}
+                        onClose={() => setIsAddingMember(false)}
+                        onSuccess={fetchMembers}
+                   />
+                )}
             </div>
 
             <table className="w-full border border-gray-300 shadow-lg mt-6">

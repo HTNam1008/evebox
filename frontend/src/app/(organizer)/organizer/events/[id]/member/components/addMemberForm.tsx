@@ -2,46 +2,82 @@
 
 import { useState } from 'react';
 import { X, CheckCircle } from 'lucide-react';
+import createApiClient from '@/services/apiClient';
+import { toast } from "react-toastify"; // Optional for feedback
 
 interface AddMemberFormProps {
+    eventId: number;
     onClose: () => void;
-}
+    onSuccess?: () => void;
+  }
 
-export default function AddMemberForm({ onClose }: AddMemberFormProps) {
+export default function AddMemberForm({eventId, onClose, onSuccess }: AddMemberFormProps) {
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('');
     const [emailError, setEmailError] = useState('');
     const [roleError, setRoleError] = useState('');
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+
+    const roleMap: { [key: string]: number } = {
+        organizer: 1,
+        admin: 2,
+        manager: 3,
+        "check-in": 4,
+        "check-out": 5,
+        redeem: 6,
+      };
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         let isValid = true;
-
+      
         if (!email.trim()) {
-            setEmailError('Vui lòng nhập email');
-            isValid = false;
+          setEmailError("Vui lòng nhập email");
+          isValid = false;
         } else if (!validateEmail(email)) {
-            setEmailError('Email không hợp lệ');
-            isValid = false;
+          setEmailError("Email không hợp lệ");
+          isValid = false;
         } else {
-            setEmailError('');
+          setEmailError("");
         }
-
+      
         if (!role) {
-            setRoleError('Vui lòng chọn vai trò!');
-            isValid = false;
+          setRoleError("Vui lòng chọn vai trò!");
+          isValid = false;
         } else {
-            setRoleError('');
+          setRoleError("");
         }
-
+      
         if (!isValid) return;
-
-
-    };
+      
+        const roleNumber = roleMap[role];
+        if (!roleNumber) {
+          setRoleError("Vai trò không hợp lệ");
+          return;
+        }
+      
+        try {
+          const response = await apiClient.post(`/org/member?eventId=${eventId}`, {
+            email,
+            role: roleNumber,
+          });
+      
+          if (response.data?.statusCode === 201 || response.data?.statusCode === 200) {
+            toast.success("Thêm thành viên thành công!");
+            if (onSuccess) onSuccess();
+            onClose();
+          } else {
+            toast.error(response.data?.message || "Thêm thất bại");
+          }
+        } catch (error) {
+          console.error("Add member failed:", error);
+          toast.error("Lỗi khi thêm thành viên");
+        }
+      };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -77,15 +113,18 @@ export default function AddMemberForm({ onClose }: AddMemberFormProps) {
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
                         >
-                            <option value="">Thêm vai trò</option>
-                            <option value="admin">Quản trị viên</option>
-                            <option value="manager">Quản lý</option>
-                            <option value="staff">Nhân viên</option>
+                           <option value="">Thêm vai trò</option>
+                           <option value="organizer">Chủ sự kiện</option>
+                           <option value="admin">Quản trị viên</option>
+                           <option value="manager">Quản lý</option>
+                           <option value="check-in">Nhân viên check-in</option>
+                           <option value="check-out">Nhân viên check-out</option>
+                           <option value="redeem">Nhân viên redeem</option>
                         </select>
                         {roleError && <p className="text-red-500 text-sm mt-1">{roleError}</p>}
                     </div>
 
-                    <button className="mt-6 w-full bg-[#51DACF] text-[#0C4762] py-2 rounded-md hover:bg-[#3AB5A3]">
+                    <button onClick={handleSave} className="mt-6 w-full bg-[#51DACF] text-[#0C4762] py-2 rounded-md hover:bg-[#3AB5A3]">
                         Lưu
                     </button>
 
