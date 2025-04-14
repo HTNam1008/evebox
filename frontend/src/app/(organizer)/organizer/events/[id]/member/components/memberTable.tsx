@@ -7,12 +7,14 @@ import AddMemberForm from "./addMemberForm";
 import createApiClient from '@/services/apiClient';
 import { EventMember } from "@/types/model/EventMemberResponse";
 import { useParams } from "next/navigation";
+import EditMemberDialog from "./editMemberDialog";
 
 const MemberTable = () => {
     const params = useParams();
     const eventId = parseInt(params?.id?.toString() || "");
     const [search, setSearch] = useState("");
     const [isAddingMember, setIsAddingMember] = useState(false);
+    const [editingMember, setEditingMember] = useState<EventMember | null>(null);
     const [members, setMembers] = useState<EventMember[]>([]);
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
 
@@ -90,9 +92,16 @@ const MemberTable = () => {
                             <td className="border px-4 py-2">{member.email}</td>
                             <td className="border px-4 py-2">{member.role_desc}</td>
                             <td className="border px-2 py-2 text-center w-40">
-                                <button className="text-blue-500 hover:text-blue-700 mx-1">
-                                    <FaEdit />
-                                </button>
+                            <button onClick={() => setEditingMember(member)}> <FaEdit /></button>
+                            {editingMember && (
+  <EditMemberDialog
+    eventId={eventId}
+    member={editingMember}
+    onClose={() => setEditingMember(null)}
+    onSuccess={fetchMembers}
+  />
+)}
+
                                 <button className="text-red-500 hover:text-red-700 mx-1">
                                     <FaTrash />
                                 </button>
