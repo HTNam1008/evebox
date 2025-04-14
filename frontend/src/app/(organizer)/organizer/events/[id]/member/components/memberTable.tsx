@@ -8,6 +8,7 @@ import createApiClient from '@/services/apiClient';
 import { EventMember } from "@/types/model/EventMemberResponse";
 import { useParams } from "next/navigation";
 import EditMemberDialog from "./editMemberDialog";
+import DeleteMemberDialog from "./deleteMemberDialog";
 
 const MemberTable = () => {
     const params = useParams();
@@ -15,6 +16,7 @@ const MemberTable = () => {
     const [search, setSearch] = useState("");
     const [isAddingMember, setIsAddingMember] = useState(false);
     const [editingMember, setEditingMember] = useState<EventMember | null>(null);
+    const [deletingMember, setDeletingMember] = useState<EventMember | null>(null);
     const [members, setMembers] = useState<EventMember[]>([]);
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
 
@@ -102,9 +104,9 @@ const MemberTable = () => {
   />
 )}
 
-                                <button className="text-red-500 hover:text-red-700 mx-1">
-                                    <FaTrash />
-                                </button>
+                            <button onClick={() => setDeletingMember(member)} className="text-red-500 hover:text-red-700 mx-1"><FaTrash /></button>
+                            {deletingMember && (<DeleteMemberDialog eventId={eventId} email={deletingMember.email} onClose={() => setDeletingMember(null)} onSuccess={fetchMembers}/>
+                             )}
                             </td>
                         </tr>
                     ))}
