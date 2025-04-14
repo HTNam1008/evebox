@@ -281,7 +281,7 @@ export default function EventTable({ activeTab, searchKeyword }: EventTableProps
                         ) : (
                             <tr>
                                 <td colSpan={9} className="text-center py-4 text-gray-500">
-                                    Không có sự kiện nào khớp với kết quả tìm kiếm
+                                    Không có sự kiện nào khớp với từ khóa tìm kiếm
                                 </td>
                             </tr>
                         )}
