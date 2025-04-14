@@ -31,3 +31,13 @@ export interface TabsProps {
 export interface EventTableProps {
   activeTab: string;
 }
+
+//Pagination
+export interface PaginationProps {
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
+  onPrevious: () => void;
+  onNext: () => void;
+}
+

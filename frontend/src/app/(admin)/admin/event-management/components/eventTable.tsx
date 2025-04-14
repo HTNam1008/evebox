@@ -1,7 +1,7 @@
 'use client'
 
 /* Package System */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CalendarOff, Check, Trash2 } from "lucide-react";
 import toast from 'react-hot-toast';
 
@@ -11,6 +11,7 @@ import ConfirmApprovalDialog from "./dialog/confirmApproval";
 import ConfirmSupspendDialog from "./dialog/confirmSupspend";
 import ConfirmDeleteDialog from "./dialog/confirmDelete";
 import { EventTableProps } from "../lib/interface/eventtable.interface";
+import Pagination from "./common/pagination";
 
 export default function EventTable({ activeTab }: EventTableProps) {
     const data: Event[] = [
@@ -154,6 +155,28 @@ export default function EventTable({ activeTab }: EventTableProps) {
         }
     };
 
+    //Pagination
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);    
+    
+    const totalItems = filteredEvents.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(startItem + itemsPerPage - 1, totalItems);
+
+    const handlePrevious = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    const paginatedData = filteredEvents.slice(startItem - 1, endItem);
 
     return (
         <>
@@ -185,7 +208,7 @@ export default function EventTable({ activeTab }: EventTableProps) {
                         </tr>
                     </thead>
                     <tbody className="text-xs">
-                        {filteredEvents.map((event, index) => (
+                        {paginatedData.map((event, index) => (
                             <tr key={event.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                 <td className="px-4 py-3 text-center border-r border-gray-200">{event.id}</td>
                                 <td className="px-4 py-3 border-r border-gray-200 cursor-pointer text-center">
@@ -239,33 +262,12 @@ export default function EventTable({ activeTab }: EventTableProps) {
             </div>
 
             {/* Phân trang */}
-            <div className="flex items-center justify-between mt-4 px-2 text-sm text-gray-500">
-                {/* <p>Hiển thị {startItem}-{endItem} của {totalItems}</p> */}
-
-                <div className="inline-flex items-center rounded-full border border-gray-300 overflow-hidden">
-                    {/* Nút Previous */}
-                    {/* <button
-                        onClick={handlePrevious} disabled={currentPage === 1}
-                        className={`w-8 h-8 flex items-center justify-center 
-                                                ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}`}>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button> */}
-
-                    <div className="h-6 w-px bg-gray-300" />
-
-                    {/* Nút Next */}
-                    {/* <button
-                        onClick={handleNext} disabled={currentPage === totalPages}
-                        className={`w-8 h-8 flex items-center justify-center 
-                                                ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-gray-800 hover:bg-gray-100'}`}>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button> */}
-                </div>
-            </div>
+            <Pagination   
+                currentPage={currentPage}
+                totalItems={filteredEvents.length}
+                itemsPerPage={itemsPerPage}
+                onPrevious={handlePrevious}
+                onNext={handleNext}/>
 
             {selectedEvent && (
                 <ConfirmApprovalDialog

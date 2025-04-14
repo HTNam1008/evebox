@@ -6,7 +6,7 @@ import { useState } from "react";
 
 /* Package Application */
 import EventTable from './eventTable';
-import Tabs from "./tab";
+import Tabs from "./common/tab";
 
 export default function EventPage() {
     const [activeTab, setActiveTab] = useState("all");
