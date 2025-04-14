@@ -3,11 +3,13 @@
 /* Package System */
 import { useState } from "react";
 import { CalendarOff, Check, Trash2 } from "lucide-react";
+import toast from 'react-hot-toast';
 
 /* Package Application */
 import { Event } from "../lib/interface/eventtable.interface";
 import ConfirmApprovalDialog from "./dialog/confirmApproval";
 import ConfirmSupspendDialog from "./dialog/confirmSupspend";
+import ConfirmDeleteDialog from "./dialog/confirmDelete";
 
 export default function EventTable() {
     const data: Event[] = [
@@ -80,6 +82,7 @@ export default function EventTable() {
     const [events, setEvents] = useState<Event[]>(data);
     const [isApprovalDialogOpen, setIsApprovalDialogOpen] = useState(false);
     const [isSupspendDialogOpen, setIsSupspendDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
     const handleApprovalClick = (event: Event) => {
@@ -98,6 +101,7 @@ export default function EventTable() {
 
             setEvents(updatedData);
             setSelectedEvent(null);
+            toast.success("Duyệt sự kiện thành công!");
         }
     };
 
@@ -117,8 +121,25 @@ export default function EventTable() {
 
             setEvents(updatedData);
             setSelectedEvent(null);
+            toast.success("Đình chỉ sự kiện thành công!");
         }
     };
+
+    const handleDeleteClick = (event: Event) => {
+        setSelectedEvent(event);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (selectedEvent) {
+            const updatedData = events.filter(item => item.id !== selectedEvent.id);
+            setEvents(updatedData);
+            setSelectedEvent(null);
+            setIsDeleteDialogOpen(false);
+            toast.success("Xóa sự kiện thành công!");
+        }
+    };
+
 
     return (
         <>
@@ -192,7 +213,8 @@ export default function EventTable() {
                                                 onClick={() => handleSupspendClick(event)} />
                                         )}
 
-                                        {event.deletedAt && (<Trash2 className="p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer" />)}
+                                        {event.deletedAt && (<Trash2 className="p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer"
+                                            onClick={() => handleDeleteClick(event)} />)}
 
                                     </div>
                                 </td>
@@ -244,6 +266,14 @@ export default function EventTable() {
                     open={isSupspendDialogOpen}
                     onClose={() => setIsSupspendDialogOpen(false)}
                     onConfirm={handleConfirmSupspend}
+                />
+            )}
+
+            {selectedEvent && (
+                <ConfirmDeleteDialog
+                    open={isDeleteDialogOpen}
+                    onClose={() => setIsDeleteDialogOpen(false)}
+                    onConfirm={handleConfirmDelete}
                 />
             )}
         </>
