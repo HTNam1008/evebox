@@ -23,8 +23,7 @@ export async function POST(request: Request): Promise<NextResponse<BaseApiRespon
 
     const response = await apiClient.post<BaseApiResponse>(
       `/org/member?eventId=${eventId}`,
-      { email, role },
-      { headers: { Authorization: `Bearer ${session.user.accessToken}` } }
+      { email, role }
     );
 
     return NextResponse.json(response.data);
@@ -55,7 +54,6 @@ export async function GET(request: Request): Promise<NextResponse<EventMemberRes
       `/org/member/${eventId}`,
       {
         params: email ? { email } : undefined,
-        headers: { Authorization: `Bearer ${session.user.accessToken}` },
       }
     );
 
@@ -84,7 +82,6 @@ export async function PUT(request: Request): Promise<NextResponse<BaseApiRespons
     const response = await apiClient.put<BaseApiResponse>(
       `/org/member?eventId=${eventId}`,
       { email, role },
-      { headers: { Authorization: `Bearer ${session.user.accessToken}` } }
     );
 
     return NextResponse.json(response.data);
@@ -113,7 +110,6 @@ export async function DELETE(request: Request): Promise<NextResponse<BaseApiResp
 
     const response = await apiClient.delete<BaseApiResponse>(
       `/org/member/${eventId}?email=${email}`,
-      { headers: { Authorization: `Bearer ${session.user.accessToken}` } }
     );
 
     return NextResponse.json(response.data);
