@@ -16,7 +16,6 @@ interface EditMemberDialogProps {
 }
 
 const roleMap: { [key: number]: string } = {
-  1: "organizer",
   2: "admin",
   3: "manager",
   4: "check-in",
@@ -91,7 +90,6 @@ export default function EditMemberDialog({ eventId, member, onClose, onSuccess }
             onChange={(e) => setRole(e.target.value)}
           >
             <option value="">Chọn vai trò</option>
-            <option value="organizer">Chủ sự kiện</option>
             <option value="admin">Quản trị viên</option>
             <option value="manager">Quản lý</option>
             <option value="check-in">Nhân viên check-in</option>

@@ -18,8 +18,31 @@ export default function AddMemberForm({eventId, onClose, onSuccess }: AddMemberF
     const [roleError, setRoleError] = useState('');
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
 
+    const permissionMatrix: boolean[][] = [
+      // Chỉnh sửa
+      [true, true, false, false, false, false],
+      // Tổng kết
+      [true, true, false, false, false, false],
+      // Voucher
+      [true, true, false, false, false, false],
+      // Marketing
+      [true, true, false, false, false, false],
+      // Đơn hàng
+      [true, true, true, false, false, false],
+      // Seat map
+      [true, true, true, false, false, false],
+      // Thành viên
+      [true, true, true, false, false, false],
+      // Check in
+      [true, true, true, true, false, false],
+      // Check out
+      [true, true, true, false, true, false],
+      // Redeem
+      [true, true, true, false, false, true],
+    ];
+    
+
     const roleMap: { [key: string]: number } = {
-        organizer: 1,
         admin: 2,
         manager: 3,
         "check-in": 4,
@@ -114,7 +137,6 @@ export default function AddMemberForm({eventId, onClose, onSuccess }: AddMemberF
                             onChange={(e) => setRole(e.target.value)}
                         >
                            <option value="">Thêm vai trò</option>
-                           <option value="organizer">Chủ sự kiện</option>
                            <option value="admin">Quản trị viên</option>
                            <option value="manager">Quản lý</option>
                            <option value="check-in">Nhân viên check-in</option>
@@ -133,26 +155,29 @@ export default function AddMemberForm({eventId, onClose, onSuccess }: AddMemberF
                         <table className="w-full border-collapse border border-gray-300">
                             <thead>
                                 <tr className="bg-[#0C4762] text-white text-sm">
-                                    <th className="p-2 border"></th>
-                                    <th className="p-2 border">Chủ sự kiện</th>
-                                    <th className="p-2 border">Quản trị viên</th>
-                                    <th className="p-2 border">Quản lý</th>
-                                    <th className="p-2 border">Nhân viên check-in</th>
-                                    <th className="p-2 border">Nhân viên check-out</th>
-                                    <th className="p-2 border">Nhân viên redeem</th>
+                                    <th className="p-2 border w-1/7"></th>
+                                    <th className="p-2 border w-1/7">Chủ sự kiện</th>
+                                    <th className="p-2 border w-1/7">Quản trị viên</th>
+                                    <th className="p-2 border w-1/7">Quản lý</th>
+                                    <th className="p-2 border w-1/7">Nhân viên check-in</th>
+                                    <th className="p-2 border w-1/7">Nhân viên check-out</th>
+                                    <th className="p-2 border w-1/7">Nhân viên redeem</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {['Chỉnh sửa', 'Tổng kết', 'Voucher', 'Marketing', 'Đơn hàng', 'Seat map', 'Thành viên', 'Check in', 'Check out', 'Redeem'].map((perm, idx) => (
                                     <tr key={idx} className="text-center">
-                                        <td className="border p-2 text-sm">{perm}</td>
-                                        {[...Array(6)].map((_, i) => (
-                                            <td key={i} className="border p-2">
-                                                <div className="flex justify-center">
-                                                    <CheckCircle className="text-[#48C3CD]" size={16} strokeWidth={1.5} />
-                                                </div>
-                                            </td>
-                                        ))}
+                                        <td className="border p-2 text-sm w-1/7">{perm}</td>
+                                        {permissionMatrix[idx].map((hasPermission, i) => (
+                                         <td key={i} className="border p-2 w-1/7">
+                                           <div className="flex justify-center">
+                                            {hasPermission && (
+                                                   <CheckCircle className="text-[#48C3CD]" size={16} strokeWidth={1.5} />
+                                            )}
+                                          </div>
+                                        </td>
+                                   ))}
+
                                     </tr>
                                 ))}
                             </tbody>
