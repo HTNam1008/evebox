@@ -1,31 +1,12 @@
-import 'tailwindcss/tailwind.css';
+import { OrdersPage } from "./components/orders-page"
 
-import { DropdownWrapper } from './components/dropdown';
-import SidebarOrganizer from '../components/sidebarOrganizer';
-import OrderTabs from './components/ordersTab';
+interface PageProps {
+  params: { id: string }
+}
 
-export default function Home() {
+export default function Page({ params }: PageProps) {
+  const { id: eventIdStr } = params
+  const eventId = Number(eventIdStr)
 
-    const months = ['01/2025', '02/2025', '03/2025'];
-    const dates = ['11/01/2025 (19:00)', '12/01/2025 (19:00)'];
-
-    return (
-        <main>
-            <div className="flex min-h-screen bg-gray-100">
-                <div className="w-64 bg-gray-900 text-white">
-                    <SidebarOrganizer />
-                </div>
-                <div className="flex-1 p-6">
-                    <h1 className="text-2xl font-bold text-[#0C4762]">LiveShow ca nhạc</h1>
-                    <p className="text-sm text-[#51DACF] pt-2">20:00 - 23:00, 25 tháng 10, 2024</p>
-                    <div className="border-t-2 border-[#0C4762] mt-2"></div>
-                    <div className="py-6  flex items-center space-x-6">
-                        <h3 className="text-lg font-bold text-[#0C4762] mb-2">Danh sách buổi biểu diễn</h3>
-                        <DropdownWrapper months={months} dates={dates} />
-                    </div>
-                    <OrderTabs />
-                </div>
-            </div>
-        </main>
-    );
+  return <OrdersPage eventId={eventId} />
 }
