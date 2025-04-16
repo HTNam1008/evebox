@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, use } from "react"
+import { useEffect, useState, useCallback } from "react"
 
 import { OverviewCard } from "./overviewCard"
 import { SummaryControls } from "./summaryControls"
@@ -12,44 +12,41 @@ import { getShowingsByEventId, getSummaryByShowingId } from "@/services/organize
 
 
 interface PageProps {
-    params: { id: string }
-  }
-  
-  export const SummaryRevenuePage = ({ params }: PageProps) => {
-    const { id: eventIdStr } = params;
-    const eventId = Number(eventIdStr);
+  params: { id: string }
+}
 
-  const [data, setData] = useState<IEventSummaryData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [showingId, setShowingId] = useState<string | null>(null)
+export const SummaryRevenuePage = ({ params }: PageProps) => {
+  const { id: eventIdStr } = params;
+  const eventId = Number(eventIdStr);
 
-  // Lấy danh sách suất diễn và chọn suất diễn đầu tiên
-  useEffect(() => {
-    const fetchShowingId = async () => {
-      try {
-        setLoading(true)
-        const showings = await getShowingsByEventId(eventId)
+  const [data, setData] = useState<IEventSummaryData | null>(null);
+  const [loadingShowing, setLoadingShowing] = useState(true);
+  const [loadingSummary, setLoadingSummary] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showingId, setShowingId] = useState<string | null>(null);
 
-        console.log("showing: ")
-        console.log(showings)
+  const fetchShowingId = useCallback(async () => {
+    try {
+      setLoadingShowing(true)
+      const showings = await getShowingsByEventId(eventId)
 
-        if (showings && showings.length > 0) {
-          const selectedShowing = showings.find((show: IShowTime) => show.isSelected) || showings[0]
-          setShowingId(selectedShowing.id)
-        } else {
-          setError("Không tìm thấy suất diễn nào")
-        }
-      } catch (error) {
-        console.error("Error fetching showing ID:", error)
-        setError("Không thể tải thông tin suất diễn")
-      } finally {
-        setLoading(false)
+      if (showings && showings.length > 0) {
+        const selectedShowing = showings.find((show: IShowTime) => show.isSelected) || showings[0]
+        setShowingId(selectedShowing.id)
+      } else {
+        setError("Không tìm thấy suất diễn nào")
       }
+    } catch (error) {
+      console.error("Error fetching showing ID:", error)
+      setError("Không thể tải thông tin suất diễn")
+    } finally {
+      setLoadingShowing(false)
     }
-
-    fetchShowingId()
   }, [eventId])
+
+  useEffect(() => {
+    fetchShowingId()
+  }, [fetchShowingId])
 
   // Khi showingId thay đổi -> fetch summary
   useEffect(() => {
@@ -57,7 +54,7 @@ interface PageProps {
       if (!showingId) return
 
       try {
-        setLoading(true)
+        setLoadingSummary(true)
         const summary = await getSummaryByShowingId(showingId)
         console.log(summary)
         setData(summary)
@@ -65,7 +62,7 @@ interface PageProps {
         console.error("Error fetching summary:", error)
         setError("Không thể tải dữ liệu doanh thu")
       } finally {
-        setLoading(false)
+        setLoadingSummary(false)
       }
     }
 
@@ -78,7 +75,11 @@ interface PageProps {
     setShowingId(newShowingId)
   }
 
-  if (loading) {
+  const handleRetry = () => {
+    fetchShowingId();
+  }
+
+  if (loadingShowing || loadingSummary) {
     return (
       <div className="flex min-h-screen">
         <div className="inset-y-0 left-0 w-64 bg-gray-900 md:relative md:flex-shrink-0">
@@ -104,8 +105,8 @@ interface PageProps {
           <div className="text-center text-red-500">
             <p>{error}</p>
             <button
-              onClick={() => window.location.reload()}
-              className="mt-4 px-4 py-2 bg-[#0C4762] text-white rounded-md hover:bg-[#0A3A50]"
+              onClick={handleRetry}
+              className="mt-4 px-4 py-2 bg-[#0C4762] text-white rounded-md hover:bg-[#0A3A50] retry-btn"
             >
               Thử lại
             </button>
@@ -115,7 +116,7 @@ interface PageProps {
     )
   }
 
-  if (!data) {
+  if (!data && !loadingShowing && !loadingSummary) {
     return (
       <div className="flex min-h-screen">
         <div className="inset-y-0 left-0 w-64 bg-gray-900 md:relative md:flex-shrink-0">
@@ -130,33 +131,35 @@ interface PageProps {
     )
   }
 
-  return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <div className="inset-y-0 left-0 w-64 bg-gray-900 md:relative md:flex-shrink-0">
-        <SidebarOrganizer />
+  if (data) {
+    return (
+      <div className="flex min-h-screen">
+        {/* Sidebar */}
+        <div className="inset-y-0 left-0 w-64 bg-gray-900 md:relative md:flex-shrink-0">
+          <SidebarOrganizer />
+        </div>
+
+        <div className="flex-1 p-6 md-64 w-full">
+          <SummaryControls
+            eventTitle={data.eventTitle}
+            eventId={eventId}
+            startTime={data.startTime}
+            endTime={data.endTime}
+            onShowingChange={handleShowingChange}
+          />
+
+          <OverviewCard
+            totalRevenue={data.totalRevenue}
+            ticketsSold={data.ticketsSold}
+            totalTickets={data.totalTickets}
+            percentageSold={data.percentageSold}
+          />
+
+          <TicketTable ticketTypes={data.byTicketType} />
+        </div>
       </div>
-
-      <div className="flex-1 p-6 md-64 w-full">
-        <SummaryControls
-          eventTitle={data.eventTitle}
-          eventId={eventId}
-          startTime={data.startTime}
-          endTime={data.endTime}
-          onShowingChange={handleShowingChange}
-        />
-
-        <OverviewCard
-          totalRevenue={data.totalRevenue}
-          ticketsSold={data.ticketsSold}
-          totalTickets={data.totalTickets}
-          percentageSold={data.percentageSold}
-        />
-
-        <TicketTable ticketTypes={data.byTicketType} />
-      </div>
-    </div>
-  )
+    )
+  }
 }
 
 export default SummaryRevenuePage

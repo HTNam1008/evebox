@@ -104,11 +104,10 @@ export default function OrderSection({ ordersData = [] }: { ordersData?: TicketO
             Gửi tất cả email
           </button>
           <button
-            className={`px-4 py-2 rounded-md transition duration-200 ${
-              selectedOrders.length > 0
+            className={`px-4 py-2 rounded-md transition duration-200 ${selectedOrders.length > 0
                 ? "bg-[#48D1CC] text-[#0C4762] hover:bg-[#51DACF]"
                 : "bg-gray-300 text-gray-700 cursor-not-allowed"
-            }`}
+              }`}
             disabled={selectedOrders.length === 0}
           >
             Email đã chọn ({selectedOrders.length})
