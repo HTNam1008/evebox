@@ -42,15 +42,10 @@ export default function OrderSection({ ordersData = [] }: { ordersData?: TicketO
     const statusValue = String(status).toLowerCase()
     switch (statusValue) {
       case "1":
-      case "completed":
         return { text: "Hoàn thành", className: "bg-green-100 text-green-800" }
       case "0":
-      case "pending":
-      case "processing":
         return { text: "Đang xử lý", className: "bg-yellow-100 text-yellow-800" }
       case "2":
-      case "cancelled":
-      case "canceled":
         return { text: "Đã hủy", className: "bg-red-100 text-red-800" }
       default:
         return { text: statusValue, className: "bg-gray-100 text-gray-800" }

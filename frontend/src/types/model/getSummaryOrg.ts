@@ -26,3 +26,10 @@ export interface IEventSummaryData {
   percentageSold: number
   byTicketType: ITicketTypeSummary[]
 }
+
+export interface IFormattedShowingData {
+  id: string,
+  startTime: string | Date,
+  endTime: string | Date,
+  formattedLabel: string
+}

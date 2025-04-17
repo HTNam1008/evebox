@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import type { IShowTime } from "@/types/model/getSummaryOrg"
+import type { IShowTime, IFormattedShowingData } from "@/types/model/getSummaryOrg"
 
 // Basic dropdown component
 export default function Dropdown({
@@ -11,7 +11,7 @@ export default function Dropdown({
   labelKey,
   valueKey,
 }: {
-  options: any[]
+  options: IFormattedShowingData[]
   selected: string
   onChange: (value: string) => void
   labelKey?: string
@@ -24,11 +24,11 @@ export default function Dropdown({
       onChange={(e) => onChange(e.target.value)}
     >
       {options.map((option) => {
-        const value = valueKey ? option[valueKey] : option
-        const label = labelKey ? option[labelKey] : option
+        const value = valueKey ? option[valueKey as keyof IFormattedShowingData] : option
+        const label = labelKey ? option[labelKey as keyof IFormattedShowingData] : option
         return (
-          <option key={value} value={value}>
-            {label}
+          <option key={String(value)} value={String(value)}>
+            {String(label)}
           </option>
         )
       })}

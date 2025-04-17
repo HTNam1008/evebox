@@ -116,7 +116,7 @@ export const SummaryRevenuePage = ({ params }: PageProps) => {
     )
   }
 
-  if (!data && !loadingShowing && !loadingSummary) {
+  if (!data && (!loadingShowing && !loadingSummary)) {
     return (
       <div className="flex min-h-screen">
         <div className="inset-y-0 left-0 w-64 bg-gray-900 md:relative md:flex-shrink-0">
