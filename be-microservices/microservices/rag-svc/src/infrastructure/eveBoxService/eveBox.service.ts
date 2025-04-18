@@ -5,6 +5,8 @@ import { EveBoxRepository } from './evebox.repository';
 import { VectorStoreService } from 'src/infrastructure/vector/vector_store.service';
 import { Document } from 'langchain/document';
 import { VectorStoreCohereService } from '../vector/vector_store.cohere';
+import { VectorStoreGeminiService } from '../vector/vector_store.gemini';
+import { transformEventsToDocuments } from 'src/utils/transform_documents';
 
 @Injectable()
 export class EveBoxService {
@@ -14,9 +16,10 @@ export class EveBoxService {
     private readonly eveBoxRepo: EveBoxRepository,
     private readonly vectorStore: VectorStoreService,
     private readonly vectorStoreCohere: VectorStoreCohereService, // Sử dụng Cohere cho vector store
+    private readonly vectorStoreGemini: VectorStoreGeminiService, // Sử dụng Gemini cho vector store
   ) {}
 
-  @Cron('30 16 * * 6') // Mỗi thứ 2 lúc 0h
+  @Cron('11 20 * * 5') // Mỗi thứ 2 lúc 0h
   async handleWeeklyEventEmbedding() {
     this.logger.log('⏳ Bắt đầu sync event vào vector store...');
 
@@ -26,14 +29,7 @@ export class EveBoxService {
       return;
     }
 
-    const documents: Document[] = events.map((event) => {
-      const metadata = { ...event };
-      const pageContent = Object.entries(event)
-        .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
-        .join('\n');
-
-      return new Document({ pageContent, metadata });
-    });
+    const documents: Document[] = transformEventsToDocuments(events);
 
     await this.vectorStoreCohere.embedDocuments(documents, 'eveboxEvents');
 

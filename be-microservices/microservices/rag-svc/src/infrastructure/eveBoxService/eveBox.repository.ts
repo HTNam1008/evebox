@@ -139,6 +139,13 @@ export class EveBoxRepository {
           showingTimes: event.Showing.map((showing) => ({
             start: showing.startTime,
             end: showing.endTime,
+            ticketType: showing.TicketType.map((ticket) => ({
+              name: ticket.name,
+              description: ticket.description,
+              price: ticket.originalPrice,
+              startTime: ticket.startTime,
+              endTime: ticket.endTime,
+            })),
           })),
         });
       }

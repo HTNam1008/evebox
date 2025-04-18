@@ -17,5 +17,12 @@ export class Event {
   showingTimes: {
     start: Date;
     end: Date;
+    ticketType: {
+      name: string;
+      description: string;
+      price: number;
+      startTime: Date;
+      endTime: Date;
+    }[]
   }[];
 }
