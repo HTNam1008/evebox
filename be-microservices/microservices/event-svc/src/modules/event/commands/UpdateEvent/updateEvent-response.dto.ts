@@ -23,7 +23,7 @@ export class EventDto {
   imgPosterId: number;
 
   @ApiProperty({ example: '2024-12-28T13:00:00.000Z', description: 'Event createdAt in ISO format' })
-  createAt: Date;
+  createdAt: Date;
 
   @ApiProperty({ example: false, description: 'Is only on eve' })
   isOnlyOnEve: boolean;
@@ -51,6 +51,9 @@ export class EventDto {
 
   @ApiProperty({ example: 'Thanh lap nam 2010', description: 'Organizer Description' })
   orgDescription: string;
+
+  @ApiProperty({ example: 'Su kien online hay offline', description: 'Form of event' })
+  isOnline: boolean
 }
 
 export class EventResponse {
