@@ -28,6 +28,9 @@ import { GetEventDetailRepository } from './repositories/getEventDetail.reposito
 import { GetEventFrontDisplayRepository } from './repositories/getEventFrontDisplay.repository';
 import { GetEventFrontDisplayService } from './queries/getEventFrontDisplay/getEventFrontDisplay.service';
 import { GetEventFrontDisplayController } from './queries/getEventFrontDisplay/getEventFrontDisplay.controller';
+import { GetEventsRepository } from './repositories/getEvents.repository';
+import { GetEventsService } from './queries/getEvents/getEvents.service';
+import { GetEventsController } from './queries/getEvents/getEvents.controller';
 import { GetRecommendEventService } from './queries/getRecommendEvent/getRecommendEvent.service';
 import { GetRecommendEventRepository } from './repositories/getRecommendEvent.repository';
 import { GetRecommendedEventController } from './queries/getRecommendEvent/getRecommendEvent.controller';
@@ -68,6 +71,7 @@ import { DeleteEventMemberController } from './commands/DeleteEventMember/delete
     GetEventDetailRecommendController,
     GetEventFrontDisplayController,
     GetRecommendedEventController,
+    GetEventsController,
 
     // For Organizer
     CreateEventController,
@@ -89,6 +93,9 @@ import { DeleteEventMemberController } from './commands/DeleteEventMember/delete
 
     SearchEventService,
     SearchEventRepository,
+
+    GetEventsService,
+    GetEventsRepository,
 
     GetAllCategoriesRepository,
     GetAllCategoriesService,
