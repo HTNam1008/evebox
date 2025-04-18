@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { VectorStoreCohereService } from 'src/infrastructure/vector/vector_store.cohere';
 import { Document } from 'langchain/document';
+import { VectorStoreGeminiService } from 'src/infrastructure/vector/vector_store.gemini';
 
 @Injectable()
 export class RetrieverService {
@@ -9,9 +10,10 @@ export class RetrieverService {
 
   constructor(
     private readonly vectorStoreService: VectorStoreCohereService,
+    private readonly vectorStoreGeminiService: VectorStoreGeminiService, // Sử dụng Gemini cho vector store
   ) {}
 
-  async search(query: string, k = 5, scoreThreshold = 0.5): Promise<Document[]> {
+  async search(query: string, k = 10, scoreThreshold = 0.5): Promise<Document[]> {
     try {
       const store = await this.vectorStoreService['getVectorStore'](this.COLLECTION_NAME);
 
