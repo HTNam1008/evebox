@@ -14,26 +14,15 @@ export default function EventPage() {
     const [activeTab, setActiveTab] = useState("all");
     const [searchKeyword, setSearchKeyword] = useState('');
 
-    const [typeFilter, setTypeFilter] = useState<boolean | null>(null);
+    const [categoryFilter, setCategoryFilter] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
 
     const handleResetFilter = () => {
-        setTypeFilter(null);
+        setCategoryFilter('');
         setDateFrom('');
         setDateTo('');
     };
-
-    const handleTypeChange = (value: string) => {
-        if (value === '') {
-            setTypeFilter(null);
-        } else if (value === 'true') {
-            setTypeFilter(true);
-        } else if (value === 'false') {
-            setTypeFilter(false);
-        }
-    };
-
 
     return (
         <>
@@ -43,8 +32,8 @@ export default function EventPage() {
             <div className="flex justify-between items-center mt-6 mb-2">
                 <SearchBar onSearch={setSearchKeyword} />
                 <FilterBar
-                    typeFilter={typeFilter}
-                    onTypeChange={handleTypeChange}
+                    categoryFilter={categoryFilter}
+                    onCategoryChange={setCategoryFilter}
                     dateFrom={dateFrom} dateTo={dateTo}
                     onDateFromChange={setDateFrom}
                     onDateToChange={setDateTo}
@@ -56,7 +45,7 @@ export default function EventPage() {
             <EventTable 
                 activeTab={activeTab} 
                 searchKeyword={searchKeyword} 
-                typeFilter={typeFilter} 
+                categoryFilter={categoryFilter} 
                 dateFrom={dateFrom} dateTo={dateTo}/>
         </>
     )

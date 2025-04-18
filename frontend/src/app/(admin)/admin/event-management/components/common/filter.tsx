@@ -8,11 +8,13 @@ import { useState } from "react";
 import { FilterProps } from "../../lib/interface/eventtable.interface";
 
 export default function FilterBar({
-    typeFilter, onTypeChange,
+    categoryFilter, onCategoryChange,
     dateFrom, dateTo,
     onDateFromChange, onDateToChange,
     onReset
 }: FilterProps) {
+    //Call api để lấy ra các categories
+    const categories = ['Âm nhạc', 'Sân khấu & Nghệ thuật', 'Thể thao', 'Khác'];
     const [showDateFilter, setShowDateFilter] = useState(false);
 
     return (
@@ -25,14 +27,17 @@ export default function FilterBar({
 
             {/* Filter - Loại sự kiện */}
             <div className="filter-type-btn flex items-center gap-1 border-l pl-4 pr-2">
-                <span className="text-black font-semibold mr-1">Loại sự kiện</span>
+                <span className="text-black font-semibold mr-1">Thể loại</span>
 
-                <select value={typeFilter === null ? '' : String(typeFilter)} className="border px-2 py-1 rounded-md"
-                    onChange={(e) => onTypeChange(e.target.value)}
+                <select value={categoryFilter} className="border px-2 py-1 rounded-md"
+                    onChange={(e) => onCategoryChange(e.target.value)}
                 >
-                    <option value=''>Tất cả</option>
-                    <option value='true'>Online</option>
-                    <option value='false'>Offline</option>
+                    <option value="">Tất cả</option>
+                    {categories.map(cate => (
+                        <option key={cate} value={cate}>
+                            {cate}
+                        </option>
+                    ))}
                 </select>
             </div>
 

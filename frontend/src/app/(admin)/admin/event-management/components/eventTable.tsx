@@ -15,21 +15,26 @@ import Pagination from "./common/pagination";
 import SortIcon from "../../account-management/components/sortIcon";
 import { sortEvents } from "../lib/function/sortEvents";
 
-export default function EventTable({ activeTab, searchKeyword, typeFilter, dateFrom, dateTo }: EventTableProps) {
+export default function EventTable({ activeTab, searchKeyword, categoryFilter, dateFrom, dateTo }: EventTableProps) {
     const data: Event[] = [
         {
             id: 1,
             title: 'SÂN KHẤU NO.1 | VỞ KỊCH | MẶT NẠ DA NGƯỜI',
             organizerId: 'Nguyễn Ngọc Hà',
             createdAt: '2024-10-12T12:34:56Z',
-            venue: 'Sân khấu kịch No.1',
+            venue: 'Online Event',
             isApproved: true,
             deletedAt: null,
-            isOnline: true,
             Images_Events_imgPosterIdToImages: {
                 id: 1,
                 url: 'https://fastly.picsum.photos/id/513/200/200.jpg?hmac=xMRZhdrttvlfIvOf0Qm9J4texbmA0HS2pBNVM-Pho-U',
             },
+            categories: [
+                {
+                    id: 1,
+                    name: "Âm nhạc"
+                }
+            ]
         },
         {
             id: 2,
@@ -39,11 +44,20 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
             venue: 'Trung Tâm Hội Chợ Triển Lãm Sài Gòn SECC',
             isApproved: false,
             deletedAt: null,
-            isOnline: true,
             Images_Events_imgPosterIdToImages: {
                 id: 2,
                 url: 'https://fastly.picsum.photos/id/82/200/200.jpg?hmac=ATNAhTLN2dA0KmTzSE5D9XiPe3GMX8uwxpFlhU7U5OY',
-            }
+            },
+            categories: [
+                {
+                    id: 2,
+                    name: "Sân khấu & Nghệ thuật"
+                },
+                {
+                    id: 4,
+                    name: "Khác"
+                }
+            ]
         },
         {
             id: 3,
@@ -52,20 +66,30 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
             createdAt: '2024-11-01T10:00:00Z',
             venue: 'Trung tâm sáng tạo khoa học - kỹ thuật (TSK)',
             isApproved: true,
-            isOnline: false,
             deletedAt: null,
             Images_Events_imgPosterIdToImages: null,
+            categories: [
+                {
+                    id: 3,
+                    name: "Thể thao"
+                }
+            ]
         },
         {
             id: 4,
             title: '(Hà Nội) Piano solo - David Greilsammer | Du hành cùng Satie ',
             organizerId: 'Cao Thiên Ý',
             createdAt: '2025-03-16T19:51:36.946Z',
-            venue: 'Trường Pháp quốc tế Alexandre Yersin',
+            venue: 'Online Event',
             isApproved: true,
-            isOnline: true,
             deletedAt: '2025-03-20T19:51:36.946Z',
             Images_Events_imgPosterIdToImages: null,
+            categories: [
+                {
+                    id: 4,
+                    name: "Khác"
+                }
+            ]
         },
         {
             id: 5,
@@ -74,12 +98,21 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
             createdAt: '2025-02-16T19:51:36.946Z',
             venue: 'Quảng trường Diamond, Van Phuc Water Show',
             isApproved: false,
-            isOnline: false,
             deletedAt: '2025-03-01T19:51:36.946Z',
             Images_Events_imgPosterIdToImages: {
                 id: 5,
                 url: "https://fastly.picsum.photos/id/442/200/200.jpg?hmac=S-yNCNr30GK97ulUYoey_Fh2-czIf7YnNgcKp7zrEoE"
             },
+            categories: [
+                {
+                    id: 1,
+                    name: "Âm nhạc"
+                },
+                {
+                    id: 2,
+                    name: "Sân khấu & Nghệ thuật"
+                }
+            ]
         },
     ];
 
@@ -104,7 +137,8 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
         const matchSearch = event.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
             event.id.toString().includes(searchKeyword);
 
-        const matchType = typeFilter === null ? true : event.isOnline === typeFilter;
+        const matchCategory = categoryFilter
+            ? event.categories.some(category => category.name === categoryFilter) : true;
 
         const createdDate = new Date(event.createdAt).toISOString().split('T')[0];
         const matchDateFrom = dateFrom ? createdDate >= dateFrom : true;
@@ -126,7 +160,7 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
                 matchTab = true;
         }
 
-        return matchSearch && matchTab && matchType && matchDateFrom && matchDateTo;
+        return matchSearch && matchTab && matchCategory && matchDateFrom && matchDateTo;
     });
 
     const handleApprovalClick = (event: Event) => {
@@ -223,7 +257,7 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
                                 Tên sự kiện <SortIcon field="name" sortConfig={sortConfig} />
                             </th>
                             <th className="px-4 py-3 cursor-pointer min-w-[100px]">
-                                Loại sự kiện
+                                Thể loại
                             </th>
                             <th className="px-4 py-3 cursor-pointer min-w-[140px]" onClick={() => handleSort('venue')}>
                                 Địa điểm <SortIcon field="venue" sortConfig={sortConfig} />
@@ -257,8 +291,10 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
                                             {event.title}
                                         </div>
                                     </td>
-                                    <td className="px-4 py-3 border-r border-gray-200 text-center">
-                                        {event.isOnline ? "Online" : "Offline"}
+                                    <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+                                        <div className="line-clamp-3 leading-snug" title={event.categories.map(c => c.name).join(", ")}>
+                                            {event.categories.map(c => c.name).join(", ")}
+                                        </div>
                                     </td>
                                     <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
                                         <div className="line-clamp-2 leading-snug" title={event.venue ?? ''}>

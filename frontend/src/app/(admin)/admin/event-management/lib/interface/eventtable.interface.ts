@@ -3,6 +3,11 @@ export interface Image {
   url: string;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+}
+
 export interface Event {
   id: number;
   title: string;
@@ -11,8 +16,8 @@ export interface Event {
   venue?: string | null;
   isApproved: boolean;
   deletedAt?: string | null;
-  isOnline: boolean;
   Images_Events_imgPosterIdToImages?: Image | null;
+  categories: Category[];
 }
 
 export interface ConfirmApprovalProps {
@@ -31,7 +36,7 @@ export interface TabsProps {
 export interface EventTableProps {
   activeTab: string;
   searchKeyword: string;
-  typeFilter: boolean | null;
+  categoryFilter: string
   dateFrom: string;
   dateTo: string;
 }
@@ -53,8 +58,8 @@ export interface SearchBarProps {
 
 //Filter
 export interface FilterProps {
-  typeFilter: boolean | null;
-  onTypeChange: (value: string) => void;
+  categoryFilter: string;
+  onCategoryChange: (value: string) => void;
   dateFrom: string;
   dateTo: string;
   onDateFromChange: (value: string) => void;
