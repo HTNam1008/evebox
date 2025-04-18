@@ -32,30 +32,47 @@ export class CreateEventRepository {
           weekClicks: 0,
         }
       });
-      if (event) {
-        const eventDto: EventDto = {
-          id: event.id,
-          title: event.title,
-          description: event.description,
-          locationId: event.locationId,
-          isOnline: event.isOnline,
-          organizerId: event.organizerId,
-          venue: event.venue,
-          imgLogoId: event.imgLogoId,
-          imgPosterId: event.imgPosterId,
-          createAt: event.createdAt,
-          orgDescription: event.orgDescription,
-          orgName: event.orgName,
-          isOnlyOnEve: event.isOnlyOnEve,
-          isSpecial: event.isSpecial,
-          lastScore: event.lastScore.toNumber(),
-          totalClicks: event.totalClicks,
-          weekClicks: event.weekClicks,
-          isApproved: event.isApproved,
-        };
-        return Ok(eventDto);
+      if (!event) {
+        return Err(new Error('Failed to create event'));
       }
-      return Err(new Error('Failed to create event'));
+
+      const user = await this.prisma.user.findUnique({
+        where: { email: orgId },
+      });
+  
+      await this.prisma.eventUserRelationship.create({
+        data: {
+          eventId: event.id,
+          userId: user.id,
+          email: orgId || '', 
+          role: 0,
+          role_desc: 'organizer',
+        },
+      });
+  
+      const eventDto: EventDto = {
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        locationId: event.locationId,
+        isOnline: event.isOnline,
+        organizerId: event.organizerId,
+        venue: event.venue,
+        imgLogoId: event.imgLogoId,
+        imgPosterId: event.imgPosterId,
+        createAt: event.createdAt,
+        orgDescription: event.orgDescription,
+        orgName: event.orgName,
+        isOnlyOnEve: event.isOnlyOnEve,
+        isSpecial: event.isSpecial,
+        lastScore: event.lastScore.toNumber(),
+        totalClicks: event.totalClicks,
+        weekClicks: event.weekClicks,
+        isApproved: event.isApproved,
+      };
+  
+      return Ok(eventDto);
+      
     } catch (error) {
       return Err(new Error('Failed to create event'));
     }
