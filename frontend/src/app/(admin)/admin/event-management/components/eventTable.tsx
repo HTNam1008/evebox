@@ -247,7 +247,7 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
                                     <td className="px-4 py-3 text-center border-r border-gray-200">{event.id}</td>
                                     <td className="px-4 py-3 border-r border-gray-200 cursor-pointer text-center">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img className="rounded-md object-cover" alt="Event Logo"
+                                        <img className="rounded-md object-cover transition duration-300 transform hover:scale-150" alt="Event Logo"
                                             src={event.Images_Events_imgPosterIdToImages?.url || "https://res.cloudinary.com/de66mx8mw/image/upload/v1744458011/defaultImgEvent_spjrst.png"}
                                             width={50} height={50}
                                         />
