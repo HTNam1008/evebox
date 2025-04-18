@@ -252,11 +252,19 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
                                             width={50} height={50}
                                         />
                                     </td>
-                                    <td className="px-4 py-3 border-r border-gray-200 cursor-pointer">{event.title}</td>
+                                    <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+                                        <div className="line-clamp-2 leading-snug" title={event.title}>
+                                            {event.title}
+                                        </div>
+                                    </td>
                                     <td className="px-4 py-3 border-r border-gray-200 text-center">
                                         {event.isOnline ? "Online" : "Offline"}
                                     </td>
-                                    <td className="px-4 py-3 border-r border-gray-200">{event.venue}</td>
+                                    <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+                                        <div className="line-clamp-2 leading-snug" title={event.venue ?? ''}>
+                                            {event.venue}
+                                        </div>
+                                    </td>
                                     <td className="px-4 py-3 border-r border-gray-200">{event.organizerId}</td>
                                     <td className="px-4 py-3 text-center border-r border-gray-200">
                                         {new Date(event.createdAt).toLocaleDateString('vi-VN')}
@@ -275,17 +283,25 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
                                     <td className="action-btn px-4 py-3 border-r border-gray-200 text-center">
                                         <div className="flex justify-center items-center gap-x-2">
                                             {event.deletedAt === null && event.isApproved === false && (
-                                                <Check className="approve-btn p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
-                                                    onClick={() => handleApprovalClick(event)} />
+                                                <div title="Duyệt">
+                                                    <Check className="approve-btn p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                        onClick={() => handleApprovalClick(event)} />
+                                                </div>
                                             )}
 
                                             {event.deletedAt === null && event.isApproved === true && (
-                                                <CalendarOff className="supspend-btn p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"
-                                                    onClick={() => handleSupspendClick(event)} />
+                                                <div title="Đình chỉ">
+                                                    <CalendarOff className="supspend-btn p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                        onClick={() => handleSupspendClick(event)} />
+                                                </div>
                                             )}
 
-                                            {event.deletedAt && (<Trash2 className="delete-btn p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer"
-                                                onClick={() => handleDeleteClick(event)} />)}
+                                            {event.deletedAt && (
+                                                <div title="Xóa">
+                                                    <Trash2 className="delete-btn p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer"
+                                                        onClick={() => handleDeleteClick(event)} />
+                                                </div>
+                                            )}
 
                                         </div>
                                     </td>
