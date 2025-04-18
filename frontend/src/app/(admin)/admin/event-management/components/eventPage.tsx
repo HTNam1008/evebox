@@ -8,10 +8,32 @@ import { useState } from "react";
 import EventTable from './eventTable';
 import Tabs from "./common/tab";
 import SearchBar from './common/searchBar';
+import FilterBar from './common/filter';
 
 export default function EventPage() {
     const [activeTab, setActiveTab] = useState("all");
     const [searchKeyword, setSearchKeyword] = useState('');
+
+    const [typeFilter, setTypeFilter] = useState<boolean | null>(null);
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
+
+    const handleResetFilter = () => {
+        setTypeFilter(null);
+        setDateFrom('');
+        setDateTo('');
+    };
+
+    const handleTypeChange = (value: string) => {
+        if (value === '') {
+            setTypeFilter(null);
+        } else if (value === 'true') {
+            setTypeFilter(true);
+        } else if (value === 'false') {
+            setTypeFilter(false);
+        }
+    };
+
 
     return (
         <>
@@ -20,10 +42,22 @@ export default function EventPage() {
 
             <div className="flex justify-between items-center mt-6 mb-2">
                 <SearchBar onSearch={setSearchKeyword} />
+                <FilterBar
+                    typeFilter={typeFilter}
+                    onTypeChange={handleTypeChange}
+                    dateFrom={dateFrom} dateTo={dateTo}
+                    onDateFromChange={setDateFrom}
+                    onDateToChange={setDateTo}
+                    onReset={handleResetFilter}
+                />
             </div>
 
             <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-            <EventTable activeTab={activeTab} searchKeyword={searchKeyword}/>
+            <EventTable 
+                activeTab={activeTab} 
+                searchKeyword={searchKeyword} 
+                typeFilter={typeFilter} 
+                dateFrom={dateFrom} dateTo={dateTo}/>
         </>
     )
 }

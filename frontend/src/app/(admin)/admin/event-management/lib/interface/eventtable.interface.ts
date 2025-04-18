@@ -31,6 +31,9 @@ export interface TabsProps {
 export interface EventTableProps {
   activeTab: string;
   searchKeyword: string;
+  typeFilter: boolean | null;
+  dateFrom: string;
+  dateTo: string;
 }
 
 //Pagination
@@ -47,4 +50,15 @@ export interface SearchBarProps {
   onSearch: (keyword: string) => void;
 }
 
+
+//Filter
+export interface FilterProps {
+  typeFilter: boolean | null;
+  onTypeChange: (value: string) => void;
+  dateFrom: string;
+  dateTo: string;
+  onDateFromChange: (value: string) => void;
+  onDateToChange: (value: string) => void;
+  onReset: () => void;
+}
 

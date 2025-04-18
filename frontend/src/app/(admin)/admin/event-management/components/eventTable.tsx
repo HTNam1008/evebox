@@ -13,7 +13,7 @@ import ConfirmDeleteDialog from "./dialog/confirmDelete";
 import { EventTableProps } from "../lib/interface/eventtable.interface";
 import Pagination from "./common/pagination";
 
-export default function EventTable({ activeTab, searchKeyword }: EventTableProps) {
+export default function EventTable({ activeTab, searchKeyword, typeFilter, dateFrom, dateTo }: EventTableProps) {
     const data: Event[] = [
         {
             id: 1,
@@ -50,7 +50,7 @@ export default function EventTable({ activeTab, searchKeyword }: EventTableProps
             createdAt: '2024-11-01T10:00:00Z',
             venue: 'Trung tâm sáng tạo khoa học - kỹ thuật (TSK)',
             isApproved: true,
-            isOnline: true,
+            isOnline: false,
             deletedAt: null,
             Images_Events_imgPosterIdToImages: null,
         },
@@ -91,16 +91,12 @@ export default function EventTable({ activeTab, searchKeyword }: EventTableProps
         const matchSearch = event.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
             event.id.toString().includes(searchKeyword);
 
-        // switch (activeTab) {
-        //     case "pending":
-        //         return !event.deletedAt && !event.isApproved;
-        //     case "approved":
-        //         return !event.deletedAt && event.isApproved;
-        //     case "deleted":
-        //         return event.deletedAt !== null;
-        //     default:
-        //         return true;
-        // }
+        const matchType = typeFilter === null ? true : event.isOnline === typeFilter;
+
+        const createdDate = new Date(event.createdAt).toISOString().split('T')[0];
+        const matchDateFrom = dateFrom ? createdDate >= dateFrom : true;
+        const matchDateTo = dateTo ? createdDate <= dateTo : true;
+
         let matchTab = false;
 
         switch (activeTab) {
@@ -117,7 +113,7 @@ export default function EventTable({ activeTab, searchKeyword }: EventTableProps
                 matchTab = true;
         }
 
-        return matchSearch && matchTab;
+        return matchSearch && matchTab && matchType && matchDateFrom && matchDateTo;
     });
 
     const handleApprovalClick = (event: Event) => {
@@ -200,7 +196,7 @@ export default function EventTable({ activeTab, searchKeyword }: EventTableProps
 
     return (
         <>
-            <div className="overflow-x-auto rounded-xl shadow-md mt-6">
+            <div className="table-event-management overflow-x-auto rounded-xl shadow-md mt-6">
                 <table className="min-w-full border border-gray-200">
                     <thead>
                         <tr className="bg-[#0C4762] text-center text-white text-xs text-left rounded-t-lg">
@@ -259,19 +255,19 @@ export default function EventTable({ activeTab, searchKeyword }: EventTableProps
                                             {event.deletedAt ? "Đã xóa" : event.isApproved ? "Đã duyệt" : "Chờ duyệt"}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-3 border-r border-gray-200 text-center">
+                                    <td className="action-btn px-4 py-3 border-r border-gray-200 text-center">
                                         <div className="flex justify-center items-center gap-x-2">
                                             {event.deletedAt === null && event.isApproved === false && (
-                                                <Check className="p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                <Check className="approve-btn p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
                                                     onClick={() => handleApprovalClick(event)} />
                                             )}
 
                                             {event.deletedAt === null && event.isApproved === true && (
-                                                <CalendarOff className="p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                <CalendarOff className="supspend-btn p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"
                                                     onClick={() => handleSupspendClick(event)} />
                                             )}
 
-                                            {event.deletedAt && (<Trash2 className="p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer"
+                                            {event.deletedAt && (<Trash2 className="delete-btn p-1 bg-red-500 text-white rounded w-6 h-6 cursor-pointer"
                                                 onClick={() => handleDeleteClick(event)} />)}
 
                                         </div>
