@@ -12,6 +12,8 @@ import ConfirmSupspendDialog from "./dialog/confirmSupspend";
 import ConfirmDeleteDialog from "./dialog/confirmDelete";
 import { EventTableProps } from "../lib/interface/eventtable.interface";
 import Pagination from "./common/pagination";
+import SortIcon from "../../account-management/components/sortIcon";
+import { sortEvents } from "../lib/function/sortEvents";
 
 export default function EventTable({ activeTab, searchKeyword, typeFilter, dateFrom, dateTo }: EventTableProps) {
     const data: Event[] = [
@@ -86,6 +88,17 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
     const [isSupspendDialogOpen, setIsSupspendDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Event; direction: 'asc' | 'desc' } | null>(null);
+
+    const handleSort = (key: keyof Event) => {
+        setSortConfig((prev) => {
+            if (prev?.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+            } else {
+                return { key, direction: 'asc' }; // Mặc định là asc
+            }
+        });
+    };
 
     const filteredEvents = events.filter(event => {
         const matchSearch = event.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
@@ -192,7 +205,9 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    const paginatedData = filteredEvents.slice(startItem - 1, endItem);
+    const sortedEvents = sortEvents(filteredEvents, sortConfig);
+
+    const paginatedData = sortedEvents.slice(startItem - 1, endItem);
 
     return (
         <>
@@ -200,27 +215,29 @@ export default function EventTable({ activeTab, searchKeyword, typeFilter, dateF
                 <table className="min-w-full border border-gray-200">
                     <thead>
                         <tr className="bg-[#0C4762] text-center text-white text-xs text-left rounded-t-lg">
-                            <th className="px-4 py-3">ID</th>
-                            <th className="px-4 py-3 min-w-[88px]">Hình ảnh</th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[170px]" >
-                                Tên sự kiện
+                            <th className="px-4 py-3 cursor-pointer min-w-[64px]" onClick={() => handleSort('id')}>
+                                ID <SortIcon field="id" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[100px]" >
+                            <th className="px-4 py-3 min-w-[85px]">Hình ảnh</th>
+                            <th className="px-4 py-3 cursor-pointer min-w-[160px]" onClick={() => handleSort('title')}>
+                                Tên sự kiện <SortIcon field="name" sortConfig={sortConfig} />
+                            </th>
+                            <th className="px-4 py-3 cursor-pointer min-w-[100px]">
                                 Loại sự kiện
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[140px]" >
-                                Địa điểm
+                            <th className="px-4 py-3 cursor-pointer min-w-[140px]" onClick={() => handleSort('venue')}>
+                                Địa điểm <SortIcon field="venue" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[125px]">
-                                Người tạo
+                            <th className="px-4 py-3 cursor-pointer min-w-[118px]" onClick={() => handleSort('organizerId')}>
+                                Người tạo <SortIcon field="organizerId" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer">
-                                Ngày tạo
+                            <th className="px-4 py-3 cursor-pointer min-w-[98px]" onClick={() => handleSort('createdAt')}>
+                                Ngày tạo <SortIcon field="createdAt" sortConfig={sortConfig} />
                             </th>
                             <th className="px-4 py-3 cursor-pointer">
                                 Trạng thái
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[85px]">Thao tác</th>
+                            <th className="px-4 py-3 cursor-pointer min-w-[82px]">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody className="text-xs">

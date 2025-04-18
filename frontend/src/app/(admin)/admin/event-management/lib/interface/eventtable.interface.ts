@@ -62,3 +62,9 @@ export interface FilterProps {
   onReset: () => void;
 }
 
+export interface SortConfig<T> {
+  key: keyof T;
+  direction: 'asc' | 'desc';
+}
+
+
