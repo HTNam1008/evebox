@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { FormEvent, useState } from "react"
 import { Search, FileText, RotateCcw } from "lucide-react"
 import LocationTable from "./location-table"
 import FilterDropdown from "./filter"
@@ -36,8 +36,8 @@ export default function LocationManagementClient({
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null)
   const [selectedCity, setSelectedCity] = useState<string | null>(null)
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
   }
 
   const handleResetFilter = () => {
