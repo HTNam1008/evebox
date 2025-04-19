@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { CalendarOff, Check, Trash2 } from "lucide-react";
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import { Event } from "../lib/interface/eventtable.interface";
@@ -117,6 +118,7 @@ export default function EventTable({ activeTab, searchKeyword, categoryFilter, d
     ];
 
     const [events, setEvents] = useState<Event[]>(data);
+    const router = useRouter();
     const [isApprovalDialogOpen, setIsApprovalDialogOpen] = useState(false);
     const [isSupspendDialogOpen, setIsSupspendDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -256,8 +258,8 @@ export default function EventTable({ activeTab, searchKeyword, categoryFilter, d
                             <th className="px-4 py-3 cursor-pointer min-w-[160px]" onClick={() => handleSort('title')}>
                                 Tên sự kiện <SortIcon field="name" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[100px]">
-                                Thể loại
+                            <th className="px-4 py-3 cursor-pointer min-w-[100px]" onClick={() => handleSort('categories')}>
+                                Thể loại <SortIcon field="categories" sortConfig={sortConfig} />
                             </th>
                             <th className="px-4 py-3 cursor-pointer min-w-[140px]" onClick={() => handleSort('venue')}>
                                 Địa điểm <SortIcon field="venue" sortConfig={sortConfig} />
@@ -265,7 +267,7 @@ export default function EventTable({ activeTab, searchKeyword, categoryFilter, d
                             <th className="px-4 py-3 cursor-pointer min-w-[118px]" onClick={() => handleSort('organizerId')}>
                                 Người tạo <SortIcon field="organizerId" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[98px]" onClick={() => handleSort('createdAt')}>
+                            <th className="px-4 py-3 cursor-pointer min-w-[102px]" onClick={() => handleSort('createdAt')}>
                                 Ngày tạo <SortIcon field="createdAt" sortConfig={sortConfig} />
                             </th>
                             <th className="px-4 py-3 cursor-pointer">
@@ -286,7 +288,7 @@ export default function EventTable({ activeTab, searchKeyword, categoryFilter, d
                                             width={50} height={50}
                                         />
                                     </td>
-                                    <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+                                    <td onClick={() => router.push(`/admin/event-management/${event.id}`)} className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
                                         <div className="line-clamp-2 leading-snug" title={event.title}>
                                             {event.title}
                                         </div>
