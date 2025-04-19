@@ -18,7 +18,7 @@ export default function FilterBar({
     const [showDateFilter, setShowDateFilter] = useState(false);
 
     return (
-        <div className="filter-event-management flex items-center gap-4 bg-white border rounded-lg px-4 py-4 shadow-sm text-sm">
+        <div className="filter-event-management flex items-center gap-2 bg-white border rounded-lg px-2 py-4 shadow-sm text-sm">
             {/* Filter Icon */}
             <div className="flex items-center gap-2 text-gray-700 font-medium">
                 <Filter size={18} />
