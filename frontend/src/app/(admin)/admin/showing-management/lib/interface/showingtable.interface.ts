@@ -24,3 +24,13 @@ export interface PaginationProps {
   onPrevious: () => void;
   onNext: () => void;
 }
+
+//Search
+export interface SearchBarProps {
+  onSearch: (keyword: string) => void;
+}
+
+export interface ShowingTableProps {
+  searchKeyword: string;
+}
+

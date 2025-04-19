@@ -7,8 +7,9 @@ import { useState } from "react";
 /* Package Application */
 import { Showing } from "../lib/interface/showingtable.interface";
 import Pagination from "./common/pagination";
+import { ShowingTableProps } from "../lib/interface/showingtable.interface";
 
-export default function ShowingTable() {
+export default function ShowingTable({ searchKeyword }: ShowingTableProps) {
     const data: Showing[] = [
         {
             id: '001',
@@ -84,6 +85,15 @@ export default function ShowingTable() {
         },
     ];
 
+    const [showings, ] = useState<Showing[]>(data);
+
+    const filteredShowings = showings.filter(showing => {
+        const matchSearch = showing.eventTitle.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        showing.id.toString().includes(searchKeyword);
+
+        return matchSearch;
+    });
+
     //Pagination
     const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
@@ -100,7 +110,7 @@ export default function ShowingTable() {
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    const paginatedData = data.slice(startItem - 1, endItem);
+    const paginatedData = filteredShowings.slice(startItem - 1, endItem);
 
     return (
         <>
