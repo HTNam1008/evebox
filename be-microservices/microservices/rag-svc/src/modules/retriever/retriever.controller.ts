@@ -12,7 +12,7 @@ export class RetrieverController {
     @Query('amount') amount = 5,
     @Query('threshold') threshold = 0.5,
   ) {
-    const result = await this.retrieverService.search(query, +amount, +threshold);
+    const result = await this.retrieverService.search(query);
     const ids = result.map((doc) => doc.metadata?.id ?? 'unknown');
 
     return {

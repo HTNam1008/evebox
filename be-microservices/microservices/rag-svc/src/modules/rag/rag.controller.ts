@@ -6,16 +6,16 @@ import { RAGService } from './rag.service';
 export class RAGController {
   constructor(private readonly ragService: RAGService) {}
   
-  @Post()
-  async ragQA(
-    @Query('query') query: string,
-  ) {
+  // @Post()
+  // async ragQA(
+  //   @Query('query') query: string,
+  // ) {
 
-    const answer = await this.ragService.askQuestion(
-      query,
-      "AIzaSyC-zulbMwN2XRocKBjhMXaaQSYFMDosdJw"
-    );
+  //   const {answer, context } = await this.ragService.askQuestion(
+  //     query,
+  //     ""
+  //   );
 
-    return { result: answer };
-  }
+  //   return { answer, context };
+  // }
 }

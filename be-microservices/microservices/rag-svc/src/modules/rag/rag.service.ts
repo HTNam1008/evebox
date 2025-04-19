@@ -9,6 +9,7 @@ type RAGState = {
   question: string;
   context?: Document[];
   answer?: string;
+  nextPrompt?: string;
 };
 
 @Injectable()
@@ -19,8 +20,8 @@ export class RAGService {
 
   private async retrieve(state: RAGState): Promise<Partial<RAGState>> {
     this.logger.log(`📥 [Step: Retrieve] Searching for relevant documents...`);
-    const store = await this.vectorStore['getVectorStore']("eveboxEvents");
-    const results = await store.similaritySearch(state.question, 10);
+    const store =  await this.vectorStore['getVectorStore']("eveboxEvents");
+    const results = await store.similaritySearch(state.nextPrompt || state.question, 10);
     return { context: results };
   }
 
@@ -34,18 +35,19 @@ Kết quả search similarity: {context}
 
 Câu hỏi gốc: {question}
 
-Câu hỏi sau khi xử lý qua invoke: {question}
+Câu hỏi sau khi xử lý qua invoke: {nextPrompt}
 
-Hãy trả lời một cách chính xác và rõ ràng nhất dựa trên các tài liệu trên, vì sao lại chuyển đến trang search, .
+Hãy trả lời một cách chính xác và rõ ràng nhất dựa trên các tài liệu trên, vì sao lại chuyển đến trang search, kết quả search có yếu tố gì để đáp ứng được.
     `);
 
     const prompt = await promptTemplate.format({
       question: state.question,
-      context: state.context?.map((doc) => doc.pageContent).join('\n\n') || '',
+      context: state.context?.map(doc => doc.pageContent).join('\n\n') || '',
+      nextPrompt: state.nextPrompt || '',
     });
 
     const model = new ChatGoogleGenerativeAI({
-      apiKey: process.env.GEMINI_API_KEY,
+      apiKey: 'AIzaSyBFkHW7QIXxiVaiThw3ItS3ruhK2XZSKYc',
       model: 'gemini-1.5-pro',
       maxOutputTokens: 2048,
     });
@@ -63,8 +65,11 @@ Hãy trả lời một cách chính xác và rõ ràng nhất dựa trên các t
     return { answer: content };
   }
 
-  async askQuestion(question: string): Promise<string> {
-    const state: RAGState = { question };
+  async askQuestion(nextPrompt: string, originalQuestion: string): Promise<{
+    answer: string;
+    context?: Document[];
+  }> {
+    const state: RAGState = { question: originalQuestion, nextPrompt };
 
     try {
       const retrieved = await this.retrieve(state);
@@ -72,7 +77,10 @@ Hãy trả lời một cách chính xác và rõ ràng nhất dựa trên các t
 
       const answer = generated.answer ?? '❌ No answer generated.';
       this.logger.log(`✅ Final answer generated.`);
-      return answer;
+      return {
+        answer,
+        context: retrieved.context,
+      };
     } catch (error) {
       this.logger.error(`❌ RAG flow failed: ${error.message}`);
       throw error;
