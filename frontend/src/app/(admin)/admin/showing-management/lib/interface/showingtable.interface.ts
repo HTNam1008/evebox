@@ -32,5 +32,16 @@ export interface SearchBarProps {
 
 export interface ShowingTableProps {
   searchKeyword: string;
+  dateFrom: string;
+  dateTo: string;
+}
+
+//Filter
+export interface FilterProps {
+  dateFrom: string;
+  dateTo: string;
+  onDateFromChange: (value: string) => void;
+  onDateToChange: (value: string) => void;
+  onReset: () => void;
 }
 

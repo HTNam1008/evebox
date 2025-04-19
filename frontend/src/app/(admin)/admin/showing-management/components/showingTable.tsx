@@ -9,7 +9,7 @@ import { Showing } from "../lib/interface/showingtable.interface";
 import Pagination from "./common/pagination";
 import { ShowingTableProps } from "../lib/interface/showingtable.interface";
 
-export default function ShowingTable({ searchKeyword }: ShowingTableProps) {
+export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: ShowingTableProps) {
     const data: Showing[] = [
         {
             id: '001',
@@ -91,7 +91,12 @@ export default function ShowingTable({ searchKeyword }: ShowingTableProps) {
         const matchSearch = showing.eventTitle.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         showing.id.toString().includes(searchKeyword);
 
-        return matchSearch;
+        const startDate = new Date(showing.startTime).toISOString().split('T')[0];
+        const endDate = new Date(showing.endTime).toISOString().split('T')[0];
+        const matchDateFrom = dateFrom ? startDate >= dateFrom : true;
+        const matchDateTo = dateTo ? endDate <= dateTo : true;
+
+        return matchSearch && matchDateFrom && matchDateTo;
     });
 
     //Pagination

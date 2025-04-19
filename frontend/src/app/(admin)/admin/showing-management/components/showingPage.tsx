@@ -7,9 +7,17 @@ import { useState } from "react";
 /* Package Application */
 import ShowingTable from './showingTable';
 import SearchBar from './common/searchBar';
+import FilterBar from './common/filter';
 
 export default function ShowingPage() {
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
+
+    const handleResetFilter = () => {
+        setDateFrom('');
+        setDateTo('');
+    };
 
     return (
         <>
@@ -18,9 +26,15 @@ export default function ShowingPage() {
 
             <div className="flex justify-between items-center mt-6 mb-2">
                 <SearchBar onSearch={setSearchKeyword} />
+                <FilterBar
+                    dateFrom={dateFrom} dateTo={dateTo}
+                    onDateFromChange={setDateFrom}
+                    onDateToChange={setDateTo}
+                    onReset={handleResetFilter}
+                />
             </div>
 
-            <ShowingTable searchKeyword={searchKeyword} />
+            <ShowingTable searchKeyword={searchKeyword} dateFrom={dateFrom} dateTo={dateTo}/>
         </>
     )
 }
