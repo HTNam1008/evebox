@@ -8,6 +8,8 @@ import { useState } from "react";
 import { Showing } from "../lib/interface/showingtable.interface";
 import Pagination from "./common/pagination";
 import { ShowingTableProps } from "../lib/interface/showingtable.interface";
+import SortIcon from "../../account-management/components/sortIcon";
+import { sortShowings } from "../lib/function/sortShowings";
 
 export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: ShowingTableProps) {
     const data: Showing[] = [
@@ -85,11 +87,22 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
         },
     ];
 
-    const [showings, ] = useState<Showing[]>(data);
+    const [showings,] = useState<Showing[]>(data);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Showing; direction: 'asc' | 'desc' } | null>(null);
+
+    const handleSort = (key: keyof Showing) => {
+        setSortConfig((prev) => {
+            if (prev?.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+            } else {
+                return { key, direction: 'asc' }; // Mặc định là asc
+            }
+        });
+    };
 
     const filteredShowings = showings.filter(showing => {
         const matchSearch = showing.eventTitle.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        showing.id.toString().includes(searchKeyword);
+            showing.id.toString().includes(searchKeyword);
 
         const startDate = new Date(showing.startTime).toISOString().split('T')[0];
         const endDate = new Date(showing.endTime).toISOString().split('T')[0];
@@ -98,6 +111,8 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
 
         return matchSearch && matchDateFrom && matchDateTo;
     });
+
+    const sortedShowings = sortShowings(filteredShowings, sortConfig);
 
     //Pagination
     const itemsPerPage = 10;
@@ -115,7 +130,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    const paginatedData = filteredShowings.slice(startItem - 1, endItem);
+    const paginatedData = sortedShowings.slice(startItem - 1, endItem);
 
     return (
         <>
@@ -123,23 +138,23 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
                 <table className="min-w-full border border-gray-200">
                     <thead>
                         <tr className="bg-[#0C4762] text-center text-white text-xs rounded-t-lg">
-                            <th className="px-4 py-3 cursor-pointer min-w-[64px]">
-                                ID
+                            <th className="px-4 py-3 cursor-pointer min-w-[64px]" onClick={() => handleSort("id")}>
+                                ID <SortIcon field="id" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[160px]">
-                                Tên sự kiện
+                            <th className="px-4 py-3 cursor-pointer min-w-[160px]" onClick={() => handleSort("eventTitle")}>
+                                Tên sự kiện <SortIcon field="eventTitle" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[100px]">
-                                Ngày-giờ bắt đầu
+                            <th className="px-4 py-3 cursor-pointer min-w-[100px]" onClick={() => handleSort("startTime")}>
+                                Ngày-giờ bắt đầu <SortIcon field="startTime" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[140px]">
-                                Ngày-giờ kết thúc
+                            <th className="px-4 py-3 cursor-pointer min-w-[140px]" onClick={() => handleSort("endTime")}>
+                                Ngày-giờ kết thúc <SortIcon field="endTime" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[118px]">
-                                Seat map
+                            <th className="px-4 py-3 cursor-pointer min-w-[118px]" onClick={() => handleSort("seatMapId")}>
+                                Seat map <SortIcon field="seatMapId" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[102px]">
-                                Số loại vé
+                            <th className="px-4 py-3 cursor-pointer min-w-[102px]" onClick={() => handleSort("numTicketType")}>
+                                Số loại vé <SortIcon field="numTicketType" sortConfig={sortConfig} />
                             </th>
                             <th className="px-4 py-3 cursor-pointer min-w-[82px]">Thao tác</th>
                         </tr>
@@ -150,7 +165,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
                                 <tr key={showing.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                     <td className="px-4 py-3 text-center border-r border-gray-200">{showing.id}</td>
                                     <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
-                                        <div className="line-clamp-2 leading-snug">
+                                        <div className="line-clamp-2 leading-snug" title={showing.eventTitle.title}>
                                             {showing.eventTitle.title}
                                         </div>
                                     </td>

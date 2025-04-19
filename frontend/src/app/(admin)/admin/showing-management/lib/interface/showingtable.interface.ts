@@ -16,6 +16,16 @@ export interface Showing {
   numTicketType: TicketType[];
 }
 
+export interface SortConfig<T> {
+  key: keyof T;
+  direction: 'asc' | 'desc';
+}
+
+export interface SortIconProps<T> {
+  field: keyof T;
+  sortConfig: SortConfig<T> | null;
+}
+
 //Pagination
 export interface PaginationProps {
   currentPage: number;
