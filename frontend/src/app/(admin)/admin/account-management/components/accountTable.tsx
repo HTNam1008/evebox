@@ -117,11 +117,11 @@ export default function AccountTable({ searchKeyword, roleFilter, dateFrom, date
                             <th className="px-4 py-3 cursor-pointer" onClick={() => handleSort('name')}>
                                 Họ và tên <SortIcon field="name" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer" onClick={() => handleSort('email')}>
-                                Email <SortIcon field="email" sortConfig={sortConfig} />
+                            <th className="px-4 py-3 cursor-pointer">
+                                Email
                             </th>
-                            <th className="px-4 py-3  cursor-pointer" onClick={() => handleSort('role')}>
-                                Vai trò <SortIcon field="role" sortConfig={sortConfig} />
+                            <th className="px-4 py-3  cursor-pointer">
+                                Vai trò
                             </th>
                             <th className="px-4 py-3  cursor-pointer text-center" onClick={() => handleSort('createdAt')}>
                                 Ngày tạo <SortIcon field="createdAt" sortConfig={sortConfig} />

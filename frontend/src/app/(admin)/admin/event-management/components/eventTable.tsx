@@ -250,7 +250,7 @@ export default function EventTable({ activeTab, searchKeyword, categoryFilter, d
             <div className="table-event-management overflow-x-auto rounded-xl shadow-md mt-6">
                 <table className="min-w-full border border-gray-200">
                     <thead>
-                        <tr className="bg-[#0C4762] text-center text-white text-xs text-left rounded-t-lg">
+                        <tr className="bg-[#0C4762] text-center text-white text-xs rounded-t-lg">
                             <th className="px-4 py-3 cursor-pointer min-w-[64px]" onClick={() => handleSort('id')}>
                                 ID <SortIcon field="id" sortConfig={sortConfig} />
                             </th>
@@ -258,11 +258,11 @@ export default function EventTable({ activeTab, searchKeyword, categoryFilter, d
                             <th className="px-4 py-3 cursor-pointer min-w-[160px]" onClick={() => handleSort('title')}>
                                 Tên sự kiện <SortIcon field="name" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[100px]" onClick={() => handleSort('categories')}>
-                                Thể loại <SortIcon field="categories" sortConfig={sortConfig} />
+                            <th className="px-4 py-3 cursor-pointer min-w-[100px]">
+                                Thể loại
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[140px]" onClick={() => handleSort('venue')}>
-                                Địa điểm <SortIcon field="venue" sortConfig={sortConfig} />
+                            <th className="px-4 py-3 cursor-pointer min-w-[140px]">
+                                Địa điểm
                             </th>
                             <th className="px-4 py-3 cursor-pointer min-w-[118px]" onClick={() => handleSort('organizerId')}>
                                 Người tạo <SortIcon field="organizerId" sortConfig={sortConfig} />
