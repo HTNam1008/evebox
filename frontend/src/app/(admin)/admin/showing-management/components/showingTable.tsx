@@ -2,9 +2,11 @@
 
 /* Package System */
 import { Eye } from "lucide-react";
+import { useState } from "react";
 
 /* Package Application */
 import { Showing } from "../lib/interface/showingtable.interface";
+import Pagination from "./common/pagination";
 
 export default function ShowingTable() {
     const data: Showing[] = [
@@ -82,6 +84,24 @@ export default function ShowingTable() {
         },
     ];
 
+    //Pagination
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalItems = data.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(startItem + itemsPerPage - 1, totalItems);
+
+    const handlePrevious = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    const paginatedData = data.slice(startItem - 1, endItem);
+
     return (
         <>
             <div className="table-event-management overflow-x-auto rounded-xl shadow-md mt-6">
@@ -110,8 +130,8 @@ export default function ShowingTable() {
                         </tr>
                     </thead>
                     <tbody className="text-xs">
-                        {data.length > 0 ? (
-                            data.map((showing, index) => (
+                        {paginatedData.length > 0 ? (
+                            paginatedData.map((showing, index) => (
                                 <tr key={showing.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                     <td className="px-4 py-3 text-center border-r border-gray-200">{showing.id}</td>
                                     <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
@@ -154,6 +174,14 @@ export default function ShowingTable() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Phân trang */}
+            <Pagination
+                currentPage={currentPage}
+                totalItems={data.length}
+                itemsPerPage={itemsPerPage}
+                onPrevious={handlePrevious}
+                onNext={handleNext} />
         </>
     )
 }

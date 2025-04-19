@@ -15,3 +15,12 @@ export interface Showing {
   seatMapId: number;
   numTicketType: TicketType[];
 }
+
+//Pagination
+export interface PaginationProps {
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
+  onPrevious: () => void;
+  onNext: () => void;
+}
