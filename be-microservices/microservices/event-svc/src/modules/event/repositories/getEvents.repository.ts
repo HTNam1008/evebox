@@ -51,7 +51,10 @@ export class GetEventsRepository {
             }
           },
           isApproved: true,
-          createdAt: true
+          createdAt: true,
+          isSpecial: true,
+          isOnlyOnEve: true,
+          isOnline: true,
         },
         orderBy: {
           createdAt: 'desc',
@@ -60,6 +63,27 @@ export class GetEventsRepository {
 
       let updateEvents = [];
       for (const event of events) {
+        const categoriesData = await this.prisma.eventCategories.findMany({
+          where: {
+            eventId: event.id,
+          },
+          select: {
+            Categories: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        });
+
+        const categories = categoriesData.map((category) => {
+          return {
+            id: category.Categories.id,
+            name: category.Categories.name
+          }
+        })
+
         const showings = await this.prisma.showing.findMany({
           where: {
             eventId: event.id,
@@ -75,7 +99,8 @@ export class GetEventsRepository {
         const provinceName = districts?.province?.name || '';
         const locationsString = `${street || ''}, ${ward || ''}, ${districtName}, ${provinceName}`;
         const startTime = await this.caculateEventsStartDate(showings);
-        updateEvents = [...updateEvents, { ...event, startTime, locationsString }];
+
+        updateEvents = [...updateEvents, { ...event, startTime, categories, locationsString }];
       }
 
       return Ok(updateEvents);

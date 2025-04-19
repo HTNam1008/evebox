@@ -1,7 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Extensions } from "@prisma/client/runtime/library";
 import { ImagesResponseData } from "src/modules/images/commands/images/images-response.dto";
 import { BaseResponse } from "src/shared/constants/baseResponse";
+
+class CategoriesResponseDto {
+  @ApiProperty( { example: 1 , description: 'The ID of the category' })
+  id: number;
+
+  @ApiProperty( { example: 'music' , description: 'The name of the category' })
+  name: string;
+
+  @ApiProperty( { example: '2021-09-01T00:00:00.000Z' , description: 'The date the category was created' })
+  createdAt: Date;
+}
 
 export class EventDataDto {
   @ApiProperty({ example: 22911, description: 'Event ID' })
@@ -45,6 +55,18 @@ export class EventDataDto {
 
   @ApiProperty({ example: true, description: 'Event is approved' })
   isApproved: boolean;
+
+  @ApiProperty({ example: true, description: 'Event is special' })
+  isSpecial: boolean;
+
+  @ApiProperty({ example: true, description: 'Event is only on EveBox' })
+  isOnlyOnEve: boolean;
+
+  @ApiProperty({ example: true, description: 'Event is online or offline' })
+  isOnline: boolean;
+
+  @ApiProperty({ type: [CategoriesResponseDto], description: 'List categories of event' })
+  categories: CategoriesResponseDto[]
 }
 
 export class EventDataResponse extends BaseResponse {
