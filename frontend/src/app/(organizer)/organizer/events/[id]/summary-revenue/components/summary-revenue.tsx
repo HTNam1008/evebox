@@ -20,14 +20,13 @@ export const SummaryRevenuePage = ({ params }: PageProps) => {
   const eventId = Number(eventIdStr);
 
   const [data, setData] = useState<IEventSummaryData | null>(null);
-  const [loadingShowing, setLoadingShowing] = useState(true);
-  const [loadingSummary, setLoadingSummary] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showingId, setShowingId] = useState<string | null>(null);
 
   const fetchShowingId = useCallback(async () => {
     try {
-      setLoadingShowing(true)
+      setIsLoading(true)
       const showings = await getShowingsByEventId(eventId)
 
       if (showings && showings.length > 0) {
@@ -40,7 +39,7 @@ export const SummaryRevenuePage = ({ params }: PageProps) => {
       console.error("Error fetching showing ID:", error)
       setError("Không thể tải thông tin suất diễn")
     } finally {
-      setLoadingShowing(false)
+      setIsLoading(false)
     }
   }, [eventId])
 
@@ -54,15 +53,14 @@ export const SummaryRevenuePage = ({ params }: PageProps) => {
       if (!showingId) return
 
       try {
-        setLoadingSummary(true)
+        setIsLoading(true)
         const summary = await getSummaryByShowingId(showingId)
-        console.log(summary)
         setData(summary)
       } catch (error) {
         console.error("Error fetching summary:", error)
         setError("Không thể tải dữ liệu doanh thu")
       } finally {
-        setLoadingSummary(false)
+        setIsLoading(false)
       }
     }
 
@@ -79,7 +77,7 @@ export const SummaryRevenuePage = ({ params }: PageProps) => {
     fetchShowingId();
   }
 
-  if (loadingShowing || loadingSummary) {
+  if (isLoading) {
     return (
       <div className="flex min-h-screen">
         <div className="inset-y-0 left-0 w-64 bg-gray-900 md:relative md:flex-shrink-0">
@@ -116,7 +114,7 @@ export const SummaryRevenuePage = ({ params }: PageProps) => {
     )
   }
 
-  if (!data && (!loadingShowing && !loadingSummary)) {
+  if (!data && !isLoading) {
     return (
       <div className="flex min-h-screen">
         <div className="inset-y-0 left-0 w-64 bg-gray-900 md:relative md:flex-shrink-0">
