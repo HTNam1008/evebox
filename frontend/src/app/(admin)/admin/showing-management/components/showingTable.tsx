@@ -136,7 +136,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
 
     return (
         <>
-            <div className="table-event-management overflow-x-auto rounded-xl shadow-md mt-6">
+            <div className="table-showing-management overflow-x-auto rounded-xl shadow-md mt-6">
                 <table className="min-w-full border border-gray-200">
                     <thead>
                         <tr className="bg-[#0C4762] text-center text-white text-xs rounded-t-lg">

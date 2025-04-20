@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, House, Calendar } from "lucide-react"
 
 /* Package Application */
-
+import ShowingTable from './showingTable';
 
 export default function EventDetailPage() {
     const router = useRouter();
@@ -96,6 +96,10 @@ export default function EventDetailPage() {
                     </p>
                 </div>
             </div>
+
+            <h2 className="text-xl font-semibold mt-6 mb-3 px-8">Quản lý suất diễn sự kiện</h2>
+
+            <ShowingTable />
         </>
     )
 }
