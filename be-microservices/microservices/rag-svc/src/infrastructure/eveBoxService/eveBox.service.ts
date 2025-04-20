@@ -14,12 +14,11 @@ export class EveBoxService {
 
   constructor(
     private readonly eveBoxRepo: EveBoxRepository,
-    private readonly vectorStore: VectorStoreService,
     private readonly vectorStoreCohere: VectorStoreCohereService, // Sử dụng Cohere cho vector store
     private readonly vectorStoreGemini: VectorStoreGeminiService, // Sử dụng Gemini cho vector store
   ) {}
 
-  @Cron('11 20 * * 5') // Mỗi thứ 2 lúc 0h
+  @Cron('09 14 * * 7') // Mỗi thứ 2 lúc 0h
   async handleWeeklyEventEmbedding() {
     this.logger.log('⏳ Bắt đầu sync event vào vector store...');
 
@@ -32,6 +31,7 @@ export class EveBoxService {
     const documents: Document[] = transformEventsToDocuments(events);
 
     await this.vectorStoreCohere.embedDocuments(documents, 'eveboxEvents');
+    await this.vectorStoreGemini.embedDocuments(documents, 'eveboxEvents');
 
     this.logger.log(`✅ Đã embed ${documents.length} events vào vector store.`);
   }
