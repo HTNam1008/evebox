@@ -32,9 +32,15 @@ import { ConnectFormRepository } from './repositories/connectShowingToForm.repos
 import { GetAllShowingTimeOfEventController } from './queries/getAllShowingTimeOfEvent/getAllShowingTimeOfEvent.controller';
 import { GetAllShowingTimeOfEventService } from './queries/getAllShowingTimeOfEvent/getAllShowingTimeOfEvent.service';
 import { GetAllShowingTimeOfEventRepository } from './repositories/getAllShowingTimeOfEvent.repository';
+import { GetShowingsController } from './queries/getShowings/getShowings.controller';
+import { GetShowingsService } from './queries/getShowings/getShowings.service';
+import { GetShowingsRepository } from './repositories/getShowings.repository';
 
 @Module({
   controllers: [
+    // Admin
+    GetShowingsController,
+
     GetAllFormsController,
     GetFormController,
     ConnectFormController,
@@ -76,6 +82,10 @@ import { GetAllShowingTimeOfEventRepository } from './repositories/getAllShowing
 
     GetAllShowingTimeOfEventService,
     GetAllShowingTimeOfEventRepository,
+
+    // Admin
+    GetShowingsService,
+    GetShowingsRepository
   ],
 })
 export class ShowingModule {}

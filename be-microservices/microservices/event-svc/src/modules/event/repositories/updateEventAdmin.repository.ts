@@ -1,43 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
 import { Result, Ok, Err } from 'oxide.ts';
-import { UpdateEventDto } from '../commands/updateEvent/updateEvent.dto';
-import { EventDto } from '../commands/updateEvent/updateEvent-response.dto';
+import { UpdateEventAdminDto } from '../commands/UpdateEventAdmin/updateEventAdmin.dto';
+import { EventDto } from '../commands/UpdateEventAdmin/updateEventAdmin-response.dto';
+import { CategoriesResponseDto } from '../queries/getAllCategories/getAllCategories-response.dto';
 
 @Injectable()
-export class UpdateEventRepository {
+export class UpdateEventAdminRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async updateEvent(
-    dto: UpdateEventDto,
+    dto: UpdateEventAdminDto,
     eventId: number,
-    locationId?: number,
-    imgLogoId?: number,
-    imgPosterId?: number
   ): Promise<Result<EventDto, Error>> {
     try {
       // Build update data dynamically based on provided fields
       const updateData: any = {};
-      if (dto.title) updateData.title = dto.title;
-      if (dto.description) updateData.description = dto.description;
-      // if (locationId) updateData.locationId = locationId;
-      // if (dto.venue) updateData.venue = dto.venue;
-      if (imgLogoId) updateData.imgLogoId = imgLogoId;
-      if (imgPosterId) updateData.imgPosterId = imgPosterId;
-      if (dto.orgName) updateData.orgName = dto.orgName;
-      if (dto.orgDescription) updateData.orgDescription = dto.orgDescription;
-      if (dto.isOnline !== undefined) {
-        updateData.isOnline = typeof dto.isOnline === 'string' ? dto.isOnline.toLowerCase() === 'true' : dto.isOnline;
-        if (updateData.isOnline) {
-          updateData.locationId = null;
-          updateData.venue = "";
-        }
-        else {
-          updateData.locationId = locationId;
-          updateData.venue = dto.venue;
-        }
-        updateData.isOnline = dto.isOnline;
-      }
+      if (dto.isSpecial) updateData.isSpecial = dto.isSpecial;
+      if (dto.isOnlyOnEve) updateData.isOnlyOnEve = dto.isOnlyOnEve;
       updateData.isApproved = false
 
       const event = await this.prisma.events.update({
@@ -46,6 +26,10 @@ export class UpdateEventRepository {
       });
 
       if (event) {
+        if (dto.categoryIds && dto.categoryIds.length > 0) {
+          await this.updateEventCategory(event.id, dto.categoryIds, dto.isSpecialForCategory);
+        }
+
         const eventDto: EventDto = {
           id: event.id,
           title: event.title,
@@ -58,13 +42,15 @@ export class UpdateEventRepository {
           createdAt: event.createdAt,
           isOnlyOnEve: event.isOnlyOnEve,
           isSpecial: event.isSpecial,
+          isSpecialForCategory: dto.isSpecialForCategory,
           lastScore: event.lastScore.toNumber(),
           totalClicks: event.totalClicks,
           weekClicks: event.weekClicks,
           isApproved: event.isApproved,
           orgName: event.orgName,
           orgDescription: event.orgDescription,
-          isOnline: event.isOnline
+          isOnline: event.isOnline,
+          categories: await this.getEventCategories(event.id),
         };
         return Ok(eventDto);
       }
@@ -75,7 +61,7 @@ export class UpdateEventRepository {
     }
   }
 
-  async updateEventCategory(eventId: number, categoryIds: number[]): Promise<Result<any, Error>> {
+  async updateEventCategory(eventId: number, categoryIds: number[], isSpecialForCategory: boolean): Promise<Result<any, Error>> {
     let parsedCategoryIds: number[];
 
     if (typeof categoryIds === 'string') {
@@ -91,7 +77,7 @@ export class UpdateEventRepository {
     try {
       // Remove all existing event categories
       await this.prisma.eventCategories.deleteMany({
-        where: { eventId: eventId >> 0 },
+        where: { eventId: Number(eventId) },
       });
       // If new categories are provided, add them
       if (parsedCategoryIds.length > 0) {
@@ -104,8 +90,9 @@ export class UpdateEventRepository {
           return Err(new Error('Categories not found'));
         }
         const eventCategory = categories.map(category => ({
-          eventId: eventId >> 0,
-          categoryId: category.id
+          eventId: Number(eventId),
+          categoryId: category.id,
+          isSpecial: isSpecialForCategory,
         }));
         await this.prisma.eventCategories.createMany({
           data: eventCategory
@@ -118,19 +105,24 @@ export class UpdateEventRepository {
     }
   }
 
-  async checkAuthor(id: number, userId: string): Promise<Result<boolean, Error>> {
+  async getEventCategories(eventId: number): Promise<CategoriesResponseDto[]> {
     try {
-      const event = await this.prisma.events.findUnique({
-        where: { id: id >> 0 },
-        select: { organizerId: true },
-      });
+      const categories = await this.prisma.eventCategories.findMany({
+        where: { eventId },
+        select: {
+          Categories: {
+            select: {
+              id: true,
+              name: true,
+              createdAt: true
+            }
+          }
+        } 
+      })
 
-      if (event && event.organizerId === userId) {
-        return Ok(true);
-      }
-      return Ok(false);
+      return categories.map(category => category.Categories);
     } catch (error) {
-      return Err(new Error('Failed to check author'));
+      return([]);
     }
   }
 }
