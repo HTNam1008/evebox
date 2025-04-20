@@ -39,6 +39,9 @@ export class EventDto {
   @ApiProperty({ example: false, description: 'Is special' })
   isSpecial: boolean;
 
+  @ApiProperty({ example: false, description: 'Is special for category' })
+  isSpecialForCategory: boolean;
+
   @ApiProperty({ example: 50, description: 'Last score' })
   lastScore: number;
 

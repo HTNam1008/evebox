@@ -12,33 +12,10 @@ export class UpdateEventAdminRepository {
   async updateEvent(
     dto: UpdateEventAdminDto,
     eventId: number,
-    locationId?: number,
-    imgLogoId?: number,
-    imgPosterId?: number
   ): Promise<Result<EventDto, Error>> {
     try {
       // Build update data dynamically based on provided fields
       const updateData: any = {};
-      if (dto.title) updateData.title = dto.title;
-      if (dto.description) updateData.description = dto.description;
-      // if (locationId) updateData.locationId = locationId;
-      // if (dto.venue) updateData.venue = dto.venue;
-      if (imgLogoId) updateData.imgLogoId = imgLogoId;
-      if (imgPosterId) updateData.imgPosterId = imgPosterId;
-      if (dto.orgName) updateData.orgName = dto.orgName;
-      if (dto.orgDescription) updateData.orgDescription = dto.orgDescription;
-      if (dto.isOnline !== undefined) {
-        updateData.isOnline = typeof dto.isOnline === 'string' ? dto.isOnline.toLowerCase() === 'true' : dto.isOnline;
-        if (updateData.isOnline) {
-          updateData.locationId = null;
-          updateData.venue = "";
-        }
-        else {
-          updateData.locationId = locationId;
-          updateData.venue = dto.venue;
-        }
-        updateData.isOnline = dto.isOnline;
-      }
       if (dto.isSpecial) updateData.isSpecial = dto.isSpecial;
       if (dto.isOnlyOnEve) updateData.isOnlyOnEve = dto.isOnlyOnEve;
       updateData.isApproved = false
@@ -49,6 +26,10 @@ export class UpdateEventAdminRepository {
       });
 
       if (event) {
+        if (dto.categoryIds && dto.categoryIds.length > 0) {
+          await this.updateEventCategory(event.id, dto.categoryIds, dto.isSpecialForCategory);
+        }
+
         const eventDto: EventDto = {
           id: event.id,
           title: event.title,
@@ -61,6 +42,7 @@ export class UpdateEventAdminRepository {
           createdAt: event.createdAt,
           isOnlyOnEve: event.isOnlyOnEve,
           isSpecial: event.isSpecial,
+          isSpecialForCategory: dto.isSpecialForCategory,
           lastScore: event.lastScore.toNumber(),
           totalClicks: event.totalClicks,
           weekClicks: event.weekClicks,
@@ -79,7 +61,7 @@ export class UpdateEventAdminRepository {
     }
   }
 
-  async updateEventCategory(eventId: number, categoryIds: number[], updateCategorySpecial: number[]): Promise<Result<any, Error>> {
+  async updateEventCategory(eventId: number, categoryIds: number[], isSpecialForCategory: boolean): Promise<Result<any, Error>> {
     let parsedCategoryIds: number[];
 
     if (typeof categoryIds === 'string') {
@@ -95,7 +77,7 @@ export class UpdateEventAdminRepository {
     try {
       // Remove all existing event categories
       await this.prisma.eventCategories.deleteMany({
-        where: { eventId: eventId >> 0 },
+        where: { eventId: Number(eventId) },
       });
       // If new categories are provided, add them
       if (parsedCategoryIds.length > 0) {
@@ -108,9 +90,9 @@ export class UpdateEventAdminRepository {
           return Err(new Error('Categories not found'));
         }
         const eventCategory = categories.map(category => ({
-          eventId: eventId >> 0,
+          eventId: Number(eventId),
           categoryId: category.id,
-          isSpecial: updateCategorySpecial.includes(category.id) ?? false,
+          isSpecial: isSpecialForCategory,
         }));
         await this.prisma.eventCategories.createMany({
           data: eventCategory
