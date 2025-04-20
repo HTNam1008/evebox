@@ -18,6 +18,7 @@ export interface Event {
 }
 
 export interface EventSpecialTableProps {
+  searchKeyword: string;
   categoryFilter: string
 }
 
@@ -43,3 +44,7 @@ export interface OptionType {
   isSeparator?: boolean;
 };
 
+//Search
+export interface SearchBarProps {
+  onSearch: (keyword: string) => void;
+}

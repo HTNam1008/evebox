@@ -12,7 +12,7 @@ import { Category } from "../../event-management/lib/interface/eventtable.interf
 import Pagination from "./common/pagination";
 import { EventSpecialTableProps } from "../lib/interface/eventspecialtable.interface";
 
-export default function EventSpecialTable({ categoryFilter }: EventSpecialTableProps) {
+export default function EventSpecialTable({ searchKeyword, categoryFilter }: EventSpecialTableProps) {
     const data: Event[] = [
         {
             id: 1,
@@ -128,18 +128,20 @@ export default function EventSpecialTable({ categoryFilter }: EventSpecialTableP
     };
 
     const filteredEvents = events.filter(event => {
-        if (!categoryFilter) return true;
-    
+        const matchSearch = event.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            event.id.toString().includes(searchKeyword);
+
+        let matchCategory = true;
         if (categoryFilter === "__onlyOnEve") {
-            return event.isOnlyOnEve === true;
+            matchCategory = event.isOnlyOnEve === true;
+        } else if (categoryFilter === "__special") {
+            matchCategory = event.isSpecial === true;
+        } else if (categoryFilter) {
+            matchCategory = event.categories.some(cat => cat.name === categoryFilter);
         }
-    
-        if (categoryFilter === "__special") {
-            return event.isSpecial === true;
-        }
-    
-        return event.categories.some(cat => cat.name === categoryFilter);
-    });    
+
+        return matchSearch && matchCategory;
+    });
 
     //Pagination
     const itemsPerPage = 10;

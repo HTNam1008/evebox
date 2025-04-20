@@ -7,8 +7,10 @@ import { useState } from "react";
 /* Package Application */
 import EventSpecialTable from './eventSpecialTable';
 import FilterBar from './common/filter';
+import SearchBar from './common/searchBar';
 
 export default function EventSpecialPage() {
+    const [searchKeyword, setSearchKeyword] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
 
     const handleResetFilter = () => {
@@ -21,6 +23,7 @@ export default function EventSpecialPage() {
             <div className="border-t-2 border-[#0C4762] mt-2"></div>
 
             <div className="flex justify-between items-center mt-6 mb-2">
+                <SearchBar onSearch={setSearchKeyword} />
                 <FilterBar
                     categoryFilter={categoryFilter}
                     onCategoryChange={setCategoryFilter}
@@ -28,7 +31,7 @@ export default function EventSpecialPage() {
                 />
             </div>
 
-            <EventSpecialTable categoryFilter={categoryFilter}/>
+            <EventSpecialTable searchKeyword={searchKeyword}  categoryFilter={categoryFilter}/>
         </>
     )
 }
