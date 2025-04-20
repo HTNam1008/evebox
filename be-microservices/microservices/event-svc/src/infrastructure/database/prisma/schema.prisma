@@ -411,6 +411,25 @@ model EventUserRelationship {
 
   event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventRole  EventRole  @relation("EventRoleToEventUserRelationship", fields: [role], references: [id])
 
   @@id([eventId, userId])
+}
+
+model EventRole {
+  id           Int    @id
+  isEdited     Boolean
+  isSummarized Boolean
+  viewVoucher  Boolean
+  marketing    Boolean
+  viewOrder    Boolean
+  viewSeatmap  Boolean
+  viewMember   Boolean
+  checkin      Boolean
+  checkout     Boolean
+  redeem       Boolean
+
+  userRoles    EventUserRelationship[]  @relation("EventRoleToEventUserRelationship")
+
+  @@map("event_role")
 }
