@@ -109,7 +109,7 @@ export default function AccountTable({ searchKeyword, roleFilter, dateFrom, date
 
     return (
         <>
-            <div className="overflow-x-auto rounded-xl shadow-md mt-6">
+            <div className="table-account-management overflow-x-auto rounded-xl shadow-md mt-6">
                 <table className="min-w-full border border-gray-200">
                     <thead>
                         <tr className="bg-[#0C4762] text-white text-sm text-left rounded-t-lg">
@@ -172,7 +172,7 @@ export default function AccountTable({ searchKeyword, roleFilter, dateFrom, date
             </div>
 
             {/* Phân trang */}
-            <div className="flex items-center justify-between mt-4 px-2 text-sm text-gray-500">
+            <div className="pagination-account-management flex items-center justify-between mt-4 px-2 text-sm text-gray-500">
                 <p>Hiển thị {startItem}-{endItem} của {totalItems}</p>
 
                 <div className="inline-flex items-center rounded-full border border-gray-300 overflow-hidden">

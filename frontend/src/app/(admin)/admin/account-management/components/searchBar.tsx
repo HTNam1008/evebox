@@ -17,7 +17,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     }
 
     return (
-        <div className="flex items-center border border-gray-300 rounded-md overflow-hidden w-1/3 bg-white">
+        <div className="searchbar-account-management flex items-center border border-gray-300 rounded-md overflow-hidden w-1/3 bg-white">
             <input type="text" className="w-full px-3 py-2 outline-none"
                 placeholder="Tìm kiếm theo tên hoặc email"
                 value={searchTerm}

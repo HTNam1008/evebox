@@ -19,7 +19,7 @@ export default function FilterBar({
     const [showDateFilter, setShowDateFilter] = useState(false);
 
     return (
-        <div className="flex items-center gap-4 bg-white border rounded-lg px-4 py-4 shadow-sm text-sm">
+        <div className="filter-account-management flex items-center gap-4 bg-white border rounded-lg px-4 py-4 shadow-sm text-sm">
             {/* Filter Icon */}
             <div className="flex items-center gap-2 text-gray-700 font-medium">
                 <Filter size={18} />
@@ -27,7 +27,7 @@ export default function FilterBar({
             </div>
 
             {/* Filter - Vai trò */}
-            <div className="flex items-center gap-1 border-l pl-4 pr-2">
+            <div className="filter-role flex items-center gap-1 border-l pl-4 pr-2">
                 <span className="text-black font-semibold mr-1">Vai trò</span>
 
                 <select value={roleFilter} className="border px-2 py-1 rounded-md"
@@ -43,7 +43,7 @@ export default function FilterBar({
             </div>
 
              {/* Filter - Ngày tạo */}
-             <div className="relative border-l pl-4 pr-2">
+             <div className="filter-created relative border-l pl-4 pr-2">
                 <div className="flex items-center gap-1 cursor-pointer"
                     onClick={() => setShowDateFilter(!showDateFilter)}
                 >
@@ -72,7 +72,7 @@ export default function FilterBar({
             </div>
 
             {/* Reset Filter */}
-            <div onClick={onReset} className="flex items-center gap-1 border-l pl-4 pr-2 text-red-500 cursor-pointer hover:underline ml-auto">
+            <div onClick={onReset} className="reset-filter-btn flex items-center gap-1 border-l pl-4 pr-2 text-red-500 cursor-pointer hover:underline ml-auto">
                 <RotateCcw size={16} />
                 <span>Reset Filter</span>
             </div>
