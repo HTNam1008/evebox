@@ -94,7 +94,7 @@ import { GetEventRoleByIdService } from './queries/getEventRoleById/getEventRole
 
     // For Admin
     UpdateEventAdminController,
-    GetEventsController
+    GetEventsController,
 
     GetEventRolesController,
     GetEventRoleByIdController
@@ -150,7 +150,7 @@ import { GetEventRoleByIdService } from './queries/getEventRoleById/getEventRole
     GetEventsRepository,
 
     UpdateEventAdminService,
-    UpdateEventAdminRepository
+    UpdateEventAdminRepository,
 
     GetEventRolesService,
     GetEventRolesRepository,
