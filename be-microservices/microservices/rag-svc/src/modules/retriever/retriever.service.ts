@@ -1,38 +1,29 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { VectorStoreCohereService } from 'src/infrastructure/vector/vector_store.cohere';
 import { Document } from 'langchain/document';
-import { VectorStoreGeminiService } from 'src/infrastructure/vector/vector_store.gemini';
+import { VectorStoreService } from 'src/infrastructure/vector/vector_store.service';
 
 @Injectable()
 export class RetrieverService {
   private readonly logger = new Logger(RetrieverService.name);
   private readonly COLLECTION_NAME = 'eveboxEvents';
 
-  constructor(
-    private readonly vectorStoreService: VectorStoreCohereService,
-    private readonly vectorStoreGeminiService: VectorStoreGeminiService, // Sử dụng Gemini cho vector store
-  ) {}
+  constructor(private readonly vectorStoreService: VectorStoreService) {}
 
   async search(query: string, k = 10, scoreThreshold = 0.5): Promise<Document[]> {
     try {
-      const store = await this.vectorStoreService['getVectorStore'](this.COLLECTION_NAME);
+      // Gọi search từ VectorStoreService với fallback logic đã có
+      const results = await this.vectorStoreService.searchDocuments(query, this.COLLECTION_NAME, k);
 
-      const retriever = store.asRetriever({
-        searchType: 'similarity', // ✅ chỉ dùng similarity
-        k,
-      });
-
-      const results = await retriever.invoke(query); // ✅ dùng 'invoke' thay cho 'ainvoke'
-
-      // ✅ lọc thủ công theo threshold nếu cần
+      // Lọc lại theo scoreThreshold nếu kết quả có `score`
       const filtered = results.filter((doc: any) => {
         const score = doc?.score ?? 1.0;
         return score >= scoreThreshold;
       });
 
+      this.logger.log(`🔍 Retrieved ${filtered.length}/${results.length} docs above threshold ${scoreThreshold}`);
       return filtered;
     } catch (error) {
-      this.logger.error(`Error while searching: ${error.message}`, error.stack);
+      this.logger.error(`❌ Error while searching: ${error.message}`, error.stack);
       throw error;
     }
   }
