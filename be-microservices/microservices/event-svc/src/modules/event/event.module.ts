@@ -55,6 +55,11 @@ import { GetEventMembersService } from './queries/getEventMember/getEventMembers
 import { GetEventMemberController } from './queries/getEventMember/getEventMember.controller';
 import { DeleteEventMemberService } from './commands/DeleteEventMember/deleteEventMember.service';
 import { DeleteEventMemberController } from './commands/DeleteEventMember/deleteEventMember.controller';
+import { GetEventRolesController } from './queries/getEventRoles/getEventRoles.controller';
+import { GetEventRolesService } from './queries/getEventRoles/getEventRoles.service';
+import { GetEventRolesRepository } from './repositories/getEventRoles.repository';
+import { GetEventRoleByIdController } from './queries/getEventRoleById/getEventRoleById.controller';
+import { GetEventRoleByIdService } from './queries/getEventRoleById/getEventRoleById.service';
 
 @Module({
   imports: [ScheduleModule.forRoot(), ImagesModule, LocationModule],
@@ -80,6 +85,9 @@ import { DeleteEventMemberController } from './commands/DeleteEventMember/delete
     UpdateEventMemberController,
     GetEventMemberController,
     DeleteEventMemberController,
+
+    GetEventRolesController,
+    GetEventRoleByIdController
     ],
   providers: [
     // UpdateWeeklyService, 
@@ -126,6 +134,10 @@ import { DeleteEventMemberController } from './commands/DeleteEventMember/delete
     UpdateEventMemberService,
     GetEventMembersService,
     DeleteEventMemberService,
+
+    GetEventRolesService,
+    GetEventRolesRepository,
+    GetEventRoleByIdService
     ],
 })
 export class EventModule {}
