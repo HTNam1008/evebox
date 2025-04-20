@@ -5,7 +5,7 @@ import { JwtAuthGuard } from "src/shared/guard/jwt-auth.guard";
 import { GetEventsService } from "./getEvents.service";
 import { EventDataResponse } from "./getEvents-response.dto";
 
-@ApiTags('Admin - Event')
+@ApiTags('Admin')
 @Controller('api/admin/event')
 export class GetEventsController {
   constructor(private readonly getEventsService: GetEventsService) {}

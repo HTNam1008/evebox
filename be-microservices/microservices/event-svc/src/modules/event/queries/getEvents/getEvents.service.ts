@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Err, Result } from "oxide.ts";
 import { GetEventsRepository } from "../../repositories/getEvents.repository";
 import { EventDataDto } from "./getEvents-response.dto";

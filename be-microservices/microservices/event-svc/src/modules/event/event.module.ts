@@ -43,6 +43,9 @@ import { DeleteEventService } from './commands/deleteEvent/deleteEvent.service';
 import { UpdateEventController } from './commands/updateEvent/updateEvent.controller';
 import { UpdateEventService } from './commands/updateEvent/updateEvent.service';
 import { UpdateEventRepository } from './repositories/updateEvent.repository';
+import { UpdateEventAdminController } from './commands/UpdateEventAdmin/updateEventAdmin.controller';
+import { UpdateEventAdminService } from './commands/UpdateEventAdmin/updateEventAdmin.service';
+import { UpdateEventAdminRepository } from './repositories/updateEventAdmin.repository';
 import { GetEventOfOrgController } from './queries/getEventOfOrg/getEventOfOrg.controller';
 import { GetEventOfOrgService } from './queries/getEventOfOrg/getEventOfOrg.service';
 import { GetEventOfOrgRepository } from './repositories/getEventOfOrg.repository';
@@ -71,7 +74,6 @@ import { DeleteEventMemberController } from './commands/DeleteEventMember/delete
     GetEventDetailRecommendController,
     GetEventFrontDisplayController,
     GetRecommendedEventController,
-    GetEventsController,
 
     // For Organizer
     CreateEventController,
@@ -84,7 +86,11 @@ import { DeleteEventMemberController } from './commands/DeleteEventMember/delete
     UpdateEventMemberController,
     GetEventMemberController,
     DeleteEventMemberController,
-    ],
+
+    // For Admin
+    UpdateEventAdminController,
+    GetEventsController
+  ],
   providers: [
     // UpdateWeeklyService, 
 
@@ -93,9 +99,6 @@ import { DeleteEventMemberController } from './commands/DeleteEventMember/delete
 
     SearchEventService,
     SearchEventRepository,
-
-    GetEventsService,
-    GetEventsRepository,
 
     GetAllCategoriesRepository,
     GetAllCategoriesService,
@@ -133,6 +136,13 @@ import { DeleteEventMemberController } from './commands/DeleteEventMember/delete
     UpdateEventMemberService,
     GetEventMembersService,
     DeleteEventMemberService,
-    ],
+
+    // For Admin
+    GetEventsService,
+    GetEventsRepository,
+
+    UpdateEventAdminService,
+    UpdateEventAdminRepository
+  ],
 })
 export class EventModule {}
