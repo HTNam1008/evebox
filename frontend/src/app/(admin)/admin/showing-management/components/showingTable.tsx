@@ -3,6 +3,7 @@
 /* Package System */
 import { Eye } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import { Showing } from "../lib/interface/showingtable.interface";
@@ -20,7 +21,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
                 title: 'SÂN KHẤU NO.1 | VỞ KỊCH | MẶT NẠ DA NGƯỜI',
             },
             startTime: '2025-04-25T07:30:00.000Z',
-            endTime: '2025-06-06T09:30:00.000Z',
+            endTime: '2025-04-25T09:30:00.000Z',
             seatMapId: 0,
             numTicketType: [
                 { id: 1 },
@@ -79,7 +80,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
                 title: 'Tom Chat Liveshow No.13 - Dạ Khúc Tháng Năm',
             },
             startTime: '2024-12-27T10:30:00.000Z',
-            endTime: '2025-01-01T12:30:00.000Z',
+            endTime: '2024-12-27T12:30:00.000Z',
             seatMapId: 256,
             numTicketType: [
                 { id: 1 }
@@ -88,6 +89,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
     ];
 
     const [showings,] = useState<Showing[]>(data);
+    const router = useRouter();
     const [sortConfig, setSortConfig] = useState<{ key: keyof Showing; direction: 'asc' | 'desc' } | null>(null);
 
     const handleSort = (key: keyof Showing) => {
@@ -176,7 +178,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
                                     </td>
                                     <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
                                         <div className="line-clamp-2 leading-snug text-center">
-                                            <span>{`${new Date(showing.endTime).toLocaleDateString('vi-VN')} - ${new Date(showing.startTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false })}`}</span>
+                                            <span>{`${new Date(showing.endTime).toLocaleDateString('vi-VN')} - ${new Date(showing.endTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false })}`}</span>
                                         </div>
                                     </td>
                                     <td className="px-4 py-3 text-center border-r border-gray-200">
@@ -187,7 +189,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
                                     </td>
                                     <td className="action-btn px-4 py-3 border-r border-gray-200 text-center">
                                         <div className="flex justify-center items-center gap-x-2">
-                                            <div title="Xem chi tiết">
+                                            <div title="Xem chi tiết" onClick={() => router.push(`/admin/showing-management/${showing.id}`)}>
                                                 <Eye className="approve-btn p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer" />
                                             </div>
                                         </div>

@@ -32,9 +32,9 @@ export default function FilterBar({
                 </div>
 
                 {showDateFilter && (
-                    <div className="absolute left-0 mt-2 bg-white shadow-lg rounded-md p-4 flex flex-col gap-3 z-10 border w-60 text-xs">
+                    <div className="absolute left-0 mt-2 bg-white shadow-lg rounded-md p-4 flex flex-col gap-3 z-10 border w-60 text-sm">
                         <div className="flex items-center gap-2">
-                            <label className="text-black font-semibold">Ngày bắt đầu</label>
+                            <label className="text-black font-semibold">Từ ngày</label>
                             <input type="date" className="border px-2 py-1 rounded-md"
                                 value={dateFrom}
                                 onChange={(e) => onDateFromChange(e.target.value)}
@@ -42,7 +42,7 @@ export default function FilterBar({
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <label className="text-black font-semibold">Ngày kết thúc</label>
+                            <label className="text-black font-semibold">Đến ngày</label>
                             <input type="date" value={dateTo} className="border px-2 py-1 rounded-md"
                                 onChange={(e) => onDateToChange(e.target.value)}
                             />
