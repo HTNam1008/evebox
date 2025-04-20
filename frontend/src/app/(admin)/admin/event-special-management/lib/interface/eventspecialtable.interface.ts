@@ -44,6 +44,11 @@ export interface OptionType {
   isSeparator?: boolean;
 };
 
+export interface SortConfig<T> {
+  key: keyof T;
+  direction: 'asc' | 'desc';
+}
+
 //Search
 export interface SearchBarProps {
   onSearch: (keyword: string) => void;

@@ -11,6 +11,8 @@ import ToggleCategoryButton from "./toggleCategoryButton";
 import { Category } from "../../event-management/lib/interface/eventtable.interface";
 import Pagination from "./common/pagination";
 import { EventSpecialTableProps } from "../lib/interface/eventspecialtable.interface";
+import SortIcon from "../../account-management/components/sortIcon";
+import { sortEvents } from "../lib/function/sortEvents";
 
 export default function EventSpecialTable({ searchKeyword, categoryFilter }: EventSpecialTableProps) {
     const data: Event[] = [
@@ -99,6 +101,17 @@ export default function EventSpecialTable({ searchKeyword, categoryFilter }: Eve
     ]
 
     const [events, setEvents] = useState<Event[]>(data);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Event; direction: 'asc' | 'desc' } | null>(null);
+
+    const handleSort = (key: keyof Event) => {
+        setSortConfig((prev) => {
+            if (prev?.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+            } else {
+                return { key, direction: 'asc' }; // Mặc định là asc
+            }
+        });
+    };
 
     //Thêm hoặc bỏ khỏi Sự kiện đặc biệt
     const handleToggleSpecial = (eventId: number, newIsSpecial: boolean) => {
@@ -159,7 +172,8 @@ export default function EventSpecialTable({ searchKeyword, categoryFilter }: Eve
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    const paginatedData = filteredEvents.slice(startItem - 1, endItem);
+    const sortedEvents = sortEvents(filteredEvents, sortConfig);
+    const paginatedData = sortedEvents.slice(startItem - 1, endItem);
 
     return (
         <>
@@ -167,28 +181,18 @@ export default function EventSpecialTable({ searchKeyword, categoryFilter }: Eve
                 <table className="min-w-full border border-gray-200">
                     <thead>
                         <tr className="bg-[#0C4762] text-center text-white text-xs rounded-t-lg">
-                            <th className="px-4 py-3 cursor-pointer min-w-[60px]">
-                                ID
+                            <th className="px-4 py-3 cursor-pointer min-w-[65px]" onClick={() => handleSort('id')}>
+                                ID <SortIcon field="id" sortConfig={sortConfig} />
                             </th>
                             <th className="px-4 py-3 min-w-[84px]">Hình ảnh</th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[155px]">
-                                Tên sự kiện
+                            <th className="px-4 py-3 cursor-pointer min-w-[155px]" onClick={() => handleSort('title')}>
+                                Tên sự kiện <SortIcon field="title" sortConfig={sortConfig} />
                             </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[130px]">
-                                Sự kiện đặc biệt
-                            </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[140px]">
-                                Chỉ có trên EveBox
-                            </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[100px]">
-                                Âm nhạc
-                            </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[90px]">
-                                Sân khấu & Nghệ thuật
-                            </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[100px]">
-                                Thể thao
-                            </th>
+                            <th className="px-4 py-3 cursor-pointer min-w-[130px]">Sự kiện đặc biệt</th>
+                            <th className="px-4 py-3 cursor-pointer min-w-[140px]">Chỉ có trên EveBox</th>
+                            <th className="px-4 py-3 cursor-pointer min-w-[100px]">Âm nhạc</th>
+                            <th className="px-4 py-3 cursor-pointer min-w-[90px]">Sân khấu & Nghệ thuật</th>
+                            <th className="px-4 py-3 cursor-pointer min-w-[100px]">Thể thao</th>
                             <th className="px-4 py-3 cursor-pointer min-w-[82px]">Khác</th>
                         </tr>
                     </thead>
