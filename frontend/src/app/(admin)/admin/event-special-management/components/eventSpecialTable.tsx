@@ -9,6 +9,7 @@ import ToggleSpecialButton from "./toggleSpecialButton";
 import ToggleOnlyOnEveButton from "./toggleOnlyOnEveButton";
 import ToggleCategoryButton from "./toggleCategoryButton";
 import { Category } from "../../event-management/lib/interface/eventtable.interface";
+import Pagination from "./common/pagination";
 
 export default function EventSpecialTable() {
     const data: Event[] = [
@@ -98,6 +99,7 @@ export default function EventSpecialTable() {
 
     const [events, setEvents] = useState<Event[]>(data);
 
+    //Thêm hoặc bỏ khỏi Sự kiện đặc biệt
     const handleToggleSpecial = (eventId: number, newIsSpecial: boolean) => {
         setEvents((prevEvents) =>
             prevEvents.map((ev) =>
@@ -106,6 +108,7 @@ export default function EventSpecialTable() {
         );
     };
 
+    //Thêm hoặc bỏ khỏi Sự kiện chỉ có trên EveBox
     const handleToggleOnlyOnEve = (eventId: number, newIsOnlyOnEve: boolean) => {
         setEvents((prevEvents) =>
             prevEvents.map((ev) =>
@@ -114,6 +117,7 @@ export default function EventSpecialTable() {
         );
     };
 
+    //Thêm hoặc bỏ khỏi Categories
     const handleToggleCategory = (eventId: number, newCategories: Category[]) => {
         setEvents((prevEvents) =>
             prevEvents.map((ev) =>
@@ -121,6 +125,24 @@ export default function EventSpecialTable() {
             )
         );
     };
+
+    //Pagination
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalItems = data.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(startItem + itemsPerPage - 1, totalItems);
+
+    const handlePrevious = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    const paginatedData = events.slice(startItem - 1, endItem);
 
     return (
         <>
@@ -154,8 +176,8 @@ export default function EventSpecialTable() {
                         </tr>
                     </thead>
                     <tbody className="text-xs">
-                        {events.length > 0 ? (
-                            events.map((event, index) => (
+                        {paginatedData.length > 0 ? (
+                            paginatedData.map((event, index) => (
                                 <tr key={event.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                     <td className="px-4 py-3 text-center border-r border-gray-200">{event.id}</td>
                                     <td className="px-4 py-3 border-r border-gray-200 cursor-pointer text-center">
@@ -182,7 +204,7 @@ export default function EventSpecialTable() {
                                         <ToggleCategoryButton event={event} fullCategory={{ id: 3, name: "Thể thao" }} onToggle={handleToggleCategory} />
                                     </td>
                                     <td className="action-btn px-4 py-3 border-r border-gray-200 text-center">
-                                    <ToggleCategoryButton event={event} fullCategory={{ id: 4, name: "Khác" }} onToggle={handleToggleCategory} />
+                                        <ToggleCategoryButton event={event} fullCategory={{ id: 4, name: "Khác" }} onToggle={handleToggleCategory} />
                                     </td>
                                 </tr>
                             ))
@@ -196,6 +218,14 @@ export default function EventSpecialTable() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Phân trang */}
+            <Pagination
+                currentPage={currentPage}
+                totalItems={data.length}
+                itemsPerPage={itemsPerPage}
+                onPrevious={handlePrevious}
+                onNext={handleNext} />
         </>
     )
 }

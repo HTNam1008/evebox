@@ -17,5 +17,12 @@ export interface Event {
   categories: Category[];
 }
 
-
+//Pagination
+export interface PaginationProps {
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
+  onPrevious: () => void;
+  onNext: () => void;
+}
 
