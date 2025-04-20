@@ -15,9 +15,9 @@ export class VectorStoreCohereService {
   private async getVectorStore(collectionName: string): Promise<PGVectorStore> {
     try {
       console.log(`🔗 Connecting to vector store at ${process.env.VECTOR_STORE_URL_COHERE}...`)
-      console.log(`cohereApiKey: ${process.env.COHERE_API_KEY_VECTOR}`); // 🆕 dùng Cohere key
+      console.log(`cohereApiKey: ${process.env.COHERE_API_KEY_VECTOR_1}`); // 🆕 dùng Cohere key
       const embeddings = new CohereEmbeddings({
-        apiKey: process.env.COHERE_API_KEY_VECTOR, // 🔑 dùng key của Cohere
+        apiKey: process.env.COHERE_API_KEY_VECTOR_1, // 🔑 dùng key của Cohere
         model: 'embed-multilingual-v3.0' // embed-v4.0	
       });
 

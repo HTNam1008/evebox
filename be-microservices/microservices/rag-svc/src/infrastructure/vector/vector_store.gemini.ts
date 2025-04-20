@@ -14,17 +14,17 @@ export class VectorStoreGeminiService {
 
   private async getVectorStore(collectionName: string): Promise<PGVectorStore> {
     try {
-      console.log(`🔗 Connecting to vector store at ${process.env.VECTOR_STORE_URL_COHERE}...`);
-      console.log(`geminiApiKey: ${process.env.GEMINI_API_KEY_VECTOR}`);
+      console.log(`🔗 Connecting to vector store at ${process.env.VECTOR_STORE_URL_GEMINI}...`);
+      console.log(`geminiApiKey: ${process.env.GEMINI_API_KEY_VECTOR_1}`);
 
       const embeddings = new GoogleGenerativeAIEmbeddings({
-        apiKey: process.env.GEMINI_API_KEY_VECTOR, // 🔑 Dùng Gemini key
+        apiKey: process.env.GEMINI_API_KEY_VECTOR_1, // 🔑 Dùng Gemini key
         modelName: 'embedding-001', // 'text-embedding-004' || 'gemini-embedding-exp-03-07'
       });
 
       const store = await PGVectorStore.initialize(embeddings, {
         postgresConnectionOptions: {
-          connectionString: process.env.VECTOR_STORE_URL_COHERE,
+          connectionString: process.env.VECTOR_STORE_URL_GEMINI,
         },
         tableName: collectionName,
       });
