@@ -30,6 +30,7 @@ export class CreateEventRepository {
           lastScore: 0,
           totalClicks: 0,
           weekClicks: 0,
+          isApproved: false
         }
       });
       if (event) {

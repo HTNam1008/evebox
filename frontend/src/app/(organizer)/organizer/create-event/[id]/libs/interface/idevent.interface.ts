@@ -1,7 +1,4 @@
 import { TicketProps } from "./dialog.interface";
-export interface CreateQuestionsProps {
-    eventId: number;
-}
 
 export interface SettingProps {
     eventId: number;
@@ -12,7 +9,7 @@ export interface TimeAndTypeTicketsProps {
 }
 
 export interface Showtime {
-    id: number;
+    id: string;
     startDate: Date | null;
     endDate: Date | null;
     tickets: TicketProps[];

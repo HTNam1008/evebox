@@ -3,21 +3,17 @@ import DashboardLoading from "@/app/(dashboard)/loading"
 import { Providers } from "@/app/provider"
 import { Suspense } from "react"
 
-export default function RootLayout({
+export default function DefaultLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>
-        <Providers>
-          <Suspense fallback={<DashboardLoading />}>
-            <NavigationBar/>
-            <main>{children}</main>
-          </Suspense>
-        </Providers>
-      </body>
-    </html>
+    <Providers>
+      <Suspense fallback={<DashboardLoading />}>
+        <NavigationBar/>
+        <main>{children}</main>
+      </Suspense>
+    </Providers>  
   )
 }

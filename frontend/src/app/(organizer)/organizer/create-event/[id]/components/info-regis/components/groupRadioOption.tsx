@@ -22,11 +22,11 @@ export default function GroupRadioOption({eventScopeSelected, setEventScopeSelec
                     description="Người mua vé sẽ chỉ cần trả lời tất cả câu hỏi 1 lần duy nhất với mỗi đơn hàng"
                 />
 
-                <RadioOption
+                {/* <RadioOption
                     value="ticket" selectedValue={eventScopeSelected}
                     onChange={setEventScopeSelected} icon="" title="Cho từng vé"
                     description="Người mua vé sẽ cần trả lời tất cả câu hỏi với số lần tương ứng với số vé trong đơn hàng"
-                />
+                /> */}
             </div>
         </>
     )

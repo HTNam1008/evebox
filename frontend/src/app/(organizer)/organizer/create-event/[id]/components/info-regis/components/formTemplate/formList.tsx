@@ -4,7 +4,7 @@ import { useState } from "react";
 import FormItem from "./formItem";
 import { FormListProps } from "../../../../libs/interface/question.interface";
 
-export default function FormList ({ forms, selectedForms, handleSelectForm } : FormListProps) {
+export default function FormList ({ forms, selectedForm: selectedForm, handleSelectForm } : FormListProps) {
     const [expandedForm, setExpandedForm] = useState<number | null>(null);
 
     const toggleExpand = (formId: number) => {
@@ -19,7 +19,7 @@ export default function FormList ({ forms, selectedForms, handleSelectForm } : F
                     form={form}
                     isExpanded={expandedForm === form.id}
                     toggleExpand={toggleExpand}
-                    selectedForms={selectedForms}
+                    selectedForms={selectedForm}
                     handleSelectForm={handleSelectForm}
                 />
             ))}

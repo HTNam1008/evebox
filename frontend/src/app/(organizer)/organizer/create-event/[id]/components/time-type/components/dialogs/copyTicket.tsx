@@ -3,17 +3,21 @@
 /* Package System */
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 /* Package Application */
 import { CopyTicketDailogProps } from "../../../../libs/interface/dialog.interface";
 import { handleCopyTickets } from "../../../../libs/functions/showing/copyTicket";
+import { useState } from "react";
 
-export default function CopyTicketDailog({ open, onClose, showtimes, currentShowtimeId, setShowtimes } : CopyTicketDailogProps) {
-    const validShowtimes = showtimes.filter(showtime => showtime.tickets.length > 0);
-    const [selectedShowtimeId, setSelectedShowtimeId] = useState<number | null>(null);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function CopyTicketDailog({ open, onClose, showtimes, currentShowtimeId, setShowtimes, startDate, endDate } : CopyTicketDailogProps) {
+    const [selectedShowtimeId, setSelectedShowtimeId] = useState<string | null>(null);
 
+    const validShowtimes = showtimes.filter(showtime => 
+        showtime.tickets.length > 0 && showtime.tickets.some(ticket => ticket.id !== "")
+    );
+    
     return (
         <>
             <Dialog open={open} onClose={onClose} >
@@ -34,7 +38,7 @@ export default function CopyTicketDailog({ open, onClose, showtimes, currentShow
                                 <select
                                     className="text-sm block w-full border py-3 px-4 pr-8 rounded leading-tight focus:outline-black-400 appearance-none text-gray-500"
                                     value={selectedShowtimeId || ""}
-                                    onChange={(e) => setSelectedShowtimeId(Number(e.target.value))}
+                                    onChange={(e) => setSelectedShowtimeId(e.target.value)}
                                 >
                                     <option value="" disabled>
                                         --- Chọn suất diễn ---
@@ -60,7 +64,7 @@ export default function CopyTicketDailog({ open, onClose, showtimes, currentShow
 
                             <button 
                                 className="w-32 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all"
-                                onClick={() => handleCopyTickets(selectedShowtimeId, showtimes, currentShowtimeId, setShowtimes, onClose)}
+                                onClick={() => handleCopyTickets(selectedShowtimeId, showtimes, currentShowtimeId, startDate, endDate, setShowtimes, onClose)}
                             >
                                 OK
                             </button>

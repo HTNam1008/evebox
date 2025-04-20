@@ -7,8 +7,15 @@ import { Result, Ok, Err } from 'oxide.ts';
 export class UpdateFormService {
   constructor(private readonly updateFormRepository: UpdateFormRepository) {}
 
-  async execute(dto: UpdateFormDto & { id: number }): Promise<Result<number, Error>> {
+  async execute(dto: UpdateFormDto & { id: number, organizerId: string }): Promise<Result<number, Error>> {
     try {
+      const isAuthor = await this.updateFormRepository.checkAuthor(dto.id, dto.organizerId);
+      if (isAuthor.isErr()) {
+        return Err(new Error('Failed to check author'));
+      }
+      if (!isAuthor.unwrap()) {
+        return Err(new Error('Unauthorized'));
+      }
       const result = await this.updateFormRepository.updateForm(dto);
       if (result.isErr()) {
         return Err(result.unwrapErr());
