@@ -9,10 +9,13 @@ import { NavigationController } from "./navigation/navigation.controller";
 import { VectorStoreGeminiService } from "src/infrastructure/vector/vector_store.gemini";
 import { VectorStoreService } from "src/infrastructure/vector/vector_store.service";
 import { EmbeddingWrapperService } from "src/infrastructure/vector/embedding_wrapper.service";
+import { ContentController } from "./content/content.controller";
+import { ContentService } from "./content/content.service";
+import { ContentRepository } from "./content/content.repository";
 
 @Module({
   imports: [],
-  controllers: [RetrieverController, RAGController, NavigationController],
+  controllers: [RetrieverController, RAGController, NavigationController, ContentController],
   providers: [
     EmbeddingWrapperService,
     VectorStoreCohereService,
@@ -21,6 +24,8 @@ import { EmbeddingWrapperService } from "src/infrastructure/vector/embedding_wra
     RetrieverService,
     RAGService,
     NavigationService,
+    ContentService,
+    ContentRepository,
   ],
 })
 export class RagModule {}

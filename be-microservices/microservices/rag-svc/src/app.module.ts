@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EveboxModule } from './infrastructure/eveBoxService/evebox.module';
 import { RagModule } from './modules/rag.module';
+import { PrismaAIModule } from './infrastructure/database/prisma-ai/prisma.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RagModule } from './modules/rag.module';
     }),
     ConfigModule,
     CqrsModule,
+    PrismaAIModule,
     EveboxModule,
     RagModule,
   ],
