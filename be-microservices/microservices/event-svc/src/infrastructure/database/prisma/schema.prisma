@@ -403,7 +403,7 @@ model EventUserRelationship {
   eventId   Int
   userId    String
   email     String
-  role      Int
+  role      Int?
   role_desc String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -411,10 +411,11 @@ model EventUserRelationship {
 
   event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  eventRole  EventRole  @relation("EventRoleToEventUserRelationship", fields: [role], references: [id])
+  eventRole  EventRole?  @relation("EventRoleToEventUserRelationship", fields: [role], references: [id])
 
   @@id([eventId, userId])
 }
+
 
 model EventRole {
   id           Int    @id

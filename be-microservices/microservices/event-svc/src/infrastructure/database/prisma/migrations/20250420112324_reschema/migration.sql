@@ -1,3 +1,6 @@
+-- AlterTable
+ALTER TABLE "EventUserRelationship" ALTER COLUMN "role" DROP NOT NULL;
+
 -- CreateTable
 CREATE TABLE "event_role" (
     "id" INTEGER NOT NULL,
@@ -16,4 +19,4 @@ CREATE TABLE "event_role" (
 );
 
 -- AddForeignKey
-ALTER TABLE "EventUserRelationship" ADD CONSTRAINT "EventUserRelationship_role_fkey" FOREIGN KEY ("role") REFERENCES "event_role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "EventUserRelationship" ADD CONSTRAINT "EventUserRelationship_role_fkey" FOREIGN KEY ("role") REFERENCES "event_role"("id") ON DELETE SET NULL ON UPDATE CASCADE;
