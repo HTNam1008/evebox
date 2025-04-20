@@ -38,7 +38,7 @@ export default function ToggleCategoryButton({ event, fullCategory, onToggle } :
         <div
             title={isSelected ? "Bỏ chọn" : "Chọn"}
             onClick={handleClick}
-            className="flex justify-center items-center cursor-pointer"
+            className="change-category-btn flex justify-center items-center cursor-pointer"
         >
             <div
                 className={`rounded w-6 h-6 border ${isSelected

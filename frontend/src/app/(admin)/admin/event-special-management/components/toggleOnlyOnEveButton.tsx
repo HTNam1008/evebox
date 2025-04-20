@@ -26,7 +26,7 @@ export default function ToggleOnlyOnEveButton({ event, onToggle }: ToggleOnlyOnE
     };
 
     return (
-        <td onClick={handleClick} className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+        <td onClick={handleClick} className="change-only-btn px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
             <div title={event.isOnlyOnEve ? "Bỏ chọn" : "Chọn"} className="flex justify-center items-center">
                 <div className={`rounded w-6 h-6 border cursor-pointer ${event.isOnlyOnEve ? 'bg-teal-400 text-white flex justify-center items-center' : 'bg-white border-gray-500'}`}>
                     {event.isOnlyOnEve && <Check className="w-4 h-4" />}
