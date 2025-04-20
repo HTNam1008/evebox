@@ -66,4 +66,6 @@ export class CreateEventDto {
   })
   imgPoster: Express.Multer.File;
 
+  @ApiProperty({ example: true, description: 'Event is approved' })
+  isApproved: boolean;
 }
