@@ -71,7 +71,7 @@ export default function ShowingDetailPage() {
 
             <h2 className="text-xl font-semibold mt-6 mb-3 px-8">Các loại vé</h2>
 
-            <TicketTable ticketTypeIds={showing.numTicketType.map(ticket => ticket.id)}/>
+            <TicketTable showingID={showing.id} ticketTypeIds={showing.numTicketType.map(ticket => ticket.id)}/>
         </>
     )
 }

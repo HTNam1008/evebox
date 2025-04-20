@@ -1,16 +1,19 @@
 'use client'
 
 /* Package System */
-
+import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import { TicketTypeProps } from "../../lib/interface/ticketTable.interface";
 
 interface TicketTableProps {
+    showingID: string;
     ticketTypeIds: number[];
 }
 
-export default function TicketTable({ ticketTypeIds }: TicketTableProps) {
+export default function TicketTable({ showingID, ticketTypeIds }: TicketTableProps) {
+    const router = useRouter();
+
     //call api để fetch theo các ID vé trong mảng "ticketTypeIds"
     const data: TicketTypeProps[] = [
         {
@@ -89,7 +92,8 @@ export default function TicketTable({ ticketTypeIds }: TicketTableProps) {
                         </thead>
                         <tbody className="text-xs">
                             {data.map((ticket, index) => (
-                                <tr key={ticket.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
+                                <tr key={ticket.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200"
+                                    onClick={() => router.push(`/admin/showing-management/${showingID}/ticket/${ticket.id}`)}>
                                     <td className="px-4 py-3 text-center border-r border-gray-200">{ticket.id}</td>
                                     <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
                                         <div className="line-clamp-2 leading-snug">
