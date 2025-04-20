@@ -19,6 +19,7 @@
     "accountManagement": "Quản lý tài khoản",
     "ticketManagement": "Quản lý vé",
     "createEvent": "Tạo sự kiện",
+    "changePassword": "Đổi mật khẩu mới",
     "logout":"Đăng xuất",
     "emailHint":"Nhập email của bạn",
     "newsBtn": "Nhận tin mới",
