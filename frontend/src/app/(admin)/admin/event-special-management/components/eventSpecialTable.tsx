@@ -2,6 +2,7 @@
 
 /* Package System */
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import { Event } from "../lib/interface/eventspecialtable.interface";
@@ -100,6 +101,7 @@ export default function EventSpecialTable({ searchKeyword, categoryFilter }: Eve
         },
     ]
 
+    const router = useRouter();
     const [events, setEvents] = useState<Event[]>(data);
     const [sortConfig, setSortConfig] = useState<{ key: keyof Event; direction: 'asc' | 'desc' } | null>(null);
 
@@ -208,7 +210,7 @@ export default function EventSpecialTable({ searchKeyword, categoryFilter }: Eve
                                             width={50} height={50}
                                         />
                                     </td>
-                                    <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+                                    <td onClick={() => router.push(`/admin/event-management/${event.id}`)} className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
                                         <div className="line-clamp-2 leading-snug" title={event.title}>
                                             {event.title}
                                         </div>
