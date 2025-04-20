@@ -147,7 +147,9 @@ export default function AccountTable({ searchKeyword, roleFilter, dateFrom, date
                                         {new Date(user.createdAt).toLocaleDateString('vi-VN')}
                                     </td>
                                     <td className="px-4 py-3 text-center cursor-pointer">
-                                        <span className={`min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border 
+                                        <span 
+                                            title={`Chuyển thành ${user.status === 'Active' ? 'Deactived' : 'Active'}`}
+                                            className={`min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border 
                                                     ${user.status === 'Active'
                                                 ? 'bg-teal-100 text-teal-500 border-teal-500'
                                                 : 'bg-gray-200 text-gray-500 border-gray-500'}`}
