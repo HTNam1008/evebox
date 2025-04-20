@@ -10,8 +10,9 @@ import ToggleOnlyOnEveButton from "./toggleOnlyOnEveButton";
 import ToggleCategoryButton from "./toggleCategoryButton";
 import { Category } from "../../event-management/lib/interface/eventtable.interface";
 import Pagination from "./common/pagination";
+import { EventSpecialTableProps } from "../lib/interface/eventspecialtable.interface";
 
-export default function EventSpecialTable() {
+export default function EventSpecialTable({ categoryFilter }: EventSpecialTableProps) {
     const data: Event[] = [
         {
             id: 1,
@@ -126,6 +127,20 @@ export default function EventSpecialTable() {
         );
     };
 
+    const filteredEvents = events.filter(event => {
+        if (!categoryFilter) return true;
+    
+        if (categoryFilter === "__onlyOnEve") {
+            return event.isOnlyOnEve === true;
+        }
+    
+        if (categoryFilter === "__special") {
+            return event.isSpecial === true;
+        }
+    
+        return event.categories.some(cat => cat.name === categoryFilter);
+    });    
+
     //Pagination
     const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
@@ -142,7 +157,7 @@ export default function EventSpecialTable() {
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    const paginatedData = events.slice(startItem - 1, endItem);
+    const paginatedData = filteredEvents.slice(startItem - 1, endItem);
 
     return (
         <>

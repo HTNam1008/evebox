@@ -17,6 +17,10 @@ export interface Event {
   categories: Category[];
 }
 
+export interface EventSpecialTableProps {
+  categoryFilter: string
+}
+
 //Pagination
 export interface PaginationProps {
   currentPage: number;
@@ -25,4 +29,17 @@ export interface PaginationProps {
   onPrevious: () => void;
   onNext: () => void;
 }
+
+//Filter
+export interface FilterProps {
+  categoryFilter: string;
+  onCategoryChange: (value: string) => void;
+  onReset: () => void;
+}
+
+export interface OptionType {
+  label: string;
+  value: string;
+  isSeparator?: boolean;
+};
 
