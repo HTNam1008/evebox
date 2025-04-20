@@ -31,7 +31,7 @@ export default function ShowingDetailPage() {
     return (
         <>
             <div className="flex items-center space-x-2">
-                <ArrowLeft onClick={() => router.back()} size={30} className="text-[#0C4762]" />
+                <ArrowLeft onClick={() => router.back()} size={30} className="text-[#0C4762] cursor-pointer hover:opacity-80 transition-opacity duration-200" />
                 <h1 className="text-2xl font-bold text-[#0C4762] mb-1">Thông tin Showing</h1>
             </div>
 
