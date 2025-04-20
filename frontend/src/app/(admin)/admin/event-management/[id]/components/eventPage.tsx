@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, House, Calendar } from "lucide-react"
 
 /* Package Application */
-
+import ShowingTable from './showingTable';
 
 export default function EventDetailPage() {
     const router = useRouter();
@@ -36,7 +36,7 @@ export default function EventDetailPage() {
     return (
         <>
             <div className="flex items-center space-x-2">
-                <ArrowLeft onClick={() => router.back()} size={30} className="text-[#0C4762]" />
+                <ArrowLeft onClick={() => router.back()} size={30} className="text-[#0C4762] cursor-pointer hover:opacity-80 transition-opacity duration-200" />
                 <h1 className="text-2xl font-bold text-[#0C4762] mb-1">Thông tin Sự kiện</h1>
             </div>
 
@@ -96,6 +96,10 @@ export default function EventDetailPage() {
                     </p>
                 </div>
             </div>
+
+            <h2 className="text-xl font-semibold mt-6 mb-3 px-8">Quản lý suất diễn sự kiện</h2>
+
+            <ShowingTable />
         </>
     )
 }
