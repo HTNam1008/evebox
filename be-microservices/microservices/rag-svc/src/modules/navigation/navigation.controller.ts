@@ -13,7 +13,6 @@ export class NavigationController {
 
     const answer = await this.navigationService.select_route(
       query,
-      "AIzaSyANUdSCMbTY0aAqmcHOMmliQdR9xsXcu9g"
     );
 
     return { result: answer };
