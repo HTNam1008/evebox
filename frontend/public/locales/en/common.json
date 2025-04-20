@@ -19,6 +19,7 @@
     "accountManagement": "Account Management",
     "ticketManagement": "Ticket Management",
     "createEvent": "Create Event",
+    "changePassword": "Change Your Password",
     "logout":"Logout",
     "emailHint":"Enter your email",
     "newsBtn": "Get latest news",

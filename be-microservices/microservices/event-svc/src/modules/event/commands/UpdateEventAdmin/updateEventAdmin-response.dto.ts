@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+class CategoriesResponseDto {
+  @ApiProperty({ example: 1, description: 'The ID of the category' })
+  id: number;
+
+  @ApiProperty({ example: 'music', description: 'The name of the category' })
+  name: string;
+}
+
 export class EventDto {
   @ApiProperty({ example: 22911, description: 'Event ID' })
   id: number;
@@ -31,6 +39,9 @@ export class EventDto {
   @ApiProperty({ example: false, description: 'Is special' })
   isSpecial: boolean;
 
+  @ApiProperty({ example: false, description: 'Is special for category' })
+  isSpecialForCategory: boolean;
+
   @ApiProperty({ example: 50, description: 'Last score' })
   lastScore: number;
 
@@ -54,6 +65,9 @@ export class EventDto {
 
   @ApiProperty({ example: 'Su kien online hay offline', description: 'Form of event' })
   isOnline: boolean
+
+  @ApiProperty({ type: [CategoriesResponseDto], description: 'Categories of the event' })
+  categories: CategoriesResponseDto[];
 }
 
 export class EventResponse {
