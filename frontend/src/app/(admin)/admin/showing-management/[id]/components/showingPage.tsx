@@ -44,10 +44,11 @@ export default function ShowingDetailPage() {
                     <>
                         <h2 className="text-xl font-semibold mt-6 mb-3">Seat map</h2>
                         <div className="flex justify-center mb-6">
+                            {/* Thay bằng seatmap */}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img className="rounded-md" alt="Event Logo"
-                                src={"https://res.cloudinary.com/de66mx8mw/image/upload/v1744458011/defaultImgEvent_spjrst.png"}
-                                width={300} height={200}
+                            <img className="rounded-md" alt="Seat map"
+                                src={"https://res.cloudinary.com/de66mx8mw/image/upload/v1743393414/background.jpg.jpg"}
+                                width={800} height={150}
                             />
                         </div>
                     </>
