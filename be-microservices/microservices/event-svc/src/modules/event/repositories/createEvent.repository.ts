@@ -45,7 +45,7 @@ export class CreateEventRepository {
           eventId: event.id,
           userId: user.id,
           email: orgId || '', 
-          role: 0,
+          role: 1,
           role_desc: 'organizer',
         },
       });
