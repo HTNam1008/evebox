@@ -1,5 +1,6 @@
 import { Document } from 'langchain/document';
 import { Event } from 'src/infrastructure/eveBoxService/eveBox.event.dto'; // hoặc wherever you define it
+import { CreateEventDto } from 'src/modules/descriptionGenerate/descriptionGenerate.dto';
 
 export function transformEventsToDocuments(events: Event[]): Document[] {
   return events.map((event) => {
@@ -39,4 +40,49 @@ export function transformEventsToDocuments(events: Event[]): Document[] {
       metadata: { ...event },
     });
   });
+}
+
+export function transformEventsDescriptionToDocuments(events: Event[]): Document[] {
+  return events.map((event) => {
+    const content = `
+        Tên sự kiện: ${event.name}
+        Mô tả chi tiết: ${event.description}
+      `.trim();
+
+    return new Document({
+      pageContent: content,
+      metadata: { ...event },
+    });
+  });
+}
+
+export function transformEventsDtoToQuery(events: CreateEventDto): string {
+  const categories = events.categoryIds.map((categoryId) => {
+      switch (categoryId) {
+        case 1:
+          return 'music';
+        case 2:
+          return 'theaterstandard';
+        case 3:
+          return 'sport';
+        case 4:
+          return 'other';
+        default:
+          return 'other';
+      }
+    }
+  );
+  
+  const content = `
+        Tên sự kiện: ${events.name}
+        Mô tả chi tiết: ${events.description}
+        Hình thức: ${events.isOnlineEvent ? 'Trực tuyến' : 'Trực tiếp'}
+        Địa chỉ tổ chức: ${events.location}
+        Tên địa điểm tổ chức: ${events.venue}
+        Tổ chức bởi: ${events.organizer}
+        Mô tả đơn vị tổ chức: ${events.organizerDescription}
+        Thể loại: ${categories.join(', ')}
+      `.trim();
+
+  return content;
 }

@@ -7,6 +7,10 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "prisma:generate:main": "prisma generate --schema=src/infrastructure/database/prisma/schema.prisma",
+    "prisma:generate:ai": "prisma generate --schema=src/infrastructure/database/prisma-ai/schema.prisma",
+    "prisma:generate:all": "npm run prisma:generate:main && npm run prisma:generate:ai",
+    "prestart:dev": "npm run prisma:generate:all",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -97,8 +101,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "prisma": {
-    "schema": "src/infrastructure/database/prisma-ai/schema.prisma"
   }
 }

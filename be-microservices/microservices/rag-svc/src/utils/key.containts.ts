@@ -30,3 +30,5 @@ export const COHERE_API_KEY_VECTOR = [
   process.env.COHERE_API_KEY_VECTOR_2,
   process.env.COHERE_API_KEY_VECTOR_3,
 ]
+
+export const GEMINI_PRO = 'gemini-1.5-pro';

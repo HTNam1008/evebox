@@ -12,10 +12,12 @@ import { EmbeddingWrapperService } from "src/infrastructure/vector/embedding_wra
 import { ContentController } from "./content/content.controller";
 import { ContentService } from "./content/content.service";
 import { ContentRepository } from "./content/content.repository";
+import { DescriptionGenerateController } from "./descriptionGenerate/descriptionGenerate.controller";
+import { DescriptionGenerateService } from "./descriptionGenerate/descriptionGenerate.service";
 
 @Module({
   imports: [],
-  controllers: [RetrieverController, RAGController, NavigationController, ContentController],
+  controllers: [RetrieverController, RAGController, NavigationController, ContentController, DescriptionGenerateController],
   providers: [
     EmbeddingWrapperService,
     VectorStoreCohereService,
@@ -26,6 +28,7 @@ import { ContentRepository } from "./content/content.repository";
     NavigationService,
     ContentService,
     ContentRepository,
+    DescriptionGenerateService,
   ],
 })
 export class RagModule {}
