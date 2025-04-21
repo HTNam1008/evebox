@@ -11,15 +11,12 @@ export class CreateEventDto {
 
   @ApiProperty({ example: 'A technology conference for developers', description: 'Event description', required: false })
   @IsString({message: 'Description must be a string'})
-  @IsOptional()
-  description?: string;
+  description: string;
 
   @ApiProperty({ example: 'Online', description: 'Showing Online or Offline' })
-  @IsOptional()
-  @IsString({ message: 'Showing type must be a string' })
-  isOnlineEvent: string | boolean | null;
+  isOnlineEvent: boolean;
   
-  @ApiProperty({ example: "10 To Hien Thanh", description: 'Location String' })
+  @ApiProperty({ example: "10 To Hien Thanh, Phuong Ben Nghe, Quan 1, Ho Chi Minh", description: 'Location String' })
   @IsString()
   location?: string;
 

@@ -5,6 +5,7 @@ import { RAGService } from "../rag/rag.service";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { GEMINI_API_KEY, COHERE_API_KEY } from 'src/utils/key.containts';
 import { ChatCohere } from 'src/utils/cohere.chat';
+import { json } from "stream/consumers";
 
 type NavigationResult = {
   Route: string;
@@ -75,7 +76,7 @@ Hãy trả về kết quả theo định dạng JSON như sau (chú ý dùng d�
 
 {{
   "Route": "ROUTE_NAME",
-  "Message": "Giải thích với người dùng, tại sao lại chọn route này, và các hướng dẫn cần thiết",
+  "Message": "Giải thích với người dùng, tại sao lại chọn route này, và các hướng dẫn cần thiết. Phần này chỉ được có chữ cái, dấu phẩy và dấu chấm",
   "NextPrompt": "Câu lệnh tìm kiếm hoặc null"
 }}
 
@@ -90,7 +91,14 @@ Câu hỏi: {question}
         .join('\n'),
     });
 
-    const raw = await this.invokeWithRetry(prompt);
+    var raw = await this.invokeWithRetry(prompt);
+
+
+    const parseRaw = JSON.parse(raw);
+    if (parseRaw?.kwargs?.content) {
+      raw = parseRaw.kwargs.content;
+    }
+    this.logger.log(raw);
 
     function extractJSONFromMarkdown(raw: string): any {
       const match = raw.match(/```json\s*([\s\S]*?)```/i);

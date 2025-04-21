@@ -7,6 +7,7 @@ import { GEMINI_API_KEY, COHERE_API_KEY } from 'src/utils/key.containts';
 import { ChatCohere } from 'src/utils/cohere.chat';
 import { CreateEventDto } from './descriptionGenerate.dto';
 import { transformEventsDtoToQuery } from 'src/utils/transform_documents';
+import { console } from 'inspector';
 
 type DGState = {
   question: string;
@@ -56,8 +57,12 @@ export class DescriptionGenerateService {
       Ở 15 kết quả search similarity trên chính là 15 description của các sự kiện có liên quan đến người dùng.
       Từ 15 description đó, kết hợp với thông tin về sự kiện của người dùng và mô tả hiện tại, hãy tạo ra một mô tả mới, chi tiết và hấp dẫn hơn cho sự kiện của người dùng, theo html format.
       Nếu có các field mà bạn cảm thấy nó hữu ích, hoặc một số nơi nên thêm hình ảnh, nhưng bạn không thể tự generate được, hãy để lại một placeholder với kí hiệu kiểu {{ Hãy điền ... ở đây }}, thay ... bằng tên của field mà bạn muốn thêm vào.
+      Các trường thông tin không cần thiết: Ngày tổ chức, ngày bắt đầu, ngày kết thúc, ngày bán vé, Đường dẫn mua vé, Đường dẫn sự kiện, Video
+      
       Hãy chắc chắn rằng mô tả mới này không giống với bất kỳ mô tả nào trong 15 kết quả search similarity.
       Chỉ trả về nội dung mô tả mới mà không cần thêm bất kỳ thông tin nào khác.
+      Mỗi sự kiện đều nên cần có mô tả chi tiết về nội dung, thêm ít nhất là 1, 2 hình ảnh, ...
+      Cẩn thận với các kí hiệu, không được để thừa hoặc thiếu bất kỳ kí hiệu nào.
     `);
   
     const prompt = await promptTemplate.format({
@@ -67,6 +72,8 @@ export class DescriptionGenerateService {
     });
   
     const rawContent = await this.invokeWithRetry(prompt);
+
+    console.log(rawContent);
   
     // 👇️ Nếu là JSON string kiểu langchain_core, extract content
     let answer: string = rawContent;
