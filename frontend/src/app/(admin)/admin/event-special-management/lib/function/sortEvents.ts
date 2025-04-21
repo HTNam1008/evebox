@@ -1,6 +1,6 @@
 'use client';
 
-import { SortConfig } from "../interface/eventspecialtable.interface";
+import { SortConfig } from "../interface/eventSpecialTable";
 
 export function sortEvents<T>(data: T[], sortConfig: SortConfig<T> | null): T[] {
   if (!sortConfig) return data;

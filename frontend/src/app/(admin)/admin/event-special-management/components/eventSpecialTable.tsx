@@ -5,13 +5,13 @@ import { useState } from "react";
 import { useRouter } from 'next/navigation';
 
 /* Package Application */
-import { Event } from "../lib/interface/eventspecialtable.interface";
+import { Event } from "../lib/interface/eventSpecialTable";
 import ToggleSpecialButton from "./toggleSpecialButton";
 import ToggleOnlyOnEveButton from "./toggleOnlyOnEveButton";
 import ToggleCategoryButton from "./toggleCategoryButton";
 import { Category } from "../../event-management/lib/interface/eventtable.interface";
 import Pagination from "./common/pagination";
-import { EventSpecialTableProps } from "../lib/interface/eventspecialtable.interface";
+import { EventSpecialTableProps } from "../lib/interface/eventSpecialTable";
 import SortIcon from "../../account-management/components/sortIcon";
 import { sortEvents } from "../lib/function/sortEvents";
 

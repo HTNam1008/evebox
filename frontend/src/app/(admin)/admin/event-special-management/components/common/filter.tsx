@@ -4,8 +4,8 @@
 import { Filter, RotateCcw } from "lucide-react";
 
 /* Package Application */
-import { FilterProps } from "../../lib/interface/eventspecialtable.interface";
-import { OptionType } from "../../lib/interface/eventspecialtable.interface";
+import { FilterProps } from "../../lib/interface/eventSpecialTable";
+import { OptionType } from "../../lib/interface/eventSpecialTable";
 
 export default function FilterBar({
     categoryFilter, onCategoryChange,
