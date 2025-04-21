@@ -1,25 +1,30 @@
 "use client";
 
 /* Package System */
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 /* Package Application */
 import { Search } from 'lucide-react';
-import { SearchBarProps } from '../lib/interface/acctable.interface';
+import { SearchBarProps } from '../../lib/interface/eventspecialtable.interface';
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
-    const [searchTerm, setSearchTearm] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setSearchTearm(value);
+        setSearchTerm(value);
         onSearch(value);
     }
 
+
+    useEffect(() => {
+        onSearch(searchTerm); 
+    }, [searchTerm, onSearch]);
+
     return (
-        <div className="searchbar-account-management flex items-center border border-gray-300 rounded-md overflow-hidden w-1/3 bg-white">
+        <div className="searchbar-event-management flex items-center border border-gray-300 rounded-md overflow-hidden w-1/3 bg-white text-sm">
             <input type="text" className="w-full px-3 py-2 outline-none"
-                placeholder="Tìm kiếm theo tên hoặc email"
+                placeholder="Tìm kiếm theo tên hoặc ID sự kiện"
                 value={searchTerm}
                 onChange={handleInputChange}
             />

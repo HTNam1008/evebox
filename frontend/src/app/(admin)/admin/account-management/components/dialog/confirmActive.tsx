@@ -26,12 +26,12 @@ export default function ConfirmActiveDialog({ open, onClose, onConfirm, currentS
                 </div>
 
                 <div className="flex gap-4 mt-4 mb-4">
-                    <button className="w-32 border-2 border-gray-500 text-gray-500 font-bold py-2 px-4 rounded bg-white hover:bg-gray-500 hover:text-white transition-all"
+                    <button className="cancel-btn w-32 border-2 border-gray-500 text-gray-500 font-bold py-2 px-4 rounded bg-white hover:bg-gray-500 hover:text-white transition-all"
                         onClick={onClose}>
                         Hủy
                     </button>
 
-                    <button className="w-32 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all"
+                    <button className="confirm-btn w-32 border-2 border-[#0C4762] text-[#0C4762] font-bold py-2 px-4 rounded bg-white hover:bg-[#0C4762] hover:text-white transition-all"
                         onClick={() => {
                             onConfirm();
                             onClose();

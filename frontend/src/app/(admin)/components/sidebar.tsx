@@ -10,7 +10,7 @@ const Sidebar = () => {
     { text: 'Quản lý Account', href: '/admin/account-management', icon: <UserRoundCog size={20} /> },
     { text: 'Quản lý Sự kiện', href: '/admin/event-management', icon: <CalendarPlus size={20} /> },
     { text: 'Quản lý Showing', href: '/admin/showing-management', icon: <Ticket size={20} /> },
-    { text: 'Cập nhật Sự kiện đặc biệt', href: '/admin/event-special', icon: <FilePenLine size={20} /> },
+    { text: 'Cập nhật Sự kiện đặc biệt', href: '/admin/event-special-management', icon: <FilePenLine size={20} /> },
     { text: 'Quản lý Địa điểm', href: '/admin/location-management', icon: <MapPin size={20} /> },
     { text: 'Quản lý Voucher', href: '/admin/voucher-management', icon: <TicketPercent size={20} /> },
     { text: 'Quản lý Thanh toán', href: '/admin/payment-management', icon: <CircleDollarSign size={20} /> },
