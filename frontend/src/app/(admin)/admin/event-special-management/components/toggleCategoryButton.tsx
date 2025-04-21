@@ -5,7 +5,7 @@ import { Check } from "lucide-react";
 import toast from 'react-hot-toast';
 
 /* Package Application */
-import { Category } from "../lib/interface/eventspecialtable.interface";
+import { Category } from "../lib/interface/eventSpecialTable";
 
 interface  EventType {
     id: number;
