@@ -1,6 +1,7 @@
 'use client';
 
 import { X } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useState } from 'react';
 
 interface DescriptionWithAIProps {
@@ -14,8 +15,13 @@ export default function DescriptionWithAI({ isValid }: DescriptionWithAIProps) {
     <div className="flex justify-end mt-3 relative">
       {/* Button Generate AI */}
       <button className="absolute bottom-5 right-2 border-none bg-transparent focus:outline-none"
-        onClick={() => setShowPopup(!showPopup)}
-        title="Generate with AI" 
+        onClick={() => {
+          if (!isValid) {
+            toast.error("Vui lòng hoàn tất các thông tin trước khi sử dụng tính năng này!");
+          }
+          setShowPopup(!showPopup)
+        }}
+        title="Generate with AI" type="button"
       >
         <img className="w-12 h-12 rounded-full object-cover shadow-md hover:shadow-xl transition-transform duration-300 hover:scale-110"
           alt="Generate with AI"
