@@ -1,10 +1,14 @@
+/* Package System */
 import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
+
+/* Package Application */
 import { OtpConstants } from '../constants/otpConstants';
 import { ErrorResponse } from '@/types/ErrorResponse';
+import { verifyOtp } from '@/services/auth.service';
 
 const TIMELEFT = 60;
 const ATTEMPTS = 5;
@@ -64,11 +68,11 @@ export const useVerifyOTPForm = () => {
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
-        const result = await axios.post('/api/user/otps/verify-otp', {
+        const result = await verifyOtp({
           email,
           otp: values.otp,
           request_token: requestToken,
-          type: type,
+          type,
         });
         
         if (result.status === 200) {

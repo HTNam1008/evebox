@@ -11,6 +11,8 @@ import SearchControls from './components/dashboard/searchControls';
 import { CategorySpecial } from '@/types/model/frontDisplay';
 import { fetchEvents } from './libs/server/fetchEvents';
 import { fetchRecommendEvents } from './libs/server/fetchRecommendEvents';
+// import { useFrontDisplayEvents } from '../../lib/swr/useFrontDisplayEvents';
+// import { useRecommendedEvents } from '../../lib/swr/useRecommendedEvents';
 import TabSwitcher from '../(dashboard)/components/dashboard/tabSwitcher'; // Import the new client component
 
 const Dashboard = async () => {
@@ -31,6 +33,7 @@ const Dashboard = async () => {
 
 
     const sliderEvents = dataImageSlider.data || [];
+
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -56,7 +59,7 @@ const Dashboard = async () => {
                         </div>
 
                         {/* Client-side TabSwitcher */}
-                        <TabSwitcher 
+                        <TabSwitcher
                             sliderEvents={sliderEvents}
                             dataMonthlyRecommendedEvent={sliderMontlyEvents}
                         />

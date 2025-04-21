@@ -29,17 +29,27 @@ import { GetFormRepository } from './repositories/getForm.repository';
 import { ConnectFormController } from './commands/connectShowingToForm/connectShowingToForm.controller';
 import { ConnectFormService } from './commands/connectShowingToForm/connectShowingToForm.service';
 import { ConnectFormRepository } from './repositories/connectShowingToForm.repository';
+import { GetAllShowingTimeOfEventController } from './queries/getAllShowingTimeOfEvent/getAllShowingTimeOfEvent.controller';
+import { GetAllShowingTimeOfEventService } from './queries/getAllShowingTimeOfEvent/getAllShowingTimeOfEvent.service';
+import { GetAllShowingTimeOfEventRepository } from './repositories/getAllShowingTimeOfEvent.repository';
+import { GetShowingsController } from './queries/getShowings/getShowings.controller';
+import { GetShowingsService } from './queries/getShowings/getShowings.service';
+import { GetShowingsRepository } from './repositories/getShowings.repository';
 
 @Module({
   controllers: [
+    // Admin
+    GetShowingsController,
+
     GetAllFormsController,
     GetFormController,
-    GetAllShowingDetailOfEventController,
     ConnectFormController,
+    GetAllShowingTimeOfEventController,
 
     CreateFormController,
     UpdateFormController,
     DeleteFormController,
+    GetAllShowingDetailOfEventController,
     CreateShowingController,
     UpdateShowingController,
     DeleteShowingController,
@@ -69,6 +79,13 @@ import { ConnectFormRepository } from './repositories/connectShowingToForm.repos
 
     GetAllShowingDetailOfEventService,
     GetAllShowingDetailOfEventRepository,
+
+    GetAllShowingTimeOfEventService,
+    GetAllShowingTimeOfEventRepository,
+
+    // Admin
+    GetShowingsService,
+    GetShowingsRepository
   ],
 })
 export class ShowingModule {}

@@ -103,4 +103,20 @@ export class UpdateFormRepository {
       return Err(new Error('Failed to update form'));
     }
   }
+
+  async checkAuthor(id: number, userId: string): Promise<Result<boolean, Error>> {
+    try {
+      const form = await this.prisma.form.findUnique({
+        where: { id: id >> 0 },
+        select: { createdBy: true },
+      });
+
+      if (form && form.createdBy === userId) {
+        return Ok(true);
+      }
+      return Ok(false);
+    } catch (error) {
+      return Err(new Error('Failed to check author'));
+    }
+  }
 }

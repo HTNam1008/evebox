@@ -434,3 +434,4 @@ model EventRole {
 
   @@map("event_role")
 }
+

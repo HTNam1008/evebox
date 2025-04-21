@@ -8,8 +8,8 @@ import { SidebarProps } from '../libs/interface/organizer.interface';
 
 const SidebarOrganizer: React.FC<SidebarProps> = ({ onClose }) => {
   const pathName = usePathname();
-  const parts = pathName.split("/");
-  const eventId = parts[3];
+  const parts = pathName?.split("/");
+  const eventId = parts?.[3] ?? '';
 
   const menuSections = [
     {

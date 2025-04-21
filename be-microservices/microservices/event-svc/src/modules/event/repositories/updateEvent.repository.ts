@@ -36,9 +36,9 @@ export class UpdateEventRepository {
           updateData.locationId = locationId;
           updateData.venue = dto.venue;
         }
+        updateData.isOnline = dto.isOnline;
       }
-      // Add additional fields as needed, e.g., updating timestamps
-      updateData.createdAt = new Date();
+      updateData.isApproved = false
 
       const event = await this.prisma.events.update({
         where: { id: eventId >> 0 },
@@ -55,7 +55,7 @@ export class UpdateEventRepository {
           venue: event.venue,
           imgLogoId: event.imgLogoId,
           imgPosterId: event.imgPosterId,
-          createAt: event.createdAt,
+          createdAt: event.createdAt,
           isOnlyOnEve: event.isOnlyOnEve,
           isSpecial: event.isSpecial,
           lastScore: event.lastScore.toNumber(),
@@ -64,6 +64,7 @@ export class UpdateEventRepository {
           isApproved: event.isApproved,
           orgName: event.orgName,
           orgDescription: event.orgDescription,
+          isOnline: event.isOnline
         };
         return Ok(eventDto);
       }

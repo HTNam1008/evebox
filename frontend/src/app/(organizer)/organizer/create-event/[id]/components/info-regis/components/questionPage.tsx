@@ -5,14 +5,19 @@ import React from 'react';
 import 'tailwindcss/tailwind.css';
 import { useState } from 'react';
 import { Divider } from '@nextui-org/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 /* Package Application */
 import Navigation from '../../common/navigation';
 import FormQuestionClient from './formQuestion';
-import { CreateQuestionsProps } from '../../../libs/interface/idevent.interface';
 
-export default function QuestionsPage({ eventId }: CreateQuestionsProps) {
+interface QuestionsPageProps {
+    showingIds: string[];
+}
+
+export default function QuestionsPage({ showingIds }: QuestionsPageProps) {
+    const params = useParams();
+    const eventId = parseInt(params?.id?.toString() || "");
     const router = useRouter();
     const [step] = useState(4);
     const [btnValidate4, setBtnValidte4] = useState("");
@@ -57,7 +62,7 @@ export default function QuestionsPage({ eventId }: CreateQuestionsProps) {
             </div>
 
             <div className="flex justify-center">
-                <FormQuestionClient onNextStep={handleNextStep} btnValidate4={btnValidate4} />
+                <FormQuestionClient onNextStep={handleNextStep} btnValidate4={btnValidate4} showingIds={showingIds}/>
             </div>
         </>
     );

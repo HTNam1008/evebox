@@ -1,20 +1,24 @@
 'use client';
 
+/* Package System */
 import { ChevronDown } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import RangeSlider from './range-slider';
 import Link from 'next/link';
 import Image from 'next/image';
 import 'tailwindcss/tailwind.css';
+import { CalendarDate, RangeValue } from '@nextui-org/react';
+// import axios from 'axios';
+
+/* Package Application */
+import RangeSlider from './range-slider';
 import '@/styles/admin/pages/Dashboard.css';
 import { SearchEventsResponse, Event } from '@/types/model/searchEvents';
 import DatePicker from '../../components/dashboard/datePicker';
-import { CalendarDate, RangeValue } from '@nextui-org/react';
 import { Category } from '@/types/model/frontDisplay';
 import mapCategoryName from '@/app/(dashboard)/libs/functions/mapCategoryName';
-import axios from 'axios';
 import { fetchSearchEvents } from '@/app/(dashboard)/libs/server/fetchSearchEvents';
 import { useRouter } from 'next/navigation';
+import { useCategories } from '../../../../lib/swr/useCategories';
 
 interface SearchClientProps {
   events: SearchEventsResponse;
@@ -36,18 +40,13 @@ export default function SearchClient({ events: initialEvents }: SearchClientProp
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const currentQuery = searchParams.get('q') || '';
 
+  const { categories: categoriesData } = useCategories();
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(`/api/categories`);
-        setCategories(response.data || []);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-        setCategories([]);
-      }
-    };
-    fetchCategories();
-  }, []);
+    if (categoriesData) {
+      setCategories(categoriesData);
+    }
+  }, [categoriesData]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -96,7 +95,7 @@ export default function SearchClient({ events: initialEvents }: SearchClientProp
         minPrice: priceRange[0],
         maxPrice: priceRange[1],
       });
-  
+
       setEvents(newEvents?.data || []);
     } catch (error) {
       console.error('Error applying filters:', error);

@@ -26,7 +26,7 @@ export const toggleChecked = (
     checkedItems: boolean[],
     setCheckedItems: (value: boolean[]) => void,
 ) => {
-    const newChecked = [...checkedItems];
-    newChecked[index] = !newChecked[index]; // Đảo trạng thái checked
-    setCheckedItems(newChecked);
+    const newCheckedItems = [...checkedItems];
+    newCheckedItems[index] = !newCheckedItems[index];
+    setCheckedItems(newCheckedItems);
 };
