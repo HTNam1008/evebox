@@ -31,7 +31,7 @@ export default function DescriptionWithAI({ isValid }: DescriptionWithAIProps) {
 
       {/* Popup */}
       {showPopup && (
-        <div className="absolute bottom-20 right-2 w-80 bg-white border rounded-2xl shadow-xl p-5 z-50 space-y-4">
+        <div className="absolute bottom-20 right-2 w-80 bg-white border rounded-2xl shadow-xl p-4 z-50 space-y-4">
           {/* Header popup */}
           <div className="flex justify-between items-start">
             <p className="text-base font-medium text-gray-800">
