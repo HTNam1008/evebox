@@ -97,7 +97,7 @@
 
 .dot-pulse {
   width: 25px;
-  top: 5px;
+  top: 14px;
   left: 5px;
   position: relative;
   display: flex;
@@ -110,7 +110,7 @@
   height: 5px;
   border-radius: 50%;
   font-size: 2rem;
-  background-color: #000; /* Replace getColor(primary-text) with an actual color */
+  background-color: #F4EEEE; /* Replace getColor(primary-text) with an actual color */
   animation: dotPulse 1.5s infinite linear;
   animation-delay: 0.25s;
   transform: scale(0); /* Replace @include scale(0) */
@@ -125,7 +125,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background-color: #000; /* Replace getColor(primary-text) with an actual color */
+  background-color: #F4EEEE; /* Replace getColor(primary-text) with an actual color */
   transform: scale(1); /* Replace @include scale(1) */
 }
 

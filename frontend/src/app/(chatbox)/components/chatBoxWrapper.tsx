@@ -2,13 +2,15 @@
 
 /* Package System */
 import { useState, useEffect, useRef, KeyboardEvent, FormEvent } from "react";
-import { Dialog, DialogActions, DialogTitle, Tooltip, Button } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { Icon } from '@iconify/react'
 import PerfectScrollbar from "react-perfect-scrollbar";
 import Image from "next/image";
 
 /* Package Application */
 import '@/styles/admin/components/perfectScrollBar.css'
+import { fetchContent, sendMessageToBot } from "../libs/server/content";
+import { NAVIGATE_ROUTES } from "../libs/endpoints/navigateEndpoints";
 
 interface ChatBoxWrapperProps {
   handleOpen: () => void;
@@ -20,9 +22,21 @@ interface ChatBoxContent {
   message: string | null;
   rootId?: number | null;
   isBot?: boolean | null;
+  route?: string;
+  ResultMessage?: string;
+  Result?: number[];
 
   Root?: ChatBoxContent | null;
   Child: ChatBoxContent[];
+}
+
+interface NavigationResponse {
+  Route: string;
+  Message: string;
+  NextPrompt: string | null;
+
+  Result?: number[] | string[];
+  ResultMessage?: string;
 }
 
 const chatBoxLogo = '/images/chatbox-space1.png';
@@ -31,30 +45,28 @@ export default function ChatBoxWrapper({ handleOpen }: ChatBoxWrapperProps) {
   const [chatBoxContents, setChatBoxContents] = useState<ChatBoxContent[]>([]);
   const [chatHistory, setChatHistory] = useState<ChatBoxContent[]>([]);
   const [chatContent, setChatContent] = useState<string>('');
-  const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
-  const [isErrorDelete, setIsErrorDelete] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
   const [isErrorFetch, setIsErrorFetch] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [isContinue, setIsContinue] = useState<boolean>(false);
-  const [isOld, setIsOld] = useState<boolean>(true);
   const scrollRef = useRef<PerfectScrollbar | null>(null);
 
+  const router = useRouter();
+
   useEffect(() => {
-    const defaults = setDefaultMessage();
-    setChatBoxContents(defaults);
-    setChatHistory([defaults[0]]);
+    setIsLoading(true);
+    fetchContent(setIsErrorFetch).then((content) => {
+      if (content) {
+        setChatBoxContents([content]);
+        setChatHistory([content]);
+      }
+      setIsLoading(false);
+    })
   }, []);
 
-  const scrollToBottom = () => {
-    if (scrollRef.current) {
-      const scrollElement = (scrollRef.current as unknown as HTMLElement);
-      scrollElement.scrollTop = scrollElement.scrollHeight;
-    }
-  };
-
-
+  const handleDialog = () => {
+    setIsError(!isError);
+  }
 
   const setDefaultMessage = (): ChatBoxContent[] => {
     return [
@@ -144,17 +156,83 @@ export default function ChatBoxWrapper({ handleOpen }: ChatBoxWrapperProps) {
       const newMsg: ChatBoxContent = {
         id: Date.now(),
         context: chatContent,
-        message: null,
+        message: chatContent,
         rootId: null,
         isBot: false,
         Child: []
       };
       setChatBoxContents(prev => [...prev, newMsg]);
       setChatContent('');
-      scrollToBottom();
+
+      await handleSendToBot();
+    }
+  }
+
+  const handleSendToBot = async () => {
+    if (!chatContent || isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const response = await sendMessageToBot(chatContent);
+
+      if (response) {
+        const botMessage: ChatBoxContent = {
+          id: Date.now(),
+          context: response.Message,
+          message: response.Message,
+          rootId: null,
+          isBot: true,
+          Child: [] // You can expand this based on the response if needed
+        };
+
+        if (response.Route === 'SEARCH_PAGE' && response.ResultMessage) {
+          botMessage.message = response.ResultMessage;
+          botMessage.Child = response.Result.map((eventId: number) => ({
+            id: eventId,
+            context: `Đi tới sự kiện ${eventId}`, // Customize as needed
+            message: null,
+            rootId: botMessage.id,
+            isBot: true,
+            route: 'EVENT_PAGE',
+            Child: [],
+          }));
+        } else if (response.Route) {
+          const routeChild: ChatBoxContent = {
+            id: Date.now() + 1,
+            context: `Đi tới trang ${response.Route}`,
+            message: response.Message,
+            rootId: botMessage.id,
+            isBot: true,
+            Child: [],
+            route: response.Route,
+          };
+
+          botMessage.Child.push(routeChild);
+        }
+
+        setChatBoxContents(prev => [...prev, botMessage]);
+        setChatContent('');
+      }
+    } catch (error) {
+      console.error('Error sending query to bot:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleChildClick = (child: ChatBoxContent) => {
+    if (child.route) {
+      if (child.route === 'EVENT_PAGE') {
+        router.push(`/event/${child.id}`);
+      } else {
+        router.push(NAVIGATE_ROUTES[child.route as keyof typeof NAVIGATE_ROUTES]);
+      }
+    } else {
+      setChatHistory(prev => [...prev, child]);
+      setChatBoxContents([child]);
     }
   };
-
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>): void {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -173,24 +251,24 @@ export default function ChatBoxWrapper({ handleOpen }: ChatBoxWrapperProps) {
           <div className="chat-box__header-info mt-3">
             <h2 className="chat-box-name text-xl font-semibold leading-[27.28px] text-left text-[#F4EEEE]">Trợ lý EveBox</h2>
             <div className="chat-box-status">
-              <div className={`action items-center flex flex-row ${!isLoading ? 'text-[#9EF5CF]' : (isErrorFetch || isErrorDelete ? 'text-danger-500' : 'text-indigo-700')}`}>
+              <div className={`action items-center flex flex-row ${!isLoading ? 'text-[#9EF5CF]' : (isErrorFetch ? 'text-danger-500' : 'text-[#F4EEEE]')}`}>
                 {!isLoading ?
                   <>
                     <Icon className="mr-1" icon="material-symbols:circle" width="10px" height="10px" />
                     Online
                   </>
                   :
-                  ((isErrorFetch || isErrorDelete) ?
+                  ((isErrorFetch) ?
                     <>
                       <Icon className="" icon="material-symbols:circle" width="10px" height="10px" />
-                      {isErrorFetch ? 'Lấy dữ liệu thất bại' : 'Xóa lịch sử thất bại'}
+                      {isErrorFetch ? 'Lấy dữ liệu thất bại' : 'Có lỗi xảy ra'}
                     </>
                     :
                     <div className="flex flex-row">
-                      <div className="dot-pulse" style={{ top: '7px' }}>
+                      <div className="dot-pulse">
                         <span></span>
                       </div>
-                      <span className=''>Đang nhập</span>
+                      <span className='ml-3'>Đang nhập</span>
                     </div>
                   )
                 }
@@ -227,24 +305,33 @@ export default function ChatBoxWrapper({ handleOpen }: ChatBoxWrapperProps) {
                       <Image src={chatBoxLogo} width={36} height={28.39} alt="chat-bot-avatar" className="rounded-full mr-6" />
                     </div>
                   )}
-                  <div className={`chat-box__body-item-content max-w-[88%] leading-[17.73px] gap-3 rounded-xl px-4 py-2 text-sm
+                  <div className={`chat-box__body-item-content max-w-[88%] leading-[17.73px] gap-3 rounded-xl px-3 py-2 text-sm
                                 ${message.isBot ? 'bg-[#f1f1f1] text-[#505050] bot'
                       : 'flex items-center min-h-14 bg-[#0C4762] text-[#F4EEEE] user'}`}
                   >
-                    <p className="font-semibold mb-1">{message.context}</p>
+                    {message.isBot && (
+                      <p className="font-semibold mb-1">Trợ lý EveBox</p>
+                    )}
                     {message.message && <p>{message.message}</p>}
                   </div>
                 </div>
                 {message.Child.length > 0 && (
-                  <div className="chat-box__default-options flex flex-col mt-3 ml-11 gap-2">
+                  <div className="chat-box__default-options w-[85%] flex flex-col mt-3 ml-14 gap-2">
                     {message.Child.map((child) => (
-                      <button
+                      <div
                         key={child.id}
-                        onClick={() => handleSelectStep(child)}
-                        className="text-left text-sm px-4 py-2 bg-white border border-gray-300 rounded-full hover:bg-[#0C4762] hover:text-[#F4EEEE] transition"
+                        onClick={() => {
+                          if (child.route) {
+                            handleChildClick(child);
+                          } else handleSelectStep(child);
+                        }}
+                        className="chat-box__default-options-input relative cursor-pointer flex-grow-[0.1] flex items-center text-left text-sm px-4 py-2 border border-gray-300 rounded-full hover:bg-[#0C4762] hover:text-[#F4EEEE] transition"
                       >
-                        {child.context}
-                      </button>
+                        <span className="default-content box-border focus:border-none focus:outline-none">{child.context}</span>
+                        <button onClick={() => handleSelectStep(child)} className="chat-box__default-options-btn ml-auto flex items-center justify-center">
+                          <Icon icon="lucide:send" />
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}

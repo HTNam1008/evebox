@@ -14,7 +14,6 @@ export default function ChatboxButton() {
   const [isOpen, setIsOpen] = useState(false);
   
   const handleOpenChatbox = () => {
-    console.log("🚀 ~ ChatboxButton ~ isOpen:", isOpen)
     setIsOpen(!isOpen);
   }
 
