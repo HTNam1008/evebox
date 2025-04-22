@@ -1,7 +1,7 @@
 import NavigationBar from "@/app/(dashboard)/components/common/navigationBar"
-import DashboardLoading from "@/app/(dashboard)/loading"
 import { Providers } from "@/app/provider"
 import { Suspense } from "react"
+import Loading from "./loading"
 
 export default function DefaultLayout({
   children,
@@ -10,10 +10,10 @@ export default function DefaultLayout({
 }) {
   return (
     <Providers>
-      <Suspense fallback={<DashboardLoading />}>
-        <NavigationBar/>
+      <Suspense fallback={<Loading />}>
+        <NavigationBar />
         <main>{children}</main>
       </Suspense>
-    </Providers>  
+    </Providers>
   )
 }

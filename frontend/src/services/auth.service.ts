@@ -22,7 +22,7 @@ interface RegisterPayloadProps {
   re_password: string;
   agree: boolean;
   role_id: number;
-  province_id: number[];
+  province_id: number[] | null;
 }
 
 interface RegisterResponse {
@@ -32,7 +32,9 @@ interface RegisterResponse {
 }
 
 export const register = async (payload: RegisterPayloadProps): Promise<BaseApiResponse<RegisterResponse>> => {
-  return await authService.post(END_POINT_LIST.USER.REGISTER, payload);
+  const result = await authService.post<BaseApiResponse<RegisterResponse>>(END_POINT_LIST.USER.REGISTER, payload);
+  return result.data;
+  // return await authService.post(END_POINT_LIST.USER.REGISTER, payload);
 }
 
 interface VerifyOtpPayloadProps {
