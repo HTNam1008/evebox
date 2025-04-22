@@ -59,14 +59,19 @@ export class ContentRepository {
       });
   
       if (!content) return null;
+
+      const updateContent = {
+        ...content,
+        isBot: true,
+      }
   
       // Gọi đệ quy cho từng đứa con
       const childData = await Promise.all(
-        content.Child.map(child => this.getContentTree(child.id))
+        updateContent.Child.map(child => this.getContentTree(child.id))
       );
   
       return {
-        ...content,
+        ...updateContent,
         Child: childData,
       };
     } catch (err) {
