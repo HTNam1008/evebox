@@ -12,7 +12,7 @@
   height: 44px;
   cursor: pointer;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.65);
-  transition: all 0.2s linear;
+  transition: all 0.3s ease;
 }
 
 @media only screen and (max-width: 1024px) {
@@ -30,7 +30,12 @@
 }
 
 .chat-box-btn:hover {
-  background-color: #5e626b 10%;
+  background-color: #ff9c1f;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.chat-box-btn:hover img {
+  transform: scale(1.05);
 }
 
 .chat-box-btn i {
@@ -59,8 +64,7 @@
 
 .chat-box-btn .chat-box-name {
   padding-left: 21px;
-  font-family: 'Nunito';
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 300;
   text-transform: none;
 }
@@ -70,4 +74,89 @@
     transform: scale(1.1);
     opacity: 0.8;
   }
+}
+
+.chat-box-wrapper {
+  z-index: 1000;
+  max-height: 62vh;
+  width: 100%;
+  bottom: 4px;
+  right: 1px;
+  position: fixed;
+  opacity: 0;
+  transform: translateY(100%);
+  display: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.chat-box-wrapper.open {
+  opacity: 1;
+  transform: translateY(0);
+  display: block;
+}
+
+.dot-pulse {
+  width: 25px;
+  top: 5px;
+  left: 5px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.dot-pulse span {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  font-size: 2rem;
+  background-color: #000; /* Replace getColor(primary-text) with an actual color */
+  animation: dotPulse 1.5s infinite linear;
+  animation-delay: 0.25s;
+  transform: scale(0); /* Replace @include scale(0) */
+}
+
+.dot-pulse::before,
+.dot-pulse::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #000; /* Replace getColor(primary-text) with an actual color */
+  transform: scale(1); /* Replace @include scale(1) */
+}
+
+.dot-pulse::before {
+  left: 0;
+  animation: dotPulse 1.5s infinite linear;
+  animation-delay: 0s;
+}
+
+.dot-pulse::after {
+  right: 0;
+  animation: dotPulse 1.5s infinite linear;
+  animation-delay: 0.5s;
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    transform: scale(0); /* Replace @include scale(0) */
+  }
+
+  50% {
+    transform: scale(1); /* Replace @include scale(1) */
+  }
+}
+
+.chat-box__body-item-content {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.chat-box__body-item-content.user {
+  word-break: break-word;
 }

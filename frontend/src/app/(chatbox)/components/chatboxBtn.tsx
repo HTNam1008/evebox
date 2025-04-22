@@ -6,13 +6,15 @@ import { useState } from 'react';
 
 /* Package Application */
 import '@/styles/admin/chatbox.css';
+import ChatBoxWrapper from './chatBoxWrapper';
 
 const logoPath = '/images/chatbox-space1.png';
 
 export default function ChatboxButton() {
   const [isOpen, setIsOpen] = useState(false);
-
+  
   const handleOpenChatbox = () => {
+    console.log("🚀 ~ ChatboxButton ~ isOpen:", isOpen)
     setIsOpen(!isOpen);
   }
 
@@ -26,7 +28,9 @@ export default function ChatboxButton() {
         <span className="chat-box-name">Eve Chatbox</span>
       </button>
       <div className={`chat-box-wrapper ${isOpen ? 'open' : ''}`}>
-        
+        {isOpen && (
+          <ChatBoxWrapper handleOpen={handleOpenChatbox} />
+        )}
       </div>
     </>
   )
