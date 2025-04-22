@@ -16,13 +16,15 @@ import Youtube from '@tiptap/extension-youtube'
 /* Package Application */
 import MenuBar from "./menu-bar";
 import '@/styles/admin/pages/CreateEvent.css'
+import DescriptionWithAI from "./descriptionWithAI";
 
 interface TextEditorProps {
     content: string;
     onChange: (content: string) => void;
+    isValidDescription: boolean;
 }
 
-export default function TextEditor({ content, onChange }: TextEditorProps) {
+export default function TextEditor({ content, onChange, isValidDescription }: TextEditorProps) {
     const CustomImage = Image.extend({
         addAttributes() {
             return {
@@ -99,15 +101,18 @@ export default function TextEditor({ content, onChange }: TextEditorProps) {
 
     useEffect(() => {
         if (editor && content !== editor.getHTML()) {
-          editor.commands.setContent(content);
+            editor.commands.setContent(content);
         }
-      }, [content, editor]);
+    }, [content, editor]);
 
     return (
         <div>
             <MenuBar editor={editor} />
 
-            <EditorContent editor={editor} className="w-full" />
+            <div className="relative">
+                <EditorContent editor={editor} className="w-full" />
+                <DescriptionWithAI isValid={isValidDescription} />
+            </div>
         </div>
     )
 }

@@ -160,7 +160,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                         if (eventData.locations) {
                             setStreet(eventData.locations.street);
                             setWard(eventData.locations.ward);
-    
+
                             if (eventData.locations.districts) {
                                 setDistrict(eventData.locations.districts.name);
                                 setProvince(eventData.locations.districts.province.name);
@@ -375,6 +375,18 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         }
     };
 
+    //Xét điều kiện cho button của AI
+    const [isFormValid, setIsFormValid] = useState(false);
+    useEffect(() => {
+        const isOffline = eventTypeSelected === "offline" || eventTypeSelected === "Offline";
+        const requiredFieldsFilled =
+            eventName.trim() !== "" && nameOrg.trim() !== "" && infoOrg.trim() !== "" && post.trim() !== "" && selectedCategory !== null && background !== null && logoOrg !== null &&
+            (!isOffline || ( eventAddress.trim() !== "" && province.trim() !== "" && district.trim() !== "" && ward.trim() !== "" && street.trim() !== ""));
+        setIsFormValid(requiredFieldsFilled);
+    }, [
+        eventName, nameOrg, infoOrg, post, selectedCategory, background, logoOrg, eventAddress, province, district, ward, street, eventTypeSelected
+    ]);
+
     return (
         <>
             <Toaster position="top-center" />
@@ -429,7 +441,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                                 </label>
 
                                 <div className="boder ">
-                                    <TextEditor content={post} onChange={onChange} />
+                                    <TextEditor content={post} onChange={onChange} isValidDescription={isFormValid} />
                                 </div>
                             </div>
                         </div>
