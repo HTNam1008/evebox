@@ -19,6 +19,7 @@ model User {
   refreshTokens RefreshToken[]
   userProvince  UserProvince[]
   role          Role?          @relation(fields: [role_id], references: [id])
+  EventUserRelationship EventUserRelationship[]
 
   @@map("users")
 }
@@ -260,6 +261,7 @@ model Events {
   Images_Events_imgPosterIdToImages Images?           @relation("Events_imgPosterIdToImages", fields: [imgPosterId], references: [id])
   locations                         locations?        @relation(fields: [locationId], references: [id], onDelete: Cascade)
   Showing                           Showing[]
+  eventUserRelationships            EventUserRelationship[]
 }
 
 model Row {
@@ -395,4 +397,20 @@ enum OTPType {
 enum PaymentMethod {
   PAYOS
   MOMO
+}
+
+model EventUserRelationship {
+  eventId   Int
+  userId    String
+  email     String
+  role      Int
+  role_desc String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+
+  event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, userId])
 }

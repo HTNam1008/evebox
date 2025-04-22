@@ -1,29 +1,57 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Search } from "lucide-react";
-
 import AddMemberForm from "./addMemberForm";
+import createApiClient from '@/services/apiClient';
+import { EventMember } from "@/types/model/EventMemberResponse";
+import { useParams } from "next/navigation";
+import EditMemberDialog from "./editMemberDialog";
+import DeleteMemberDialog from "./deleteMemberDialog";
+import { Toaster } from "react-hot-toast";
 
 const MemberTable = () => {
+    const params = useParams();
+    const eventId = parseInt(params?.id?.toString() || "");
     const [search, setSearch] = useState("");
     const [isAddingMember, setIsAddingMember] = useState(false);
+    const [editingMember, setEditingMember] = useState<EventMember | null>(null);
+    const [deletingMember, setDeletingMember] = useState<EventMember | null>(null);
+    const [members, setMembers] = useState<EventMember[]>([]);
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+    
 
-    const members = [
-        { id: "#AD-001234", role: "Chủ sự kiện" },
-        { id: "#AD-001235", role: "Quản lý" },
-        { id: "#AD-001236", role: "Nhân viên check-in" },
-        { id: "#AD-001237", role: "Quản trị viên" },
-    ];
+    const fetchMembers = async (emailFilter = "") => {
+        try {
+          if (!eventId) return;
+      
+          const response = await apiClient.get(`/org/member/${eventId}`, {
+            params: emailFilter ? { email: emailFilter } : {},
+          });
+      
+          if (response.data?.data) {
+            setMembers(response.data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching event members:", error);
+        }
+      };
+    
+      useEffect(() => {
+        fetchMembers();
+      }, [eventId]);
 
-    const filteredMembers = members.filter((member) =>
-        member.id.toLowerCase().includes(search.toLowerCase()) ||
-        member.role.toLowerCase().includes(search.toLowerCase())
-    );
+      const filteredMembers = members.filter(
+        (member) =>
+          member.email.toLowerCase().includes(search.toLowerCase()) ||
+          member.role_desc.toLowerCase().includes(search.toLowerCase())
+      );
+    
 
     return (
         <div>
+            <Toaster position="top-center" />
             <div className="flex justify-between items-center">
                 <div className="flex items-center border border-gray-300 rounded-md overflow-hidden w-1/3 bg-white">
                     <input
@@ -46,7 +74,13 @@ const MemberTable = () => {
                         Thêm thành viên
                     </button>
                 </div>
-                {isAddingMember && <AddMemberForm onClose={() => setIsAddingMember(false)} />}
+                {isAddingMember && (
+                  <AddMemberForm
+                        eventId={eventId}
+                        onClose={() => setIsAddingMember(false)}
+                        onSuccess={fetchMembers}
+                   />
+                )}
             </div>
 
             <table className="w-full border border-gray-300 shadow-lg mt-6">
@@ -60,15 +94,20 @@ const MemberTable = () => {
                 <tbody>
                     {filteredMembers.map((member, index) => (
                         <tr key={index}>
-                            <td className="border px-4 py-2">{member.id}</td>
-                            <td className="border px-4 py-2">{member.role}</td>
+                            <td className="border px-4 py-2">{member.email}</td>
+                            <td className="border px-4 py-2">{member.role_desc}</td>
                             <td className="border px-2 py-2 text-center w-40">
-                                <button className="text-blue-500 hover:text-blue-700 mx-1">
-                                    <FaEdit />
-                                </button>
-                                <button className="text-red-500 hover:text-red-700 mx-1">
-                                    <FaTrash />
-                                </button>
+                            <button onClick={() => setEditingMember(member)}> <FaEdit /></button>
+                            {editingMember && (<EditMemberDialog eventId={eventId}
+                                member={editingMember}
+                                onClose={() => setEditingMember(null)}
+                                onSuccess={fetchMembers}
+                            />
+                            )}
+
+                            <button onClick={() => setDeletingMember(member)} className="text-red-500 hover:text-red-700 mx-1"><FaTrash /></button>
+                            {deletingMember && (<DeleteMemberDialog eventId={eventId} email={deletingMember.email} onClose={() => setDeletingMember(null)} onSuccess={fetchMembers}/>
+                             )}
                             </td>
                         </tr>
                     ))}

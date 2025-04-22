@@ -1,7 +1,7 @@
 import 'tailwindcss/tailwind.css';
 
 import SidebarOrganizer from "../components/sidebarOrganizer";
-import TicketTable from "../summary-revenue/components/ticketTable";
+import { TicketTable } from '../summary-revenue/components/ticketTable';
 import CheckinStats from "./components/checkinStats";
 
 export default function CheckinInfo() {
@@ -22,7 +22,7 @@ export default function CheckinInfo() {
                 {/* Chi tiết vé */}
                 <h3 className="text-lg font-bold text-[#0C4762] mb-2 mt-6">Chi tiết</h3>
                 <div className="overflow-x-auto">
-                    <TicketTable />
+                    <TicketTable ticketTypes={[]} />
                 </div>
             </div>
         </div>

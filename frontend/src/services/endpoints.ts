@@ -29,6 +29,7 @@ export class END_POINT_LIST {
   static readonly ORG_SHOWING = {
     SHOWING_FORM: "/api/org/showing/form",
     SHOWING: "/api/org/showing",
+    SHOWING_TIME: "/api/org/showing/showingTime",
   }
 
   static readonly ORG_TICKETTYPE = {
@@ -38,4 +39,9 @@ export class END_POINT_LIST {
   static readonly ORG_PAYMENT = {
     PAYMENT: "/api/org/payment",
   }
+
+  static readonly ORG_STATISTICS = {
+    GET_SUMMARY: "/api/org/statistics/summary",
+    GET_ORDERS: "/api/org/statistics/orders",
+  };
 }

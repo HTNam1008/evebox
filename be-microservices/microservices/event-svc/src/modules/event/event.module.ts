@@ -28,6 +28,9 @@ import { GetEventDetailRepository } from './repositories/getEventDetail.reposito
 import { GetEventFrontDisplayRepository } from './repositories/getEventFrontDisplay.repository';
 import { GetEventFrontDisplayService } from './queries/getEventFrontDisplay/getEventFrontDisplay.service';
 import { GetEventFrontDisplayController } from './queries/getEventFrontDisplay/getEventFrontDisplay.controller';
+import { GetEventsRepository } from './repositories/getEvents.repository';
+import { GetEventsService } from './queries/getEvents/getEvents.service';
+import { GetEventsController } from './queries/getEvents/getEvents.controller';
 import { GetRecommendEventService } from './queries/getRecommendEvent/getRecommendEvent.service';
 import { GetRecommendEventRepository } from './repositories/getRecommendEvent.repository';
 import { GetRecommendedEventController } from './queries/getRecommendEvent/getRecommendEvent.controller';
@@ -40,13 +43,24 @@ import { DeleteEventService } from './commands/deleteEvent/deleteEvent.service';
 import { UpdateEventController } from './commands/updateEvent/updateEvent.controller';
 import { UpdateEventService } from './commands/updateEvent/updateEvent.service';
 import { UpdateEventRepository } from './repositories/updateEvent.repository';
+import { UpdateEventAdminController } from './commands/UpdateEventAdmin/updateEventAdmin.controller';
+import { UpdateEventAdminService } from './commands/UpdateEventAdmin/updateEventAdmin.service';
+import { UpdateEventAdminRepository } from './repositories/updateEventAdmin.repository';
 import { GetEventOfOrgController } from './queries/getEventOfOrg/getEventOfOrg.controller';
 import { GetEventOfOrgService } from './queries/getEventOfOrg/getEventOfOrg.service';
 import { GetEventOfOrgRepository } from './repositories/getEventOfOrg.repository';
 import { GetEventOfOrgDetailController } from './queries/getEventOfOrgDetail/getEventOfOrgDetail.controller';
 import { GetEventOfOrgDetailRepository } from './repositories/getEventOfOrgDetail.repository';
 import { GetEventOfOrgDetailService } from './queries/getEventOfOrgDetail/getEventOfOrgDetail.service';
-
+import { AddEventMemberController } from './commands/AddEventMember/addEventMember.controller';
+import { AddEventMemberService } from './commands/AddEventMember/addEventMember.service';
+import { AddEventMemberRepository } from './repositories/addEventMember.repository';
+import { UpdateEventMemberService } from './commands/UpdateEventMember/updateEventMember.service';
+import { UpdateEventMemberController } from './commands/UpdateEventMember/updateEventMember.controller';
+import { GetEventMembersService } from './queries/getEventMember/getEventMembers.service';
+import { GetEventMemberController } from './queries/getEventMember/getEventMember.controller';
+import { DeleteEventMemberService } from './commands/DeleteEventMember/deleteEventMember.service';
+import { DeleteEventMemberController } from './commands/DeleteEventMember/deleteEventMember.controller';
 
 @Module({
   imports: [ScheduleModule.forRoot(), ImagesModule, LocationModule],
@@ -68,7 +82,15 @@ import { GetEventOfOrgDetailService } from './queries/getEventOfOrgDetail/getEve
 
     GetEventOfOrgController,
     GetEventOfOrgDetailController,
-    ],
+    AddEventMemberController,
+    UpdateEventMemberController,
+    GetEventMemberController,
+    DeleteEventMemberController,
+
+    // For Admin
+    UpdateEventAdminController,
+    GetEventsController
+  ],
   providers: [
     // UpdateWeeklyService, 
 
@@ -109,6 +131,18 @@ import { GetEventOfOrgDetailService } from './queries/getEventOfOrgDetail/getEve
     GetEventOfOrgDetailRepository,
     GetEventOfOrgDetailService,
 
-    ],
+    AddEventMemberService,
+    AddEventMemberRepository,
+    UpdateEventMemberService,
+    GetEventMembersService,
+    DeleteEventMemberService,
+
+    // For Admin
+    GetEventsService,
+    GetEventsRepository,
+
+    UpdateEventAdminService,
+    UpdateEventAdminRepository
+  ],
 })
 export class EventModule {}

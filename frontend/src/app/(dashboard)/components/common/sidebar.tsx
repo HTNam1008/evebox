@@ -1,7 +1,7 @@
 "use client"
 
 import Link from 'next/link';
-import { User, Ticket, Calendar, LogOut } from 'lucide-react';
+import { User, Ticket, Calendar, LogOut, Lock } from 'lucide-react';
 import { Menu } from 'lucide-react';
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
@@ -45,6 +45,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     { icon: <User size={20} />, text: t("accountManagement"), href: '/my-profile' },
     { icon: <Ticket size={20} />, text: t("ticketManagement"), href: '/ticket' },
     { icon: <Calendar size={20} />, text: t("createEvent"), href: '/organizer/create-event' },
+    { icon: <Lock size={20} />, text: t("changePassword"), href: '/change-password' },
     { icon: <LogOut size={20} />, text: t("logout"), onClick: handleLogout },  // Sửa để sử dụng button
   ];
 

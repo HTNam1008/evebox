@@ -1,32 +1,37 @@
 "use client";
 
-const TicketTable = () => {
+import type { ITicketTypeSummary } from "@/types/model/getSummaryOrg"
+
+interface TicketTableProps {
+  ticketTypes: ITicketTypeSummary[]
+}
+
+export const TicketTable = ({ ticketTypes }: TicketTableProps) => {
   return (
-    <table className="w-full border border-gray-300 shadow-lg">
-      <thead>
-        <tr className="bg-[#0C4762] text-white">
-          <th className="border px-4 py-2 text-left">Loại vé</th>
-          <th className="border px-4 py-2 text-left">Giá bán</th>
-          <th className="border px-4 py-2 text-left">Đã bán</th>
-          <th className="border px-4 py-2 text-left">Bị khoá</th>
-          <th className="border px-4 py-2 text-left">Tỉ lệ bán</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td className="border px-4 py-2">Free</td>
-          <td className="border px-4 py-2">100.000đ</td>
-          <td className="border px-4 py-2">500</td>
-          <td className="border px-4 py-2">3</td>
-          <td className="border px-4 py-2">
-            <div className="w-full bg-gray-200 h-2 rounded-lg">
-              <div className="bg-[#56C7CE] h-2 rounded-lg" style={{ width: "50%" }}></div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div className="mt-8">
+      <h3 className="text-lg font-bold text-[#0C4762] mb-2">Danh sách loại vé</h3>
+      <div className="overflow-x-auto">
+        <table className="w-full border border-gray-300 shadow-lg">
+          <thead className="bg-[#0C4762] text-white rounded-t-lg">
+            <tr>
+              <th className="py-3 px-4 text-left">Tên loại vé</th>
+              <th className="py-3 px-4 text-left">Giá vé</th>
+              <th className="py-3 px-4 text-left">Số vé đã bán</th>
+              <th className="py-3 px-4 text-left">Tỉ lệ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ticketTypes.map((ticket, index) => (
+              <tr key={index} className="border-b">
+                <td className="py-3 px-4">{ticket.typeName}</td>
+                <td className="py-3 px-4">{ticket.price.toLocaleString()} đ</td>
+                <td className="py-3 px-4">{ticket.sold}</td>
+                <td className="py-3 px-4">{ticket.ratio}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
-
-export default TicketTable;

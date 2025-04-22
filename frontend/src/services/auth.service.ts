@@ -9,9 +9,8 @@ interface ForgotPasswordResponse {
 }
 
 export const forgotPassword = async (email: string): Promise<BaseApiResponse<ForgotPasswordResponse>> => {
-  return await authService.post(END_POINT_LIST.USER.FORGOT_PASSWORD, {
-    email,
-  });
+  const result = await authService.post<BaseApiResponse<ForgotPasswordResponse>>(END_POINT_LIST.USER.FORGOT_PASSWORD, { email });
+  return result.data;
 };
 
 interface RegisterPayloadProps {
@@ -49,5 +48,6 @@ interface VerifyOtpResponse {
 }
 
 export const verifyOtp = async (payload: VerifyOtpPayloadProps): Promise<BaseApiResponse<VerifyOtpResponse>> => {
-  return await authService.post(END_POINT_LIST.USER.VERIFY_OTP, payload);
+  const result = await authService.post<BaseApiResponse<VerifyOtpResponse>>(END_POINT_LIST.USER.VERIFY_OTP, payload);
+  return result.data;
 }

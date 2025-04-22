@@ -2,46 +2,105 @@
 
 import { useState } from 'react';
 import { X, CheckCircle } from 'lucide-react';
+import createApiClient from '@/services/apiClient';
+import toast from 'react-hot-toast';
 
 interface AddMemberFormProps {
+    eventId: number;
     onClose: () => void;
-}
+    onSuccess?: () => void;
+  }
 
-export default function AddMemberForm({ onClose }: AddMemberFormProps) {
+export default function AddMemberForm({eventId, onClose, onSuccess }: AddMemberFormProps) {
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('');
     const [emailError, setEmailError] = useState('');
     const [roleError, setRoleError] = useState('');
+    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+
+    const permissionMatrix: boolean[][] = [
+      // Chỉnh sửa
+      [true, true, false, false, false, false],
+      // Tổng kết
+      [true, true, false, false, false, false],
+      // Voucher
+      [true, true, false, false, false, false],
+      // Marketing
+      [true, true, false, false, false, false],
+      // Đơn hàng
+      [true, true, true, false, false, false],
+      // Seat map
+      [true, true, true, false, false, false],
+      // Thành viên
+      [true, true, true, false, false, false],
+      // Check in
+      [true, true, true, true, false, false],
+      // Check out
+      [true, true, true, false, true, false],
+      // Redeem
+      [true, true, true, false, false, true],
+    ];
+    
+
+    const roleMap: { [key: string]: number } = {
+        admin: 2,
+        manager: 3,
+        "check-in": 4,
+        "check-out": 5,
+        redeem: 6,
+      };
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         let isValid = true;
-
+      
         if (!email.trim()) {
-            setEmailError('Vui lòng nhập email');
-            isValid = false;
+          setEmailError("Vui lòng nhập email");
+          isValid = false;
         } else if (!validateEmail(email)) {
-            setEmailError('Email không hợp lệ');
-            isValid = false;
+          setEmailError("Email không hợp lệ");
+          isValid = false;
         } else {
-            setEmailError('');
+          setEmailError("");
         }
-
+      
         if (!role) {
-            setRoleError('Vui lòng chọn vai trò!');
-            isValid = false;
+          setRoleError("Vui lòng chọn vai trò!");
+          isValid = false;
         } else {
-            setRoleError('');
+          setRoleError("");
         }
-
+      
         if (!isValid) return;
-
-
-    };
+      
+        const roleNumber = roleMap[role];
+        if (!roleNumber) {
+          setRoleError("Vai trò không hợp lệ");
+          return;
+        }
+      
+        try {
+          const response = await apiClient.post(`/org/member?eventId=${eventId}`, {
+            email,
+            role: roleNumber,
+          });
+      
+          if (response.data?.statusCode === 201 || response.data?.statusCode === 200) {
+            toast.success("Thêm thành viên thành công!");
+            if (onSuccess) onSuccess();
+            onClose();
+          } else {
+            toast.error(response.data?.message || "Thêm thất bại");
+          }
+        } catch (error) {
+          console.error("Add member failed:", error);
+          toast.error("Lỗi khi thêm thành viên");
+        }
+      };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -77,15 +136,17 @@ export default function AddMemberForm({ onClose }: AddMemberFormProps) {
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
                         >
-                            <option value="">Thêm vai trò</option>
-                            <option value="admin">Quản trị viên</option>
-                            <option value="manager">Quản lý</option>
-                            <option value="staff">Nhân viên</option>
+                           <option value="">Thêm vai trò</option>
+                           <option value="admin">Quản trị viên</option>
+                           <option value="manager">Quản lý</option>
+                           <option value="check-in">Nhân viên check-in</option>
+                           <option value="check-out">Nhân viên check-out</option>
+                           <option value="redeem">Nhân viên redeem</option>
                         </select>
                         {roleError && <p className="text-red-500 text-sm mt-1">{roleError}</p>}
                     </div>
 
-                    <button className="mt-6 w-full bg-[#51DACF] text-[#0C4762] py-2 rounded-md hover:bg-[#3AB5A3]">
+                    <button onClick={handleSave} className="mt-6 w-full bg-[#51DACF] text-[#0C4762] py-2 rounded-md hover:bg-[#3AB5A3]">
                         Lưu
                     </button>
 
@@ -94,26 +155,29 @@ export default function AddMemberForm({ onClose }: AddMemberFormProps) {
                         <table className="w-full border-collapse border border-gray-300">
                             <thead>
                                 <tr className="bg-[#0C4762] text-white text-sm">
-                                    <th className="p-2 border"></th>
-                                    <th className="p-2 border">Chủ sự kiện</th>
-                                    <th className="p-2 border">Quản trị viên</th>
-                                    <th className="p-2 border">Quản lý</th>
-                                    <th className="p-2 border">Nhân viên check-in</th>
-                                    <th className="p-2 border">Nhân viên check-out</th>
-                                    <th className="p-2 border">Nhân viên redeem</th>
+                                    <th className="p-2 border w-1/7"></th>
+                                    <th className="p-2 border w-1/7">Chủ sự kiện</th>
+                                    <th className="p-2 border w-1/7">Quản trị viên</th>
+                                    <th className="p-2 border w-1/7">Quản lý</th>
+                                    <th className="p-2 border w-1/7">Nhân viên check-in</th>
+                                    <th className="p-2 border w-1/7">Nhân viên check-out</th>
+                                    <th className="p-2 border w-1/7">Nhân viên redeem</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {['Chỉnh sửa', 'Tổng kết', 'Voucher', 'Marketing', 'Đơn hàng', 'Seat map', 'Thành viên', 'Check in', 'Check out', 'Redeem'].map((perm, idx) => (
                                     <tr key={idx} className="text-center">
-                                        <td className="border p-2 text-sm">{perm}</td>
-                                        {[...Array(6)].map((_, i) => (
-                                            <td key={i} className="border p-2">
-                                                <div className="flex justify-center">
-                                                    <CheckCircle className="text-[#48C3CD]" size={16} strokeWidth={1.5} />
-                                                </div>
-                                            </td>
-                                        ))}
+                                        <td className="border p-2 text-sm w-1/7">{perm}</td>
+                                        {permissionMatrix[idx].map((hasPermission, i) => (
+                                         <td key={i} className="border p-2 w-1/7">
+                                           <div className="flex justify-center">
+                                            {hasPermission && (
+                                                   <CheckCircle className="text-[#48C3CD]" size={16} strokeWidth={1.5} />
+                                            )}
+                                          </div>
+                                        </td>
+                                   ))}
+
                                     </tr>
                                 ))}
                             </tbody>
