@@ -17,14 +17,16 @@ import Youtube from '@tiptap/extension-youtube'
 import MenuBar from "./menu-bar";
 import '@/styles/admin/pages/CreateEvent.css'
 import DescriptionWithAI from "./descriptionWithAI";
+import { GenerationProps } from "./descriptionWithAI";
 
 interface TextEditorProps {
     content: string;
     onChange: (content: string) => void;
     isValidDescription: boolean;
+    generationForm: GenerationProps
 }
 
-export default function TextEditor({ content, onChange, isValidDescription }: TextEditorProps) {
+export default function TextEditor({ content, onChange, isValidDescription, generationForm }: TextEditorProps) {
     const CustomImage = Image.extend({
         addAttributes() {
             return {
@@ -111,7 +113,7 @@ export default function TextEditor({ content, onChange, isValidDescription }: Te
 
             <div className="relative">
                 <EditorContent editor={editor} className="w-full" />
-                <DescriptionWithAI isValid={isValidDescription} />
+                <DescriptionWithAI onChange={onChange} isValid={isValidDescription} generationForm={generationForm} />
             </div>
         </div>
     )
