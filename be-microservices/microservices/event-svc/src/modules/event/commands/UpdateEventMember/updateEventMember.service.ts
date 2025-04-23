@@ -16,8 +16,10 @@ export class UpdateEventMemberService {
     try {
       const event = await this.repository.getEventById(eventId);
       if (!event) return Err(new Error('Event not found'));
-      if (event.organizerId !== currentEmail) {
-        return Err(new Error('Only organizer can update members'));
+      const canManage = await this.repository.hasPermissionToManageMembers(eventId, currentEmail);
+
+      if (!canManage) {
+        return Err(new Error('You do not have permission to manage members.'));
       }
 
       const updated = await this.repository.updateMember(eventId, dto);

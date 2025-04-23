@@ -13,8 +13,10 @@ export class DeleteEventMemberService {
         return Err(new Error('Event not found'));
       }
 
-      if (event.organizerId !== currentEmail) {
-        return Err(new Error('Only the organizer can delete members'));
+      const canManage = await this.repository.hasPermissionToManageMembers(eventId, currentEmail);
+
+      if (!canManage) {
+        return Err(new Error('You do not have permission to manage members.'));
       }
 
       const user = await this.repository.getUserByEmail(targetEmail);

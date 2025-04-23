@@ -39,6 +39,9 @@ export class EventOrgFrontDisplayDto {
 
   @ApiProperty({ example: true, description: 'Event is approved' })
   isApproved: boolean;
+
+  @ApiProperty({ example: 0, description: 'User role in this event (0 = Organizer)' })
+  role: number;
 }
 
 export class EventOrgFrontDisplayResponse extends BaseResponse {

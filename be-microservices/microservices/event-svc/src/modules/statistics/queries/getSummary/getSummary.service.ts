@@ -21,6 +21,12 @@ export class GetEventSummaryService {
         return Err(new Error('Unauthorized user'));
       }
 
+      const canManage = await this.getOrdersRepository.hasPermissionToManageMembers(showingId, organizerId);
+
+      if (!canManage) {
+        return Err(new Error('You do not have permission to manage members.'));
+      }
+
       const result = await this.getEventSummaryRepository.getEventSummary(showingId, organizerId);
 
       if(result.isErr()) {
