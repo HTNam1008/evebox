@@ -7,12 +7,12 @@ import { useState } from 'react';
 
 /* Package Application */
 import { generateDescripton } from '../../../libs/functions/info-event/generateDescription';
-import '@/styles/admin/components/dotPulse.css';
+import '@/styles/admin/chatbox.css';
 
 export interface GenerationProps {
   name: string;
   description: string;
-  isOnlineEvent: string;
+  isOnlineEvent: boolean;
   location: string;
   venue: string;
   organizer: string;
@@ -33,11 +33,12 @@ export default function DescriptionWithAI({ isValid, generationForm, onChange }:
   const handleGenerate = async () => {
     if (!isValid) return;
 
+    console.log("🚀 ~ handleGenerate ~ generationForm:", generationForm)
     setIsLoading(true);
     try {
       const response = await generateDescripton(generationForm);
-      
-      if(response) {
+
+      if (response) {
         onChange(response);
       } else {
         onChange('Error generating description');
@@ -91,7 +92,7 @@ export default function DescriptionWithAI({ isValid, generationForm, onChange }:
             disabled={!isValid || isLoading}
           >
             {isLoading ? (
-              'Đang sinh nội dung'
+              'Đang tạo nội dung'
             ) : 'Đồng ý'}
           </button>
         </div>

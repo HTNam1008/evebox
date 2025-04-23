@@ -35,7 +35,7 @@ export default function EventLocationInput({
             checked={eventTypeSelected === "offline"}
             onChange={() => {
               setEventTypeSelected("offline")
-              updateGenerationForm("isOnlineEvent", "Offline");
+              updateGenerationForm("isOnlineEvent", eventTypeSelected === "offline" ? false : true);
             }}
           />
           <div className="w-4 h-4 rounded-full border border-black bg-white flex items-center justify-center peer-checked:bg-[#9EF5CF] peer-focus:border-green-700">
@@ -52,7 +52,7 @@ export default function EventLocationInput({
             checked={eventTypeSelected === "online"}
             onChange={() => {
               setEventTypeSelected("online")
-              updateGenerationForm("isOnlineEvent", "Online");
+              updateGenerationForm("isOnlineEvent", eventTypeSelected === "online" ? true : false);
             }}
           />
           <div className="w-4 h-4 rounded-full border border-black bg-white flex items-center justify-center peer-checked:bg-[#9EF5CF]">

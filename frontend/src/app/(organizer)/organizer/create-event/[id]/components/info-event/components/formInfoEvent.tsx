@@ -65,7 +65,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
     const [generationForm, setGenerationForm] = useState<GenerationProps>({
         name: "",
         description: "",
-        isOnlineEvent: "",
+        isOnlineEvent: eventTypeSelected === "offline" ? false : true,
         location: "",
         venue: "",
         organizer: "",
@@ -199,7 +199,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                     setGenerationForm({
                         name: eventData.title || "",
                         description: eventData.description || "",
-                        isOnlineEvent: eventData.isOnline ? "online" : "offline",
+                        isOnlineEvent: eventData.isOnline ? true : false,
                         location: `${eventData.locations?.street || ''}, ${eventData.locations?.ward || ''}, ${eventData.locations?.districts?.name}, ${eventData.locations?.districts?.province?.name}`,
                         venue: eventData.venue || "",
                         organizer: eventData.orgName || "",
@@ -217,7 +217,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
     }, [currentEventId]);
 
     useEffect(() => {
-        updateGenerationForm("isOnlineEvent", eventTypeSelected === "offline" ? "Offline" : "Online");
+        updateGenerationForm("isOnlineEvent", eventTypeSelected === "offline" ? false : true);
         updateGenerationForm("description", post);
     }, []);
 
