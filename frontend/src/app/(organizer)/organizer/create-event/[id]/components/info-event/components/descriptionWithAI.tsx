@@ -74,7 +74,7 @@ export default function DescriptionWithAI({ isValid, generationForm, onChange }:
           {/* Header popup */}
           <div className="flex justify-between items-start">
             <p className="text-base font-medium text-gray-800">
-              Dùng AI để sinh nội dung cho phần mô tả dựa trên những gì bạn viết
+              Dùng AI để sinh nội dung cho phần mô tả dựa trên những gì bạn đang viết
             </p>
             <button onClick={() => setShowPopup(false)}
               className="text-gray-500 hover:bg-gray-100 p-1 rounded-full">
