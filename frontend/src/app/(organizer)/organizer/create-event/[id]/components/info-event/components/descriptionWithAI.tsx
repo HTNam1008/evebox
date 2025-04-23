@@ -32,8 +32,6 @@ export default function DescriptionWithAI({ isValid, generationForm, onChange }:
 
   const handleGenerate = async () => {
     if (!isValid) return;
-
-    console.log("🚀 ~ handleGenerate ~ generationForm:", generationForm)
     setIsLoading(true);
     try {
       const response = await generateDescripton(generationForm);
