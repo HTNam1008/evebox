@@ -17,6 +17,7 @@ export default function EventLocationInput({
   handleInputChange,
   handleSelectChange,
   setEventTypeSelected,
+  updateGenerationForm,
 }: EventLocationInputProps) {
   return (
     <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
@@ -32,7 +33,10 @@ export default function EventLocationInput({
             name="event_location"
             className="peer hidden"
             checked={eventTypeSelected === "offline"}
-            onChange={() => setEventTypeSelected("offline")}
+            onChange={() => {
+              setEventTypeSelected("offline")
+              updateGenerationForm("isOnlineEvent", eventTypeSelected === "offline" ? false : true);
+            }}
           />
           <div className="w-4 h-4 rounded-full border border-black bg-white flex items-center justify-center peer-checked:bg-[#9EF5CF] peer-focus:border-green-700">
             <div className="w-2 h-2 rounded-full bg-white"></div>
@@ -46,7 +50,10 @@ export default function EventLocationInput({
             name="event_location"
             className="peer hidden"
             checked={eventTypeSelected === "online"}
-            onChange={() => setEventTypeSelected("online")}
+            onChange={() => {
+              setEventTypeSelected("online")
+              updateGenerationForm("isOnlineEvent", eventTypeSelected === "online" ? true : false);
+            }}
           />
           <div className="w-4 h-4 rounded-full border border-black bg-white flex items-center justify-center peer-checked:bg-[#9EF5CF]">
             <div className="w-2 h-2 rounded-full bg-white"></div>
