@@ -200,6 +200,8 @@ model TicketQRCode {
   seatId       Int?
   ticketId     String
   ticketTypeId String?
+  isCheckedIn  Boolean @default(false)
+  checkedBy    String  @default("")
   Ticket       Ticket  @relation(fields: [ticketId], references: [id])
 }
 
