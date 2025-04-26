@@ -14,7 +14,7 @@ class CategoriesResponseDto {
   createdAt: Date;
 }
 
-class EventFrontDisplayDto {
+export class EventFrontDisplayDto {
   @ApiProperty({ example: 22911, description: 'Event ID' })
   id: number;
 
