@@ -2,6 +2,7 @@
 
 import { Linkedin, Instagram, Facebook } from 'lucide-react';
 import { useTranslations } from "next-intl";
+import 'tailwindcss/tailwind.css';
 
 const Footer = () => {
     const t = useTranslations("common");
