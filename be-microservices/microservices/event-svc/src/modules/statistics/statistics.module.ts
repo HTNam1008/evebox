@@ -6,11 +6,15 @@ import { GetEventSummaryRepository } from './repositories/getSummary.repository'
 import { GetOrdersRepository } from './repositories/getOrders.repository'
 import { GetOrdersController } from './queries/getOrders/getOrders.controller'
 import { GetOrdersService } from './queries/getOrders/getOrders.service'
+import { StatisticsService } from './queries/getAnalytics/getAnalytics.service'
+import { StatisticsRepository } from './repositories/getAnalytics.repository'
+import { GetAnalyticsController } from './queries/getAnalytics/getAnalytics.controller'
 
 @Module({
   controllers: [
     GetEventSummaryController,
     GetOrdersController,
+    GetAnalyticsController
   ],
   providers: [
     GetEventSummaryService,
@@ -18,6 +22,9 @@ import { GetOrdersService } from './queries/getOrders/getOrders.service'
 
     GetOrdersRepository,
     GetOrdersService,
+
+    StatisticsService,
+    StatisticsRepository
   ]
 })
 
