@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseResponse } from 'src/shared/constants/baseResponse';
 
+export class StatisticItem {
+  @ApiProperty({ example: '2024-04', description: 'Month (format YYYY-MM)' })
+  month: string;
+
+  @ApiProperty({ example: 123, description: 'Number of visits in this month' })
+  visits: number;
+}
+
 export class AnalyticsResponseDto {
   @ApiProperty({ example: 123, description: 'Event ID' })
   eventId: number;
@@ -25,6 +33,9 @@ export class AnalyticsResponseDto {
 
   @ApiProperty({ example: 150 })
   totalOrders: number;
+
+  @ApiProperty({ type: [StatisticItem], description: 'Monthly click statistics' })
+  statistic: StatisticItem[];
 }
 
 export class AnalyticsResponse extends BaseResponse {

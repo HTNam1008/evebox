@@ -22,6 +22,7 @@ export class StatisticsService {
     const totalUsers = await this.statisticsRepository.countUniqueUsersByEvent(eventId);
     const totalOrders = await this.statisticsRepository.countOrdersByEvent(eventId);
     const totalBuyers = await this.statisticsRepository.countBuyersByEvent(eventId);
+    const statistic = await this.statisticsRepository.getStatistic(eventId);
 
     const response: AnalyticsResponseDto = {
       eventId: event.id,
@@ -31,7 +32,8 @@ export class StatisticsService {
       totalUsers,
       totalBuyers, 
       transferRating: (totalBuyers/totalUsers), 
-      totalOrders
+      totalOrders,
+      statistic
     };
 
     return Ok(response);

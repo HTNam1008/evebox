@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/database/prisma/prisma.service';
+import { subMonths, startOfMonth } from 'date-fns'; // if not installed: npm i date-fns
+
 
 @Injectable()
 export class StatisticsRepository {
@@ -80,6 +82,43 @@ export class StatisticsRepository {
     }
   
     return totalBuyers;
+  }
+
+  async getStatistic(eventId: number) {
+    const now = new Date();
+    const sixMonthsAgo = subMonths(now, 5); // Including current month
+    const clicks = await this.prisma.userClickHistory.findMany({
+      where: {
+        eventId,
+        date: {
+          gte: startOfMonth(sixMonthsAgo), // from start of 6 months ago
+          lte: now,
+        },
+      },
+      select: {
+        date: true,
+      },
+    });
+    const statisticsMap = new Map<string, number>();
+
+    for (let i = 0; i < 6; i++) {
+      const month = subMonths(now, i);
+      const monthKey = `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, '0')}`;
+      statisticsMap.set(monthKey, 0);
+    }
+  
+    for (const click of clicks) {
+      const monthKey = `${click.date.getFullYear()}-${String(click.date.getMonth() + 1).padStart(2, '0')}`;
+      if (statisticsMap.has(monthKey)) {
+        statisticsMap.set(monthKey, (statisticsMap.get(monthKey) || 0) + 1);
+      }
+    }
+    
+    const statistic = Array.from(statisticsMap.entries())
+    .map(([month, visits]) => ({ month, visits }))
+    .sort((a, b) => a.month.localeCompare(b.month)); 
+
+    return statistic;
   }
 
   async getEventById(eventId: number) {
