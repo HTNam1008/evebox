@@ -13,9 +13,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false, // Kiểm tra expiration
+      ignoreExpiration: false, // Kiß╗âm tra expiration
       secretOrKey: configService.get<string>('JWT_SECRET'),
-      passReqToCallback: true, // Cho phép truy cập request trong validate
+      passReqToCallback: true, // Cho ph├⌐p truy cß║¡p request trong validate
     });
   }
 
@@ -30,6 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
     
     // return {user: {email: payload.email, role: payload.role }};
+    console.log('JWT payload:', payload); // Debug log
     return {email: payload.email, role: payload.role };
   }
 }

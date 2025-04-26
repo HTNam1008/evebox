@@ -4,48 +4,60 @@
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from "lucide-react"
 import { useParams } from 'next/navigation';
+import 'tailwindcss/tailwind.css';
+import { useEffect, useState } from 'react';
 
 /* Package Application */
 import AccountDetailForm from './accountDetail';
 import { User } from '../../lib/interface/acctable.interface';
+import { gatewayService } from '@/services/instance.service';
+import Loading from '../loading';
+import Error from '../error';
 
 export default function AccountDetailPage() {
     const router = useRouter();
     const { id } = useParams();
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const data: User[] = [
-        {
-            id: '1',
-            name: 'Nguyễn Văn A',
-            email: 'nguyenvana@gmail.com',
-            phone: '01234234178',
-            role: 'Chủ sự kiện',
-            createdAt: '2024-10-01T00:00:00.000Z',
-            status: 'Active',
-        },
-        {
-            id: '2',
-            name: 'Nguyễn Thành Long',
-            email: 'nguyentlong@gmail.com',
-            phone: '0938167243',
-            role: 'Quản lý',
-            createdAt: '2025-10-01T00:00:00.000Z',
-            status: 'Deactivated',
-        },
-        {
-            id: '3',
-            name: 'Hồ Văn Nam',
-            email: 'hovannam@gmail.com',
-            phone: '1357122318',
-            role: 'Khách hàng',
-            createdAt: '2024-10-25T00:00:00.000Z',
-            status: 'Active',
-        },
-    ];
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                setLoading(true);
+                const response = await gatewayService.get(`/api/user/${id}`);
+                
+                if (response.status !== 200) {
+                    // throw new Error(`Error: ${response.status}`);
+                    setError('Không thể tải dữ liệu người dùng. Vui lòng thử lại sau.');
+                }
+                
+                const userData = await response.data.data;
+                setUser(userData);
+            } catch (err) {
+                console.error('Failed to fetch user data:', err);
+                setError('Không thể tải dữ liệu người dùng. Vui lòng thử lại sau.');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const user = data.find((u) => u.id === id);
+        if (id) {
+            fetchUserData();
+        }
+    }, [id]);
 
-    if (!user) return <div>Không tìm thấy người dùng.</div>;
+    if (loading) {
+        return <Loading />;
+    }
+
+    if (error) {
+        return <> <Error /> </>;
+    }
+
+    if (!user) {
+        return <div>Không tìm thấy người dùng.</div>;
+    }
 
     return (
         <>
@@ -58,5 +70,5 @@ export default function AccountDetailPage() {
 
             <AccountDetailForm user={user} />
         </>
-    )
+    );
 }

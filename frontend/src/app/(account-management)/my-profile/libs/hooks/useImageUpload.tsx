@@ -5,8 +5,8 @@ import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 
 /* Package application */
-import createApiClient from "@/services/apiClient";
 import useProfile from "./useProfile";
+import { gatewayService } from "@/services/instance.service";
 
 export const useImageUpload = () => {
     const {updateProfile} = useProfile();
@@ -24,13 +24,12 @@ export const useImageUpload = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const dialogRef = useRef<HTMLDivElement>(null);
-    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
 
     const fetchUserImages = async () => {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await apiClient.get("/api/images");
+            const response = await gatewayService.get("/api/images");
 
             if (response.status !== 200) {
                 throw new Error("Failed to fetch images");
@@ -77,7 +76,7 @@ export const useImageUpload = () => {
             const formData = new FormData();
             formData.append('file', file);
 
-            const uploadResponse = await apiClient.post('/api/images/upload', formData, {
+            const uploadResponse = await gatewayService.post('/api/images/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', 
                     'X-Requested-With': 'XMLHttpRequest',

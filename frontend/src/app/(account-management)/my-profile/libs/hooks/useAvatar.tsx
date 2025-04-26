@@ -3,9 +3,9 @@
 /* Packagae system */
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { gatewayService } from "@/services/instance.service";
 
 /* Package application */
-import createApiClient from "@/services/apiClient";
 
 export default function useAvatar({ avatar_id }: { avatar_id?: number }) {
     const imageUrlDefault = process.env.NEXT_PUBLIC_DEFAULT_AVATAR_URL || ""; 
@@ -15,11 +15,9 @@ export default function useAvatar({ avatar_id }: { avatar_id?: number }) {
         return { imageUrl };
     }
     
-    const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
-
     const fetchAvatar = async () => {
         try {
-            const response = await apiClient.get(`/api/images/${avatar_id}`);
+            const response = await gatewayService.get(`/api/images/${avatar_id}`);
             console.log("Avatar response:", response);
             if (response.status !== 200) {
                 throw new Error("Failed to fetch images");

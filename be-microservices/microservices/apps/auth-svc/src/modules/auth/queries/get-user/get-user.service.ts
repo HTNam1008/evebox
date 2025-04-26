@@ -18,7 +18,6 @@ export class GetUserService {
     }
 
     const user = await this.userRepository.findByEmail(emailOrError.unwrap());
-    console.log("user:", user);
     if (user != null) {
       return Ok({
         id: user.id.value, 

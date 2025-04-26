@@ -34,6 +34,10 @@ import { KafkaModule } from 'src/infrastructure/adapters/kafka/kafka.module';
 import { RedisModule, CacheService } from '@evebox/redis';
 import { UpdateUserController } from './commands/update-user/update-user.controller';
 import { UpdateUserService } from './commands/update-user/update-user.service';
+import { UserCreatedHandler } from './domain/events/handler/user-created.handler';
+import { UserChangeStatusHandler } from './domain/events/consumer/handler/user-change-status.handler';
+import { GetUserByIdService } from './queries/get-user-by-id/get-user-by-id.service';
+import { GetUserByIdController } from './queries/get-user-by-id/get-user-by-id.controller';
 
 @Module({
   imports: [
@@ -66,12 +70,16 @@ import { UpdateUserService } from './commands/update-user/update-user.service';
     GoogleLoginController,
     GetUserController,
     UpdateUserController,
+    GetUserController,
+    UserChangeStatusHandler,
+    GetUserByIdController,
   ],
   providers: [
     RegisterUserService,
     LoginUserService,
     LogoutUserService,
     SendWelcomeEmailHandler,
+    UserCreatedHandler,
     UserRepositoryImpl,
     JwtStrategy,
     GoogleStrategy,
@@ -86,6 +94,7 @@ import { UpdateUserService } from './commands/update-user/update-user.service';
     GetUserService,
     CacheService,
     UpdateUserService,
+    GetUserByIdService,
   ],
   exports: [UserRepositoryImpl, CacheService],
 })

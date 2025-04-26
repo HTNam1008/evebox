@@ -3,14 +3,15 @@
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { Icon } from "@iconify/react";
 import { ConfirmActiveProps } from "../../lib/interface/acctable.interface";
+import { UserStatus } from "../../lib/enum/acctable.enum";
 export default function ConfirmActiveDialog({ open, onClose, onConfirm, currentStatus }: ConfirmActiveProps) {
-    const nextStatus = currentStatus === "Active" ? "Deactivated" : "Active";
+    const nextStatus = currentStatus === UserStatus.ACTIVE ? UserStatus.BLOCKED : UserStatus.ACTIVE;
 
     return (
         <Dialog open={open} onClose={onClose}>
             <div className="text-white dialog-header px-6 py-4 justify-center items-center flex relative" style={{ background: '#0C4762' }}>
                 <DialogTitle className="!m-0 !p-0 text-lg text-center font-bold">
-                    {nextStatus === "Active" ? "Kích hoạt tài khoản" : "Vô hiệu hóa tài khoản"}
+                    {nextStatus === UserStatus.ACTIVE ? "Kích hoạt tài khoản" : "Vô hiệu hóa tài khoản"}
                 </DialogTitle>
                 <button onClick={onClose} className="absolute right-2 top-2 px-1 py-1 close-btn">
                     <Icon icon="ic:baseline-close" width="20" height="20" />
@@ -21,8 +22,8 @@ export default function ConfirmActiveDialog({ open, onClose, onConfirm, currentS
                 <Icon icon="material-symbols:warning" width="50" height="50" color="#f59e0b" className="relative z-50" />
 
                 <div className="content mx-4 mt-2 mb-4 text-center">
-                    <p>Bạn có chắc chắn muốn <strong>{nextStatus === "Active" ? "kích hoạt tài khoản" : "vô hiệu hóa tài khoản"}</strong> này không?</p> 
-                    <p>{nextStatus === "Active" ? "Người dùng sẽ có thể sử dụng lại hệ thống." : "Người dùng sẽ không thể đăng nhập hoặc sử dụng hệ thống sau khi bị vô hiệu hóa."}</p>
+                    <p>Bạn có chắc chắn muốn <strong>{nextStatus === UserStatus.ACTIVE ? "kích hoạt tài khoản" : "vô hiệu hóa tài khoản"}</strong> này không?</p> 
+                    <p>{nextStatus === UserStatus.ACTIVE ? "Người dùng sẽ có thể sử dụng lại hệ thống." : "Người dùng sẽ không thể đăng nhập hoặc sử dụng hệ thống sau khi bị vô hiệu hóa."}</p>
                 </div>
 
                 <div className="flex gap-4 mt-4 mb-4">

@@ -13,6 +13,7 @@ model User {
   email         String         @unique @db.VarChar(255)
   phone         String         @db.VarChar(10)
   password      String         @db.VarChar(255)
+  status        UserStatus     @default(ACTIVE)
   role_id       Int?
   created_at    DateTime       @default(now())
   refreshTokens RefreshToken[]
@@ -112,5 +113,10 @@ model Image {
 enum OTPType {
   FORGOT_PASSWORD
   REGISTER
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
 }
 

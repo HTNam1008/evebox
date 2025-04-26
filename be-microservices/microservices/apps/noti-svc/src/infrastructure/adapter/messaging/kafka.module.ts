@@ -2,7 +2,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
-import { KafkaConsumer } from './kafka.consumer';
 
 @Module({
   imports: [
@@ -23,7 +22,7 @@ import { KafkaConsumer } from './kafka.consumer';
       },
     ]),
   ],
-  providers: [KafkaConsumer],
-  exports: [KafkaConsumer],
+  providers: [],
+  exports: [],
 })
 export class KafkaModule {}

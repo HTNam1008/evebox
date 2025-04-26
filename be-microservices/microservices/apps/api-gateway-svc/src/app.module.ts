@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import configuration from './config/configuration';
 import { ImageModule } from './auth/images/images.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ImageModule } from './auth/images/images.module';
       inject: [ConfigService],
     }),
     AuthModule,
+    AdminModule,
     ImageModule,
   ],
 })

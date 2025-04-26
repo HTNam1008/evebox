@@ -1,8 +1,10 @@
 import AccountPage from "./components/accountsPage"
+import { fetchUsers } from "./lib/server/fetchUsers"
 
-export default function Page(){
+export default async function Page(){
+    const initialUsers = await fetchUsers(1, 10);
     return(
-        <AccountPage />
+        <AccountPage initialUsers={initialUsers}/>
     )
 }
 

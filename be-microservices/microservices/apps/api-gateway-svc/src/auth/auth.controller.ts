@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Res, UseGuards, Request, Get, Headers, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Res, UseGuards, Request, Get, Headers, Patch, Logger, Param } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { FastifyReply } from 'fastify';
 import { firstValueFrom } from 'rxjs';
+
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { convertToSafeHeaders } from 'src/common/utils/auth.uitls';
@@ -13,10 +14,13 @@ import { ResendOTPDto } from './dto/resend-otp.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { BaseController } from 'src/common/utils/base.controller';
 
 @Controller('api/user')
-export class AuthController {
-  constructor(private readonly httpService: HttpService) {}
+export class AuthController extends BaseController {
+  constructor(private readonly httpService: HttpService) {
+    super();
+  }
 
   @Post('login')
   async login(@Body() loginDto: LoginUserDto, @Res() res: FastifyReply) {
@@ -36,9 +40,7 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+      return this.handleError(error, res);
     }
   }
 
@@ -58,28 +60,20 @@ export class AuthController {
       // Convert headers to a compatible format
       const safeHeaders = convertToSafeHeaders(response.headers);
 
-      // Forward nguyên bản response từ auth-service
+      // Forward nguy├¬n bß║ún response tß╗½ auth-service
       return res
         .status(response.status)
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      const statusCode = error.response?.status || 500;
-      const errorData = error.response?.data || {
-        message: 'Internal server error',
-        error: 'GatewayError',
-        statusCode: 500,
-      };
-
-      return res
-        .status(statusCode)
-        .headers(error.response?.headers || {})
-        .send(errorData);
+      return this.handleError(error, res);
     }
   }
 
   @Post('refresh-token')
   async refreshToken(@Body() body: RefreshTokenDto, @Res() res: FastifyReply) {
+    Logger.verbose('[Auth Controller] Forwarding request Refresh Token to AUTH_SERVICE_URL');
+    Logger.log('[Auth Controller] Body:', body);
     try {
       const response = await firstValueFrom(
         this.httpService.post(
@@ -96,9 +90,7 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+      return this.handleError(error, res);
     }
   }
 
@@ -126,9 +118,7 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+      return this.handleError(error, res);
     }
   }
 
@@ -153,9 +143,7 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+      return this.handleError(error, res);
     }
   }
 
@@ -180,9 +168,7 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+      return this.handleError(error, res);
     }
   }
 
@@ -204,9 +190,7 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+      return this.handleError(error, res);
     }
   }
 
@@ -228,9 +212,7 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+      return this.handleError(error, res);
     }
   }
 
@@ -252,9 +234,7 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+      return this.handleError(error, res);
     }
   }
 
@@ -283,9 +263,34 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
+      return this.handleError(error, res);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id')
+  async getUserById(@Param('id') id: string, @Res() res: FastifyReply, @Headers() headers: Record<string, string>) {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${process.env.AUTH_SERVICE_URL}/api/user/${id}`,
+          {
+            headers: {
+              ...headers,
+            },
+          }
+        ),
+      );
+
+      // Convert headers to a compatible format
+      const safeHeaders = convertToSafeHeaders(response.headers);
+
       return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+        .status(response.status)
+        .headers(safeHeaders)
+        .send(response.data);
+    } catch (error) {
+      return this.handleError(error, res);
     }
   }
 
@@ -314,13 +319,9 @@ export class AuthController {
         .headers(safeHeaders)
         .send(response.data);
     } catch (error) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || { message: 'Internal server error' });
+      return this.handleError(error, res);
     }
   }
-
-  // TODO: Redirect api Refresh token
 }
 
 
