@@ -12,6 +12,13 @@ export class StatisticsService {
     if (!event) return Err(new Error('Event not found'));
     if (event.organizerId !== email) return Err(new Error('Unauthorized'));
 
+    const canManage = await this.statisticsRepository.hasPermissionToManageMembers(eventId, email);
+
+      if (!canManage) {
+        return Err(new Error('You do not have permission to manage members.'));
+      }
+
+
     const totalUsers = await this.statisticsRepository.countUniqueUsersByEvent(eventId);
     const totalOrders = await this.statisticsRepository.countOrdersByEvent(eventId);
     const totalBuyers = await this.statisticsRepository.countBuyersByEvent(eventId);
