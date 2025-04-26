@@ -1,4 +1,16 @@
-import { Controller, Post, Body, Res, UseGuards, Request, Get, Headers, Patch, Logger, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  UseGuards,
+  Request,
+  Get,
+  Headers,
+  Patch,
+  Logger,
+  Param,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { FastifyReply } from 'fastify';
 import { firstValueFrom } from 'rxjs';
@@ -15,6 +27,7 @@ import { GoogleLoginDto } from './dto/google-login.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { BaseController } from 'src/common/utils/base.controller';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('api/user')
 export class AuthController extends BaseController {
@@ -72,7 +85,9 @@ export class AuthController extends BaseController {
 
   @Post('refresh-token')
   async refreshToken(@Body() body: RefreshTokenDto, @Res() res: FastifyReply) {
-    Logger.verbose('[Auth Controller] Forwarding request Refresh Token to AUTH_SERVICE_URL');
+    Logger.verbose(
+      '[Auth Controller] Forwarding request Refresh Token to AUTH_SERVICE_URL',
+    );
     Logger.log('[Auth Controller] Body:', body);
     try {
       const response = await firstValueFrom(
@@ -172,6 +187,39 @@ export class AuthController extends BaseController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  async changePassword(
+    @Request() req,
+    @Body() body: ChangePasswordDto,
+    @Res() res: FastifyReply,
+    @Headers() headers: Record<string, string>,
+  ) {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post(
+          `${process.env.AUTH_SERVICE_URL}/api/user/change-password`,
+          body,
+          {
+            headers: {
+              'X-User-Email': req.user.email,
+            },
+          },
+        ),
+      );
+
+      // Convert headers to a compatible format
+      const safeHeaders = convertToSafeHeaders(response.headers);
+
+      return res
+        .status(response.status)
+        .headers(safeHeaders)
+        .send(response.data);
+    } catch (error) {
+      return this.handleError(error, res);
+    }
+  }
+
   @Post('otps/verify-otp')
   async verifyOtp(@Body() body: VerifyOTPDto, @Res() res: FastifyReply) {
     try {
@@ -240,19 +288,20 @@ export class AuthController extends BaseController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@Request() req, @Res() res: FastifyReply, @Headers() headers: Record<string, string>) {
+  async getProfile(
+    @Request() req,
+    @Res() res: FastifyReply,
+    @Headers() headers: Record<string, string>,
+  ) {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(
-          `${process.env.AUTH_SERVICE_URL}/api/user/me`,
-          {
-            headers: {
-              ...headers,
-              'X-User-Email': req.user.email,
-              'X-User-Role': req.user.role,
-            },
-          }
-        ),
+        this.httpService.get(`${process.env.AUTH_SERVICE_URL}/api/user/me`, {
+          headers: {
+            ...headers,
+            'X-User-Email': req.user.email,
+            'X-User-Role': req.user.role,
+          },
+        }),
       );
 
       // Convert headers to a compatible format
@@ -269,17 +318,18 @@ export class AuthController extends BaseController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/:id')
-  async getUserById(@Param('id') id: string, @Res() res: FastifyReply, @Headers() headers: Record<string, string>) {
+  async getUserById(
+    @Param('id') id: string,
+    @Res() res: FastifyReply,
+    @Headers() headers: Record<string, string>,
+  ) {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(
-          `${process.env.AUTH_SERVICE_URL}/api/user/${id}`,
-          {
-            headers: {
-              ...headers,
-            },
-          }
-        ),
+        this.httpService.get(`${process.env.AUTH_SERVICE_URL}/api/user/${id}`, {
+          headers: {
+            ...headers,
+          },
+        }),
       );
 
       // Convert headers to a compatible format
@@ -296,7 +346,11 @@ export class AuthController extends BaseController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')
-  async updateUser(@Request() req, @Body() body: UpdateUserDto, @Res() res: FastifyReply) {
+  async updateUser(
+    @Request() req,
+    @Body() body: UpdateUserDto,
+    @Res() res: FastifyReply,
+  ) {
     try {
       const response = await firstValueFrom(
         this.httpService.patch(
@@ -323,5 +377,3 @@ export class AuthController extends BaseController {
     }
   }
 }
-
-

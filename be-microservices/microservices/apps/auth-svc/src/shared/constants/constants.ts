@@ -27,6 +27,9 @@ export const USER_MESSAGES = {
         LOGOUT_FAILED: (error: string) => `'Failed to logout: ' + ${error})`,
         RESET_PASSWORD_FAILED: 'Failed to reset password',
         LOGIN_FAILED: 'Email or password is incorrect',
+        INVALID_OLD_PASSWORD: 'Old password is incorrect',
+        CHANGE_PASSWORD_SUCCESS: 'Password has been changed successfully',
+        CHANGE_PASSWORD_FAILED: 'Failed to change password',
       }
 };
 
