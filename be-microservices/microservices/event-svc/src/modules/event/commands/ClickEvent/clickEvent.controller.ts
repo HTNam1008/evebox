@@ -21,22 +21,29 @@ export class ClickEventController {
   })
   async postClicks(
     @Query('eventId') eventId: string,
+    @Query('userId') userId: string, 
     @Res() res: Response,
   ) {
-    const result = await this.eventDetailService.postClicks(parseInt(eventId));
+    const parsedEventId = parseInt(eventId);
+  if (isNaN(parsedEventId)) {
+    return res
+      .status(HttpStatus.BAD_REQUEST)
+      .json(ErrorHandler.badRequest('Invalid eventId'));
+  }
 
-    if (result.isErr()) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(ErrorHandler.badRequest(result.unwrapErr().message));
-    }
+  const result = await this.eventDetailService.postClicks(parsedEventId, userId); // 🔸 Pass userId
 
-    const data = result.unwrap();
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      message: 'Click count updated successfully',
-      data,
-    });
+  if (result.isErr()) {
+    return res
+      .status(HttpStatus.BAD_REQUEST)
+      .json(ErrorHandler.badRequest(result.unwrapErr().message));
+  }
+
+  return res.status(HttpStatus.OK).json({
+    statusCode: HttpStatus.OK,
+    message: 'Click count updated successfully',
+    data: result.unwrap(),
+  });
   }
 
 }
