@@ -21,7 +21,9 @@ export class GetEventFDByIdsController {
   })
   async getEventFDByIds(@Query('ids') ids: number[]
   , @Res() res: Response) {
-    const result = await this.getEventFDByIdsService.execute(ids);
+    const idsArray = Array.isArray(ids) ? ids : [ids];
+    const parseIds = idsArray.map(id => id >> 0);
+    const result = await this.getEventFDByIdsService.execute(parseIds);
     if (result.isErr()) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         statusCode: HttpStatus.BAD_REQUEST,
