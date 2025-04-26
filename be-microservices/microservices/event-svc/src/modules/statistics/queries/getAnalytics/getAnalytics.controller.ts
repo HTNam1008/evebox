@@ -1,4 +1,4 @@
-import { Controller, Get, Res, HttpStatus, UseGuards, Param, Request, Req } from '@nestjs/common';
+import { Controller, Get, Res, HttpStatus, UseGuards, Param, Request, Req, Query } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
@@ -24,15 +24,20 @@ export class GetAnalyticsController {
     @Param('eventId') eventIdRaw: string,
     @Request() req,
     @Res() res: Response,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ) {
     const eventId = parseInt(eventIdRaw, 10);
     if (isNaN(eventId)) {
       return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid eventId' });
     }
+
+    const start = startDate ? new Date(startDate) : undefined;
+    const end = endDate ? new Date(endDate) : undefined;
   
     const userEmail = (req.user as any).email;
   
-    const result = await this.statisticsService.getAnalytics(eventId, userEmail);
+    const result = await this.statisticsService.getAnalytics(eventId, userEmail, start,end);
     if (result.isErr()) {
       return res.status(HttpStatus.BAD_REQUEST).json({ message: result.unwrapErr().message });
     }

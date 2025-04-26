@@ -20,9 +20,30 @@ export class StatisticsRepository {
     });
   }
 
-  async countUniqueUsersByEvent(eventId: number) {
+  async countTotalClicksByEvent(eventId: number, startDate?: string, endDate?: string) {
+    const whereCondition: any = { eventId };
+  
+    if (startDate || endDate) {
+      whereCondition.date = {};
+      if (startDate) whereCondition.date.gte = new Date(startDate);
+      if (endDate) whereCondition.date.lte = new Date(endDate);
+    }
+  
+    const totalClicks = await this.prisma.userClickHistory.findMany({
+      where: whereCondition,
+    });
+    
+    return totalClicks.length;
+  }
+
+  async countUniqueUsersByEvent(eventId: number, start?: Date, end?:Date) {
     const clicks = await this.prisma.userClickHistory.findMany({
-        where: { eventId },
+        where: { eventId,
+          date: {
+            gte: start,
+            lte: end,
+          }
+        },
         select: { userId: true },
       });
       

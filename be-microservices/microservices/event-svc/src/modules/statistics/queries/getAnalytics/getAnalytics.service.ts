@@ -7,7 +7,7 @@ import { StatisticsRepository } from '../../repositories/getAnalytics.repository
 export class StatisticsService {
   constructor(private readonly statisticsRepository: StatisticsRepository) {}
 
-  async getAnalytics(eventId: number, email: string): Promise<Result<AnalyticsResponseDto, Error>> {
+  async getAnalytics(eventId: number, email: string, startDate?: Date, endDate?: Date): Promise<Result<AnalyticsResponseDto, Error>> {
     const event = await this.statisticsRepository.findEventById(eventId);
     if (!event) return Err(new Error('Event not found'));
     if (event.organizerId !== email) return Err(new Error('Unauthorized'));
@@ -18,8 +18,8 @@ export class StatisticsService {
         return Err(new Error('You do not have permission to manage members.'));
       }
 
-
-    const totalUsers = await this.statisticsRepository.countUniqueUsersByEvent(eventId);
+    // const totalClicks = await this.statisticsRepository.countUniqueUsersByEvent(eventId, startDate,endDate);
+    const totalUsers = await this.statisticsRepository.countUniqueUsersByEvent(eventId, startDate,endDate);
     const totalOrders = await this.statisticsRepository.countOrdersByEvent(eventId);
     const totalBuyers = await this.statisticsRepository.countBuyersByEvent(eventId);
     const statistic = await this.statisticsRepository.getStatistic(eventId);
