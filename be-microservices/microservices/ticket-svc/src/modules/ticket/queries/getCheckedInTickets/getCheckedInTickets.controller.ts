@@ -58,7 +58,7 @@ export class GetCheckedInTicketsController {
 
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
-        message: 'Ticket checked in successfully',
+        message: 'Checked-in tickets retrieved successfully',
         data: result.unwrap(),
       });
     } catch (error) {
