@@ -12,9 +12,9 @@ export default function DefaultLayout({
   return (
     <Providers>
       <Suspense fallback={<DashboardLoading />}>
-        <NavigationBar />
+        {/* <NavigationBar /> */}
         <main>{children}</main>
-        <Footer />
+        {/* <Footer /> */}
       </Suspense>
     </Providers>
   )
