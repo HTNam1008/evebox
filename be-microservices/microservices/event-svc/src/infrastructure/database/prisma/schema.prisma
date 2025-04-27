@@ -264,6 +264,7 @@ model Events {
   locations                         locations?              @relation(fields: [locationId], references: [id], onDelete: Cascade)
   Showing                           Showing[]
   eventUserRelationships            EventUserRelationship[]
+  UserClickHistory UserClickHistory[]
 }
 
 model Row {
@@ -418,7 +419,6 @@ model EventUserRelationship {
   @@id([eventId, userId])
 }
 
-
 model EventRole {
   id           Int    @id
   isEdited     Boolean
@@ -435,4 +435,15 @@ model EventRole {
   userRoles    EventUserRelationship[]  @relation("EventRoleToEventUserRelationship")
 
   @@map("event_role")
+}
+
+model UserClickHistory {
+  id      String   @id @default(uuid())
+  eventId Int
+  userId  String   // can be a real user ID or random UUID
+  date    DateTime @default(now())
+
+  event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("user_click_history")
 }
