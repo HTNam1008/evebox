@@ -27,7 +27,7 @@ const Sidebar = () => {
               <Link
                 href={item.href}
                 className={`flex items-center gap-3 py-2 px-3 rounded-md transition-colors ${
-                  pathName === item.href ? "bg-sky-700" : "hover:bg-sky-800"
+                  pathName.startsWith(item.href) ? "bg-sky-700" : "hover:bg-sky-800"
                 }`}
               >
                 {item.icon}
