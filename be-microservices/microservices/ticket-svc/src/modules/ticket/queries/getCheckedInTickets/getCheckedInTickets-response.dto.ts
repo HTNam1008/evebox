@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { BaseResponse } from "src/shared/constants/baseResponse";
 
-class TicketQRCodeDto {
+class CheckedInTicketQRCodeDto {
   @ApiProperty({ example: '3671d719-4f12-486d-9b6c-b8343b4c64de', description: 'The id of the ticket' })
   ticketQrId: string;
 
-  @ApiProperty({ example: '9090909090900qq8qqw7d', description: 'The qr code of the ticket' })
+  @ApiProperty({ example: 'qrCode-example-5678', description: 'The qr code of the ticket' })
   qrCode: string;
 
   @ApiProperty({ example: '1321', description: 'The ticket type id of the ticket' })
@@ -34,8 +34,8 @@ export class CheckedInTicketsData {
   @ApiProperty({example: '2021-10-10T10:00:00Z', description: 'The paid time of the ticket' })
   paidAt: Date;
 
-  @ApiProperty({type: [TicketQRCodeDto], description: 'Tickets include QR code, ticket info' })
-  ticketQrCode?: TicketQRCodeDto[]
+  @ApiProperty({type: [CheckedInTicketQRCodeDto], description: 'Tickets include QR code, ticket info' })
+  ticketQrCode?: CheckedInTicketQRCodeDto[]
 
   @ApiProperty({example: '2021-10-10T10:00:00Z', description: 'The start time of the showing' })
   startTime: Date;
