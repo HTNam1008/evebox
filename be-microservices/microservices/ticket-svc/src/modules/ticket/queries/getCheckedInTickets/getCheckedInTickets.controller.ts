@@ -37,7 +37,6 @@ export class GetCheckedInTicketsController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Failed to get checked-in tickets',
-    type: CheckedInTicketsResponseDto,
   })
   async getCheckedInTickets(
     @Request() req,
