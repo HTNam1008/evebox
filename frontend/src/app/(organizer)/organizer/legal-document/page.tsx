@@ -18,12 +18,12 @@ export default function Event() {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/organizer/legal-document/business" className="text-[#0C4762] hover:underline hover:text-blue-800">
+                            <Link href="/organizer/legal-document/advertising" className="text-[#0C4762] hover:underline hover:text-blue-800">
                                 Danh mục hàng hoá, dịch vụ cấm quảng cáo
                             </Link>
                         </li>
                         <li>
-                            <Link href="/organizer/legal-document/business" className="text-[#0C4762] hover:underline hover:text-blue-800">
+                            <Link href="/organizer/legal-document/contentImage" className="text-[#0C4762] hover:underline hover:text-blue-800">
                                 Quy định kiểm duyệt nội dung & hình ảnh
                             </Link>
                         </li>
