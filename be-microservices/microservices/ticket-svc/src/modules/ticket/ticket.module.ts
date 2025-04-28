@@ -15,6 +15,12 @@ import { UnSelectSeatService } from './commands/unSelectSeat/unSelectSeat.servic
 import { getRedisSeatRepository } from './repositories/getRedisSeat.repository';
 import { GetUserTicketByIdService } from './queries/getUserTicketById/getUserTicketById.service';
 import { GetUserTicketByIdController } from './queries/getUserTicketById/getUserTicketById.controller';
+import { CheckInTicketRepository } from './repositories/checkInTicket.repository';
+import { CheckInTicketService } from './commands/checkinTicket/checkInTicket.service';
+import { CheckInTicketController } from './commands/checkinTicket/checkInTicket.controller';
+import { GetCheckedInTicketsRepository } from './repositories/getCheckedInTickets.repository';
+import { GetCheckedInTicketsService } from './queries/getCheckedInTickets/getCheckedInTickets.service';
+import { GetCheckedInTicketsController } from './queries/getCheckedInTickets/getCheckedInTickets.controller';
 
 @Module({
   controllers: 
@@ -26,6 +32,8 @@ import { GetUserTicketByIdController } from './queries/getUserTicketById/getUser
       GetUserTicketController,
       GetRedisSeatController,
       GetUserTicketByIdController,
+      CheckInTicketController,
+      GetCheckedInTicketsController
     ],
   providers: 
     [
@@ -44,6 +52,12 @@ import { GetUserTicketByIdController } from './queries/getUserTicketById/getUser
       getRedisSeatRepository,
 
       GetUserTicketByIdService,
+
+      CheckInTicketService,
+      CheckInTicketRepository,
+
+      GetCheckedInTicketsService,
+      GetCheckedInTicketsRepository
     ],
 })
 export class TicketModule {}

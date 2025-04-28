@@ -115,8 +115,8 @@ export default function AddMemberForm({eventId, onClose, onSuccess }: AddMemberF
       };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white w-[800px] max-h-[80vh] px-10 py-6 rounded-lg shadow-lg relative flex flex-col">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
+            <div className="bg-white w-[800px] max-h-[80vh] mt-9 px-10 py-6 rounded-lg shadow-lg relative flex flex-col">
                 {/* Nút đóng */}
                 <button className="absolute top-4 right-4 text-gray-500" onClick={onClose}>
                     <X size={24} />

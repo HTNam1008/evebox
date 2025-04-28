@@ -66,6 +66,8 @@ import { GetEventRolesService } from './queries/getEventRoles/getEventRoles.serv
 import { GetEventRolesRepository } from './repositories/getEventRoles.repository';
 import { GetEventRoleByIdController } from './queries/getEventRoleById/getEventRoleById.controller';
 import { GetEventRoleByIdService } from './queries/getEventRoleById/getEventRoleById.service';
+import { GetEventFDByIdsController } from './queries/getEventFDByIds/getEventFDByIds.controller';
+import { GetEventFDByIdsService } from './queries/getEventFDByIds/getEventFDByIds.service';
 
 @Module({
   imports: [ScheduleModule.forRoot(), ImagesModule, LocationModule],
@@ -78,6 +80,7 @@ import { GetEventRoleByIdService } from './queries/getEventRoleById/getEventRole
     GetEventDetailController,
     GetEventDetailRecommendController,
     GetEventFrontDisplayController,
+    GetEventFDByIdsController,
     GetRecommendedEventController,
 
     // For Organizer
@@ -119,6 +122,8 @@ import { GetEventRoleByIdService } from './queries/getEventRoleById/getEventRole
 
     GetEventFrontDisplayRepository,
     GetEventFrontDisplayService,
+
+    GetEventFDByIdsService,
 
     GetRecommendEventService,
     GetRecommendEventRepository,

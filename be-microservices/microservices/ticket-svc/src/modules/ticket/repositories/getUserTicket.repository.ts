@@ -37,6 +37,7 @@ export class getUserTicketRepository {
               endTime: true,
               Events: {
                 select: {
+                  id: true,
                   title: true,
                   // description: true,
                   venue: true,
@@ -66,6 +67,7 @@ export class getUserTicketRepository {
           },
           TicketQRCode: {
             select: {
+              id: true,
               qrCode: true,
               ticketTypeId: true,
               seatId: true,
@@ -99,6 +101,7 @@ export class getUserTicketRepository {
               startTime: ticket.Showing.startTime,
               endTime: ticket.Showing.endTime,
               Events: {
+                id: ticket.Showing.Events?.id || 1,
                 title: ticket.Showing.Events?.title || '',
                 venue: ticket.Showing.Events?.venue || '',
                 locationsString: locationsString || '',

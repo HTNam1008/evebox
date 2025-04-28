@@ -11,6 +11,7 @@ import Image from "next/image";
 import '@/styles/admin/components/perfectScrollBar.css'
 import { fetchContent, sendMessageToBot } from "../libs/server/content";
 import { NAVIGATE_ROUTES } from "../libs/endpoints/navigateEndpoints";
+import { useSearchResults } from '@/app/providers/searchResultProvider';
 
 interface ChatBoxWrapperProps {
   handleOpen: () => void;
@@ -50,7 +51,8 @@ export default function ChatBoxWrapper({ handleOpen }: ChatBoxWrapperProps) {
   const [error, setError] = useState<string>("");
   const [isErrorFetch, setIsErrorFetch] = useState<boolean>(false);
   const scrollRef = useRef<PerfectScrollbar | null>(null);
-
+  
+  const { setEventIds } = useSearchResults();
   const router = useRouter();
 
   useEffect(() => {
@@ -187,16 +189,29 @@ export default function ChatBoxWrapper({ handleOpen }: ChatBoxWrapperProps) {
         };
 
         if (response.Route === 'SEARCH_PAGE' && response.ResultMessage) {
+          setEventIds(response.Result);  // lưu vào Provider
+          // router.push('/searchResult');
           botMessage.message = response.ResultMessage;
-          botMessage.Child = response.Result.map((eventId: number) => ({
-            id: eventId,
-            context: `Đi tới sự kiện ${eventId}`, // Customize as needed
+          botMessage.Child = [{
+            id: Date.now() + 1,
+            context: `Đi tới trang ${response.Route}`,
             message: null,
             rootId: botMessage.id,
             isBot: true,
-            route: 'EVENT_PAGE',
             Child: [],
-          }));
+            route: response.Route,
+            //route: 'EVENT_PAGE',
+          }];
+          
+          // botMessage.Child = response.Result.map((eventId: number) => ({
+          //   id: eventId,
+          //   context: `Đi tới sự kiện ${eventId}`, // Customize as needed
+          //   message: null,
+          //   rootId: botMessage.id,
+          //   isBot: true,
+          //   route: 'EVENT_PAGE',
+          //   Child: [],
+          // }));
         } else if (response.Route) {
           const routeChild: ChatBoxContent = {
             id: Date.now() + 1,
@@ -221,10 +236,23 @@ export default function ChatBoxWrapper({ handleOpen }: ChatBoxWrapperProps) {
     }
   }
 
+  // const handleChildClick = (child: ChatBoxContent) => {
+  //   if (child.route) {
+  //     if (child.route === 'EVENT_PAGE') {
+  //       router.push(`/event/${child.id}`);
+  //     } else {
+  //       router.push(NAVIGATE_ROUTES[child.route as keyof typeof NAVIGATE_ROUTES]);
+  //     }
+  //   } else {
+  //     setChatHistory(prev => [...prev, child]);
+  //     setChatBoxContents([child]);
+  //   }
+  // };
+
   const handleChildClick = (child: ChatBoxContent) => {
     if (child.route) {
-      if (child.route === 'EVENT_PAGE') {
-        router.push(`/event/${child.id}`);
+      if (child.route === 'SEARCH_PAGE') {
+        router.push('/search-result');
       } else {
         router.push(NAVIGATE_ROUTES[child.route as keyof typeof NAVIGATE_ROUTES]);
       }
