@@ -22,7 +22,7 @@ export default function PdfViewerPage() {
         setIsClient(true);
 
         // Gọi API lấy đường dẫn file PDF hiện tại
-        setPdfUrl("https://raw.githubusercontent.com/huethanh-2805/term-evebox/main/7.%20Evebox_Quy_che_kiem_dinh_noi_dung%26hinh_anh.pdf")
+        setPdfUrl("https://raw.githubusercontent.com/huethanh-2805/term-evebox/main/7.%20Evebox_Quy_che_kiem_dinh_noi_dung_hinh_anh.pdf")
     }, []);
 
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
