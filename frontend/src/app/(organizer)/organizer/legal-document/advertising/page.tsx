@@ -22,7 +22,7 @@ export default function PdfViewerPage() {
         setIsClient(true);
 
         // Gọi API lấy đường dẫn file PDF hiện tại
-        setPdfUrl("https://raw.githubusercontent.com/huethanh-2805/term-evebox/main/8.%20Evebox_Hang_hoa_dich_vu_cam_quang_cao_BTC.pdf")
+        setPdfUrl("https://raw.githubusercontent.com/huethanh-2805/term-evebox/main/8.Evebox_Hang_hoa_dich_vu_cam_quang_cao_BTC.pdf")
     }, []);
 
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
