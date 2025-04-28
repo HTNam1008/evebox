@@ -3,6 +3,8 @@ import { Providers } from "./provider";
 import { SearchResultProvider } from "./providers/searchResultProvider";
 import Footer from "../app/(dashboard)/components/common/footer"
 import NavigationBar from "../app/(dashboard)/components/common/navigationBar"
+import "tailwindcss/tailwind.css";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
       <html lang="en">
