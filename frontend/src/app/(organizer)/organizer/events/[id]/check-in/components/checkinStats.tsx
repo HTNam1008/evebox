@@ -1,11 +1,11 @@
-import { FaUsers, FaWalking, FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 
 export default function CheckinStats() {
     return (
         <div className="flex">
             {/* Đã check-in */}
-            <div className="flex-1 bg-[#0C4762] text-white p-6 rounded-xl flex items-center justify-center">
-                <div className="flex items-center gap-4">
+            <div className="flex-1 bg-[#0C4762] text-white p-6 rounded-xl flex items-center">
+                <div className="flex items-center gap-4 justify-start">
                     <FaCheckCircle className="w-16 h-16 text-[#51DACF] text-5xl" />
                     <div>
                         <p className="text-sm">Đã check-in</p>
