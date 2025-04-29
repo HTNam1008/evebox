@@ -8,6 +8,7 @@ import { useState } from 'react';
 import SidebarOrganizer from '../../components/sidebarOrganizer';
 import CheckinStats from './checkinStats';
 import SearchBar from './searchBar';
+import TicketCheckinTable from './ticketCheckinTable';
 
 export default function CheckinPage() {
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -32,6 +33,8 @@ export default function CheckinPage() {
                 <div className="flex justify-between items-center mt-2 mb-2">
                     <SearchBar onSearch={setSearchKeyword} />
                 </div>
+
+                <TicketCheckinTable searchKeyword={searchKeyword}/>
             </div>
         </div>
     );
