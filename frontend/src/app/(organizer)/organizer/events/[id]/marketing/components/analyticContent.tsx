@@ -15,21 +15,25 @@ export default function AnalyticsContent() {
     const params = useParams();
     const eventId = params?.id?.toString() || "";
     const [analytics, setAnalytics] = useState<AnalyticData| null>(null);
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
 
-    useEffect(() => {
-        async function fetchAnalytics() {
-            try {
-                const res = await getAnalyticByEvent(eventId);
-                setAnalytics(res.data);
-            } catch (error) {
-                console.error('Failed to fetch analytics:', error);
-            }
+    const fetchAnalytics = async () => {
+        try {
+          const isoStart = startDate?.toISOString();
+          const isoEnd = endDate?.toISOString();
+          const res = await getAnalyticByEvent(eventId, isoStart, isoEnd);
+          setAnalytics(res.data);
+        } catch (error) {
+          console.error("Failed to fetch analytics:", error);
         }
-
+      };
+    
+      useEffect(() => {
         if (eventId) {
-            fetchAnalytics();
+          fetchAnalytics();
         }
-    }, [eventId]);
+      }, [eventId]);
 
     return (
         <div className="flex min-h-screen bg-gray-100">
@@ -45,7 +49,13 @@ export default function AnalyticsContent() {
 
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="mt-4 text-xl font-bold text-[#0C4762] mb-6">Công cụ & Báo cáo Marketing</h3>
-                    <DateRangePicker />
+                    <DateRangePicker
+                       startDate={startDate}
+                       endDate={endDate}
+                       setStartDate={setStartDate}
+                       setEndDate={setEndDate}
+                       onConfirm={fetchAnalytics}
+                     />
                 </div>
                 {analytics ? (
                 <div>
