@@ -18,6 +18,9 @@ import { GetUserTicketByIdController } from './queries/getUserTicketById/getUser
 import { CheckInTicketRepository } from './repositories/checkInTicket.repository';
 import { CheckInTicketService } from './commands/checkinTicket/checkInTicket.service';
 import { CheckInTicketController } from './commands/checkinTicket/checkInTicket.controller';
+import { CheckInTicketByQrRepository } from './repositories/checkInTicketByQr.repository';
+import { CheckInTicketByQrService } from './commands/checkInTicketByQr/checkInTicketByQr.service';
+import { CheckInTicketByQrController } from './commands/checkInTicketByQr/checkInTicketByQr.controller';
 import { GetCheckedInTicketsRepository } from './repositories/getCheckedInTickets.repository';
 import { GetCheckedInTicketsService } from './queries/getCheckedInTickets/getCheckedInTickets.service';
 import { GetCheckedInTicketsController } from './queries/getCheckedInTickets/getCheckedInTickets.controller';
@@ -33,6 +36,7 @@ import { GetCheckedInTicketsController } from './queries/getCheckedInTickets/get
       GetRedisSeatController,
       GetUserTicketByIdController,
       CheckInTicketController,
+      CheckInTicketByQrController,
       GetCheckedInTicketsController
     ],
   providers: 
@@ -55,6 +59,9 @@ import { GetCheckedInTicketsController } from './queries/getCheckedInTickets/get
 
       CheckInTicketService,
       CheckInTicketRepository,
+
+      CheckInTicketByQrService,
+      CheckInTicketByQrRepository,
 
       GetCheckedInTicketsService,
       GetCheckedInTicketsRepository
