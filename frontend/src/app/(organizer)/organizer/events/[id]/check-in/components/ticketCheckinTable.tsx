@@ -8,6 +8,7 @@ import { TicketCheckin } from "../lib/interface/check-in.interface";
 import { TicketCheckinTableProps } from "../lib/interface/check-in.interface";
 import Pagination from "./common/pagination";
 import { sortTickets } from "../lib/function/sortTickets";
+import SortIcon from "@/app/(admin)/admin/account-management/components/sortIcon";
 
 export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketCheckinTableProps) {
     //Gán cứng
@@ -65,6 +66,16 @@ export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketC
     const [tickets, setTickets] = useState<TicketCheckin[]>(data);
     const [sortConfig, setSortConfig] = useState<{ key: keyof TicketCheckin; direction: 'asc' | 'desc' } | null>(null);
 
+    const handleSort = (key: keyof TicketCheckin) => {
+        setSortConfig((prev) => {
+            if (prev?.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+            } else {
+                return { key, direction: 'asc' };
+            }
+        });
+    };
+
     const filteredTickets = tickets.filter(ticket => {
         const matchSearch = ticket.orderId.toLowerCase().includes(searchKeyword.toLowerCase());
 
@@ -119,8 +130,8 @@ export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketC
                     <thead>
                         <tr className="bg-[#0C4762] text-white text-sm text-left rounded-t-lg">
                             <th className="px-4 py-3 text-center">STT</th>
-                            <th className="px-4 py-3 cursor-pointer text-center">
-                                Mã đơn hàng
+                            <th className="px-4 py-3 cursor-pointer text-center" onClick={() => handleSort('orderId')}>
+                                Mã đơn hàng <SortIcon field="orderId" sortConfig={sortConfig} />
                             </th>
                             <th className="px-4 py-3 cursor-pointer text-center">
                                 Mã vé
@@ -129,7 +140,7 @@ export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketC
                                 Ngày diễn
                             </th>
                             <th className="px-4 py-3 cursor-pointer text-center" >
-                                Thời gian diễn ra
+                                Thời gian diễn ra 
                             </th>
                             <th className="px-4 py-3 cursor-pointer text-center" >
                                 Địa điểm
