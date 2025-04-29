@@ -7,10 +7,12 @@ import { useState } from 'react';
 /* Package Application */
 import SidebarOrganizer from '../../components/sidebarOrganizer';
 import CheckinStats from './checkinStats';
-import SearchBar from './searchBar';
+import SearchBar from './common/searchBar';
 import TicketCheckinTable from './ticketCheckinTable';
+import Tabs from './common/tab';
 
 export default function CheckinPage() {
+    const [activeTab, setActiveTab] = useState("all");
     const [searchKeyword, setSearchKeyword] = useState('');
 
     return (
@@ -34,7 +36,8 @@ export default function CheckinPage() {
                     <SearchBar onSearch={setSearchKeyword} />
                 </div>
 
-                <TicketCheckinTable searchKeyword={searchKeyword}/>
+                <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+                <TicketCheckinTable activeTab={activeTab} searchKeyword={searchKeyword} />
             </div>
         </div>
     );

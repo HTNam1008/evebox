@@ -4,8 +4,8 @@ export interface Ticket {
 }
 
 export interface Showing {
-  startTime: string;
-  endTime: string;
+    startTime: string;
+    endTime: string;
 }
 
 export interface TicketCheckin {
@@ -20,7 +20,13 @@ export interface SearchBarProps {
     onSearch: (keyword: string) => void;
 }
 
-
 export interface TicketCheckinTableProps {
+    activeTab: string;
     searchKeyword: string;
+}
+
+//Tabs
+export interface TabsProps {
+    activeTab: string;
+    setActiveTab: (tabId: string) => void;
 }

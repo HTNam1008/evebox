@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { TicketCheckin } from "../lib/interface/check-in.interface";
 import { TicketCheckinTableProps } from "../lib/interface/check-in.interface";
 
-export default function TicketCheckinTable({ searchKeyword }: TicketCheckinTableProps) {
+export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketCheckinTableProps) {
     //Gán cứng
     const data: TicketCheckin[] = [
         {
@@ -61,6 +61,30 @@ export default function TicketCheckinTable({ searchKeyword }: TicketCheckinTable
         },
     ];
 
+    const [tickets, setTickets] = useState<TicketCheckin[]>(data);
+
+    const filteredTickets = tickets.filter(ticket => {
+        const matchSearch = ticket.orderId.toLowerCase().includes(searchKeyword.toLowerCase());
+
+        let matchTab = false;
+
+        switch (activeTab) {
+            case "all":
+                matchTab = true;
+                break;
+            case "e-ticket":
+                matchTab = ticket.ticket.type === "Vé điện tử";
+                break;
+            case "ticket":
+                matchTab = ticket.ticket.type === "Vé cứng";
+                break;
+            default:
+                matchTab = true;
+        }
+
+        return matchSearch && matchTab;
+    });
+
     return (
         <>
             <div className="table-account-management overflow-x-auto rounded-xl shadow-md mt-6">
@@ -89,9 +113,9 @@ export default function TicketCheckinTable({ searchKeyword }: TicketCheckinTable
                         </tr>
                     </thead>
                     <tbody className="text-sm">
-                        {data.length > 0 ? (
-                            data.map((ticket, index) => (
-                                <tr key={ticket.orderId ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
+                        {filteredTickets.length > 0 ? (
+                            filteredTickets.map((ticket, index) => (
+                                <tr key={index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                     <td className="px-4 py-3 text-center border-r border-gray-200">{index + 1}</td>
                                     <td className="px-4 py-3 border-r border-gray-200 cursor-pointer">
                                         {ticket.orderId}

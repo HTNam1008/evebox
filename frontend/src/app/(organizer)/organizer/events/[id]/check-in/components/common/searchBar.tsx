@@ -5,7 +5,7 @@ import { ChangeEvent, useState } from 'react';
 
 /* Package Application */
 import { Search } from 'lucide-react';
-import { SearchBarProps } from '../lib/interface/check-in.interface';
+import { SearchBarProps } from '../../lib/interface/check-in.interface';
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
     const [searchTerm, setSearchTearm] = useState('');
