@@ -1,12 +1,13 @@
 'use client'
 
 /* Package System */
-import { useState } from "react";
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
 
 /* Package Application */
 import { TicketCheckin } from "../lib/interface/check-in.interface";
 import { TicketCheckinTableProps } from "../lib/interface/check-in.interface";
+import Pagination from "./common/pagination";
+import { sortTickets } from "../lib/function/sortTickets";
 
 export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketCheckinTableProps) {
     //Gán cứng
@@ -62,6 +63,7 @@ export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketC
     ];
 
     const [tickets, setTickets] = useState<TicketCheckin[]>(data);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof TicketCheckin; direction: 'asc' | 'desc' } | null>(null);
 
     const filteredTickets = tickets.filter(ticket => {
         const matchSearch = ticket.orderId.toLowerCase().includes(searchKeyword.toLowerCase());
@@ -84,6 +86,31 @@ export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketC
 
         return matchSearch && matchTab;
     });
+
+    //Pagination
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);
+
+    const totalItems = filteredTickets.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(startItem + itemsPerPage - 1, totalItems);
+
+    const handlePrevious = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    const sortedTickets = sortTickets(filteredTickets, sortConfig);
+
+    const paginatedData = sortedTickets.slice(startItem - 1, endItem);
 
     return (
         <>
@@ -113,8 +140,8 @@ export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketC
                         </tr>
                     </thead>
                     <tbody className="text-sm">
-                        {filteredTickets.length > 0 ? (
-                            filteredTickets.map((ticket, index) => (
+                        {paginatedData.length > 0 ? (
+                            paginatedData.map((ticket, index) => (
                                 <tr key={index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                     <td className="px-4 py-3 text-center border-r border-gray-200">{index + 1}</td>
                                     <td className="px-4 py-3 border-r border-gray-200 cursor-pointer">
@@ -149,6 +176,14 @@ export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketC
                     </tbody>
                 </table>
             </div>
+
+            {/* Phân trang */}
+            <Pagination
+                currentPage={currentPage}
+                totalItems={filteredTickets.length}
+                itemsPerPage={itemsPerPage}
+                onPrevious={handlePrevious}
+                onNext={handleNext} />
         </>
     )
 }

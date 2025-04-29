@@ -11,7 +11,7 @@ const tabs = [
 
 export default function Tabs({ activeTab, setActiveTab }: TabsProps ) {
     return (
-        <div className="tabs-event-management flex justify-end space-x-4 mt-6 text-sm">
+        <div className="tabs-event-management flex justify-end space-x-4 text-sm">
             {tabs.map(tab => (
                 <button
                     key={tab.id}

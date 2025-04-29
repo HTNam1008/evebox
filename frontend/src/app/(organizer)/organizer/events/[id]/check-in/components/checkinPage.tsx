@@ -34,9 +34,9 @@ export default function CheckinPage() {
 
                 <div className="flex justify-between items-center mt-2 mb-2">
                     <SearchBar onSearch={setSearchKeyword} />
+                    <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
                 </div>
-
-                <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+                
                 <TicketCheckinTable activeTab={activeTab} searchKeyword={searchKeyword} />
             </div>
         </div>

@@ -30,3 +30,17 @@ export interface TabsProps {
     activeTab: string;
     setActiveTab: (tabId: string) => void;
 }
+
+//Pagination
+export interface PaginationProps {
+    currentPage: number;
+    totalItems: number;
+    itemsPerPage: number;
+    onPrevious: () => void;
+    onNext: () => void;
+}
+
+export interface SortConfig<T> {
+    key: keyof T;
+    direction: 'asc' | 'desc';
+  }
