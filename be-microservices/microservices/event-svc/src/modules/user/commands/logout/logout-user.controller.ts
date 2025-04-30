@@ -1,7 +1,7 @@
 import { Controller, Post, Res, UseGuards, HttpStatus, Request } from '@nestjs/common';
 import { LogoutUserService } from './logout-user.service';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags, ApiHeader, ApiOkResponse, ApiUnauthorizedResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiHeader, ApiOkResponse, ApiUnauthorizedResponse, ApiInternalServerErrorResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { LogoutResponse } from './logout-user.dto';
@@ -18,11 +18,7 @@ export class LogoutUserController {
     summary: 'User logout',
     description: 'Invalidate user session and revoke refresh token'
   })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true,
-  })
+  @ApiBearerAuth('access-token')
   @ApiOkResponse({
     description: 'User logged out successfully',
     type: LogoutResponse

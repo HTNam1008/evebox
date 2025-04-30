@@ -13,7 +13,7 @@ import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { GetEventMembersService } from './getEventMembers.service';
 import { GetEventMembersQueryDto } from './getEventMembers.query.dto';
-import { ApiTags, ApiHeader, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { GetEventMembersResponseDto } from './getEventMembers-response.dto';
 
 @ApiTags('Org - EventMember')

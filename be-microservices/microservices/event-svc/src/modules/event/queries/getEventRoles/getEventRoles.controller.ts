@@ -11,7 +11,6 @@ import {
   import { GetEventRolesService } from './getEventRoles.service';
   import {
     ApiBearerAuth,
-    ApiHeader,
     ApiOperation,
     ApiResponse,
     ApiTags,

@@ -1,6 +1,6 @@
 import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards, Param, Req } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteEventService } from './deleteEvent.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { EventResponse } from './deleteEvent-response.dto';

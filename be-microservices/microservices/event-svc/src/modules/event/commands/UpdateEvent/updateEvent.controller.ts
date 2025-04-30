@@ -1,6 +1,6 @@
 import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, UseInterceptors, UploadedFiles, Put } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateEventService } from './updateEvent.service';
 import { UpdateEventDto } from './updateEvent.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';

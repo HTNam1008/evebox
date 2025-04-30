@@ -4,7 +4,7 @@ import { AddEventMemberDto } from './addEventMember.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { Request } from 'express';
 import { Response } from 'express';
-import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AddEventMemberResponseDto } from './addEventMember-response.dto';
 
 @ApiTags('Org - EventMember')

@@ -15,7 +15,6 @@ import { UpdateEventMemberService } from './updateEventMember.service';
 import { UpdateEventMemberDto } from './updateEventMember.dto';
 import {
   ApiTags,
-  ApiHeader,
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,

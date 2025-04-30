@@ -7,7 +7,7 @@ import {
   Headers,
 } from '@nestjs/common';
 import { GetUserService } from './get-user.service';
-import { ApiTags, ApiOperation, ApiHeader, ApiNotFoundResponse, ApiUnauthorizedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiNotFoundResponse, ApiUnauthorizedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { Response } from 'express';
 // import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';

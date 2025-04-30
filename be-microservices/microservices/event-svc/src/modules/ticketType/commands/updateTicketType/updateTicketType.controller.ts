@@ -1,6 +1,6 @@
 import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, UseInterceptors, UploadedFile, Put, Param } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateTicketTypeService } from './updateTicketType.service';
 import { UpdateTicketTypeDto } from './updateTicketType.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
@@ -14,8 +14,7 @@ export class UpdateTicketTypeController {
 
   @UseGuards(JwtAuthGuard)
   @Put('/:id')
-    @ApiBearerAuth('access-token')
-
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update an existing ticket type' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Ticket type updated successfully', type: UpdateTicketTypeResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })

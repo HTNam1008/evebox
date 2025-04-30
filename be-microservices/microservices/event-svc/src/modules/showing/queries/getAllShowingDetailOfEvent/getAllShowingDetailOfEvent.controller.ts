@@ -1,6 +1,6 @@
 import { Controller, Get, Query, Res, HttpStatus, UseGuards, Request, Param } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { GetAllShowingDetailOfEventService } from './getAllShowingDetailOfEvent.service';
@@ -12,8 +12,7 @@ export class GetAllShowingDetailOfEventController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/:eventId')
-    @ApiBearerAuth('access-token')
-
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get all showing & ticketType of Event of Organizer' })
   @ApiResponse({
     status: HttpStatus.OK,

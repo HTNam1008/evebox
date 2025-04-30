@@ -1,6 +1,6 @@
 import { Controller, Get, Request, Res, HttpStatus, Post, Body, UseGuards, UseInterceptors, UploadedFiles, Param } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateShowingService } from './createShowing.service';
@@ -14,8 +14,7 @@ export class CreateShowingController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/:eventId')
-    @ApiBearerAuth('access-token')
-
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Create a new showing' })
   @ApiResponse({ status: 201, description: 'Showing created successfully', type: CreateShowingResponseDto })
   @ApiResponse({ status: 400, description: 'Bad request' })

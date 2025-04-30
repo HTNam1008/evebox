@@ -1,6 +1,6 @@
 import { Controller, Get, Req, Res, HttpStatus, UseGuards, Query } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags, ApiHeader, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { GetOrgPaymentInfoService } from './getOrgPaymentInfo.service';
 import { GetOrgPaymentInfoResponseDto } from './getOrgPaymentInfo-response.dto';

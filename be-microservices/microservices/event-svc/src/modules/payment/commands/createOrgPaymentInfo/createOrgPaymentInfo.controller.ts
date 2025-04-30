@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Request, Res, UseGuards, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiBody, ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import {  ApiBody, ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { CreateOrgPaymentInfoService } from './createOrgPaymentInfo.service';
 import { CreateOrgPaymentInfoDto } from './createOrgPaymentInfo.dto';

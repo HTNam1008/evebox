@@ -12,7 +12,7 @@ import {
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { DeleteEventMemberService } from './deleteEventMember.service';
-import { ApiTags, ApiHeader, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Org - EventMember')
 @Controller('org/member')

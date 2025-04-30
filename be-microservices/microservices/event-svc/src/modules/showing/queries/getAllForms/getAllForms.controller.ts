@@ -1,7 +1,7 @@
 import { Controller, Get, Res, Req, HttpStatus, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
-import { ApiOperation, ApiResponse, ApiTags, ApiHeader } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiHeader, ApiBearerAuth } from '@nestjs/swagger';
 import { GetAllFormsService } from './getAllForms.service';
 import { GetAllFormsResponseDto } from './getAllFroms-response.dto';
 
@@ -13,8 +13,7 @@ export class GetAllFormsController {
   @UseGuards(JwtAuthGuard)
   @Get('form/all')
   @ApiOperation({ summary: 'Get all forms (not deleted) for organizer' })
-    @ApiBearerAuth('access-token')
-
+  @ApiBearerAuth('access-token')
   // @ApiQuery({ name: 'organizerId', type: String, description: 'Organizer ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Forms retrieved successfully', type: GetAllFormsResponseDto })
   async getAllForms( @Req() req: any, @Res() res: Response) {

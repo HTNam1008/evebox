@@ -1,6 +1,6 @@
 import { Controller, Get, Request, Param, Query, Res, UseGuards, HttpStatus } from "@nestjs/common";
 import { Response } from "express";
-import { ApiHeader, ApiQuery, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiHeader, ApiQuery, ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/shared/guard/jwt-auth.guard";
 import { GetEventSummaryService } from "./getSummary.service";
 import { EventSummaryResponse } from "./getSummary-response.dto";
@@ -12,8 +12,7 @@ export class GetEventSummaryController {
 
   @UseGuards(JwtAuthGuard)
   @Get('summary/:showingId')
-    @ApiBearerAuth('access-token')
-
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get summary of a event' })
   @ApiResponse({ status: 200, description: 'Event summary retrieved successfully', type: EventSummaryResponse })
   @ApiResponse({ status: 400, description: 'Bad request' })

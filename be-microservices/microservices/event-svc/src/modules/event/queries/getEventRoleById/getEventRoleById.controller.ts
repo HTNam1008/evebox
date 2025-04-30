@@ -2,7 +2,7 @@ import { Controller, Get, Param, UseGuards, Request, HttpStatus, Res } from '@ne
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { GetEventRoleByIdService } from './getEventRoleById.service';
 import { Response } from 'express';
-import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { EventRoleItemDto } from '../getEventRoles/getEventRoles-response.dto';
 import { GetEventRoleByIdResponseDto } from './getEventRoleById-response.dto';
 
