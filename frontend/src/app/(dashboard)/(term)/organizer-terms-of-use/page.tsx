@@ -1,7 +1,7 @@
 
 "use client";
 
-/* Package Application */
+/* Package System */
 import 'tailwindcss/tailwind.css';
 import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from 'next/navigation';
