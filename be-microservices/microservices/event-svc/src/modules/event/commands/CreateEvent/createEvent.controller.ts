@@ -1,6 +1,6 @@
 import { Controller, Get, Request, Res, HttpStatus, Post, Body, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateEventService } from './createEvent.service';
 import { CreateEventDto } from './createEvent.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
@@ -14,11 +14,7 @@ export class CreateEventController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Create a new event' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Event created successfully', type: EventResponse })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })

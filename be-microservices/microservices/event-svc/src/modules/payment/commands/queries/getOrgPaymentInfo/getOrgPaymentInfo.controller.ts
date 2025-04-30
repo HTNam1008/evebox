@@ -1,6 +1,6 @@
 import { Controller, Get, Req, Res, HttpStatus, UseGuards, Query } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags, ApiHeader, ApiQuery } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiHeader, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { GetOrgPaymentInfoService } from './getOrgPaymentInfo.service';
 import { GetOrgPaymentInfoResponseDto } from './getOrgPaymentInfo-response.dto';
@@ -12,11 +12,7 @@ export class GetOrgPaymentInfoController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (Bearer <token>)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiQuery({ name: 'eventId', type: Number, description: 'Event ID associated with the payment info', required: true })
   @ApiOperation({ summary: 'Get OrgPaymentInfo by organizerId' })
   @ApiResponse({ status: HttpStatus.OK, description: 'OrgPaymentInfo retrieved successfully', type: GetOrgPaymentInfoResponseDto })

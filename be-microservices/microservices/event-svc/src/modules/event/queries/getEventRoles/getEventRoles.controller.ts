@@ -10,6 +10,7 @@ import {
   import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
   import { GetEventRolesService } from './getEventRoles.service';
   import {
+    ApiBearerAuth,
     ApiHeader,
     ApiOperation,
     ApiResponse,
@@ -24,11 +25,7 @@ import {
   
     @UseGuards(JwtAuthGuard)
     @Get('/')
-    @ApiHeader({
-      name: 'Authorization',
-      description: 'Bearer token for authorization',
-      required: true,
-    })
+    @ApiBearerAuth('access-token')  
     @ApiOperation({ summary: 'Get all event roles and their permissions' })
     @ApiResponse({
       status: 200,

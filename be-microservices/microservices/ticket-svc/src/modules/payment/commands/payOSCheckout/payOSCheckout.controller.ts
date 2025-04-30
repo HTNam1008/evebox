@@ -13,11 +13,8 @@ export class PayOSCheckoutController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/payos-checkout')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Checkout with PayOS' })
   @ApiBody({ type: PayOSCheckoutDto })
   @ApiResponse({

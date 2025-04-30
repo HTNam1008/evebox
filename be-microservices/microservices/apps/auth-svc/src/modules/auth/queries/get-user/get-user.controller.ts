@@ -24,11 +24,7 @@ export class GetUserController {
     summary: 'Get Current User Details',
     description: 'Retrieves details of the currently authenticated user'
   })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiOkResponse({
     description: 'User details fetched successfully',
     type: UserResponse
@@ -61,3 +57,7 @@ export class GetUserController {
     });
   }
 }
+function ApiBearerAuth(arg0: string): (target: GetUserController, propertyKey: "getCurrentUser", descriptor: TypedPropertyDescriptor<(req: any, res: Response, email: string, role: string) => Promise<any>>) => void | TypedPropertyDescriptor<...> {
+  throw new Error('Function not implemented.');
+}
+

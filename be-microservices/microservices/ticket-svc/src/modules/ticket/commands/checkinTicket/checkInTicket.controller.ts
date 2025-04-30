@@ -14,11 +14,8 @@ export class CheckInTicketController {
 
   @UseGuards(JwtAuthGuard)
   @Put('/:id')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Checkin ticket' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Ticket checked in successfully', type: CheckInTicketResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })

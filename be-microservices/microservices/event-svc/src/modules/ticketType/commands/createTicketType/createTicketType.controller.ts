@@ -15,11 +15,8 @@ export class CreateTicketTypeController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/create/:showingId')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Create a new ticket type' })
   @ApiResponse({ status: 201, description: 'Ticket type created successfully', type: CreateTicketTypeResponseDto })
   @ApiResponse({ status: 400, description: 'Bad request' })

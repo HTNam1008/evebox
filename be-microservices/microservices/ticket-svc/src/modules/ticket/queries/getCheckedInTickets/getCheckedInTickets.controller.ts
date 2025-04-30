@@ -13,11 +13,8 @@ export class GetCheckedInTicketsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/checkin-tickets')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Get checked-in tickets of showing' })
   @ApiQuery({
     name: 'showingId',

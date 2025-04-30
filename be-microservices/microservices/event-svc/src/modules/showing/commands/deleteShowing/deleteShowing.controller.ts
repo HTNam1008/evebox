@@ -12,11 +12,8 @@ export class DeleteShowingController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Delete a showing' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Showing deleted successfully', type: DeleteShowingResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })

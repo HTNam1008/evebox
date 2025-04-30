@@ -14,11 +14,8 @@ export class CreateShowingController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/:eventId')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Create a new showing' })
   @ApiResponse({ status: 201, description: 'Showing created successfully', type: CreateShowingResponseDto })
   @ApiResponse({ status: 400, description: 'Bad request' })

@@ -13,11 +13,8 @@ export class UpdateShowingController {
 
   @UseGuards(JwtAuthGuard)
   @Put('/:id')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Update an existing showing' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Showing updated successfully', type: UpdateShowingResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })

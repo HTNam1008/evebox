@@ -13,11 +13,8 @@ export class GetUserTicketController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/getUserTicket')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Get status of all payment method' })
   @ApiResponse({
     status: HttpStatus.OK,

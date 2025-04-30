@@ -13,11 +13,8 @@ export class GetAllFormsController {
   @UseGuards(JwtAuthGuard)
   @Get('form/all')
   @ApiOperation({ summary: 'Get all forms (not deleted) for organizer' })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   // @ApiQuery({ name: 'organizerId', type: String, description: 'Organizer ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Forms retrieved successfully', type: GetAllFormsResponseDto })
   async getAllForms( @Req() req: any, @Res() res: Response) {

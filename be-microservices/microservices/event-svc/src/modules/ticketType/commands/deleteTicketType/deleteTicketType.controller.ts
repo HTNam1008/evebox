@@ -12,11 +12,8 @@ export class DeleteTicketTypeController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Delete a ticket type' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Ticket type deleted successfully', type: DeleteTicketTypeResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })

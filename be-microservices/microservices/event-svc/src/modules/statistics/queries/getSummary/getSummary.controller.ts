@@ -12,11 +12,8 @@ export class GetEventSummaryController {
 
   @UseGuards(JwtAuthGuard)
   @Get('summary/:showingId')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Get summary of a event' })
   @ApiResponse({ status: 200, description: 'Event summary retrieved successfully', type: EventSummaryResponse })
   @ApiResponse({ status: 400, description: 'Bad request' })

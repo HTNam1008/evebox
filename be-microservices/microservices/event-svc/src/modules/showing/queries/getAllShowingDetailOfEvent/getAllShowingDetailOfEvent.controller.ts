@@ -12,11 +12,8 @@ export class GetAllShowingDetailOfEventController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/:eventId')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Get all showing & ticketType of Event of Organizer' })
   @ApiResponse({
     status: HttpStatus.OK,
