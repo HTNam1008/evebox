@@ -7,7 +7,7 @@ import 'tailwindcss/tailwind.css';
 const Footer = () => {
     const t = useTranslations("common");
     return (
-      <footer className="w-[100vw] bg-sky-900 text-white py-8 sm:py-12 relative left-[calc(-50vw+50%)] mt-8">
+      <footer className="w-[100vw] bg-sky-900 text-white py-8 sm:py-12 relative left-[calc(-50vw+50%)]">
         {/* Newsletter Section */}
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">EveBox</h2>
