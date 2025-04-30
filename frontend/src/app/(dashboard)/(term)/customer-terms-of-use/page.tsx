@@ -22,7 +22,7 @@ export default function PdfViewerPage() {
         setIsClient(true);
 
         // Gọi API lấy đường dẫn file PDF hiện tại
-        setPdfUrl("https://raw.githubusercontent.com/huethanh-2805/term-evebox/main/6_Evebox_Dieu_khoan_su_dung_ap_dung_doi_voi_Khach_hang.pdf")
+        setPdfUrl("https://raw.githubusercontent.com/huethanh-2805/term-evebox/main/6.Evebox_Dieu_khoan_su_dung_ap_dung_doi_voi_Khach_hang.pdf")
     }, []);
 
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
@@ -43,7 +43,7 @@ export default function PdfViewerPage() {
     };
 
     return isClient ? (
-        <div className="px-10">
+        <div className="px-10 mb-8">
             {/* Nút thay đổi content */}
             <div className="change-content-btn mb-6 mt-6">
                 <label title={originName || "Chọn file PDF"} htmlFor="pdf-upload" className="bg-[#51DACF] text-[#0C4762] px-6 py-3 rounded-lg cursor-pointer hover:bg-[#085a73] hover:text-white transition-colors duration-200">

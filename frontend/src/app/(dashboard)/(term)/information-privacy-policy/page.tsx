@@ -43,7 +43,7 @@ export default function PdfViewerPage() {
     };
 
     return isClient ? (
-        <div className="px-10">
+        <div className="px-10 mb-8">
             {/* Nút thay đổi content */}
             <div className="change-content-btn mb-6 mt-6">
                 <label title={originName || "Chọn file PDF"} htmlFor="pdf-upload" className="bg-[#51DACF] text-[#0C4762] px-6 py-3 rounded-lg cursor-pointer hover:bg-[#085a73] hover:text-white transition-colors duration-200">
