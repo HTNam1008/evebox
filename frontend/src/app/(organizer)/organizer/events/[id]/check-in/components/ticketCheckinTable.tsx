@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { TicketCheckin } from "../lib/interface/check-in.interface";
 import { TicketCheckinTableProps } from "../lib/interface/check-in.interface";
 import Pagination from "./common/pagination";
-import { sortTickets } from "../lib/function/sortTickets";
+import { sortUsers } from "@/app/(admin)/admin/account-management/lib/function/sortUsers";
 import SortIcon from "@/app/(admin)/admin/account-management/components/sortIcon";
 
 export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketCheckinTableProps) {
@@ -119,7 +119,7 @@ export default function TicketCheckinTable({ activeTab, searchKeyword }: TicketC
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
-    const sortedTickets = sortTickets(filteredTickets, sortConfig);
+    const sortedTickets = sortUsers(filteredTickets, sortConfig);
 
     const paginatedData = sortedTickets.slice(startItem - 1, endItem);
 
