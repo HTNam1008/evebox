@@ -36,7 +36,7 @@ export default function PdfViewerPage() {
             setPdfUrl(fileUrl);
 
             setOriginName(file.name);
-            const maxLength = 25;    // Giới hạn tên file hiển thị (giới hạn 30 ký tự)
+            const maxLength = 25;    // Giới hạn tên file hiển thị (giới hạn 25 ký tự)
             const truncatedFileName = file.name.length > maxLength ? `${file.name.substring(0, maxLength)}...` : file.name;
             setFileName(truncatedFileName); 
         }
