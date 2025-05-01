@@ -1,0 +1,30 @@
+import { UserRepository } from './user.repository';
+import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
+import { User } from '../domain/entities/user.entity';
+import { Email } from '../domain/value-objects/user/email.vo';
+import { EventBus } from '@nestjs/cqrs';
+import { RefreshToken } from '@prisma/client';
+import { IOTPData } from './user.repository.interface';
+import { OTPType } from '../domain/enums/otp-type.enum';
+import { OTP } from '../domain/entities/otp.entity';
+export declare class UserRepositoryImpl implements UserRepository {
+    private readonly prisma;
+    private readonly eventBus;
+    constructor(prisma: PrismaService, eventBus: EventBus);
+    findByEmail(email: Email): Promise<User | null>;
+    private publishEvents;
+    save(user: User): Promise<void>;
+    saveRefreshToken(token: string, email: string, expiresAt: Date): Promise<void>;
+    revokeRefreshToken(email: string): Promise<void>;
+    revokeAllRefreshTokens(email: string): Promise<void>;
+    findRefreshToken(token: string): Promise<RefreshToken | null>;
+    private mapToDomain;
+    private mapToOrmData;
+    saveOTP(otp: OTP, requestToken: string): Promise<void>;
+    findValidOTP(email: string, otp: string, type: OTPType, requestToken: string): Promise<IOTPData | null>;
+    incrementOTPAttempts(request_token: string): Promise<void>;
+    getOTPAttempts(request_token: string): Promise<number | null>;
+    markOTPAsUsed(requestToken: string): Promise<void>;
+    findById(): Promise<void>;
+    removeAllRefreshTokens(email: string): Promise<void>;
+}

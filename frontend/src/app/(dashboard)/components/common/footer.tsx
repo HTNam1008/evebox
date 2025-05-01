@@ -23,6 +23,43 @@ const Footer = () => {
           </div>
         </div>
 
+        <div className="max-w-4xl mx-auto px-4 mb-8 sm:mb-12">
+          <div className="flex flex-col sm:flex-row justify-evenly items-start gap-12">
+            <div className="text-center sm:text-left space-y-2">
+              <p className="font-semibold">Dành cho khách hàng</p>
+              <ul className="space-y-1">
+                <li>
+                  <a href="/customer-terms-of-use" className="hover:underline">
+                    Điều khoản sử dụng cho khách hàng
+                  </a>
+                </li>
+              </ul>
+
+              <p className="font-semibold mt-4">Dành cho Ban Tổ chức</p>
+              <ul className="space-y-1">
+                <li>
+                  <a href="/organizer-terms-of-use" className="hover:underline">
+                    Điều khoản sử dụng cho ban tổ chức
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="text-center sm:text-left space-y-2">
+              <p className="font-semibold">Về chúng tôi</p>
+              <ul className="space-y-1">
+                <li><a href="/operational-regulations" className="hover:underline">Quy chế hoạt động</a></li>
+                <li><a href="/information-privacy-policy" className="hover:underline">Chính sách bảo mật thông tin</a></li>
+                <li><a href="/dispute-settlement-policy" className="hover:underline">Cơ chế giải quyết tranh chấp/ khiếu nại</a></li>
+                <li><a href="/payment-privacy-policy" className="hover:underline">Chính sách bảo mật thanh toán</a></li>
+                <li><a href="/return-and-inspection-policy" className="hover:underline">Chính sách đổi trả và kiểm hàng</a></li>
+                <li><a href="/shipping-and-delivery-conditions" className="hover:underline">Điều kiện vận chuyển và giao nhận</a></li>
+                <li><a href="/payment-methods" className="hover:underline">Phương thức thanh toán</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         {/* Navigation Links */}
         <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-8">
           <a href="#" className="no-underline	text-white over:text-teal-200"> {t("homepageTitle")}</a>
