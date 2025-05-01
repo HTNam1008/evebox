@@ -1,10 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
+
 import AvatarUpload from "./avatarUpload"
-import OrganizerRegistrationPopup from "./orgRegisterPopup
+import OrganizerRegistrationPopup from "./orgRegisterPopup"
 
 export default function ProfileForm() {
   const [form, setForm] = useState({
