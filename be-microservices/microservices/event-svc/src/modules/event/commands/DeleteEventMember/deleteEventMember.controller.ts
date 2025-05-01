@@ -12,7 +12,7 @@ import {
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { DeleteEventMemberService } from './deleteEventMember.service';
-import { ApiTags, ApiHeader, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Org - EventMember')
 @Controller('org/member')
@@ -21,11 +21,7 @@ export class DeleteEventMemberController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':eventId')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true,
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Soft delete an event member by eventId and email' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Member soft deleted successfully' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input or already deleted' })

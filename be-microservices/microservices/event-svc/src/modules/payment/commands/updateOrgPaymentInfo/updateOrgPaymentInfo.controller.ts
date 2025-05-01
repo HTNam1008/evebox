@@ -1,6 +1,6 @@
 import { Controller, Put, Param, Body, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiBody } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { UpdateOrgPaymentInfoService } from './updateOrgPaymentInfo.service';
 import { UpdateOrgPaymentInfoDto } from './updateOrgPaymentInfo.dto';
@@ -13,6 +13,7 @@ export class UpdateOrgPaymentInfoController {
   
   @UseGuards(JwtAuthGuard)
   @Put(':id')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update Org Payment Information by id' })
   @ApiParam({ name: 'id', type: String, description: 'OrgPaymentInfo ID to update' })
   @ApiBody({ type: UpdateOrgPaymentInfoDto })

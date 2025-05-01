@@ -1,6 +1,6 @@
 import { Controller, Get, Query, Res, HttpStatus, UseGuards, Request } from "@nestjs/common";
 import { Response } from "express";
-import { ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/shared/guard/jwt-auth.guard";
 import { GetEventsService } from "./getEvents.service";
 import { EventDataResponse } from "./getEvents-response.dto";
@@ -12,11 +12,7 @@ export class GetEventsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get events with filters and pagination' })
   @ApiQuery({ name: 'isApproved', required: false, description: 'Filter events by approval status', type: Boolean })
   @ApiQuery({ name: 'isDeleted', required: false, description: 'Filter events by deletion status', type: Boolean })

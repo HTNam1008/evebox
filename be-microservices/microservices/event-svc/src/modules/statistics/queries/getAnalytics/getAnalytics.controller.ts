@@ -1,6 +1,6 @@
 import { Controller, Get, Res, HttpStatus, UseGuards, Param, Request, Req, Query } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { StatisticsService } from './getAnalytics.service';
 import { AnalyticsResponseDto } from './getAnalytics-response.dto';
@@ -12,11 +12,7 @@ export class GetAnalyticsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('analytic/:eventId')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token',
-    required: true,
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get event analytics' })
   @ApiResponse({ status: 200, description: 'Analytics retrieved successfully', type: AnalyticsResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

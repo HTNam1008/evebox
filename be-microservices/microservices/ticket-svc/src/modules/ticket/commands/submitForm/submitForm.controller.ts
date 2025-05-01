@@ -13,11 +13,8 @@ export class SubmitFormController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/submitForm')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Submit form responses' })
   @ApiBody({ type: SubmitFormDto })
   @ApiResponse({

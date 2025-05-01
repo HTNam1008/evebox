@@ -14,11 +14,8 @@ export class GetPayOSStatusController {
   @UseGuards(JwtAuthGuard)
   @Get('/getPayOSStatus')
   @ApiQuery({ name: 'orderCode', type: Number, required: true })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Get status of all payment method' })
   @ApiResponse({
     status: HttpStatus.OK,

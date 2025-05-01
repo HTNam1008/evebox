@@ -1,6 +1,6 @@
 import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, Param, Put, Query, Req } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateShowingService } from './updateShowing.service';
 import { UpdateShowingDto } from './updateShowing.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
@@ -13,11 +13,7 @@ export class UpdateShowingController {
 
   @UseGuards(JwtAuthGuard)
   @Put('/:id')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update an existing showing' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Showing updated successfully', type: UpdateShowingResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
