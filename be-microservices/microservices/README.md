@@ -15,6 +15,7 @@ Step 1. Redis Sentinel
 
 Step 2. Kafka
     - Start kafka:
+      - Replace local ip v4 to variable `KAFKA_CFG_ADVERTISED_LISTENERS=EXTERNAL://${local_ip}:9193`
       - Open cmd in root folder(microservices): "docker-compose -f docker/kafka/docker-compose-broker-kafka.yaml up"
     - Stop kafka:
       - Ctrl+C in cmd.
