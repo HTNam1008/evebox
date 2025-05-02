@@ -203,4 +203,3 @@ export default function AvatarUpload({initAvatarId}: { initAvatarId?: number }) 
         </div>
     );
 }
-
