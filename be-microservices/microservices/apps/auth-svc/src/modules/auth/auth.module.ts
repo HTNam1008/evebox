@@ -32,8 +32,6 @@ import { GetUserController } from './queries/get-user/get-user.controller';
 import { GetUserService } from './queries/get-user/get-user.service';
 import { KafkaModule } from 'src/infrastructure/adapters/kafka/kafka.module';
 import { RedisModule, CacheService } from '@evebox/redis';
-import { UpdateUserController } from './commands/update-user/update-user.controller';
-import { UpdateUserService } from './commands/update-user/update-user.service';
 
 @Module({
   imports: [
@@ -65,7 +63,6 @@ import { UpdateUserService } from './commands/update-user/update-user.service';
     ForgotPasswordController,
     GoogleLoginController,
     GetUserController,
-    UpdateUserController,
   ],
   providers: [
     RegisterUserService,
@@ -85,7 +82,6 @@ import { UpdateUserService } from './commands/update-user/update-user.service';
     GoogleLoginService,
     GetUserService,
     CacheService,
-    UpdateUserService,
   ],
   exports: [UserRepositoryImpl, CacheService],
 })
