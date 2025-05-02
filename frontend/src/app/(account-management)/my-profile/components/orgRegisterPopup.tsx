@@ -1,7 +1,8 @@
 "use client"
 
-import type React from "react"
 import { useState } from "react"
+import { ChangeEvent } from 'react';
+import { X } from "lucide-react"
 
 interface OrganizerRegistrationPopupProps {
   onClose: () => void
@@ -24,7 +25,7 @@ export default function OrganizerRegistrationPopup({ onClose, onSuccess }: Organ
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handlePaymentInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+  const handlePaymentInputChange = (e: ChangeEvent<HTMLInputElement>, field: string) => {
     setPaymentForm((prev) => ({
       ...prev,
       [field]: e.target.value,
@@ -59,13 +60,11 @@ export default function OrganizerRegistrationPopup({ onClose, onSuccess }: Organ
     // Xác thực form
     const newErrors: Record<string, string> = {}
 
-    // Kiểm tra các trường chung
     if (!paymentForm.accName.trim()) newErrors.accName = "Vui lòng nhập tên chủ tài khoản"
     if (!paymentForm.accNum.trim()) newErrors.accNum = "Vui lòng nhập số tài khoản"
     if (!paymentForm.bankName.trim()) newErrors.bankName = "Vui lòng nhập tên ngân hàng"
     if (!paymentForm.bankBranch.trim()) newErrors.bankBranch = "Vui lòng nhập chi nhánh"
 
-    // Kiểm tra các trường theo loại hình kinh doanh
     if (paymentForm.typeBusiness === "Cá nhân") {
       if (!paymentForm.perName.trim()) newErrors.perName = "Vui lòng nhập họ tên"
       if (!paymentForm.perAddress.trim()) newErrors.perAddress = "Vui lòng nhập địa chỉ"
@@ -89,7 +88,16 @@ export default function OrganizerRegistrationPopup({ onClose, onSuccess }: Organ
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <h3 className="text-lg font-bold mb-4 text-center">Đăng ký làm Nhà Tổ chức</h3>
+        <div className="relative flex items-center justify-center mb-4 rounded-t-lg">
+          <h3 className="text-lg font-bold text-[#0C4762]">Đăng ký làm Nhà Tổ chức</h3>
+          <button
+            onClick={onClose}
+            className="absolute right-2 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+            aria-label="Đóng"
+          >
+            <X size={18} />
+          </button>
+        </div>
 
         <div
           className="p-4 rounded-lg mb-4"

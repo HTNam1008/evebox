@@ -1,7 +1,7 @@
 "use client"
 
-import type React from "react"
 import { useState } from "react"
+import { ChangeEvent } from 'react';
 
 import AvatarUpload from "./avatarUpload"
 import OrganizerRegistrationPopup from "./orgRegisterPopup"
@@ -16,7 +16,7 @@ export default function ProfileForm() {
   const [showPopup, setShowPopup] = useState(false)
   const [isRegistered, setIsRegistered] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 

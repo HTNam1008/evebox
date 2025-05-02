@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { Camera } from "lucide-react";
+import { ChangeEvent } from 'react';
 
 export default function AvatarUpload() {
     const [image, setImage] = useState<string | null>(null);
 
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const imageUrl = URL.createObjectURL(file);
