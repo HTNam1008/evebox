@@ -89,14 +89,14 @@ export default function AvatarUpload({initAvatarId}: { initAvatarId?: number }) 
                                         onClick={() => cameraInputRef.current?.click()}
                                         className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
                                     >
-                                        Take Photo
+                                        Upload a image
                                     </button>
                                     <button
                                         type="button"
                                         onClick={handleOpenGallery}
                                         className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
                                     >
-                                        Choose from Library
+                                        Choose from uploaded images
                                     </button>
                                     <button
                                         type="button"

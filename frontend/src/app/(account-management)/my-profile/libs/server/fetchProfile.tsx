@@ -14,7 +14,9 @@ export const fetchProfile = async () => {
       `${process.env.NEXT_PUBLIC_CLIENT_URL}/api/user/me`,
       {
         method: "GET",
-        headers: requestHeaders
+        headers: requestHeaders,
+        cache: "no-store",
+        next: { revalidate: 0 },
       }
 
     );

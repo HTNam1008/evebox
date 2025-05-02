@@ -28,6 +28,12 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         refresh_token: session.user.refreshToken
       });
       
+      // Clear cookies on client side
+      document.cookie.split(';').forEach(cookie => {
+        const [name] = cookie.trim().split('=');
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      });
+
       // Clear client session and redirect
       await signOut({ 
         redirect: true,

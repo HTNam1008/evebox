@@ -20,6 +20,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRole } from 'src/common/enums/user-role.enum';
 import { BaseController } from 'src/common/utils/base.controller';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @Controller('api/admin')
 export class AdminController extends BaseController{
@@ -27,7 +28,7 @@ export class AdminController extends BaseController{
     super();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':userId/status')
   @Roles(UserRole.ADMIN)
   async updateUserStatus(
@@ -54,7 +55,7 @@ export class AdminController extends BaseController{
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('user')
   @Roles(UserRole.ADMIN)
   async getUsers(
