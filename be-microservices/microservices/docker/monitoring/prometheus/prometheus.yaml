@@ -1,0 +1,38 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "evebox-prometheus"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["host.docker.internal:9090"]
+    metrics_path: "/metrics"
+
+  # - job_name: "evebox-api-gateway"
+  #   scrape_interval: 5s
+  #   static_configs:
+  #     - targets: [ "localhost:8000" ]
+  #   metrics_path: "/actuator/prometheus"
+
+  # - job_name: "banvetau-node-exporter"
+  #   scrape_interval: 5s
+  #   static_configs:
+  #     - targets: [ "host.docker.internal:9100" ]
+
+  - job_name: "evebox-postgresql-auth-exporter"
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ "host.docker.internal:9901" ]
+    metrics_path: "/metrics"
+
+  # - job_name: "banvetau-redis-exporter"
+  #   scrape_interval: 5s
+  #   static_configs:
+  #     - targets: [ "host.docker.internal:9121" ]
+  #   metrics_path: "/metrics"
+
+#  - job_name: "banvetau-logstash-exporter"
+#    scrape_interval: 5s
+#    static_configs:
+#      - targets: [ "host.docker.internal:9304" ]
+#    metrics_path: "/metrics"

@@ -15,6 +15,7 @@ import { IOTPData } from './user.repository.interface';
 import { OTPType } from '../domain/enums/otp-type.enum';
 import { DomainEvent } from 'src/libs/ddd/domain-event.base';
 import { OTP } from '../domain/entities/otp.entity';
+import { Avatar } from '../domain/value-objects/user/avatar.vo';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -33,6 +34,7 @@ export class UserRepositoryImpl implements UserRepository {
             province: true,
           },
         },
+        avatar: true,
       },
     });
 
@@ -149,6 +151,7 @@ export class UserRepositoryImpl implements UserRepository {
       include: {
         role: true;
         userProvince: { include: { province: true } };
+        avatar: true;
       };
     }>,
   ): User {
@@ -196,6 +199,12 @@ export class UserRepositoryImpl implements UserRepository {
     }
     const provinceIds = provinceIdsOrError.unwrap();
 
+    const avatarIdOrError = Avatar.create(userRecord.avatar_id)  // Lấy avatar_id từ userRecord nếu có
+    if (avatarIdOrError.isErr()) {
+      throw new Error(avatarIdOrError.unwrapErr().message);
+    }
+    const avatarId = avatarIdOrError.unwrap();
+
     const userOrError = User.createExisting(
       userId,
       name,
@@ -204,6 +213,7 @@ export class UserRepositoryImpl implements UserRepository {
       phone,
       role,
       provinceIds,
+      avatarId,
     );
     if (userOrError.isErr()) {
       throw new Error(userOrError.unwrapErr().message);
@@ -343,5 +353,16 @@ export class UserRepositoryImpl implements UserRepository {
       console.error('Error removing refresh tokens:', error);
       throw new Error('Failed to remove refresh tokens');
     }
+  }
+
+  async updateUserInfo(user: User): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: user.id.value },
+      data: {
+        name: user.name.value,
+        phone: user.phone.value,
+        avatar_id: user.avatarId
+      },
+    });
   }
 }

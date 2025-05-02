@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, UseGuards, Request, Get, Headers } from '@nestjs/common';
+import { Controller, Post, Body, Res, UseGuards, Request, Get, Headers, Patch } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { FastifyReply } from 'fastify';
 import { firstValueFrom } from 'rxjs';
@@ -12,6 +12,7 @@ import { VerifyOTPDto } from './dto/verify-otp.dto';
 import { ResendOTPDto } from './dto/resend-otp.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('api/user')
 export class AuthController {
@@ -287,4 +288,39 @@ export class AuthController {
         .send(error.response?.data || { message: 'Internal server error' });
     }
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  async updateUser(@Request() req, @Body() body: UpdateUserDto, @Res() res: FastifyReply) {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.patch(
+          `${process.env.AUTH_SERVICE_URL}/api/user/me`,
+          body,
+          {
+            headers: {
+              'X-User-Email': req.user.email,
+              'X-User-Role': req.user.role,
+            },
+          },
+        ),
+      );
+
+      // Convert headers to a compatible format
+      const safeHeaders = convertToSafeHeaders(response.headers);
+
+      return res
+        .status(response.status)
+        .headers(safeHeaders)
+        .send(response.data);
+    } catch (error) {
+      return res
+        .status(error.response?.status || 500)
+        .send(error.response?.data || { message: 'Internal server error' });
+    }
+  }
+
+  // TODO: Redirect api Refresh token
 }
+
+

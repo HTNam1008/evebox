@@ -10,6 +10,7 @@ import { Phone } from '../value-objects/user/phone.vo';
 import { ProvinceId } from '../value-objects/user/province-id.vo';
 import { Result, Ok, Err } from 'oxide.ts';
 import { UserPasswordResetDomainEvent } from '../events/user/user-reset-password.domain-event';
+import { Avatar } from '../value-objects/user/avatar.vo';
 
 interface UserProps {
   id: UserId;
@@ -19,6 +20,7 @@ interface UserProps {
   phone: Phone;
   role: Role;
   provinceIds: ProvinceId[]; // Định nghĩa provinceIds là một mảng ProvinceId
+  avatar_id?: Avatar;
 }
 
 export class User extends AggregateRoot<UserId, UserProps> {
@@ -75,6 +77,7 @@ export class User extends AggregateRoot<UserId, UserProps> {
     phone: Phone,
     role: Role,
     provinceIds: ProvinceId[], // Nhận danh sách ProvinceIds
+    avatarId?: Avatar,
   ): Result<User, Error> {
     return Ok(new User(id, {
       id,
@@ -84,6 +87,7 @@ export class User extends AggregateRoot<UserId, UserProps> {
       phone,
       role,
       provinceIds, // Gán danh sách ProvinceIds
+      avatar_id: avatarId,
     }));
   }
   
@@ -94,6 +98,18 @@ export class User extends AggregateRoot<UserId, UserProps> {
     this.addDomainEvent(
       new UserPasswordResetDomainEvent(this)
     );
+  }
+
+  public updateName(name: Name): void {
+    this.props.name = name;
+  }
+
+  public updatePhone(phone: Phone): void {
+    this.props.phone = phone;
+  }
+
+  public updateAvatarId(avatarId: Avatar): void {
+    this.props.avatar_id = avatarId;
   }
 
   // Các getter
@@ -119,6 +135,10 @@ export class User extends AggregateRoot<UserId, UserProps> {
 
   public get provinceIds(): ProvinceId[] {
     return this.props.provinceIds;
+  }
+
+  public get avatarId(): number | undefined {
+    return this.props.avatar_id.value;
   }
 
   /**

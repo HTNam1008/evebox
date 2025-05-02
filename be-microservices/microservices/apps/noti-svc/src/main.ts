@@ -23,16 +23,16 @@ async function bootstrap() {
           multiplier: 1.5, 
         },
       },
-      consumer: {
-        groupId: process.env.KAFKA_CONSUMER_GROUP_ID || 'notification-service-group',
-        allowAutoTopicCreation: true,
-        retry: {
-          restartOnFailure: async (err) => {
-            Logger.error(`Kafka consumer error: ${err.message}`, 'KafkaConsumer');
-            return true;
-          }, 
-        }
-      },
+      // consumer: {
+      //   groupId: process.env.KAFKA_CONSUMER_GROUP_ID || 'notification-service-group',
+      //   allowAutoTopicCreation: true,
+      //   retry: {
+      //     restartOnFailure: async (err) => {
+      //       Logger.error(`Kafka consumer error: ${err.message}`, 'KafkaConsumer');
+      //       return true;
+      //     }, 
+      //   }
+      // },
       subscribe: {
         fromBeginning: true, // Đọc message từ đầu nếu không có offset
       }
