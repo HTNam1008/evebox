@@ -14,15 +14,16 @@ Step 1. Redis Sentinel
        - Select "mymaster" and click "Add database"
 
 Step 2. Kafka
-    - Start kafka:
-      - Open cmd in root folder(microservices): "docker-compose -f docker/kafka/docker-compose-broker-kafka.yaml up"
-    - Stop kafka:
-      - Ctrl+C in cmd.
-    - Kafka Apache UI: 
-      - Open browser: "http://localhost:8080"
-    - ADVANCED:
-      - Increment partition topic:
-        - "docker exec -it kafka1 kafka-topic.sh --alter --topic \{NAME\_TOPIC\} --bootstrap-server localhost:9092 --partitions \{NUMBER\_PARTITION\}"
+ - Start kafka:
+   - Replace my local ip v4 to variable `KAFKA_CFG_ADVERTISED_LISTENERS=EXTERNAL://${local_ip}:9193`
+   - Open cmd in root folder(microservices): "docker-compose -f docker/kafka/docker-compose-broker-kafka.yaml up"
+ - Stop kafka:
+   - Ctrl+C in cmd.
+ - Kafka Apache UI: 
+   - Open browser: "http://localhost:8080"
+ - ADVANCED:
+   - Increment partition topic:
+     - "docker exec -it kafka1 kafka-topic.sh --alter --topic \{NAME\_TOPIC\} --bootstrap-server localhost:9092 --partitions \{NUMBER\_PARTITION\}"
 
 Step 3. Gateway-Service
    - Port: 8000
