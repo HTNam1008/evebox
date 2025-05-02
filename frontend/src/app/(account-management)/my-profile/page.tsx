@@ -1,14 +1,15 @@
 "use client";
 
+/* Package System */
 import "tailwindcss/tailwind.css";
 import { useState } from "react";
 
+/* Package Application */
 import AvatarUpload from "./components/avatarUpload";
-import { User2Icon } from "lucide-react";
+import EventSlider from "@/app/(dashboard)/components/dashboard/eventSlider";
 
 export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState("info");
-    const [favoriteTab, setFavoriteTab] = useState("events");
 
     const [form, setForm] = useState({
         name: "Van A",
@@ -20,11 +21,12 @@ export default function ProfilePage() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const favoriteEvents = [
-        { id: 1, name: "Hội chợ Công nghệ 2025" },
-        { id: 2, name: "Workshop Thiết kế UI/UX" },
-    ];
+    //Call API truyền dữ liệu các sự kiện yêu thích vào
+    const events = {
+        favoriteEvents: [],
+    };
 
+     //Call API truyền dữ liệu nhà tổ chức yêu thích
     const favoriteOrganizers = [
         { id: 1, name: "TechFest Vietnam" },
         { id: 2, name: "UX Lovers Community" },
@@ -34,19 +36,6 @@ export default function ProfilePage() {
         { key: "info", label: "Thông tin cá nhân" },
         { key: "favorites", label: "Danh sách yêu thích" },
     ];
-
-    const favoriteTabs = [
-        { key: "events", label: "Sự kiện yêu thích" },
-        { key: "organizers", label: "Nhà tổ chức yêu thích" },
-    ];
-
-    const getInitials = (name: string) => {
-        return name
-            .split(" ")
-            .map((word) => word[0])
-            .join("")
-            .toUpperCase();
-    };
 
     return (
         <>
@@ -65,7 +54,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Tab Navigation */}
-                <div className="border-b border-gray-200 bg-white shadow-sm">
+                <div className="profile-favorite-tab border-b border-gray-200 bg-white shadow-sm">
                     <div className="max-w-4xl mx-auto px-4 flex space-x-6">
                         {tabs.map((tab) => (
                             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
@@ -81,7 +70,7 @@ export default function ProfilePage() {
                 </div>
 
                 {activeTab === "info" && (
-                    <div className="max-w-3xl mx-auto mb-10">
+                    <div className="profile-page max-w-3xl mx-auto mb-10">
                         {/* Header */}
                         <div className="flex justify-between items-center">
                             <div>
@@ -153,40 +142,44 @@ export default function ProfilePage() {
                 )}
 
                 {activeTab === "favorites" && (
-                    <div className="max-w-3xl mx-auto mb-10">
+                    <div className="favorite-page max-w-3xl mx-auto mb-10">
                         <div className="flex justify-between items-center">
                             <h2 className="text-2xl font-bold mt-8">Danh sách yêu thích của tôi</h2>
                         </div>
 
                         <hr className="my-6 border-gray-700" />
 
-                        {/* Sub-tab Navigation */}
-                        <div className="flex space-x-4 mb-6">
-                            {favoriteTabs.map((tab) => (
-                                <button key={tab.key} onClick={() => setFavoriteTab(tab.key)}
-                                    className={`text-sm font-medium px-3 py-2 rounded-md transition ${favoriteTab === tab.key
-                                        ? "bg-teal-400 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
-                                    {tab.label}
-                                </button>
-                            ))}
+                        <div className="list-event-favorite">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
+                                <h2 className="text-lg md:text-2lg font-bold">
+                                    Sự kiện <span className="text-teal-400"> Yêu thích</span>
+                                </h2>
+                            </div>
+                            {events.favoriteEvents.length > 0 ? (
+                                <EventSlider title="" subtitle="" events={events.favoriteEvents} />
+                            ) : (
+                                <p>Bạn chưa có Sự kiện yêu thích nào!</p>
+                            )}
                         </div>
 
-                        {favoriteTab === "events" && (
-                            <div className="grid grid-cols-1 gap-4">
-                                <div className="p-4 bg-gray-100 rounded-md shadow-sm">Hội chợ Công nghệ 2025</div>
-                                <div className="p-4 bg-gray-100 rounded-md shadow-sm">Workshop UI/UX</div>
+                        <div className="list-organizer-favorite mt-8">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
+                                <h2 className="text-lg md:text-2lg font-bold">
+                                    Nhà tổ chức <span className="text-teal-400"> Yêu thích</span>
+                                </h2>
                             </div>
-                        )}
-
-                        {favoriteTab === "organizers" && (
-                            <div className="grid grid-cols-1 gap-4">
-                                <div className="p-4 bg-gray-100 rounded-md shadow-sm">TechFest Vietnam</div>
-                                <div className="p-4 bg-gray-100 rounded-md shadow-sm">UX Lovers</div>
-                            </div>
-                        )}
+                            {favoriteOrganizers.length > 0 ? (
+                                favoriteOrganizers.map((org) => (
+                                    <div key={org.id} className="flex items-center gap-3 p-4 bg-gray-100 rounded-md shadow-sm mt-2">
+                                        <span>{org.name}</span>
+                                    </div>
+                                ))
+                            ):(
+                                <p>Bạn chưa có Nhà tổ chức yêu thích nào!</p>
+                            )}
+                        </div>
                     </div>
                 )}
-
             </div>
         </>
     );
