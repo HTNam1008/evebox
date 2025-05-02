@@ -45,13 +45,14 @@ export default function EventDetailClient({ event: events, recommendedEvent: rec
           }
       }
 
-     try {
-      await postClickEvent({ eventId, userId });
+      postClickEvent({ eventId, userId });
       hasSentClick.current = true;
-      console.log("akfkkfkfk");
-     } catch (error) {
-      console.error('Failed to register click:', error);
-     }
+
+    //  try {
+     
+    //  } catch (error) {
+    //   console.error('Failed to register click:', error);
+    //  }
     };
 
     sendClick();

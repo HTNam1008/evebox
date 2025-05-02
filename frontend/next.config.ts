@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  reactStrictMode: false,
+  reactStrictMode: true,
   images: {
     domains: ["images.tkbcdn.com", "salt.tkbcdn.com", "res.cloudinary.com"], // Add all external domains here
   },
