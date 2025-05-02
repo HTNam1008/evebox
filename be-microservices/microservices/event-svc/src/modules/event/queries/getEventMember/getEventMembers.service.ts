@@ -16,9 +16,11 @@ export class GetEventMembersService {
     try {
       const event = await this.repository.getEventOrganizer(eventId);
       if (!event) return Err(new Error('Event not found'));
-      if (event.organizerId !== currentEmail) {
-        return Err(new Error('Only organizer can view members'));
-      }
+      // const canManage = await this.repository.hasPermissionToManageMembers(eventId, currentEmail);
+
+      // if (!canManage) {
+      //   return Err(new Error('You do not have permission to manage members.'));
+      // }
 
       const members = await this.repository.getMembers(eventId, query);
 

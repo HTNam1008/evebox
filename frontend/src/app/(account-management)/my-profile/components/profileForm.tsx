@@ -5,24 +5,45 @@ import { useState, useEffect } from "react";
 import AvatarUpload from "./avatarUpload";
 import useProfile from "../libs/hooks/useProfile";
 import AlertDialog from "@/app/(showing)/showing/components/alertDialog";
-import { ProfileFormProps } from "../libs/interface/profile.interface";
+import { gatewayService } from "@/services/instance.service";
+import Loading from "../loading";
 
-export default function ProfileForm({ initialProfile }: ProfileFormProps) {
+export default function ProfileForm() {
     const { updateProfile } = useProfile();
-    const [form, setForm] = useState(initialProfile);
+    const [profile, setProfile] = useState(null);
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        avatar_id: 0
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogMessage, setDialogMessage] = useState("");
-
-    /* useEffect(() => {
-        if (profile) {
+    const [isLoading, setIsLoading] = useState(true);
+    const fetchProfile = async () => {
+        try {
+            setIsLoading(true);
+            const response = await gatewayService.get("/api/user/me");
+            setProfile(response.data.data);
+            
+            // Update form with profile data
             setForm({
-                name: profile.name || "",
-                email: profile.email || "",
-                phone: profile.phone || ""
+                name: response.data.data?.name || "",
+                email: response.data.data?.email || "",
+                phone: response.data.data?.phone || "",
+                avatar_id: response.data.data?.avatar_id || ""
             });
+        } catch (err) {
+            console.error("Profile fetch error:", err);
+        } finally {
+            setIsLoading(false);
         }
-    }, [profile]); */
+    };
+
+    useEffect(() => {
+        fetchProfile();
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -51,6 +72,10 @@ export default function ProfileForm({ initialProfile }: ProfileFormProps) {
             setIsSubmitting(false);
         }
     };
+
+    if (isLoading) {
+        return <><Loading/></>;
+    }
 
     return (
         <div className="max-w-3xl mx-auto">
@@ -121,6 +146,7 @@ export default function ProfileForm({ initialProfile }: ProfileFormProps) {
                             {isSubmitting ? 'Đang xử lý...' : 'Lưu'}
                         </button>
                     </div>
+                    <div className="h-16"></div>
                 </div>
             </form>
         </div>

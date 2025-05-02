@@ -58,3 +58,38 @@ export const searchEvents = async (params: SearchEventsParams): Promise<BaseApiR
 
   return res.data;
 }
+
+export const getFDByIds = async (eventIds: number[]): Promise<Event[]> => {
+  const allEvents: Event[] = [];
+
+    try {
+      const res = await eventService.get(END_POINT_LIST.EVENT.GET_FRONT_DISPLAY_BY_IDS, {
+        params: { ids:eventIds },
+      });
+      return res.data.data;
+    } catch (error) {
+      console.error(error);
+    }
+  return []
+};
+
+interface PostClickParams {
+  eventId: number;
+  userId?: string; // Optional: could be a real user or a guest UUID
+}
+
+export const postClickEvent = async (
+  params: PostClickParams
+): Promise<BaseApiResponse<string>> => {
+  const urlParams = new URLSearchParams();
+  urlParams.append("eventId", params.eventId.toString());
+  if (params.userId) urlParams.append("userId", params.userId);
+
+  const res = await eventService.post(
+    `${END_POINT_LIST.EVENT.CLICKS}?${urlParams.toString()}`
+  );
+
+  if (!res) throw new Error("Failed to post click event");
+
+  return res.data;
+};

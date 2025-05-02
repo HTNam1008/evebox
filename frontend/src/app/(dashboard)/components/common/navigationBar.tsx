@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import 'tailwindcss/tailwind.css';
 
 /* Package Application */
 import Sidebar from "./sidebar";
@@ -31,10 +32,9 @@ const NavigationBar = () => {
       try {
         const response = await gatewayService.get<UserInfoResponse>("/api/user/me"); // Assuming your API route is /api/me
         setUserInfo(response.data.data);
-        // if (response?.data?.data?.name) {
-        //   localStorage.setItem("name", response.data.data.name);
-        //   localStorage.setItem("phone", response.data.data.phone);
-        // }
+        if (response?.data?.data?.name) {
+          localStorage.setItem("name", response.data.data.name);
+        }
       } catch (error) {
         console.error("Error fetching user info:", error);
       } finally {

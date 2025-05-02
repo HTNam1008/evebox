@@ -20,6 +20,7 @@ export class END_POINT_LIST {
     CLICKS: "/api/event/detail/clicks",
     ALL_CATEGORIES: "/api/categories",
     GET_FRONT_DISPLAY: "/api/event/front-display",
+    GET_FRONT_DISPLAY_BY_IDS: "/api/event/fd-by-ids"
   };
 
   static readonly ORG_EVENT = {
@@ -43,5 +44,6 @@ export class END_POINT_LIST {
   static readonly ORG_STATISTICS = {
     GET_SUMMARY: "/api/org/statistics/summary",
     GET_ORDERS: "/api/org/statistics/orders",
+    GET_ANALYTIC: "/api/org/statistics/analytic"
   };
 }

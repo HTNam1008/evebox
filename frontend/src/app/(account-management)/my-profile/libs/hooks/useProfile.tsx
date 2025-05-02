@@ -20,7 +20,7 @@ export default function useProfile() {
       console.error("Profile fetch error:", err);
     } 
   };
-
+  
   useEffect(() => {
     if (session?.user?.accessToken) {
       fetchProfile();
@@ -39,7 +39,7 @@ export default function useProfile() {
   };
 
   return {
-    // profile,
+    profile,
     updateProfile,
     refresh: fetchProfile,
   };

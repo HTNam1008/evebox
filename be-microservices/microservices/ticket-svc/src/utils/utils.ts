@@ -11,9 +11,9 @@ export async function generateQRCode(data: string): Promise<string> {
 }
 
 /**
- * encrypt string to ciphertext hex form.
+ * encrypt string to ciphertext base64 form.
  * @param text string to encrypt
- * @returns ciphertext dạng hex
+ * @returns ciphertext dạng base64
  */
 export function encrypt(text: string): string {
   const cipher = crypto.createCipheriv(algorithm, key, iv);
@@ -24,13 +24,13 @@ export function encrypt(text: string): string {
 
 
 /**
- * decrypt ciphertext hex form to string.
- * @param encryptedText ciphertext dạng hex
+ * decrypt ciphertext base64 form to string.
+ * @param encryptedText ciphertext dạng base64
  * @returns decrypted string
  */
-export function decrypt(encryptedText: string): string {
+export function decrypt(encryptedText: string): any {
   const decipher = crypto.createDecipheriv(algorithm, key, iv);
-  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+  let decrypted = decipher.update(encryptedText, 'base64', 'utf8');
   decrypted += decipher.final('utf8');
-  return decrypted;
+  return JSON.parse(decrypted);;
 }

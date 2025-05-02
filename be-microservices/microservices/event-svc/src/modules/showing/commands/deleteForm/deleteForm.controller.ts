@@ -1,6 +1,6 @@
 import { Controller, Delete, Param, Res, HttpStatus, Request, UseGuards } from "@nestjs/common";
 import { Response } from "express";
-import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiQuery, ApiHeader } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiQuery, ApiBearerAuth } from "@nestjs/swagger";
 import { DeleteFormService } from "./deleteForm.service";
 import { DeleteFormResponseDto } from "./deleteForm-response.dto";
 import { DeleteFormDto } from "./deleteForm.dto";
@@ -13,11 +13,7 @@ export class DeleteFormController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('form/:id')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true,
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Soft delete a form' })
   @ApiParam({ name: 'id', type: Number, description: 'Form ID to delete' })
   @ApiResponse({ status: 200, description: 'Form deleted successfully', type: DeleteFormResponseDto })

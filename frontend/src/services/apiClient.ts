@@ -1,10 +1,13 @@
 import axios, { AxiosError, AxiosHeaders, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { getSession, signOut } from "next-auth/react";
 import axiosRetry from "axios-retry";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import { getServerSession } from "next-auth";
 
 let cachedSession: Awaited<ReturnType<typeof getSession>> | null = null;
+
+// Check if code is running on server or client
+const isServer = typeof window === 'undefined';
 
 const createApiClient = (baseUrl: string): AxiosInstance => {
   const apiClient = axios.create({ baseURL: baseUrl });
@@ -49,20 +52,23 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
         originalRequest._retry = true;
 
         try {
-          cachedSession = await getServerSession(authOptions);
+          if (isServer) {
+            cachedSession = await getServerSession(authOptions);
+          } else {
+            cachedSession = await getSession();
+          }
           const refreshToken = cachedSession?.user?.refreshToken;
           if (!refreshToken) {
             throw new Error("No refresh token available");
           }
 
-          // TODO: Update the URL to your gateway
           const refreshResponse = await axios.post(
-            // `${process.env.NEXT_PUBLIC_API_URL}/api/user/refresh-token`,
-            `http://localhost:8001/api/user/refresh-token`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/user/refresh-token`,
             { refresh_token: refreshToken }
           );
 
           const { access_token, refresh_token } = refreshResponse.data.data;
+          console.log("New token:", access_token);
 
           if (cachedSession?.user) {
             cachedSession.user.accessToken = access_token;

@@ -18,13 +18,11 @@ model User {
   created_at    DateTime       @default(now())
   refreshTokens RefreshToken[]
   userProvince  UserProvince[]
-  avatar_id     Int?   
-
   role          Role?          @relation(fields: [role_id], references: [id])
-  images        Image[]        @relation("UserUploadedImages") 
-  avatar        Image?         @relation("UserAvatar", fields: [avatar_id], references: [id])
+
   @@map("users")
 }
+
 
 model Role {
   id        Int    @id
@@ -99,16 +97,6 @@ model locations {
   districts  districts @relation(fields: [districtId], references: [id], onDelete: Cascade)
 }
 
-model Image {
-  id                                Int     @id @default(autoincrement())
-  imageUrl                          String  @db.VarChar(255)
-  userEmail                              String  
-  createdAt                          DateTime @default(now())
-  
-  user                              User  @relation("UserUploadedImages",fields: [userEmail], references: [email], onDelete: Cascade)
-  avatarUser                        User[]    @relation("UserAvatar")
-  @@map("images")
-}
 
 enum OTPType {
   FORGOT_PASSWORD

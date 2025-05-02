@@ -15,6 +15,7 @@ import { GoogleLoginDto } from './dto/google-login.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { BaseController } from 'src/common/utils/base.controller';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('api/user')
 export class AuthController extends BaseController {
@@ -172,6 +173,39 @@ export class AuthController extends BaseController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  async changePassword(
+    @Request() req,
+    @Body() body: ChangePasswordDto,
+    @Res() res: FastifyReply,
+    @Headers() headers: Record<string, string>,
+  ) {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post(
+          `${process.env.AUTH_SERVICE_URL}/api/user/change-password`,
+          body,
+          {
+            headers: {
+              'X-User-Email': req.user.email,
+            },
+          },
+        ),
+      );
+
+      // Convert headers to a compatible format
+      const safeHeaders = convertToSafeHeaders(response.headers);
+
+      return res
+        .status(response.status)
+        .headers(safeHeaders)
+        .send(response.data);
+    } catch (error) {
+      return this.handleError(error, res);
+    }
+  }
+
   @Post('otps/verify-otp')
   async verifyOtp(@Body() body: VerifyOTPDto, @Res() res: FastifyReply) {
     try {
@@ -242,6 +276,7 @@ export class AuthController extends BaseController {
   @Get('me')
   async getProfile(@Request() req, @Res() res: FastifyReply, @Headers() headers: Record<string, string>) {
     try {
+      Logger.verbose("Req.user", req.user.email, req.user.role);
       const response = await firstValueFrom(
         this.httpService.get(
           `${process.env.AUTH_SERVICE_URL}/api/user/me`,
@@ -323,5 +358,3 @@ export class AuthController extends BaseController {
     }
   }
 }
-
-

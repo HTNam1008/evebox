@@ -146,4 +146,40 @@ export class AddEventMemberRepository {
 
     return this.prisma.eventUserRelationship.findMany({ where });
   }
+
+  async hasPermissionToManageMembers(eventId: number, userEmail: string): Promise<boolean> {
+    // Step 1: Get the user by email
+    const user = await this.prisma.user.findUnique({
+      where: { email: userEmail },
+    });
+  
+    if (!user) {
+      throw new NotFoundException(`User with email ${userEmail} not found`);
+    }
+  
+    // Step 2: Check if this user is the organizer of the event (they always have permission)
+    const event = await this.getEventById(eventId);
+    if (event?.organizerId === user.email) {
+      return true;
+    }
+  
+    // Step 3: Get user’s role in the event
+    const member = await this.getMember(eventId, user.id);
+    if (!member || member.isDeleted) {
+      return false;
+    }
+  
+    // Step 4: Lookup the role’s permissions in event_role table
+    const role = await this.prisma.eventRole.findUnique({
+      where: { id: member.role },
+    });
+  
+    if (!role) {
+      return false;
+    }
+  
+    // Step 5: Return permission flag
+    return role.viewMember;
+  }
+  
 }

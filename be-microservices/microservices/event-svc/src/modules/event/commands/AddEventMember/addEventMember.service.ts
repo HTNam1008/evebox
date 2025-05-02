@@ -18,9 +18,10 @@ export class AddEventMemberService {
       if (!event) {
         return Err(new Error(`Event with id ${eventId} not found`));
       }
+      const canManage = await this.repository.hasPermissionToManageMembers(eventId, currentEmail);
 
-      if (event.organizerId !== currentEmail) {
-        return Err(new Error('Only the organizer can add members to this event'));
+      if (!canManage) {
+        return Err(new Error('You do not have permission to manage members.'));
       }
 
       const created = await this.repository.addMember(eventId, dto);

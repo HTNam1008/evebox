@@ -25,4 +25,14 @@ export class ClickEventRepository {
       return 2;
     }
   }
+
+  async insertUserClickHistory(eventId: number, userId: string): Promise<void> {
+    await this.prisma.userClickHistory.create({
+      data: {
+        eventId,
+        userId,
+        date: new Date(),
+      },
+    });
+  }
 }

@@ -1,3 +1,5 @@
+import { authOptions } from "@/lib/authOptions";
+import { getServerSession } from "next-auth";
 import { headers } from "next/headers";
 
 export const fetchUsers = async (page: number, pageSize: number) => {
@@ -10,15 +12,13 @@ export const fetchUsers = async (page: number, pageSize: number) => {
         if (cookie) {
           requestHeaders['Cookie'] = cookie;
         }
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_CLIENT_URL}/api/admin/user?page=${page}&pageSize=${pageSize}`, {  
-                
+        
+        const response = await fetch(`${process.env.NEXT_PUBLIC_CLIENT_URL}/api/admin/user?page=${page}&pageSize=${pageSize}`, {   
                 method: "GET",
                 headers: requestHeaders,
                 next: {
                     revalidate: 60 
                 },
-                // cache: "force-cache",
         })
         if (!response.ok) {
             // console.error("Error fetching users:", response);

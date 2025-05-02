@@ -6,76 +6,71 @@ import axios from "axios";
 export const authOptions: AuthOptions = {
   cookies: {
     sessionToken: {
-      name: `next-auth.session-token`,
+      name: "next-auth.session-token",
       options: {
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: "lax", 
         path: "/",
         secure: false,
-        domain: "localhost" 
+        domain: "localhost"
       }
     }
   },
-  session: {
-    strategy: "jwt",
-  },
   providers: [
     CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        try {
-          const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/user/login`,
-            {
+        name: "Credentials",
+        credentials: {
+          email: { label: "Email", type: "email" },
+          password: { label: "Password", type: "password" },
+        },
+        async authorize(credentials) {
+          try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, {
               email: credentials?.email,
               password: credentials?.password,
+            });
+  
+            const user = res.data.data;
+  
+            if (user && credentials?.email) {
+              return {
+                id: user.id,
+                email: credentials.email, // Đảm bảo email là string
+                accessToken: user.access_token,
+                refreshToken: user.refresh_token,
+              };
             }
-          );
-
-          const user = res.data.data;
-          if (user && credentials?.email) {
-            return {
-              id: user.id,
-              email: credentials.email, // Đảm bảo email là string
-              accessToken: user.access_token,
-              refreshToken: user.refresh_token,
-            };
+  
+            return null;
+          } catch (error) {
+            console.error("Error logging in:", error);
+            return null;
           }
-
-          return null;
-        } catch (error) {
-          console.error("Error logging in:", error);
-          return null;
-        }
-      },
-    }),
+        },
+      }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
-        token.userId = user.id;
-        token.email = user.email;
-      }
-      return token;
-    },
-
-    async session({ session, token }) {
-      if (token) {
-        session.user = {
-          id: token.userId as string,
-          email: token.email as string,
-          accessToken: token.accessToken as string,
-          refreshToken: token.refreshToken as string,
-        };
-      }
-      return session;
-    },
+        if (user) {
+          token.accessToken = user.accessToken;
+          token.refreshToken = user.refreshToken;
+          token.userId = user.id;
+          token.email = user.email;
+        }
+        return token;
+      },
+  
+      async session({ session, token }) {
+        if (token) {
+          session.user = {
+            id: token.userId as string,
+            email: token.email as string,
+            accessToken: token.accessToken as string,
+            refreshToken: token.refreshToken as string,
+          };
+        }
+        return session;
+      },
   },
   pages: {
     signIn: "/login",

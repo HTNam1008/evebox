@@ -38,6 +38,8 @@ import { UserCreatedHandler } from './domain/events/handler/user-created.handler
 import { UserChangeStatusHandler } from './domain/events/consumer/handler/user-change-status.handler';
 import { GetUserByIdService } from './queries/get-user-by-id/get-user-by-id.service';
 import { GetUserByIdController } from './queries/get-user-by-id/get-user-by-id.controller';
+import { ChangePasswordController } from './commands/change-password/change-password.controller';
+import { ChangePasswordService } from './commands/change-password/change-password.service';
 
 @Module({
   imports: [
@@ -73,6 +75,7 @@ import { GetUserByIdController } from './queries/get-user-by-id/get-user-by-id.c
     GetUserController,
     UserChangeStatusHandler,
     GetUserByIdController,
+    ChangePasswordController,
   ],
   providers: [
     RegisterUserService,
@@ -95,6 +98,7 @@ import { GetUserByIdController } from './queries/get-user-by-id/get-user-by-id.c
     CacheService,
     UpdateUserService,
     GetUserByIdService,
+    ChangePasswordService,
   ],
   exports: [UserRepositoryImpl, CacheService],
 })

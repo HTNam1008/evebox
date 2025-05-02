@@ -13,7 +13,7 @@ export class CreateEventDto {
   @IsString({message: 'Description must be a string'})
   description: string;
 
-  @ApiProperty({ example: 'Online', description: 'Showing Online or Offline' })
+  @ApiProperty({ example: true, description: 'Showing Online or Offline' })
   isOnlineEvent: boolean;
   
   @ApiProperty({ example: "10 To Hien Thanh, Phuong Ben Nghe, Quan 1, Ho Chi Minh", description: 'Location String' })

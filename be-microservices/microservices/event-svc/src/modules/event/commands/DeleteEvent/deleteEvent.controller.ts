@@ -1,6 +1,6 @@
 import { Controller, Delete, Request, Res, HttpStatus, Body, UseGuards, Param, Req } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteEventService } from './deleteEvent.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { EventResponse } from './deleteEvent-response.dto';
@@ -12,11 +12,7 @@ export class DeleteEventController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Delete an event' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Event deleted successfully', type: EventResponse })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })

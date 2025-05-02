@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma/prisma.service';
 import { GetEventDetailRepository } from './getEventDetail.repository';
+import { GetEventFDByIdsResponseDto } from '../queries/getEventFDByIds/getEventFDByIds-response.dto';
 
 @Injectable()
 export class GetEventFrontDisplayRepository {
@@ -257,6 +258,49 @@ export class GetEventFrontDisplayRepository {
       updateTrendingEvents = [...updateTrendingEvents, {...event, ...eventAddition}];
     }
     return updateTrendingEvents;
+  }
+
+  async getEventFDByIds( ids: number[]): Promise<GetEventFDByIdsResponseDto[]> {
+    const events = await this.prisma.events.findMany({
+      where: {
+        deleteAt: null,
+        id: { in: ids }
+      },
+      select: {
+        id: true,
+        title: true,
+        lastScore: true,
+        Images_Events_imgLogoIdToImages: true,
+        Images_Events_imgPosterIdToImages: true,
+        totalClicks: true,
+        weekClicks: true,
+      },
+    });
+    let updateEvents = [];
+    const now = new Date();
+    for(const event of events) {
+      const showings = await this.prisma.showing.findMany({
+        where: {
+          eventId: event.id,
+          startTime: {
+            gte: now,
+          },
+        },
+        select: {
+          id: true,
+          startTime: true,
+          TicketType: {
+            select: {
+              price: true,
+              id: true,
+            }
+          }
+        },
+      });
+      const eventAddition = await this.caculateEvents(showings);
+      updateEvents = [...updateEvents, {...event, ...eventAddition}];
+    }
+    return updateEvents;
   }
 
   async caculateEvents(showings: any[]) {

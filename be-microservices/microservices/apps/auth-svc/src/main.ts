@@ -1,6 +1,8 @@
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { protobufPackage } from './auth.pb';
+import { join } from 'path';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
@@ -17,7 +19,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
-  // Kß║┐t nß╗æi microservice gRPC
   // app.connectMicroservice<MicroserviceOptions>({
   //   transport: Transport.GRPC,
   //   options: {
@@ -27,11 +28,9 @@ async function bootstrap() {
   //   },
   // });
 
-  // Cß║Ñu h├¼nh global cho cß║ú HTTP v├á gRPC
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // Bß║¡t CORS nß║┐u cß║ºn
   app.enableCors();
 
   // Connect Kafka microservice

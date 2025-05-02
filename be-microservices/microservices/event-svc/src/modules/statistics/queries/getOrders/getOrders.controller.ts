@@ -1,6 +1,6 @@
 import { Controller, Get, Res, HttpStatus, UseGuards, Param, Request } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetEventSummaryService } from '../getSummary/getSummary.service';
 import { GetOrdersResponse } from './getOrders-response.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
@@ -13,11 +13,7 @@ export class GetOrdersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('orders/:showingId')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token',
-    required: true,
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get orders of a showing (hardcoded for now)' })
   @ApiResponse({ status: 200, description: 'Orders retrieved successfully', type: GetOrdersResponse })
   @ApiResponse({ status: 400, description: 'Bad request' })
