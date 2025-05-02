@@ -28,7 +28,7 @@ export const useRegisterForm = () => {
       password: '',
       re_password: '',
       role_id: 3,
-      province_id: null,
+      province_id: [],
       agree: false
     },
     validationSchema: Yup.object({
@@ -45,8 +45,7 @@ export const useRegisterForm = () => {
       setIsLoading(true);
       try {
         const result = await register(values);
-        console.log('result', result);
-        if (result.statusCode === 200) {
+        if (result.status === 200) {
           setError('');
           localStorage.setItem('verifyData', JSON.stringify({
             ...values,
@@ -55,7 +54,6 @@ export const useRegisterForm = () => {
             resend_allowed_in: result.data.resend_allowed_in,
             type: OtpConstants.REGISTER,
           }));
-          console.log("router push verify-otp");
           router.push('/verify-otp');
         }
       } catch (err) {

@@ -1,26 +1,15 @@
-import {
-  INestApplication,
-  INestMicroservice,
-  Logger,
-  ValidationPipe,
-} from '@nestjs/common';
+import { INestApplication, INestMicroservice, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
+import { protobufPackage } from './auth.pb';
+import { join } from 'path';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   // Tạo app HTTP
   const app: INestApplication = await NestFactory.create(AppModule);
 
-  const options = new DocumentBuilder()
-  .setTitle('Evebox API')
-  .setDescription('The Evebox API description')
-  .setVersion('1.0')
-  .build();
-  
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api-docs', app, document);
   // Kết nối microservice gRPC
   // app.connectMicroservice<MicroserviceOptions>({
   //   transport: Transport.GRPC,

@@ -33,10 +33,9 @@ const NavigationBar = () => {
       try {
         const response = await apiClient.get<UserInfoResponse>("/api/user/me"); // Assuming your API route is /api/me
         setUserInfo(response.data.data);
-        // if (response?.data?.data?.name) {
-        //   localStorage.setItem("name", response.data.data.name);
-        //   localStorage.setItem("phone", response.data.data.phone);
-        // }
+        if (response?.data?.data?.name) {
+          localStorage.setItem("name", response.data.data.name);
+        }
       } catch (error) {
         console.error("Error fetching user info:", error);
       } finally {
