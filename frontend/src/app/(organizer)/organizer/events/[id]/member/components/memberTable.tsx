@@ -92,26 +92,54 @@ const MemberTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredMembers.map((member, index) => (
-                        <tr key={index}>
-                            <td className="border px-4 py-2">{member.email}</td>
-                            <td className="border px-4 py-2">{member.role_desc}</td>
-                            <td className="border px-2 py-2 text-center w-40">
-                            <button onClick={() => setEditingMember(member)}> <FaEdit /></button>
-                            {editingMember && (<EditMemberDialog eventId={eventId}
-                                member={editingMember}
-                                onClose={() => setEditingMember(null)}
-                                onSuccess={fetchMembers}
-                            />
-                            )}
+  {filteredMembers.map((member, index) => {
+    const isOrganizer = member.role_desc.toLowerCase() === 'organizer';
 
-                            <button onClick={() => setDeletingMember(member)} className="text-red-500 hover:text-red-700 mx-1"><FaTrash /></button>
-                            {deletingMember && (<DeleteMemberDialog eventId={eventId} email={deletingMember.email} onClose={() => setDeletingMember(null)} onSuccess={fetchMembers}/>
-                             )}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
+    return (
+      <tr key={index}>
+        <td className="border px-4 py-2">{member.email}</td>
+        <td className="border px-4 py-2">{member.role_desc}</td>
+        <td className="border px-2 py-2 text-center w-40">
+          <button
+            onClick={() => !isOrganizer && setEditingMember(member)}
+            className={`mx-1 ${isOrganizer ? 'text-gray-300 cursor-not-allowed' : 'text-blue-500 hover:text-blue-700'}`}
+            disabled={isOrganizer}
+            title={isOrganizer ? "Không thể sửa vai trò của chủ sự kiện" : "Sửa thành viên"}
+          >
+            <FaEdit />
+          </button>
+
+          {editingMember?.email === member.email && (
+            <EditMemberDialog
+              eventId={eventId}
+              member={editingMember}
+              onClose={() => setEditingMember(null)}
+              onSuccess={fetchMembers}
+            />
+          )}
+
+          <button
+            onClick={() => !isOrganizer && setDeletingMember(member)}
+            className={`mx-1 ${isOrganizer ? 'text-gray-300 cursor-not-allowed' : 'text-red-500 hover:text-red-700'}`}
+            disabled={isOrganizer}
+            title={isOrganizer ? "Không thể xóa chủ sự kiện" : "Xóa thành viên"}
+          >
+            <FaTrash />
+          </button>
+
+          {deletingMember?.email === member.email && (
+            <DeleteMemberDialog
+              eventId={eventId}
+              email={deletingMember.email}
+              onClose={() => setDeletingMember(null)}
+              onSuccess={fetchMembers}
+            />
+          )}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
             </table>
         </div>
     );

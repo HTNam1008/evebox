@@ -1,6 +1,6 @@
 import { Controller, Get, Query, Res, HttpStatus, UseGuards, Request } from "@nestjs/common";
 import { Response } from "express";
-import { ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/shared/guard/jwt-auth.guard";
 import { GetShowingsService } from "./getShowings.service";
 import { ShowingResponseDto } from "./getShowings-response.dto";
@@ -12,11 +12,7 @@ export class GetShowingsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get showings with filters and pagination' })
   @ApiQuery({ name: 'page', required: false, description: 'Page number for pagination', type: Number, default: 1 })
   @ApiQuery({ name: 'limit', required: false, description: 'Number of showings per page', type: Number, default: 10 })

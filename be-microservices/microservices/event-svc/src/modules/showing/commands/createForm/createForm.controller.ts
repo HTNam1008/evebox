@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Request, Res, UseGuards, HttpStatus } from "@nestjs/common";
 import { Response } from "express";
-import { ApiHeader, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/shared/guard/jwt-auth.guard";
 import { CreateFormService } from "./createForm.service";
 import { CreateFormDto } from "./createForm.dto";
@@ -13,11 +13,7 @@ export class CreateFormController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/form')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiBody({ type: CreateFormDto })
   @ApiOperation({ summary: 'Create a new form' })
   @ApiResponse({ status: 201, description: 'Form created successfully', type: CreateFormResponseDto })

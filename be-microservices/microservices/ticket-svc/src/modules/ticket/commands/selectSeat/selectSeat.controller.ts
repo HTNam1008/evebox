@@ -13,11 +13,8 @@ export class SelectSeatController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/selectSeat')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Select seats for a booking' })
   @ApiBody({ type: SelectSeatDto })
   @ApiResponse({

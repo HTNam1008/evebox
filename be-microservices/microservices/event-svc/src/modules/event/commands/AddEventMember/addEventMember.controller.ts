@@ -4,7 +4,7 @@ import { AddEventMemberDto } from './addEventMember.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { Request } from 'express';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AddEventMemberResponseDto } from './addEventMember-response.dto';
 
 @ApiTags('Org - EventMember')
@@ -14,11 +14,7 @@ export class AddEventMemberController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @ApiHeader({
-      name: 'Authorization',
-      description: 'Bearer token for authorization (`Bearer <token>`)',
-      required: true
-    })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Add member to event' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Added member successfully', type: AddEventMemberResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })

@@ -50,12 +50,12 @@ export class DescriptionGenerateService {
       
       Kết quả search similarity: {context}
       
-      Mô tả hiện tại từ người dùng: {description}
+      Các thông tin thêm liên quan đến sự kiện nếu người dùng có cung cấp: {description}
 
       Các thông tin về sự kiện của người dùng: {information}
             
       Ở 15 kết quả search similarity trên chính là 15 description của các sự kiện có liên quan đến người dùng.
-      Từ 15 description đó, kết hợp với thông tin về sự kiện của người dùng và mô tả hiện tại, hãy tạo ra một mô tả mới, chi tiết và hấp dẫn hơn cho sự kiện của người dùng, theo html format.
+      Từ 15 description đó, kết hợp với thông tin về sự kiện của người dùng và các thông tin thêm, hãy tạo ra một mô tả mới, chi tiết và hấp dẫn hơn cho sự kiện của người dùng, theo html format.
       Nếu có các field mà bạn cảm thấy nó hữu ích, hoặc một số nơi nên thêm hình ảnh, nhưng bạn không thể tự generate được, hãy để lại một placeholder với kí hiệu kiểu {{ Hãy điền ... ở đây }}, thay ... bằng tên của field mà bạn muốn thêm vào.
       Các trường thông tin không cần thiết: Ngày tổ chức, ngày bắt đầu, ngày kết thúc, ngày bán vé, Đường dẫn mua vé, Đường dẫn sự kiện, Video
       

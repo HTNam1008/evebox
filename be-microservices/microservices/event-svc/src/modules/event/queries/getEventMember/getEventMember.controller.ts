@@ -13,7 +13,7 @@ import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { GetEventMembersService } from './getEventMembers.service';
 import { GetEventMembersQueryDto } from './getEventMembers.query.dto';
-import { ApiTags, ApiHeader, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { GetEventMembersResponseDto } from './getEventMembers-response.dto';
 
 @ApiTags('Org - EventMember')
@@ -23,11 +23,7 @@ export class GetEventMemberController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':eventId')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true,
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get all members of an event (optionally filter by email)' })
   @ApiResponse({ status: HttpStatus.OK, description: 'List of event members', type: GetEventMembersResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })

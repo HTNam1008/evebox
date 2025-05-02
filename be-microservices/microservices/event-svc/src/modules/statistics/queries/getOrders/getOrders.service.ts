@@ -17,6 +17,12 @@ export class GetOrdersService {
         return Err(new Error('Unauthorized user'));
       }
 
+      const canManage = await this.getOrdersRepository.hasPermissionToManageMembers(showingId, organizerId);
+
+      if (!canManage) {
+        return Err(new Error('You do not have permission to manage members.'));
+      }
+
       return await this.getOrdersRepository.getOrders(showingId, organizerId);
     } catch (error) {
       return Err(new Error('Failed to get orders'));

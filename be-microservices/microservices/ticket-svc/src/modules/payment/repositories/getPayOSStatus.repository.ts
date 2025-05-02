@@ -81,6 +81,13 @@ export class GetPayOSStatusRepository {
       if (!formResponseId && formId.formId) {
         return null;
       }
+      const showing = await this.prisma.showing.findUnique({
+        where: { id: showingId }
+      });
+
+      if (!showing) {
+        return null;
+      }
       if (seatId && seatId.length > 0) {
         const showingData = await this.prisma.showing.findUnique({
           where: {
@@ -164,30 +171,41 @@ export class GetPayOSStatusRepository {
             return null;
           }
 
-          const qrData = {
-            showingId: showingId,
-            ticketTypeId: getticketTypeId.ticketTypeId,
-            seatId: seat,
-            userId: userId,
-            ticketId: ticket.id,
-          }
-          const qrContent = JSON.stringify(qrData);
-          const encryptedQrContent = encrypt(qrContent);
-          const qrCode = await generateQRCode(encryptedQrContent);
-          const qrCodeContent = qrCode || "Unknow";
-
           const ticketQRCode = await this.prisma.ticketQRCode.create({
             data: {
               seatId: seat,
               ticketTypeId: getticketTypeId.ticketTypeId,
               ticketId: ticket.id,
-              qrCode: qrCodeContent,
+              qrCode: "Pending",
               description: "QRCode for ticket",
             }
           });
           if (!ticketQRCode) {
             return null;
           }
+
+          const qrData = {
+            ticketQrId: ticketQRCode?.id,
+            showingId: showingId,
+            ticketTypeId: getticketTypeId.ticketTypeId,
+            seatId: seat,
+            userId: userId,
+            ticketId: ticket.id,
+            eventId: showing?.eventId ?? '1'
+          }
+          const qrContent = JSON.stringify(qrData);
+          const encryptedQrContent = encrypt(qrContent);
+          const qrCode = await generateQRCode(encryptedQrContent);
+          const qrCodeContent = qrCode || "Unknow";
+
+          await this.prisma.ticketQRCode.update({
+            where: {
+              id: ticketQRCode.id
+            },
+            data: {
+              qrCode: qrCodeContent
+            }
+          })
         }
         return ticket;
       }
@@ -224,29 +242,40 @@ export class GetPayOSStatusRepository {
           return null;
         }
         for (let i = 0; i < quantity; i++) {
-          const qrData = {
-            showingId: showingId,
-            ticketTypeId: ticketTypeId,
-            seatId: null,
-            userId: userId,
-            ticketId: ticket.id,
-          }
-          const qrContent = JSON.stringify(qrData);
-          const encryptedQrContent = encrypt(qrContent);
-          const qrCode = await generateQRCode(encryptedQrContent);
-          const qrCodeContent = qrCode || "Unknow";
           const ticketQRCode = await this.prisma.ticketQRCode.create({
             data: {
               ticketId: ticket.id,
               ticketTypeId: ticketTypeId,
               seatId: null,
-              qrCode: qrCodeContent,
+              qrCode: "Pending",
               description: "QRCode for ticket",
             }
           });
           if (!ticketQRCode) {
             return null;
           }
+          const qrData = {
+            ticketQrId: ticketQRCode?.id,
+            showingId: showingId,
+            ticketTypeId: ticketTypeId,
+            seatId: null,
+            userId: userId,
+            ticketId: ticket.id,
+            eventId: showing?.eventId ?? '1'
+          }
+          const qrContent = JSON.stringify(qrData);
+          const encryptedQrContent = encrypt(qrContent);
+          const qrCode = await generateQRCode(encryptedQrContent);
+          const qrCodeContent = qrCode || "Unknow";
+
+          await this.prisma.ticketQRCode.update({
+            where: {
+              id: ticketQRCode.id
+            },
+            data: {
+              qrCode: qrCodeContent
+            }
+          })
         }
         return ticket;
       }

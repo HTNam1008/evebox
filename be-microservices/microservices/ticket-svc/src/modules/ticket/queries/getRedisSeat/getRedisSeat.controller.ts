@@ -14,11 +14,8 @@ export class GetRedisSeatController {
   @UseGuards(JwtAuthGuard)
   @Get('/getRedisSeat')
   @ApiQuery({ name: 'showingId', type: String, required: true, example: '16962844867169' })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Get seat in Redis' })
   @ApiResponse({
     status: HttpStatus.OK,

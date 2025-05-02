@@ -15,9 +15,9 @@ import { UpdateEventMemberService } from './updateEventMember.service';
 import { UpdateEventMemberDto } from './updateEventMember.dto';
 import {
   ApiTags,
-  ApiHeader,
   ApiOperation,
   ApiResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 @ApiTags('Org - EventMember')
@@ -27,11 +27,7 @@ export class UpdateEventMemberController {
 
   @UseGuards(JwtAuthGuard)
   @Put()
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true,
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update a member\'s role in an event' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Member updated successfully' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input or update failed' })

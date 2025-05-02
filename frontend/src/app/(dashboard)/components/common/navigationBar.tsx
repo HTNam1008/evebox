@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import 'tailwindcss/tailwind.css';
 
 /* Package Application */
 import Sidebar from "./sidebar";

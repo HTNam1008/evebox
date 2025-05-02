@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import { X, CheckCircle } from 'lucide-react';
 import createApiClient from '@/services/apiClient';
 import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
+import { EventRole } from '@/types/model/EventRoleListResponse';
 
 interface AddMemberFormProps {
     eventId: number;
@@ -17,30 +18,41 @@ export default function AddMemberForm({eventId, onClose, onSuccess }: AddMemberF
     const [emailError, setEmailError] = useState('');
     const [roleError, setRoleError] = useState('');
     const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
+    const [permissionMatrix, setPermissionMatrix] = useState<boolean[][]>([]);
 
-    const permissionMatrix: boolean[][] = [
-      // Chỉnh sửa
-      [true, true, false, false, false, false],
-      // Tổng kết
-      [true, true, false, false, false, false],
-      // Voucher
-      [true, true, false, false, false, false],
-      // Marketing
-      [true, true, false, false, false, false],
-      // Đơn hàng
-      [true, true, true, false, false, false],
-      // Seat map
-      [true, true, true, false, false, false],
-      // Thành viên
-      [true, true, true, false, false, false],
-      // Check in
-      [true, true, true, true, false, false],
-      // Check out
-      [true, true, true, false, true, false],
-      // Redeem
-      [true, true, true, false, false, true],
-    ];
+
+    useEffect(() => {
+      const fetchRoles = async () => {
+        try {
+          const response = await apiClient.get<{ data: EventRole[] }>('/api/event/role');
     
+          if (response.data?.data) {
+            const roles = response.data.data;
+    
+            // Convert to permission matrix format
+            const matrix: boolean[][] = [
+              roles.map(role => role.isEdited),
+              roles.map(role => role.isSummarized),
+              roles.map(role => role.viewVoucher),
+              roles.map(role => role.marketing),
+              roles.map(role => role.viewOrder),
+              roles.map(role => role.viewSeatmap),
+              roles.map(role => role.viewMember),
+              roles.map(role => role.checkin),
+              roles.map(role => role.checkout),
+              roles.map(role => role.redeem),
+            ];
+    
+            setPermissionMatrix(matrix);
+          }
+        } catch (error) {
+          console.error('Failed to fetch roles:', error);
+          toast.error('Không thể tải quyền vai trò');
+        }
+      };
+    
+      fetchRoles();
+    }, []);
 
     const roleMap: { [key: string]: number } = {
         admin: 2,
@@ -103,8 +115,8 @@ export default function AddMemberForm({eventId, onClose, onSuccess }: AddMemberF
       };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white w-[800px] max-h-[80vh] px-10 py-6 rounded-lg shadow-lg relative flex flex-col">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
+            <div className="bg-white w-[800px] max-h-[80vh] mt-9 px-10 py-6 rounded-lg shadow-lg relative flex flex-col">
                 {/* Nút đóng */}
                 <button className="absolute top-4 right-4 text-gray-500" onClick={onClose}>
                     <X size={24} />
@@ -152,36 +164,35 @@ export default function AddMemberForm({eventId, onClose, onSuccess }: AddMemberF
 
                     {/* Bảng quyền */}
                     <div className="mt-6 overflow-x-auto">
-                        <table className="w-full border-collapse border border-gray-300">
-                            <thead>
-                                <tr className="bg-[#0C4762] text-white text-sm">
-                                    <th className="p-2 border w-1/7"></th>
-                                    <th className="p-2 border w-1/7">Chủ sự kiện</th>
-                                    <th className="p-2 border w-1/7">Quản trị viên</th>
-                                    <th className="p-2 border w-1/7">Quản lý</th>
-                                    <th className="p-2 border w-1/7">Nhân viên check-in</th>
-                                    <th className="p-2 border w-1/7">Nhân viên check-out</th>
-                                    <th className="p-2 border w-1/7">Nhân viên redeem</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {['Chỉnh sửa', 'Tổng kết', 'Voucher', 'Marketing', 'Đơn hàng', 'Seat map', 'Thành viên', 'Check in', 'Check out', 'Redeem'].map((perm, idx) => (
-                                    <tr key={idx} className="text-center">
-                                        <td className="border p-2 text-sm w-1/7">{perm}</td>
-                                        {permissionMatrix[idx].map((hasPermission, i) => (
-                                         <td key={i} className="border p-2 w-1/7">
-                                           <div className="flex justify-center">
-                                            {hasPermission && (
-                                                   <CheckCircle className="text-[#48C3CD]" size={16} strokeWidth={1.5} />
-                                            )}
-                                          </div>
-                                        </td>
-                                   ))}
-
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    {permissionMatrix.length > 0 && (
+  <table className="w-full border-collapse border border-gray-300">
+    <thead>
+      <tr className="bg-[#0C4762] text-white text-sm">
+        <th className="p-2 border w-1/7"></th>
+        <th className="p-2 border w-1/7">Chủ sự kiện</th>
+        <th className="p-2 border w-1/7">Quản trị viên</th>
+        <th className="p-2 border w-1/7">Quản lý</th>
+        <th className="p-2 border w-1/7">Nhân viên check-in</th>
+        <th className="p-2 border w-1/7">Nhân viên check-out</th>
+        <th className="p-2 border w-1/7">Nhân viên redeem</th>
+      </tr>
+    </thead>
+    <tbody>
+      {['Chỉnh sửa', 'Tổng kết', 'Voucher', 'Marketing', 'Đơn hàng', 'Seat map', 'Thành viên', 'Check in', 'Check out', 'Redeem'].map((perm, idx) => (
+        <tr key={idx} className="text-center">
+          <td className="border p-2 text-sm w-1/7">{perm}</td>
+          {permissionMatrix[idx].map((hasPermission, i) => (
+            <td key={i} className="border p-2 w-1/7">
+              <div className="flex justify-center">
+                {hasPermission && <CheckCircle className="text-[#48C3CD]" size={16} strokeWidth={1.5} />}
+              </div>
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
                     </div>
                 </div>
             </div>

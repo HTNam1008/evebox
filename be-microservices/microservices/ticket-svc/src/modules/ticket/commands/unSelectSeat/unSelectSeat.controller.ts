@@ -13,11 +13,8 @@ export class UnSelectSeatController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('/unSelectSeat/:showingId')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+    @ApiBearerAuth('access-token')
+
   @ApiOperation({ summary: 'Unselect seats' })
   @ApiResponse({
     status: HttpStatus.OK,

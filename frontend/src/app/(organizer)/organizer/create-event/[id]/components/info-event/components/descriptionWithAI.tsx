@@ -1,15 +1,54 @@
 'use client';
 
+/* Package System */
 import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 
+/* Package Application */
+import { generateDescripton } from '../../../libs/functions/info-event/generateDescription';
+import '@/styles/admin/chatbox.css';
+
+export interface GenerationProps {
+  name: string;
+  description: string;
+  isOnlineEvent: boolean;
+  location: string;
+  venue: string;
+  organizer: string;
+  organizerDescription: string;
+  categoryIds: number[];
+}
 interface DescriptionWithAIProps {
   isValid: boolean;
+  generationForm: GenerationProps;
+  onChange: (content: string) => void
 }
 
-export default function DescriptionWithAI({ isValid }: DescriptionWithAIProps) {
+
+export default function DescriptionWithAI({ isValid, generationForm, onChange }: DescriptionWithAIProps) {
   const [showPopup, setShowPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleGenerate = async () => {
+    if (!isValid) return;
+    setIsLoading(true);
+    try {
+      const response = await generateDescripton(generationForm);
+
+      if (response) {
+        onChange(response);
+      } else {
+        onChange('Error generating description');
+      }
+    } catch (error) {
+      onChange('Error generating description');
+      console.error('Error generating description', error);
+    } finally {
+      setIsLoading(false);
+      setShowPopup(false);
+    }
+  }
 
   return (
     <div className="flex justify-end mt-3 relative">
@@ -35,7 +74,7 @@ export default function DescriptionWithAI({ isValid }: DescriptionWithAIProps) {
           {/* Header popup */}
           <div className="flex justify-between items-start">
             <p className="text-base font-medium text-gray-800">
-              Generate AI content cho phần mô tả?
+              Dùng AI để sinh nội dung cho phần mô tả dựa trên những gì bạn đang viết
             </p>
             <button onClick={() => setShowPopup(false)}
               className="text-gray-500 hover:bg-gray-100 p-1 rounded-full">
@@ -45,16 +84,14 @@ export default function DescriptionWithAI({ isValid }: DescriptionWithAIProps) {
 
           {/* Button Đồng ý */}
           <button className={`w-full rounded-full py-2 font-semibold transition-colors 
-              ${ isValid ? 'bg-sky-600 text-white hover:bg-sky-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              ${(isValid && !isLoading) ? 'bg-sky-600 text-white hover:bg-sky-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
-            onClick={() => {
-              if (!isValid) return;
-              alert('Đã gửi yêu cầu generate');
-              setShowPopup(false);
-            }}
-            disabled={!isValid}
+            onClick={handleGenerate}
+            disabled={!isValid || isLoading}
           >
-            Đồng ý
+            {isLoading ? (
+              'Đang tạo nội dung'
+            ) : 'Đồng ý'}
           </button>
         </div>
       )}

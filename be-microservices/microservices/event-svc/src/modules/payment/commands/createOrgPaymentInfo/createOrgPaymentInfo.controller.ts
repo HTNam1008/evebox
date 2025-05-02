@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Request, Res, UseGuards, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {  ApiBody, ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
 import { CreateOrgPaymentInfoService } from './createOrgPaymentInfo.service';
 import { CreateOrgPaymentInfoDto } from './createOrgPaymentInfo.dto';
@@ -13,11 +13,7 @@ export class CreateOrgPaymentInfoController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (Bearer <token>)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiBody({ type: CreateOrgPaymentInfoDto })
   @ApiOperation({ summary: 'Create Org Payment Information' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'OrgPaymentInfo created successfully', type: CreateOrgPaymentInfoResponseDto })

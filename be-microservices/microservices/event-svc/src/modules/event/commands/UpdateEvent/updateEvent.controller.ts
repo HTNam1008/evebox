@@ -1,6 +1,6 @@
 import { Controller, Patch, Request, Res, HttpStatus, Body, UseGuards, UseInterceptors, UploadedFiles, Put } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateEventService } from './updateEvent.service';
 import { UpdateEventDto } from './updateEvent.dto';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';
@@ -14,11 +14,7 @@ export class UpdateEventController {
 
   @UseGuards(JwtAuthGuard)
   @Put('/:id')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update an existing event' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Event updated successfully', type: EventResponse })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })

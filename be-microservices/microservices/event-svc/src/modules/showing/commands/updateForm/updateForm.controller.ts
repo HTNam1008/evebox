@@ -1,6 +1,6 @@
 import { Controller, Patch, Put, Param, Body, Res, HttpStatus, Request, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiHeader } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateFormService } from './updateForm.service';
 import { UpdateFormDto } from './updateForm.dto';
 import { UpdateFormResponseDto } from './updateForm-response.dto';
@@ -13,11 +13,7 @@ export class UpdateFormController {
 
   @UseGuards(JwtAuthGuard)
   @Put('form/:id')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token for authorization (`Bearer <token>`)',
-    required: true,
-  })
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update form of a showing' })
   @ApiParam({ name: 'id', description: 'Form ID need update' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Form updated successfully', type: UpdateFormResponseDto })

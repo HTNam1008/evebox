@@ -46,7 +46,7 @@ export default function SearchClient({ events: initialEvents }: SearchClientProp
     if (categoriesData) {
       setCategories(categoriesData);
     }
-  }, [categoriesData]);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

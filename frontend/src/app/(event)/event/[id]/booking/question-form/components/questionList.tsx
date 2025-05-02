@@ -96,7 +96,7 @@ export default function QuestionList({
                                     <label htmlFor={`input-${input.id}`} className="form-label d-flex justify-content-start">
                                         <b>{input.required && <span className="red-star">*</span>} {input.fieldName}</b>
                                     </label>
-                                    {(input.type === "2" || input.type === "oneAns") ? (
+                                    {/* {(input.type === "2" || input.type === "oneAns") ? (
                                         // Radio button handling
                                         <div className="form-check d-flex justify-content-start">
                                             {input.options && input.options.length > 0 ? (
@@ -131,7 +131,7 @@ export default function QuestionList({
                                             />
                                             {errors[input.id] && <div className="text-danger text-start mt-1">{errors[input.id]}</div>}
                                         </>
-                                    )}
+                                    )} */}
                                     {(input.type === "2" || input.type === "oneAns") ? (
                                         // Radio button
                                         <div className="form-check d-flex justify-content-start">
