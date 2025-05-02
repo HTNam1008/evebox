@@ -23,7 +23,7 @@ services:
       ]
     
     networks:
-      redis-net:
+      evebox-net:
         ipv4_address: 172.21.0.3
 
 
@@ -55,7 +55,7 @@ services:
         "no"
       ]
     networks:
-      redis-net:
+      evebox-net:
         ipv4_address: 172.21.0.4
 
 
@@ -87,7 +87,7 @@ services:
         "no"
       ]
     networks:
-      redis-net:
+      evebox-net:
         ipv4_address: 172.21.0.5
 
 
@@ -108,7 +108,7 @@ services:
             echo "sentinel parallel-syncs mymaster 1" >> /etc/sentinel.conf &&
             redis-sentinel /etc/sentinel.conf'
     networks:
-      redis-net:
+      evebox-net:
         ipv4_address: 172.21.0.6
 
 
@@ -129,7 +129,7 @@ services:
             echo "sentinel parallel-syncs mymaster 1" >> /etc/sentinel.conf &&
             redis-sentinel /etc/sentinel.conf'
     networks:
-      redis-net:
+      evebox-net:
         ipv4_address: 172.21.0.7
 
   sentinel-3:
@@ -149,7 +149,7 @@ services:
             echo "sentinel parallel-syncs mymaster 1" >> /etc/sentinel.conf &&
             redis-sentinel /etc/sentinel.conf'
     networks:
-      redis-net:
+      evebox-net:
         ipv4_address: 172.21.0.8
 
 
@@ -159,11 +159,11 @@ services:
     ports:
       - "5540:5540"
     networks:
-      redis-net:
+      evebox-net:
         ipv4_address: 172.21.0.9
 
 networks:
-  redis-net:
+  evebox-net:
     driver: bridge
     ipam:
       config:

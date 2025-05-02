@@ -18,6 +18,7 @@ services:
   # Kafka cluster
   kafka1:
     image: 'bitnami/kafka:3.5'
+    user: root
     container_name: kafka1
     ports:
       - 9192:9092  # Broker port

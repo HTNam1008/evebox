@@ -29,6 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new UnauthorizedException('Invalid authorization header format');
     }
     
-    return {user: {email: payload.email, role: payload.role }};
+    // return {user: {email: payload.email, role: payload.role }};
+    return {email: payload.email, role: payload.role };
   }
 }
