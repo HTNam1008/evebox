@@ -1,108 +1,144 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { ChangeEvent } from 'react';
+import { useState, useEffect } from "react";
 
-import AvatarUpload from "./avatarUpload"
+import AvatarUpload from "./avatarUpload";
+import useProfile from "../libs/hooks/useProfile";
+import AlertDialog from "@/app/(showing)/showing/components/alertDialog";
+import { ProfileFormProps } from "../libs/interface/profile.interface";
 import OrganizerRegistrationPopup from "./orgRegisterPopup"
 
-export default function ProfileForm() {
-  const [form, setForm] = useState({
-    name: "Van A",
-    email: "nguyenvana@gmail.com",
-    dob: "2003-05-14",
-  })
+export default function ProfileForm({ initialProfile }: ProfileFormProps) {
+    const { updateProfile } = useProfile();
+    const [form, setForm] = useState(initialProfile);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState("");
+    const [showPopup, setShowPopup] = useState(false)
+    const [isRegistered, setIsRegistered] = useState(false)
+    /* useEffect(() => {
+        if (profile) {
+            setForm({
+                name: profile.name || "",
+                email: profile.email || "",
+                phone: profile.phone || ""
+            });
+        }
+    }, [profile]); */
 
-  const [showPopup, setShowPopup] = useState(false)
-  const [isRegistered, setIsRegistered] = useState(false)
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
 
-  const togglePopup = () => {
-    setShowPopup(!showPopup)
-  }
+        try {
+            const result = await updateProfile({
+                name: form.name,
+                phone: form.phone
+            });
 
-  const handleRegistrationSuccess = () => {
-    setShowPopup(false)
-    setIsRegistered(true)
-  }
+            if (result.success) {
+                setDialogMessage('Cập nhật thông tin thành công');
+            } else {
+                setDialogMessage('Cập nhật thông tin thất bại');
+            }
+            setDialogOpen(true);
+        } catch (error) {
+            setDialogMessage('Cập nhật thông tin thất bại');
+            setDialogOpen(true);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+    const togglePopup = () => {
+      setShowPopup(!showPopup)
+    }
 
-  return (
-    <>
-      <div className="flex justify-between items-start mt-8 mb-4">
-        <div>
-          <h2 className="text-2xl font-bold mb-2">Quản lý thông tin tài khoản</h2>
-          <h5 className="text-sm text-gray-700">Quản lý và cập nhật thông tin cá nhân cho tài khoản của bạn</h5>
-        </div>
-
-        {/* Avatar + Button (centered vertically) */}
-        <div className="flex flex-col items-center">
-          <AvatarUpload />
-          <button
-            onClick={togglePopup}
-            className="mt-2 border border-[#0C4762] text-[#0C4762] px-3 py-1 rounded-md hover:bg-gray-100 transition text-sm"
-          >
-            {isRegistered ? "Chỉnh sửa thông tin Nhà tổ chức" : "Đăng ký trở thành nhà Tổ chức"}
-          </button>
-        </div>
-      </div>
-
-      <hr className="my-6 border-gray-700" />
-
-      {/* Form */}
-      <div className="space-y-6">
-        {/* Họ và tên */}
-        <div>
-          <label className="block text-gray-700 font-medium">Họ và tên</label>
-          <div className="relative">
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Nhập họ và tên của bạn"
-              className="w-full border p-2 rounded-md mt-1 bg-gray-100 focus:bg-white"
+    const handleRegistrationSuccess = () => {
+      setShowPopup(false)
+      setIsRegistered(true)
+    }
+    return (
+        <div className="max-w-3xl mx-auto">
+            <AlertDialog
+                open={dialogOpen}
+                onClose={() => setDialogOpen(false)}
+                message={dialogMessage}
             />
-          </div>
-        </div>
+            <div className="flex justify-between items-center">
+                <div>
+                    <h2 className="text-2xl font-bold mt-8 mb-4">Quản lý thông tin tài khoản</h2>
+                    <h5 className="text-sm text-gray-700">
+                        Quản lý và cập nhật thông tin cá nhân cho tài khoản của bạn
+                    </h5>
+                </div>
+                <AvatarUpload initAvatarId = {form.avatar_id}/>
+                <button
+                  onClick={togglePopup}
+                  className="mt-2 border border-[#0C4762] text-[#0C4762] px-3 py-1 rounded-md hover:bg-gray-100 transition text-sm"
+                >
+                  {isRegistered ? "Chỉnh sửa thông tin Nhà tổ chức" : "Đăng ký trở thành nhà Tổ chức"}
+                </button>
+            </div>
 
-        {/* Email */}
-        <div>
-          <label className="block text-gray-700 font-medium">Địa chỉ email</label>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            disabled
-            className="w-full border p-2 rounded-md mt-1 bg-gray-200 text-gray-500 cursor-not-allowed"
-          />
-        </div>
+            <hr className="my-6 border-gray-700" />
 
-        {/* Ngày tháng năm sinh */}
-        <div>
-          <label className="block text-gray-700 font-medium">Ngày tháng năm sinh</label>
-          <div className="relative">
-            <input
-              type="date"
-              name="dob"
-              value={form.dob}
-              onChange={handleChange}
-              className="w-full border p-2 rounded-md mt-1 bg-gray-100 focus:bg-white"
-            />
-          </div>
-        </div>
+            <form onSubmit={handleSubmit}>
+                <div className="space-y-6">
+                    <div>
+                        <label className="block text-gray-700 font-medium">Họ và tên</label>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                name="name"
+                                value={form.name}
+                                onChange={handleChange}
+                                placeholder="Nhập họ và tên của bạn"
+                                className="w-full border p-2 rounded-md mt-1 bg-gray-100 focus:bg-white"
+                            />
+                        </div>
+                    </div>
 
-        <div>
-          <button className="w-full bg-[#51DACF] text-[#0C4762] px-4 py-2 rounded-md mt-2 hover:bg-teal-300 transition">
-            Lưu
-          </button>
-        </div>
-      </div>
+                    <div>
+                        <label className="block text-gray-700 font-medium">Địa chỉ email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={form.email}
+                            disabled
+                            className="w-full border p-2 rounded-md mt-1 bg-gray-200 text-gray-500 cursor-not-allowed"
+                        />
+                    </div>
 
-      {/* Popup */}
-      {showPopup && <OrganizerRegistrationPopup onClose={togglePopup} onSuccess={handleRegistrationSuccess} />}
-    </>
-  )
+                    <div>
+                        <label className="block text-gray-700 font-medium">Số điện thoại</label>
+                        <div className="relative">
+                            <input
+                                type="tel"
+                                name="phone"
+                                value={form.phone}
+                                onChange={handleChange}
+                                placeholder="Nhập số điện thoại của bạn"
+                                className="w-full border p-2 rounded-md mt-1 bg-gray-100 focus:bg-white"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="w-full bg-[#51DACF] text-[#0C4762] px-4 py-2 rounded-md mt-2 hover:bg-teal-300 transition disabled:opacity-50"
+                        >
+                            {isSubmitting ? 'Đang xử lý...' : 'Lưu'}
+                        </button>
+                    </div>
+                </div>
+            </form>
+              {showPopup && <OrganizerRegistrationPopup onClose={togglePopup} onSuccess={handleRegistrationSuccess} />}
+        </div>
+    );
 }

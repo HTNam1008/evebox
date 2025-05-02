@@ -38,8 +38,8 @@ export class GetUserController {
   async getCurrentUser(
     @Request() req,
     @Res() res: Response,
-    @Headers('x-user-email') email: string ,
-    @Headers('x-user-role') role: string,
+    @Headers('X-User-Email') email: string ,
+    @Headers('X-User-Role') role: string,
   ) {
     const emailUser = req.user ? req.user.email : email;
     const currentUser = await this.userService.execute(emailUser);

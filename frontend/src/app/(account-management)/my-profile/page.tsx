@@ -1,9 +1,11 @@
 import ProfileForm from "./components/profileForm"
+import { fetchProfile } from "./libs/server/fetchProfile";
 
-export default function Page() {
+export default async function Page() {
+  const profileData = await fetchProfile();
   return (
     <div className="max-w-3xl mx-auto">
-      <ProfileForm />
+      <ProfileForm initialProfile={profileData} />;
     </div>
   )
 }

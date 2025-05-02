@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "k6": "^0.0.0"
+  },
+  "scripts": {
+    "load-test": "k6 run load-test/test.js"
+  }
+}
