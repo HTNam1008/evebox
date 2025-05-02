@@ -2,6 +2,7 @@ import { orgService } from "./instance.service";
 import { END_POINT_LIST } from "./endpoints";
 import { IShowTime, IEventSummaryData } from "@/types/model/getSummaryOrg";
 import { GetOrdersResponse } from "@/types/model/getOrdersOrg";
+import { AnalyticResponse } from "@/types/model/getAnalyticsOrg";
 
 // Lấy danh sách showing theo eventId
 export const getShowingsByEventId = async (eventId: number): Promise<IShowTime[]> => {
@@ -42,4 +43,28 @@ export const getOrdersByShowingId = async (showingId: string): Promise<GetOrders
   }
 
   return res.data.data;
+};
+
+// Lấy analytic theo eventId
+export const getAnalyticByEvent = async (eventId: string, startDate?: string,endDate?: string): Promise<AnalyticResponse> => {
+  const params: Record<string, string> = {};
+
+  if (startDate) {
+    params.startDate = startDate;
+  }
+  if (endDate) {
+    params.endDate = endDate;
+  }
+
+  const res = await orgService.get(`${END_POINT_LIST.ORG_STATISTICS.GET_ANALYTIC}/${eventId}`, {
+    params,
+  });
+
+  console.log("fetch analytics", res);
+
+  if (!res || !res.data) {
+    throw new Error('Failed to fetch event analytics');
+  }
+
+  return res.data;
 };
