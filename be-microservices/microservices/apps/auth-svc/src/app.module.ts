@@ -4,7 +4,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { AuthModule } from './modules/auth/auth.module';
 import { CloudinaryModule } from './infrastructure/adapters/cloudinary/cloudinary.module';
 import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
-import { ImagesModule } from './modules/images/images.module';
 
 @Module({
   imports: [
@@ -16,7 +15,6 @@ import { ImagesModule } from './modules/images/images.module';
     CqrsModule,
     CloudinaryModule,
     AuthModule,
-    ImagesModule,
   ],
 })
 

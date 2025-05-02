@@ -72,24 +72,3 @@ export const getFDByIds = async (eventIds: number[]): Promise<Event[]> => {
     }
   return []
 };
-
-interface PostClickParams {
-  eventId: number;
-  userId?: string; // Optional: could be a real user or a guest UUID
-}
-
-export const postClickEvent = async (
-  params: PostClickParams
-): Promise<BaseApiResponse<string>> => {
-  const urlParams = new URLSearchParams();
-  urlParams.append("eventId", params.eventId.toString());
-  if (params.userId) urlParams.append("userId", params.userId);
-
-  const res = await eventService.post(
-    `${END_POINT_LIST.EVENT.CLICKS}?${urlParams.toString()}`
-  );
-
-  if (!res) throw new Error("Failed to post click event");
-
-  return res.data;
-};

@@ -12,7 +12,6 @@ const routePermissions: Record<string, keyof RolePermissions> = {
   'check-in': 'checkin',
   'member': 'viewMember',
   'edit': 'isEdited',
-  'marketing':'marketing'
 };
 
 // Interface for role permissions
@@ -95,6 +94,5 @@ export const config = {
     '/organizer/events/:eventId/check-in',
     '/organizer/events/:eventId/member',
     '/organizer/events/:eventId/edit',
-    '/organizer/events/:eventId/marketing',
   ]
 };
