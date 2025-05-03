@@ -1,4 +1,8 @@
+/* Package System */
 import { Suspense } from "react"
+import { Toaster } from 'react-hot-toast';
+
+/* Package Application */
 import DashboardLoading from "./loading"
 
 export default function DefaultLayout({
@@ -9,7 +13,10 @@ export default function DefaultLayout({
   return (
     <Suspense fallback={<DashboardLoading />}>
       {/* <NavigationBar /> */}
-      <main>{children}</main>
+      <main>
+        {children}
+        <Toaster reverseOrder={false} />
+      </main>
       {/* <Footer /> */}
     </Suspense>
   )

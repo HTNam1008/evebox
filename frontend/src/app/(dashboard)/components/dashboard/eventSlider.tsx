@@ -10,6 +10,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 
 /* Package Application */
 import { Event } from '../../libs/interface/dashboard.interface';
@@ -56,11 +57,23 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
   const [notifiedEvents, setNotifiedEvents] = useState<{ [key: string]: boolean }>({});
 
   const toggleLike = (id: number) => {
-    setLikedEvents(prev => ({ ...prev, [id.toString()]: !prev[id.toString()] }));
-  };
-  
+    const isLiked = !likedEvents[id.toString()];
+    setLikedEvents(prev => ({ ...prev, [id.toString()]: isLiked }));
+    toast.success(
+      isLiked
+        ? "Đã thêm vào danh sách yêu thích!"
+        : "Đã bỏ khỏi danh sách yêu thích!"
+    );
+  };  
+
   const toggleNotify = (id: number) => {
-    setNotifiedEvents(prev => ({ ...prev, [id.toString()]: !prev[id.toString()] }));
+    const isNotified = !notifiedEvents[id.toString()];
+    setNotifiedEvents(prev => ({ ...prev, [id.toString()]: isNotified }));
+    toast.success(
+      isNotified
+        ? "Bạn sẽ được nhận thông báo về sự kiện!"
+        : "Bạn đã tắt thông báo về sự kiện này!"
+    );
   };  
 
   return (
@@ -99,18 +112,24 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
                     <button className="bg-white p-1 rounded-full hover:bg-red-100 transition"
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         toggleLike(event.id);
                       }}
                     >
-                      <Heart className={`w-4 h-4 ${likedEvents[event.id.toString()] ? "text-red-500 fill-red-500" : "text-gray-500"}`} />
+                      <div title='Thêm vào yêu thích'>
+                        <Heart className={`w-4 h-4 ${likedEvents[event.id.toString()] ? "text-red-500 fill-red-500" : "text-gray-500"}`} />
+                      </div>
                     </button>
                     <button className="bg-white p-1 rounded-full hover:bg-yellow-100 transition"
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         toggleNotify(event.id);
                       }}
                     >
-                      <Bell className={`w-4 h-4 ${notifiedEvents[event.id.toString()] ? "text-yellow-500 fill-yellow-500" : "text-gray-500"}`} />
+                      <div title='Nhận thông báo'>
+                        <Bell className={`w-4 h-4 ${notifiedEvents[event.id.toString()] ? "text-yellow-500 fill-yellow-500" : "text-gray-500"}`} />
+                      </div>
                     </button>
                   </div>
 
