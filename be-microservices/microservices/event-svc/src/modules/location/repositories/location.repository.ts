@@ -52,32 +52,51 @@ export class LocationRepository {
     });
   }
 
-  async getAllLocations() {
+  async getAllLocations(organizerId?: string, provinceId?: number) {
+    let locationIds: number[] | undefined;
+  
+    // Get locations from organizerId → via Events table
+    if (organizerId) {
+      const events = await this.prisma.events.findMany({
+        where: { organizerId },
+        select: { locationId: true },
+      });
+  
+      locationIds = events
+        .map(e => e.locationId)
+        .filter(id => id !== null) as number[];
+  
+      if (locationIds.length === 0) return [];
+    }
+  
     const locations = await this.prisma.locations.findMany({
-      select: {
-        id: true,
-        street: true,
-        ward: true,
-        districts: {
-          select: {
-            name: true,
-            province: {
-              select: {
-                name: true,
+      where: {
+        ...(locationIds
+          ? { id: { in: locationIds } }
+          : {}),
+        ...(provinceId
+          ? {
+              districts: {
+                provinceId: provinceId,
               },
-            },
+            }
+          : {}),
+      },
+      include: {
+        districts: {
+          include: {
+            province: true,
           },
         },
       },
     });
-
-    // Transforming to flat structure
-    return locations.map((location) => ({
-      id: location.id,
-      street: location.street,
-      ward: location.ward,
-      district: location.districts.name,
-      province: location.districts.province.name,
+  
+    return locations.map(loc => ({
+      id: loc.id,
+      street: loc.street,
+      ward: loc.ward,
+      district: loc.districts.name,
+      province: loc.districts.province.name,
     }));
   }
 }
