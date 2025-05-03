@@ -1,6 +1,6 @@
 import { Controller, Request, Res, HttpStatus, Param, UseGuards, Put, Body } from "@nestjs/common";
 import { Response } from "express";
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from "src/shared/guard/jwt-auth.guard";
 import { CheckInTicketService } from "./checkInTicket.service";
 import { CheckInTicketDto } from "./checkInTicket.dto";

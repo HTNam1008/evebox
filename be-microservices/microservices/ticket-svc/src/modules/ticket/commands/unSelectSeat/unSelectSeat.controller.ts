@@ -1,6 +1,6 @@
 import { Controller, Delete, Param, Request, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiHeader, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { UnSelectSeatService } from './unSelectSeat.service';
 import { JwtAuthGuard } from 'src/shared/guard/jwt-auth.guard';

@@ -1,6 +1,6 @@
 import { Controller, Res, Request, HttpStatus, Body, UseGuards, Post } from "@nestjs/common";
 import { Response } from "express";
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags, ApiBody } from "@nestjs/swagger";
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags, ApiBody, ApiBearerAuth } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/shared/guard/jwt-auth.guard";
 import { CheckInTicketByQrService } from "./checkInTicketByQr.service";
 import { CheckInTicketByQrDto } from "./checkInTicketByQr.dto";
