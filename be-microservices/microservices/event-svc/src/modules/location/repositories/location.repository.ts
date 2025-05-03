@@ -45,4 +45,39 @@ export class LocationRepository {
   async delete(id: number) {
     return this.prisma.locations.delete({ where: { id } });
   }
+  async findUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+      select: { role_id: true },
+    });
+  }
+
+  async getAllLocations() {
+    const locations = await this.prisma.locations.findMany({
+      select: {
+        id: true,
+        street: true,
+        ward: true,
+        districts: {
+          select: {
+            name: true,
+            province: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Transforming to flat structure
+    return locations.map((location) => ({
+      id: location.id,
+      street: location.street,
+      ward: location.ward,
+      district: location.districts.name,
+      province: location.districts.province.name,
+    }));
+  }
 }

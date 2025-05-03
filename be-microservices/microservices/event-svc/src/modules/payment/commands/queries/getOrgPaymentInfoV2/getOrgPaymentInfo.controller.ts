@@ -13,7 +13,6 @@ export class GetOrgPaymentInfoControllerV2 {
   @UseGuards(JwtAuthGuard)
   @Get()
   @ApiBearerAuth('access-token')
-  @ApiQuery({ name: 'eventId', type: Number, description: 'Event ID associated with the payment info', required: true })
   @ApiOperation({ summary: 'Get OrgPaymentInfo by organizerId' })
   @ApiResponse({ status: HttpStatus.OK, description: 'OrgPaymentInfo retrieved successfully', type: GetOrgPaymentInfoResponseDtoV2 })
   async getOrgPaymentInfo(@Req() req: any, @Res() res: Response) {

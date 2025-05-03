@@ -6,12 +6,19 @@ import { LocationRepository } from './repositories/location.repository';
 import { GetAllDistrictsController } from './queries/getAllDistricts.controller';
 import { GetAllDistrictsService } from './queries/getAllDistricts.service';
 import { DistrictsRepository } from './repositories/districts.repository';
+import { GetAllLocationsController } from './queries/getAllLocations/getAllLocation.controller';
+import { GetAllLocationsService } from './queries/getAllLocations/getAllLocation.service';
 
 @Module({
-  controllers: [GetAllDistrictsController],
+  controllers: [
+    GetAllDistrictsController,
+    GetAllLocationsController
+  ],
   providers: [LocationService, LocationRepository,
     GetAllDistrictsService,
     DistrictsRepository,
+    GetAllLocationsService,
+    
   ],
   exports: [LocationService],
 })
