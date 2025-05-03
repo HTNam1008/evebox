@@ -99,4 +99,34 @@ export class LocationRepository {
       province: loc.districts.province.name,
     }));
   }
+
+  async getLocationsByOrganizerEmail(email: string) {
+   const events = await this.prisma.events.findMany({
+      where: { organizerId: email },
+      select: {
+        locationId: true,
+        venue: true,
+        locations: {
+          include: {
+            districts: {
+              include: {
+                province: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return events
+      .filter(e => e.locationId && e.locations)
+      .map(e => ({
+        id: e.locations.id,
+        street: e.locations.street,
+        ward: e.locations.ward,
+        district: e.locations.districts.name,
+        province: e.locations.districts.province.name,
+        venue: e.venue || '',
+      }));
+  }
 }
