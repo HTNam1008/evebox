@@ -23,22 +23,19 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
     setLoading(true);
     try {
-      // Call API to revoke refresh token on server
       await gatewayService.post('/api/user/logout', {
         refresh_token: session.user.refreshToken
       });
       
-      // Clear cookies on client side
+/*       // Clear cookies on client side
       document.cookie.split(';').forEach(cookie => {
         const [name] = cookie.trim().split('=');
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-      });
+      }); */
 
       // Clear client session and redirect
-      await signOut({ 
-        redirect: true,
-        callbackUrl: '/'
-      });
+      await signOut({ redirect: false });
+      window.location.href = "/"; 
     } catch (error) {
       console.error('Logout error:', error);
     } finally {

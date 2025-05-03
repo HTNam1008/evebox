@@ -10,7 +10,7 @@ import { sortUsers } from "../lib/function/sortUsers";
 import SortIcon from "./sortIcon";
 import { User } from "@/types/model/admin/user";
 import { UserStatus } from "../lib/enum/acctable.enum";
-import AlertDialog from "@/app/(showing)/showing/components/alertDialog"; // Import AlertDialog
+import AlertDialog from "@/app/(showing)/showing/components/alertDialog"; 
 import { gatewayService } from "@/services/instance.service";
 
 interface AccountTableProps {
@@ -45,7 +45,6 @@ export default function AccountTable({
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     
-    // Add state for alert dialog
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
 
@@ -116,13 +115,11 @@ export default function AccountTable({
 
             onStatusUpdate(updatedUsers);
 
-            // Replace alert with dialog
             setAlertMessage(`Đã ${newStatus === UserStatus.ACTIVE ? 'kích hoạt' : 'khóa'} tài khoản thành công`);
             setAlertOpen(true);
             
         } catch (error) {
             console.error('Error updating user status:', error);
-            // Replace alert with dialog for error
             setAlertMessage('Không thể cập nhật trạng thái tài khoản. Vui lòng thử lại sau.');
             setAlertOpen(true);
         } finally {
