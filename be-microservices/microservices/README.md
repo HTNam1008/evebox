@@ -12,7 +12,7 @@ Step 1. Redis Sentinel
        - Click "Add redis database"
        - Click "Redis Sentinel" and type host = "sentinel-1", port "26379"
        - Select "mymaster" and click "Add database"
-
+  
 
 Step 2. Kafka
  - Start kafka:
@@ -29,30 +29,36 @@ Step 2. Kafka
 
 *Note: Kafka and Redis must run successfully before running other services.*
 
+*Note: Each service and frontend needs "npm install"*
 
-Step 3. Gateway-Service
+
+Step 3. Redis module
+  - Open cmd in folder "microservices/libs/redis" and run command: "nest build"
+
+Step 4. Gateway-Service
    - Port: 8000
    - Open folder apps/api-gateway-svc  -> npm run start:dev
 
 
-Step 4. Auth-Service
+Step 5. Auth-Service
    - Port 8001, using database <> event-svc
    - Open folder "/apps/auth-svc": 
      - If first time run: access folder "/src/infrastructure/database/prisma" -> open CMD -> "npx prisma generate"
      - Else: npm run start:dev
 
        
-Step 5: Admin-Service
+Step 6: Admin-Service
    - Port 8007
    - Same with step 4.
 
      
-Step 6. Noti-Service
+Step 7. Noti-Service
    - Don't use public port.
    - Only communicate with other services through Kafka's Message Queue.
 
 
 *Note: Currently not connect Event and Ticket service via gateway !!!!.*
+*Note: The first time you connect to kafka, you may encounter an error `KafkaJSProtocolError: This server does not host this topic-partition`. Please restart the service in microservices.*
 
 Flow Admin:
 - Account management:
