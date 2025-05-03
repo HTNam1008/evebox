@@ -47,7 +47,7 @@ export default function MyFavoritePage({
                 {paginatedData.length > 0 ? (
                     <>
                         {paginatedData.map((org) => (
-                            <div className="flex items-center">
+                            <div key={org.id} className="flex items-center">
                                 {/* Organizer Image */}
                                 <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center text-base">
                                     <Image
