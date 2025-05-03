@@ -6,13 +6,14 @@ import { useRouter } from 'next/navigation';
 // import { AuthContext } from '../../../../../contexts/auth.context';
 // import { ErrorResponse } from '../../../../../types/ErrorResponse';
 import { signIn } from 'next-auth/react';
+import { useAuth } from '@/contexts/auth.context';
 
 export const useLoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  // const { login } = useContext(AuthContext);
+  const { login } = useAuth();
 
   const handleGoogleLogin = () => {
     try {
@@ -66,7 +67,7 @@ export const useLoginForm = () => {
           const { access_token, refresh_token } = response.data.data;
 
           if (access_token) {
-            // login(access_token);
+            login(access_token, refresh_token);
             localStorage.setItem('refresh_token', refresh_token); // Lưu refresh_token vào localStorage
             router.push('/');
           } else {
