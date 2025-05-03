@@ -25,7 +25,7 @@ export default function ToggleNotification() {
       <p className="text-sm mt-2 text-white-600">
         {isOn
           ? "Bạn sẽ nhận được thông báo từ EveBox!"
-          : "Bạn hiện chưa nhận thông báo!"}
+          : "Bạn hiện chưa nhận được thông báo từ EveBox!"}
       </p>
     </div>
   );
