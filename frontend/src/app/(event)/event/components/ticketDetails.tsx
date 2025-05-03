@@ -4,19 +4,22 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Bell, Heart } from "lucide-react";
+import toast from 'react-hot-toast';
 
 /* Package Application */
 import { Showing } from "../libs/event.interface";
 import { useTranslations } from "next-intl";
 import { EventDetail } from '../libs/event.interface';
 
-
-const TicketDetails = ({ showings, event }: { showings: Showing[], event: EventDetail}) => {
+const TicketDetails = ({ showings, event }: { showings: Showing[], event: EventDetail }) => {
   const [expandedShowId, setExpandedShowId] = useState<string | null>(null);
   // const [isTicketInfoExpanded, setIsTicketInfoExpanded] = useState(false);
   // const [isTicketNoteExpanded, setIsTicketNoteExpanded] = useState(false);
   const router = useRouter();
   const t = useTranslations("common");
+  const [isOn, setIsOn] = useState(false);
+  const [isOrgFavorite, setIsOrgFavorite] = useState(false);
 
   return (
     <>
@@ -53,7 +56,7 @@ const TicketDetails = ({ showings, event }: { showings: Showing[], event: EventD
                     {showing.status === "sold_out" ? (
                       <button type="button" className="btn-sold-out cursor-none">{t('soldOut')}</button>
                     ) : (
-                      <button 
+                      <button
                         type="button"
                         className="btn-buy"
                         onClick={() => router.push(`/event/${showing.eventId}/booking/select-ticket?showingId=${showing.id}&eventId=${showing.eventId}${(showing.seatMapId && showing.seatMapId !== 0) ? `&seatMapId=${showing.seatMapId}` : ""}`)}
@@ -75,11 +78,11 @@ const TicketDetails = ({ showings, event }: { showings: Showing[], event: EventD
                             <div className="d-flex flex-column align-items-end">
                               {ticket.status === "sold_out" ? (
                                 <>
-                                  <p className="price !text-gray-700 p-2">{ticket.price?.toLocaleString("vi-VN")}đ</p> 
+                                  <p className="price !text-gray-700 p-2">{ticket.price?.toLocaleString("vi-VN")}đ</p>
                                   <button type="button" className="btn-sold-out">Hết vé</button>
                                 </>
                               ) : (
-                                <p className="price mb-0 !border !border-[#9ef5cf] rounded-lg p-2">{ticket.price?.toLocaleString("vi-VN")}đ</p> 
+                                <p className="price mb-0 !border !border-[#9ef5cf] rounded-lg p-2">{ticket.price?.toLocaleString("vi-VN")}đ</p>
                               )}
                             </div>
                           </div>
@@ -107,33 +110,64 @@ const TicketDetails = ({ showings, event }: { showings: Showing[], event: EventD
 
       {/* Contact Section */}
       <div className="flex justify-center mt-8 ml-2">
-  <div className="w-full md:w-5/6">
-    <h2 className="text-xl md:text-2xl font-bold">{t('contactOrganizer')}</h2>
+        <div className="w-full md:w-5/6">
+          <h2 className="text-xl md:text-2xl font-bold">{t('contactOrganizer')}</h2>
 
-    {/* Organizer Section */}
-    <div className="flex items-center mt-4">
-      {/* Organizer Image */}
-      <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
-        <Image
-          width={200} 
-          height={160} 
-          src={event.Images_Events_imgLogoIdToImages?.imageUrl || ''}
-          alt={event.orgName}
-          className="object-cover rounded-md"
-        />
-      </div>
+          {/* Organizer Section */}
+          <div className="flex items-center mt-4">
+            {/* Organizer Image */}
+            <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
+              <Image
+                width={200}
+                height={160}
+                src={event.Images_Events_imgLogoIdToImages?.imageUrl || ''}
+                alt={event.orgName}
+                className="object-cover rounded-md"
+              />
+            </div>
 
-      {/* Organizer Details */}
-      <div className="ml-4">
-        <h2 className="text-xl px-2 md:text-xl font-bold">{event.orgName}</h2>
-        <div
-          className="prose max-w-none px-2 text-gray-800"
-          dangerouslySetInnerHTML={{ __html: event.orgDescription }}
-        />
+            {/* Organizer Details */}
+            <div className="ml-4">
+              <h2 className="text-xl px-2 md:text-xl font-bold">{event.orgName}</h2>
+              <div
+                className="prose max-w-none px-2 text-gray-800"
+                dangerouslySetInnerHTML={{ __html: event.orgDescription }}
+              />
+            </div>
+          </div>
+
+          {/* Favorite and Notification Button */}
+          <div className="flex gap-3 mt-3">
+            <button className={`favortie-org-btn flex items-center gap-2 px-4 py-2 rounded-full shadow-sm transition-all  
+                    ${isOrgFavorite ? "bg-red-500 text-white hover:bg-red-600" : "bg-gray-100 text-black hover:bg-gray-200"}`}
+              onClick={() => {
+                const nextState = !isOrgFavorite;
+                setIsOrgFavorite(nextState);
+                toast.success(nextState ? "Đã thêm vào danh sách nhà tổ chức yêu thích!" : "Đã xóa khỏi danh sách nhà tổ chức yêu thích!");
+              }}
+            >
+              <Heart size={18} className={isOrgFavorite ? "fill-white text-white" : "text-black"} />
+              <span className="text-sm font-medium">
+                {isOrgFavorite ? "Đã yêu thích" : "Yêu thích"}
+              </span>
+            </button>
+
+            <button className={`notify-org-btn flex items-center gap-2 px-4 py-2 rounded-full shadow-sm transition-all
+                              ${isOn ? "bg-yellow-500 text-white hover:bg-yellow-500" : "bg-gray-100 text-black hover:bg-gray-200"}`}
+              onClick={() => {
+                const nextState = !isOn;
+                setIsOn(nextState);
+                toast.success(nextState ? "Bạn sẽ nhận thông báo từ nhà tổ chức!" : "Bạn đã tắt thông báo từ nhà tổ chức!");
+              }}
+            >
+              <Bell size={18} className={isOn ? "fill-white text-white" : "text-black"} />
+              <span className="text-sm font-medium">
+                {isOn ? "Đã đăng ký nhận thông báo" : "Nhận thông báo"}
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
 
     </>
   )

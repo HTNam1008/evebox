@@ -9,7 +9,6 @@ import { Bell } from "lucide-react";
 import EventSlider from "@/app/(dashboard)/components/dashboard/eventSlider";
 import Pagination from "@/app/(admin)/admin/event-special-management/components/common/pagination";
 import { FavoriteProps } from "../lib/interface/favorite.interface";
-import ToggleNotification from "@/app/(dashboard)/components/common/toggleNotification";
 
 export default function MyFavoritePage({
     events,
