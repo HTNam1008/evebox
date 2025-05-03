@@ -23,7 +23,7 @@ export default function Filter() {
             placeholder="Tìm kiếm theo tên sự kiện, tên nhà tổ chức, ..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-4 pr-12 py-2 h-11 bg-gray-100 border border-gray-200 rounded-md w-full outline-none"
+            className="pl-4 pr-12 py-2 h-11 bg-white border border-gray-200 rounded-md w-full outline-none"
           />
           <button
             onClick={handleSearch}
@@ -34,11 +34,11 @@ export default function Filter() {
         </div>
 
         <div className="flex gap-4 items-center items-end">
-          <div className="flex border border-gray-300 rounded-md">
+          <div className="flex border border-gray-300 rounded-md bg-white">
             <div className="flex items-center px-4 py-2">
-              <span className="text-sm text-gray-600">Từ ngày</span>
+              <span className="text-sm text-gray-600">Từ ngày:</span>
             </div>
-            <div className="border-l border-r border-gray-300">
+            <div>
               <input
                 type="date"
                 value={dateRange.fromDate}
@@ -57,7 +57,7 @@ export default function Filter() {
               />
             </div>
             <div className="flex items-center px-4 py-2">
-              <span className="text-sm text-gray-600">Đến ngày</span>
+              <span className="text-sm text-gray-600">Đến ngày:</span>
             </div>
             <div>
               <input

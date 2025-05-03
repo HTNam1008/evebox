@@ -1,7 +1,6 @@
 "use client"
 
-import React from "react"
-import { useState } from "react"
+import { useState, Fragment } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import { RevenueOrgTable, type Organization } from "../org/revenue-org-table"
 
@@ -218,7 +217,7 @@ export function RevenueAppTable() {
           </thead>
           <tbody>
             {appRevenues.map((app) => (
-              <React.Fragment key={`app-${app.id}`}>
+              <Fragment key={`app-${app.id}`}>
                 <tr className="cursor-pointer hover:bg-[#E8FFFF]" onClick={() => toggleAppRevenue(app.id)}>
                   <td className="py-3 px-4 border-t flex items-center">
                     {app.isExpanded ? (
@@ -249,7 +248,7 @@ export function RevenueAppTable() {
                     </td>
                   </tr>
                 )}
-              </React.Fragment>
+              </Fragment>
             ))}
           </tbody>
         </table>
