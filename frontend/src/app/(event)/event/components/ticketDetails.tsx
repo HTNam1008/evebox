@@ -114,7 +114,7 @@ const TicketDetails = ({ showings, event }: { showings: Showing[], event: EventD
           <h2 className="text-xl md:text-2xl font-bold">{t('contactOrganizer')}</h2>
 
           {/* Organizer Section */}
-          <div className="flex items-center mt-4">
+          <div className="flex items-center">
             {/* Organizer Image */}
             <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
               <Image
@@ -153,7 +153,7 @@ const TicketDetails = ({ showings, event }: { showings: Showing[], event: EventD
             </button>
 
             <button className={`notify-org-btn flex items-center gap-2 px-4 py-2 rounded-full shadow-sm transition-all
-                              ${isOn ? "bg-yellow-500 text-white hover:bg-yellow-500" : "bg-gray-100 text-black hover:bg-gray-200"}`}
+                              ${isOn ? "bg-yellow-500 text-white hover:bg-yellow-400" : "bg-gray-100 text-black hover:bg-gray-200"}`}
               onClick={() => {
                 const nextState = !isOn;
                 setIsOn(nextState);
