@@ -1,5 +1,7 @@
 HOW TO RUN ???
 
+### In each service in folder apps, remember to create ```.env``` file based on ```.env.txt``` before do this tutorial
+
 Step 1. Redis Sentinel
    - Replace my local ip v4 to variable "HOST_IP" in docker/redis/.env
    - Start redis sentinel:
