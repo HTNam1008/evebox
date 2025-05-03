@@ -113,7 +113,7 @@ const TicketDetails = ({ showings, event }: { showings: Showing[], event: EventD
     {/* Organizer Section */}
     <div className="flex items-center mt-4">
       {/* Organizer Image */}
-      <div className="w-20 h-20 flex-shrink-0">
+      <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
         <Image
           width={200} 
           height={160} 
