@@ -3,10 +3,13 @@
 /* Package System */
 import "tailwindcss/tailwind.css";
 import { useState } from "react";
+import Image from "next/image";
 
 /* Package Application */
 import AvatarUpload from "./components/avatarUpload";
 import EventSlider from "@/app/(dashboard)/components/dashboard/eventSlider";
+import { OrganizerDetail } from "./lib/interface/favorite.interface";
+import Pagination from "@/app/(admin)/admin/event-special-management/components/common/pagination";
 
 export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState("info");
@@ -26,11 +29,43 @@ export default function ProfilePage() {
         favoriteEvents: [],
     };
 
-     //Call API truyền dữ liệu nhà tổ chức yêu thích
-    const favoriteOrganizers = [
-        { id: 1, name: "TechFest Vietnam" },
-        { id: 2, name: "UX Lovers Community" },
+    //Call API truyền dữ liệu nhà tổ chức yêu thích
+    const favoriteOrganizers: OrganizerDetail[] = [
+        {
+            id: 1,
+            Images_Events_imgLogoIdToImages: {
+                imageUrl: "https://images.tkbcdn.com/2/608/332/ts/ds/03/21/08/2aff26681043246ebef537f075e2f861.png",
+            },
+            orgName: "TechFest Vietnam",
+            orgDescription: "<p>TechFest Vietnam là nơi quy tụ những startup hàng đầu Việt Nam và khu vực.</p>",
+        },
+        {
+            id: 2,
+            Images_Events_imgLogoIdToImages: {
+                imageUrl: "https://images.tkbcdn.com/2/608/332/ts/ds/03/21/08/2aff26681043246ebef537f075e2f861.png",
+            },
+            orgName: "UX Lovers",
+            orgDescription: "<p>UX Lovers là cộng đồng dành cho các nhà thiết kế đam mê trải nghiệm người dùng.</p>",
+        }
     ];
+
+    //Pagination
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalItems = favoriteOrganizers.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(startItem + itemsPerPage - 1, totalItems);
+
+    const handlePrevious = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    const paginatedData = favoriteOrganizers.slice(startItem - 1, endItem);
 
     const tabs = [
         { key: "info", label: "Thông tin cá nhân" },
@@ -39,7 +74,7 @@ export default function ProfilePage() {
 
     return (
         <>
-            <div className="bg-white min-h-screen -mt-16">
+            <div className="bg-white min-h-screen -mt-16 mb-10">
                 {/* Banner Header */}
                 <div className="bg-gradient-to-r from-slate-900 to-slate-700 p-6 text-white">
                     <div className="max-w-4xl mx-auto flex items-center gap-6">
@@ -158,7 +193,7 @@ export default function ProfilePage() {
                             {events.favoriteEvents.length > 0 ? (
                                 <EventSlider title="" subtitle="" events={events.favoriteEvents} />
                             ) : (
-                                <p>Bạn chưa có Sự kiện yêu thích nào!</p>
+                                <p className="text-base">Bạn chưa có Sự kiện yêu thích nào!</p>
                             )}
                         </div>
 
@@ -168,14 +203,41 @@ export default function ProfilePage() {
                                     Nhà tổ chức <span className="text-teal-400"> Yêu thích</span>
                                 </h2>
                             </div>
-                            {favoriteOrganizers.length > 0 ? (
-                                favoriteOrganizers.map((org) => (
-                                    <div key={org.id} className="flex items-center gap-3 p-4 bg-gray-100 rounded-md shadow-sm mt-2">
-                                        <span>{org.name}</span>
-                                    </div>
-                                ))
-                            ):(
-                                <p>Bạn chưa có Nhà tổ chức yêu thích nào!</p>
+                            {paginatedData.length > 0 ? (
+                                <>
+                                    {paginatedData.map((org) => (
+                                        <div className="flex items-center">
+                                            {/* Organizer Image */}
+                                            <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center text-base">
+                                                <Image
+                                                    width={200}
+                                                    height={160}
+                                                    src={org.Images_Events_imgLogoIdToImages?.imageUrl || ''}
+                                                    alt={org.orgName}
+                                                    className="object-cover rounded-md"
+                                                />
+                                            </div>
+
+                                            {/* Organizer Details */}
+                                            <div className="ml-4">
+                                                <h2 className="text-base px-2 md:text-base font-bold">{org.orgName}</h2>
+                                                <div
+                                                    className="prose max-w-none px-2 text-gray-800"
+                                                    dangerouslySetInnerHTML={{ __html: org.orgDescription }}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {/* Phân trang */}
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalItems={favoriteOrganizers.length}
+                                        itemsPerPage={itemsPerPage}
+                                        onPrevious={handlePrevious}
+                                        onNext={handleNext} />
+                                </>
+                            ) : (
+                                <p className="text-base">Bạn chưa có Nhà tổ chức yêu thích nào!</p>
                             )}
                         </div>
                     </div>
