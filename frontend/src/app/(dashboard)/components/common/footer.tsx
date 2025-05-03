@@ -1,8 +1,12 @@
 "use client"
 
+/* Package System */
 import { Linkedin, Instagram, Facebook } from 'lucide-react';
 import { useTranslations } from "next-intl";
 import 'tailwindcss/tailwind.css';
+
+/* Package Application */
+import ToggleNotification from './toggleNotification';
 
 const Footer = () => {
     const t = useTranslations("common");
@@ -10,17 +14,9 @@ const Footer = () => {
       <footer className="w-[100vw] bg-sky-900 text-white py-8 sm:py-12 relative left-[calc(-50vw+50%)]">
         {/* Newsletter Section */}
         <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">EveBox</h2>
-          <div className="flex flex-col sm:flex-row items-center justify-center max-w-md mx-auto gap-2 px-4">
-            <input 
-              type="email" 
-              placeholder={t("emailHint")}
-              className="flex-1 px-4 py-2 rounded-md text-gray-800 w-full sm:w-auto"
-            />
-            <button className="bg-teal-200 text-teal-950 px-4 sm:px-6 py-2 rounded-md hover:bg-teal-100 whitespace-nowrap w-full sm:w-auto">
-              {t("newsBtn")}
-            </button>
-          </div>
+          <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">Eve<span className="text-teal-400">Box</span></h2>
+            
+          <ToggleNotification />
         </div>
 
         <div className="max-w-4xl mx-auto px-4 mb-8 sm:mb-12">
