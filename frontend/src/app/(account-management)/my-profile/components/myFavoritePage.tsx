@@ -2,11 +2,14 @@
 
 /* Package System */
 import Image from "next/image";
+import { useState } from "react";
+import { Bell } from "lucide-react";
 
 /* Package Application */
 import EventSlider from "@/app/(dashboard)/components/dashboard/eventSlider";
 import Pagination from "@/app/(admin)/admin/event-special-management/components/common/pagination";
 import { FavoriteProps } from "../lib/interface/favorite.interface";
+import ToggleNotification from "@/app/(dashboard)/components/common/toggleNotification";
 
 export default function MyFavoritePage({
     events,
@@ -16,11 +19,22 @@ export default function MyFavoritePage({
     itemsPerPage,
     onPrevious,
     onNext
-    }: FavoriteProps) {
+}: FavoriteProps) {
+    const [isOn, setIsOn] = useState(false);
+
     return (
         <div className="favorite-page max-w-3xl mx-auto mb-10">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold mt-8">Danh sách yêu thích của tôi</h2>
+            <div className="flex justify-between mt-8">
+                <h2 className="text-2xl font-bold">Danh sách yêu thích của tôi</h2>
+                <div className="notify-btn">
+                    <button onClick={() => setIsOn(!isOn)}
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-black rounded-full shadow-sm transition-all">
+                        <Bell size={18} className={isOn ? "fill-black text-black" : "text-black"}/>
+                        <span className="text-sm font-medium">
+                            {isOn ? "Đã đăng ký" : "Chưa đăng ký"}
+                        </span>
+                    </button>
+                </div>
             </div>
 
             <hr className="my-6 border-gray-700" />
