@@ -4,6 +4,18 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
 export const authOptions: AuthOptions = {
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax", 
+        path: "/",
+        secure: false,
+        domain: "localhost"
+      }
+    }
+  },
   providers: [
     CredentialsProvider({
         name: "Credentials",

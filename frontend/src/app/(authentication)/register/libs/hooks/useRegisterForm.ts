@@ -28,7 +28,7 @@ export const useRegisterForm = () => {
       password: '',
       re_password: '',
       role_id: 3,
-      province_id: [],
+      province_id: null,
       agree: false
     },
     validationSchema: Yup.object({
@@ -45,7 +45,7 @@ export const useRegisterForm = () => {
       setIsLoading(true);
       try {
         const result = await register(values);
-        if (result.status === 200) {
+        if (result.statusCode === 200) {
           setError('');
           localStorage.setItem('verifyData', JSON.stringify({
             ...values,

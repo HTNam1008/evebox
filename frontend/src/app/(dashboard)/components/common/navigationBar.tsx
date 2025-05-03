@@ -14,10 +14,9 @@ import Sidebar from "./sidebar";
 import { UserInfo, UserInfoResponse } from "@/types/model/userInfo";
 import LanguageSwitcher from "../common/languageSwitcher";
 import { useI18n } from "../../../providers/I18nProvider";
-import createApiClient from "@/services/apiClient";
+import { gatewayService } from "@/services/instance.service";
 
 const NavigationBar = () => {
-  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null); // Replace `any` with a proper type if known
@@ -31,7 +30,7 @@ const NavigationBar = () => {
     const fetchUserInfo = async () => {
       setLoading(true);
       try {
-        const response = await apiClient.get<UserInfoResponse>("/api/user/me"); // Assuming your API route is /api/me
+        const response = await gatewayService.get<UserInfoResponse>("/api/user/me"); // Assuming your API route is /api/me
         setUserInfo(response.data.data);
         if (response?.data?.data?.name) {
           localStorage.setItem("name", response.data.data.name);

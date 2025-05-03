@@ -8,6 +8,7 @@ export interface UserInfo {
   email: string;
   phone: string;
   role: number;
+  avatar_id?: number;
 }
 
 // Response cho API /user/me

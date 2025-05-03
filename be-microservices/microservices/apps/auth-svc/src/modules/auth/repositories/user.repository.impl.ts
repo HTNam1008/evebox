@@ -10,11 +10,13 @@ import { Name } from '../domain/value-objects/user/name.vo';
 import { Phone } from '../domain/value-objects/user/phone.vo';
 import { ProvinceId } from '../domain/value-objects/user/province-id.vo';
 import { EventBus } from '@nestjs/cqrs';
-import { Prisma, RefreshToken } from '@prisma/client';
+import { Prisma, RefreshToken, UserStatus } from '@prisma/client';
 import { IOTPData } from './user.repository.interface';
 import { OTPType } from '../domain/enums/otp-type.enum';
 import { DomainEvent } from 'src/libs/ddd/domain-event.base';
 import { OTP } from '../domain/entities/otp.entity';
+import { Avatar } from '../domain/value-objects/user/avatar.vo';
+import { Status } from '../domain/value-objects/user/status.vo';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -22,6 +24,40 @@ export class UserRepositoryImpl implements UserRepository {
     private readonly prisma: PrismaService,
     private readonly eventBus: EventBus,
   ) {}
+  async updateUserStatus(userId: string, status: UserStatus): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId }
+    });
+    
+    if (!user) throw new Error('User not found');
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { status }
+    });
+  }
+
+  async findById(id: UserId): Promise<User | null> {
+    const userRecord = await this.prisma.user.findUnique({
+      where: { id: id.value },
+      include: {
+        role: true,
+        userProvince: {
+          include: {
+            province: true,
+          },
+        },
+        avatar: true,
+      
+      },
+    });
+
+    if (!userRecord) {
+      return null;
+    }
+
+    return this.mapToDomain(userRecord);
+  }
 
   async findByEmail(email: Email): Promise<User | null> {
     const userRecord = await this.prisma.user.findUnique({
@@ -33,6 +69,7 @@ export class UserRepositoryImpl implements UserRepository {
             province: true,
           },
         },
+        avatar: true,
       },
     });
 
@@ -75,13 +112,14 @@ export class UserRepositoryImpl implements UserRepository {
           password: userOrmData.password,
           phone: userOrmData.phone,
           role_id: userOrmData.role,
+          status: userOrmData.status,
         },
       });
     } catch (error) {
       console.error('Error saving user:', error);
     }
 
-      // Xử lý liên kết với Province thông qua bảng trung gian
+      // Xß╗¡ l├╜ li├¬n kß║┐t vß╗¢i Province th├┤ng qua bß║úng trung gian
       await tx.userProvince.deleteMany({
         where: { userId: userOrmData.id },
       });
@@ -97,7 +135,7 @@ export class UserRepositoryImpl implements UserRepository {
       }
     });
 
-    // Phát hành các sự kiện domain
+    // Ph├ít h├ánh c├íc sß╗▒ kiß╗çn domain
     const domainEvents = user.getDomainEvents();
     for (const event of domainEvents) {
       await this.eventBus.publish(event);
@@ -149,6 +187,7 @@ export class UserRepositoryImpl implements UserRepository {
       include: {
         role: true;
         userProvince: { include: { province: true } };
+        avatar: true;
       };
     }>,
   ): User {
@@ -196,6 +235,21 @@ export class UserRepositoryImpl implements UserRepository {
     }
     const provinceIds = provinceIdsOrError.unwrap();
 
+    const avatarIdOrError = Avatar.create(userRecord.avatar_id) 
+    if (avatarIdOrError.isErr()) {
+      throw new Error(avatarIdOrError.unwrapErr().message);
+    }
+    const avatarId = avatarIdOrError.unwrap();
+
+
+    const statusOrError = Status.create(userRecord.status);
+    if (statusOrError.isErr()) {
+      throw new Error(statusOrError.unwrapErr().message);
+    }
+    const status = statusOrError.unwrap();
+
+    const createAt = userRecord.created_at;
+
     const userOrError = User.createExisting(
       userId,
       name,
@@ -204,6 +258,9 @@ export class UserRepositoryImpl implements UserRepository {
       phone,
       role,
       provinceIds,
+      avatarId,
+      status,
+      createAt,
     );
     if (userOrError.isErr()) {
       throw new Error(userOrError.unwrapErr().message);
@@ -221,6 +278,7 @@ export class UserRepositoryImpl implements UserRepository {
       phone: user.phone.value,
       role: user.role.getValue(),
       provinceIds: user.provinceIds.map((p) => ({ value: p.value })),
+      status: user.status.getValue(),
     };
   }
 
@@ -329,8 +387,6 @@ export class UserRepositoryImpl implements UserRepository {
     });
   }
 
-  async findById() {}
-
   async removeAllRefreshTokens(email: string): Promise<void> {
     try {
       // Delete all refresh tokens for the user
@@ -343,5 +399,16 @@ export class UserRepositoryImpl implements UserRepository {
       console.error('Error removing refresh tokens:', error);
       throw new Error('Failed to remove refresh tokens');
     }
+  }
+
+  async updateUserInfo(user: User): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: user.id.value },
+      data: {
+        name: user.name.value,
+        phone: user.phone.value,
+        avatar_id: user.avatarId
+      },
+    });
   }
 }
