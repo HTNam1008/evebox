@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpStatus, HttpException, Res } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, HttpException, Res, Logger } from '@nestjs/common';
 import { Response } from 'express';
 import { RefreshTokenService } from './refresh-token.service';
 import { RefreshTokenCommand } from './refresh-token.command';
@@ -47,6 +47,7 @@ export class RefreshTokenController {
           .json(ErrorHandler.unauthorized(result.unwrapErr().message));
       }
 
+      Logger.log('[Auth Controller] Refresh Token Result:', result.unwrap());
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: REFRESH_TOKEN_MESSAGES.SUCCESS.REFRESHED,

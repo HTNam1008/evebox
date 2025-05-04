@@ -1,31 +1,32 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { UserInfoResponse } from '@/types/model/userInfo';
-import { ErrorResponse } from '@/types/ErrorResponse';
-import { authOptions } from '@/lib/authOptions';
-import createApiClient from '@/services/apiClient';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { UserInfoResponse } from "@/types/model/userInfo";
+import { ErrorResponse } from "@/types/ErrorResponse";
+import { authOptions } from "@/lib/authOptions";
+import createApiClient from "@/services/apiClient";
 
-export async function GET(): Promise<NextResponse<UserInfoResponse | ErrorResponse>> {
+export async function GET(
+  req: NextRequest
+): Promise<NextResponse<UserInfoResponse | ErrorResponse>> {
   const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
-  
+
   try {
     const session = await getServerSession(authOptions);
-    console.log('Session route api me:', session);
+    
     if (!session?.user?.accessToken) {
       return NextResponse.json(
-        { statusCode: 401, message: 'Unauthorized' },
+        { statusCode: 401, message: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    // Type cho response từ backend
     const response = await apiClient.get<UserInfoResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/api/user/me`
     );
 
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
 
     // Xử lý lỗi type-safe
     // if (error instanceof Error && 'response' in error) {
@@ -40,7 +41,7 @@ export async function GET(): Promise<NextResponse<UserInfoResponse | ErrorRespon
     // }
 
     return NextResponse.json(
-      { statusCode: 500, message: 'Internal Server Error' },
+      { statusCode: 500, message: "Internal Server Error" },
       { status: 500 }
     );
   }

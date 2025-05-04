@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Request, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiOperation, ApiResponse, ApiBody, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiBody, ApiHeader, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ErrorHandler } from 'src/shared/exceptions/error.handler';
 import { SelectSeatDto } from './selectSeat.dto';
 import { SelectSeatService } from './selectSeat.service';

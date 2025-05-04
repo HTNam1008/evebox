@@ -2,16 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { UserRepositoryImpl } from '../../repositories/user.repository.impl';
 import { Email } from '../../domain/value-objects/user/email.vo';
 import { Err, Ok, Result } from 'oxide.ts';
-import { Role } from '../../domain/value-objects/user/role.vo';
 
 @Injectable()
 export class GetUserService {
   constructor(
     private readonly userRepository: UserRepositoryImpl,
   ) {}
-
+ 
   async execute(email: string): Promise<Result<{
-    id: string, name: string, email: string, role: number, phone: string,
+    id: string, name: string, email: string, role: number, phone: string, avatar_id?: number
   }, Error>> {
     const emailOrError = Email.create(email);
     if (emailOrError.isErr()) {
@@ -19,7 +18,6 @@ export class GetUserService {
     }
 
     const user = await this.userRepository.findByEmail(emailOrError.unwrap());
-    
     if (user != null) {
       return Ok({
         id: user.id.value, 
@@ -27,6 +25,7 @@ export class GetUserService {
         email: user.email.value,
         role: user.role.getValue(), 
         phone: user.phone.value,
+        avatar_id: user.avatarId,
       });
     }
   }

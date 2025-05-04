@@ -75,7 +75,7 @@ export const useVerifyOTPForm = () => {
           type,
         });
         
-        if (result.status === 200) {
+        if (result.statusCode === 200) {
           setIsVerified(true);
           setError('');
         }

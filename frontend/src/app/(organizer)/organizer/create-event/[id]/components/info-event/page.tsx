@@ -7,20 +7,22 @@ import { useState } from 'react';
 // import { useRef } from 'react';
 import { Divider } from '@nextui-org/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+// import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 
 /* Package Application */
 import NoteDialog from '../dialogs/noteDialog';
 import FormInformationEventClient from './components/formInfoEvent';
 import Navigation from '../common/navigation';
+import { useAuth } from '@/contexts/auth.context';
 
 interface InformationEventClientPageProps {
     setEventId?: (id: number) => void;
 }
 
 export default function InformationEventClientPage({ setEventId } : InformationEventClientPageProps) {
-    const { data: session } = useSession();
+    // const { data: session } = useSession();
+    const { user } = useAuth();
     const router = useRouter();
     const [open, setOpen] = useState(true);
     const [step] = useState(1);
@@ -43,7 +45,7 @@ export default function InformationEventClientPage({ setEventId } : InformationE
 
     const handleNextStep = async (formData: FormData) => {
         // router.push(`/organizer/create-event/1?step=showing`);
-        const access_token = session?.user?.accessToken;
+        const access_token = user?.accessToken;
         if (!access_token) return;
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/org/event`, {

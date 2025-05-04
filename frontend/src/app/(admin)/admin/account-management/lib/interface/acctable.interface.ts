@@ -1,18 +1,21 @@
+import { UserStatus } from "../enum/acctable.enum";
+
 export interface User {
     id: string;
     name: string;
     email: string;
     phone: string;
     role: string;
-    createdAt: string;
-    status: 'Active' | 'Deactivated';
+    createAt: string;
+    status: UserStatus;
+    avatar_id?: number;
 };
 
 export interface ConfirmActiveProps {
     open: boolean;
     onClose: () => void;
     onConfirm: () => void;
-    currentStatus: 'Active' | 'Deactivated';
+    currentStatus: string;
 }
 
 export interface SortConfig<T> {
@@ -47,3 +50,4 @@ export interface FilterProps {
     onDateToChange: (value: string) => void;
     onReset: () => void;
 }
+

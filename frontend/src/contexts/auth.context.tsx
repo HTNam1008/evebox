@@ -1,14 +1,17 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useState, useEffect, ReactNode, useContext } from 'react';
+import { useSession } from 'next-auth/react';
 import {jwtDecode} from 'jwt-decode';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import axios, { AxiosError } from 'axios';
 import { ErrorResponse } from '@/types/ErrorResponse';
 import createApiClient from '@/services/apiClient';
 
 interface JwtPayload {
+  accessToken: string;
   id: string;
   email: string;
   role: string;
+  refreshToken: string;
   // ... các trường khác tùy thuộc vào token của bạn
 }
 
@@ -40,27 +43,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<JwtPayload | null>(null);
   const router = useRouter();
+  const { data: session, status } = useSession();
 
-  useEffect(() =>  {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decodedUser = jwtDecode<JwtPayload>(token);
-        setIsAuthenticated(true);
-        setUser(decodedUser);
-      } catch (err){
-        if (axios.isAxiosError(err)) {
-          const error = err as AxiosError<ErrorResponse>;
-          console.error(error.response?.data?.message);
-        } else {
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.accessToken) {
+      const decoded = jwtDecode<JwtPayload>(session.user.accessToken);
+      setUser({ ...decoded, accessToken: session.user.accessToken });
+      setIsAuthenticated(true);
+    } else {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const decodedUser = jwtDecode<JwtPayload>(token);
+          setUser({ ...decodedUser, accessToken: token });
+          setIsAuthenticated(true);
+        } catch (err) {
           console.error('Invalid token');
+          setUser(null);
+          setIsAuthenticated(false);
         }
-        console.error('Invalid token');
-        setIsAuthenticated(false);
-        setUser(null);
       }
     }
-  }, []);
+  }, [session, status]);  
 
   const login = (token: string, refresh_token: string) => {
     localStorage.setItem('token', token);
@@ -69,7 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const decodedUser = jwtDecode<JwtPayload>(token);
       setIsAuthenticated(true);
-      setUser(decodedUser);
+      setUser({ ...decodedUser, accessToken: token });
     } catch {
       console.error('Invalid token');
       setIsAuthenticated(false);
@@ -102,3 +106,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

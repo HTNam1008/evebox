@@ -8,7 +8,7 @@ export class KafkaService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    // Kết nối đến topic khi khởi động (nếu cần)
+    // Kß║┐t nß╗æi ─æß║┐n topic khi khß╗ƒi ─æß╗Öng (nß║┐u cß║ºn)
     await this.client.connect();
     Logger.log(`Kafka Producer ready | Brokers: ${process.env.KAFKA_BROKERS}`);
   }
@@ -41,5 +41,19 @@ export class KafkaService implements OnModuleInit {
       timestamp: new Date().toISOString(),
     });
     Logger.log(`Emitted send_email_otp event: ${JSON.stringify(user.email)}`);
+  }
+
+
+  emitUserCreatedEvent(user: {user_id: string, name: string, email: string, status: string, role_id: number }) {
+    this.client.emit('user_created', {
+      event: 'USER_CREATED',
+      user_id: user.user_id,
+      name: user.name,
+      email: user.email,
+      status: user.status,
+      role_id: user.role_id,
+      timestamp: new Date().toISOString(),
+    });
+    Logger.log(`Emitted user_created event: ${JSON.stringify(user.email)}`);
   }
 }

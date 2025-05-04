@@ -1,7 +1,6 @@
-import ProfilePage from "./components/profilePage"
+import ProfileForm from "./components/profileForm";
 
-export default function Page(){
-    return(
-        <ProfilePage />
-    )
+export default async function ProfilePage() {
+  return <ProfileForm />;
 }
+
