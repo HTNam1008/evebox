@@ -63,17 +63,17 @@ export default function QueuePage() {
                         <div className="relative w-28 h-28 drop-shadow-lg">
                             <svg className="w-full h-full rotate-[-90deg]">
                                 <circle cx="56" cy="56" r="50" stroke="#E5F4F6" strokeWidth="12" fill="none" />
-                                <circle cx="56" cy="56" r="50" stroke="#2FC1C9" strokeWidth="12" strokeDasharray={314}
+                                <circle cx="56" cy="56" r="50" stroke="#51DACF" strokeWidth="12" strokeDasharray={314}
                                     strokeDashoffset={(100 - percentage) / 100 * 314} fill="none"
                                 />
                             </svg>
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xl font-semibold text-teal-500">{percentage}%</span>
+                                <span className="text-xl font-semibold text-[#51DACF]">{percentage}%</span>
                             </div>
                         </div>
-                        <p className="mt-4 text-[#0C4762] text-sm">Số người đứng trước bạn</p>
-                        <p className="text-2xl font-bold text-[#2FC1C9]">{peopleAhead}</p>
-                        <p className="font-semibold mt-1">Eve<span className="text-teal-500">Box</span></p>
+                        <p className="mt-4 text-sm">Số người đứng trước bạn</p>
+                        <p className="text-3xl font-bold text-[#51DACF]">{peopleAhead}</p>
+                        <p className="font-semibold mt-1">Eve<span className="text-[#51DACF]">Box</span></p>
                     </div>
 
                     <div className="hidden sm:block w-px bg-gray-300" />

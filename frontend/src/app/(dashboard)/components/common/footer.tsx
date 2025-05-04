@@ -14,7 +14,7 @@ const Footer = () => {
       <footer className="w-[100vw] bg-sky-900 text-white py-8 sm:py-12 relative left-[calc(-50vw+50%)]">
         {/* Newsletter Section */}
         <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">Eve<span className="text-teal-400">Box</span></h2>
+          <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">Eve<span className="text-[#51DACF]">Box</span></h2>
             
           <ToggleNotification />
         </div>
