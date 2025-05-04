@@ -66,7 +66,7 @@ export default function MyFavoritePage({
                                     <Image
                                         width={200}
                                         height={160}
-                                        src={org.Images_Events_imgLogoIdToImages?.imageUrl || ''}
+                                        src={org.Images_Events_imgLogoIdToImages?.imageUrl || 'https://res.cloudinary.com/de66mx8mw/image/upload/v1744458011/defaultImgEvent_spjrst.png'}
                                         alt={org.orgName}
                                         className="object-cover rounded-md"
                                     />
