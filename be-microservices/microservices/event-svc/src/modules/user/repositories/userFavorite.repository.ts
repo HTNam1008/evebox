@@ -36,7 +36,7 @@ export class FavoriteRepository {
       });
   
       if (organizer) {
-        data.orgId = organizer.id;
+        data.orgId = itemId;
         data.eventId=null;
       }
     }
@@ -50,5 +50,61 @@ export class FavoriteRepository {
       select: { id: true },
     });
     return user?.id || null;
+  }
+
+  async findByUserIdAndEventId(userId: string, eventId: number) {
+    return this.prisma.favorite_noti_history.findFirst({
+      where: {
+        userId,
+        eventId,
+        isFavorite: true,
+      },
+    });
+  }
+
+  async findFavorite(userId: string, itemType: ItemType, itemId: string) {
+    if (itemType === ItemType.EVENT) {
+      const eventId = parseInt(itemId);
+      if (isNaN(eventId)) return null;
+  
+      return this.prisma.favorite_noti_history.findFirst({
+        where: {
+          userId,
+          itemType,
+          eventId,
+        },
+      });
+    } else {
+      const organizer = await this.prisma.user.findUnique({
+        where: { email: itemId },
+        select: { id: true },
+      });
+      if (!organizer) return null;
+  
+      return this.prisma.favorite_noti_history.findFirst({
+        where: {
+          userId,
+          itemType,
+          orgId: itemId,
+        },
+      });
+    }
+  }
+
+  async findByUserIdAndOrgId(userId: string, orgId: string) {
+    return this.prisma.favorite_noti_history.findFirst({
+      where: {
+        userId,
+        orgId,
+        isFavorite: true,
+      },
+    });
+  }
+
+  async updateFavoriteStatus(id: string, isFavorite: boolean): Promise<void> {
+    await this.prisma.favorite_noti_history.update({
+      where: { id },
+      data: { isFavorite },
+    });
   }
 }
