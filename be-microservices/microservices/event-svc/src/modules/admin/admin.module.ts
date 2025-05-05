@@ -9,16 +9,24 @@ import { GetOrgRevenueByIdService } from "./queries/getOrgRevenueById/getOrgReve
 import { GetEventRevenueDetailController } from "./queries/getEventRevenueDetail/getEventRevenueDetail.controller";
 import { GetEventRevenueDetailRepository } from "./repositories/getEventRevenueDetail.repository";
 import { GetEventRevenueDetailService } from "./queries/getEventRevenueDetail/getEventRevenueDetail.service";
+import { GetSummaryTicketRevenueController } from "./queries/getSummaryTicketRevenue/getSummaryTicketRevenue.controller";
+import { GetSummaryTicketRevenueRepository } from "./repositories/getSummaryTicketRevenue.repository";
+import { GetSummaryTicketRevenueService } from "./queries/getSummaryTicketRevenue/getSummaryTicketRevenue.service";
 import { GetOrgRevenueByProvinceController } from "./queries/getOrgRevenueByProvince/getOrgRevenueByProvince.controller";
 import { GetOrgRevenueByProvinceRepository } from "./repositories/getOrgRevenueByProvince.repository";
 import { GetOrgRevenueByProvinceService } from "./queries/getOrgRevenueByProvince/getOrgRevenueByProvince.service";
+import { GetRevenueByTicketPriceController } from "./queries/getRevenueByTicketPrice/getRevenueByTicketPrice.controller";
+import { GetRevenueByTicketPriceRepository } from "./repositories/getRevenueByTicketPrice.repository";
+import { GetRevenueByTicketPriceService } from "./queries/getRevenueByTicketPrice/getRevenueByTicketPrice.service";
 
 @Module({
   controllers: [
     GetOrgRevenueController,
     GetOrgRevenueByIdController,
     GetEventRevenueDetailController,
-    GetOrgRevenueByProvinceController
+    GetSummaryTicketRevenueController,
+    GetOrgRevenueByProvinceController,
+    GetRevenueByTicketPriceController
   ],
   providers: [
     GetOrgRevenueRepository,
@@ -30,8 +38,14 @@ import { GetOrgRevenueByProvinceService } from "./queries/getOrgRevenueByProvinc
     GetEventRevenueDetailRepository,
     GetEventRevenueDetailService,
 
+    GetSummaryTicketRevenueRepository,
+    GetSummaryTicketRevenueService,
+
     GetOrgRevenueByProvinceRepository,
-    GetOrgRevenueByProvinceService
+    GetOrgRevenueByProvinceService,
+
+    GetRevenueByTicketPriceRepository,
+    GetRevenueByTicketPriceService
   ],
 })
 

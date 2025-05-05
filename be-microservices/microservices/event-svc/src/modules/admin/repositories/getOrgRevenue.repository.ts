@@ -11,11 +11,11 @@ export class GetOrgRevenueRepository {
 
   async findAll(email: string, fromDate?: Date, toDate?: Date, search?: string): Promise<Result<OrganizerRevenueData[], Error>> {
     try {
-      const user = this.prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { email }
       });
 
-      if (!user || (await user).role_id !== 1)  {
+      if (!user || user.role_id !== 1)  {
         return Err(new Error('You do not have permission to get organizer revenue'));
       }
 
