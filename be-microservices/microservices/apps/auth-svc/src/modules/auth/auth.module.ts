@@ -32,6 +32,14 @@ import { GetUserController } from './queries/get-user/get-user.controller';
 import { GetUserService } from './queries/get-user/get-user.service';
 import { KafkaModule } from 'src/infrastructure/adapters/kafka/kafka.module';
 import { RedisModule, CacheService } from '@evebox/redis';
+import { UpdateUserController } from './commands/update-user/update-user.controller';
+import { UpdateUserService } from './commands/update-user/update-user.service';
+import { UserCreatedHandler } from './domain/events/handler/user-created.handler';
+import { UserChangeStatusHandler } from './domain/events/consumer/handler/user-change-status.handler';
+import { GetUserByIdService } from './queries/get-user-by-id/get-user-by-id.service';
+import { GetUserByIdController } from './queries/get-user-by-id/get-user-by-id.controller';
+import { ChangePasswordController } from './commands/change-password/change-password.controller';
+import { ChangePasswordService } from './commands/change-password/change-password.service';
 
 @Module({
   imports: [
@@ -63,12 +71,18 @@ import { RedisModule, CacheService } from '@evebox/redis';
     ForgotPasswordController,
     GoogleLoginController,
     GetUserController,
+    UpdateUserController,
+    GetUserController,
+    UserChangeStatusHandler,
+    GetUserByIdController,
+    ChangePasswordController,
   ],
   providers: [
     RegisterUserService,
     LoginUserService,
     LogoutUserService,
     SendWelcomeEmailHandler,
+    UserCreatedHandler,
     UserRepositoryImpl,
     JwtStrategy,
     GoogleStrategy,
@@ -82,6 +96,9 @@ import { RedisModule, CacheService } from '@evebox/redis';
     GoogleLoginService,
     GetUserService,
     CacheService,
+    UpdateUserService,
+    GetUserByIdService,
+    ChangePasswordService,
   ],
   exports: [UserRepositoryImpl, CacheService],
 })

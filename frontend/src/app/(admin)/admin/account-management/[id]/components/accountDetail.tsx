@@ -8,11 +8,13 @@ import toast from 'react-hot-toast';
 import FormInput from './formInput';
 import { User } from "../../lib/interface/acctable.interface";
 import { ChevronDown } from "lucide-react";
+import { UserRole, UserStatus } from '../../lib/enum/acctable.enum';
+import useAvatar from '@/app/(account-management)/my-profile/libs/hooks/useAvatar';
 
 export default function AccountDetailForm({ user }: { user: User }) {
-    //Call api để lấy ra các roles và status
-    const roles = ['Khách hàng', 'Chủ sự kiện', 'Quản lý'];
-    const status = ['Active', 'Deactivated'];
+    const roles = Object.values(UserRole);
+    const status = Object.values(UserStatus);
+    const { imageUrl } = useAvatar({ avatar_id: user.avatar_id });
 
     const [editedRole, setEditedRole] = useState(user.role)
     const [editedStatus, setEditedStatus] = useState(user.status)
@@ -28,7 +30,6 @@ export default function AccountDetailForm({ user }: { user: User }) {
     }, [editedRole, editedStatus, user])
 
     useEffect(() => {
-        //Khi bấm đóng
         const handleWindowClose = (e: BeforeUnloadEvent) => {
             if (isDirty) {
                 e.preventDefault()
@@ -52,7 +53,6 @@ export default function AccountDetailForm({ user }: { user: User }) {
     }, [isDirty])
 
     const handleSave = () => {
-        //Call api để lưu
         setIsDirty(false)
         toast.success("Lưu thay đổi thành công!");
     }
@@ -62,8 +62,11 @@ export default function AccountDetailForm({ user }: { user: User }) {
             <div className="flex justify-center mb-8">
                 <div className="relative w-24 h-24">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg?fbclid=IwY2xjawJm54BleHRuA2FlbQIxMAABHgr6sGuRvApSmAp06hv_MwSFDn9yehYWBQI_Sv6KlJavhsYntLR6RG_0wQEN_aem_gixotGtcNIpHLN1EF_cMDw"
-                        alt="Avatar" className="object-cover rounded-full w-full h-full"/>
+                    <img 
+                        src={imageUrl}
+                        alt="Avatar" 
+                        className="object-cover rounded-full w-full h-full"
+                    />
                 </div>
             </div>
 
@@ -71,7 +74,7 @@ export default function AccountDetailForm({ user }: { user: User }) {
                 <FormInput label="Họ và tên" value={user.name} disabled type="text" />
                 <FormInput label="Địa chỉ email" value={user.email} disabled type="email" />
                 <FormInput label="Số điện thoại" value={user.phone} disabled type="phone" />
-                <FormInput label="Ngày tạo tài khoản" value={new Date(user.createdAt).toLocaleDateString('vi-VN')} disabled type="text" />
+                <FormInput label="Ngày tạo tài khoản" value={new Date(user.createAt).toLocaleDateString('vi-VN')} disabled type="text" />
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Vai trò</label>
@@ -92,7 +95,7 @@ export default function AccountDetailForm({ user }: { user: User }) {
                     <label className="block text-sm font-medium text-gray-700">Trạng thái tài khoản</label>
                     <div className="relative">
                         <select className="appearance-none mt-1 w-full px-4 py-2 pr-10 border rounded-md"
-                                value={editedStatus} onChange={(e) => setEditedStatus(e.target.value as 'Active' | 'Deactivated')} >
+                                value={editedStatus} onChange={(e) => setEditedStatus(e.target.value as UserStatus)} >
                             {status.map(s => (
                                 <option key={s}>{s}</option>
                             ))}

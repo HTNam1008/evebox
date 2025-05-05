@@ -8,7 +8,7 @@ async function bootstrap() {
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'notification-service-producer', 
+        clientId: 'notification-service', 
         brokers: (process.env.KAFKA_BROKERS || 'localhost:9193').split(','), 
         connectionTimeout: 10000, 
         retry: {
@@ -34,7 +34,7 @@ async function bootstrap() {
         }
       },
       subscribe: {
-        fromBeginning: true, // Đọc message từ đầu nếu không có offset
+        fromBeginning: true, // ─Éß╗ìc message tß╗½ ─æß║ºu nß║┐u kh├┤ng c├│ offset
       }
     },
   });

@@ -2,14 +2,17 @@
 
 import 'tailwindcss/tailwind.css';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import { FormEvent } from 'react';
 
 import '@/styles/admin/pages/ForgotPassword.css';
 
 export const ChangePasswordForm = () => {
+    const formRef = useRef<HTMLFormElement>(null); // Add a form reference
     const [loading, setLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const [showOld, setShowOld] = useState(false);
     const [showNew, setShowNew] = useState(false);
@@ -19,37 +22,23 @@ export const ChangePasswordForm = () => {
     const [errorNew, setErrorNew] = useState('');
     const [errorConfirm, setErrorConfirm] = useState('');
 
-    const fakeCurrentPassword = "123456@Abc"; // Giả lập mật khẩu hiện tại
-
-    const validatePassword = (password: string) => {
-        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        return regex.test(password);
-    };
-
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
+        
+        setErrorOld('');
+        setErrorNew('');
+        setErrorConfirm('');
+        setErrorMessage('');
+        setSuccessMessage('');
 
         const formData = new FormData(e.currentTarget);
         const oldPassword = formData.get("oldPassword") as string;
         const newPassword = formData.get("newPassword") as string;
         const confirmPassword = formData.get("confirmPassword") as string;
 
-        setErrorOld('');
-        setErrorNew('');
-        setErrorConfirm('');
-
+        // Only check if passwords match
         let isValid = true;
-
-        if (oldPassword !== fakeCurrentPassword) {
-            setErrorOld("Mật khẩu cũ không đúng.");
-            isValid = false;
-        }
-
-        if (!validatePassword(newPassword)) {
-            setErrorNew("Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, số và ký tự đặc biệt.");
-            isValid = false;
-        }
 
         if (newPassword !== confirmPassword) {
             setErrorConfirm("Mật khẩu xác nhận không khớp.");
@@ -58,13 +47,36 @@ export const ChangePasswordForm = () => {
 
         if (isValid) {
             try {
-                const response = await fetch('/api/change-password', {
+                const response = await fetch('/api/user/change-password', {
                     method: 'POST',
-                    body: formData,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        oldPassword,
+                        newPassword,
+                        confirmPassword
+                    }),
                 });
+                
                 const data = await response.json();
-                //console.log("Phản hồi từ server:", data);
+                
+                if (!response.ok) {
+                    if (data.message.includes("old password")) {
+                        setErrorOld(data.message);
+                    } else {
+                        setErrorMessage(data.message);
+                    }
+                } else {
+                    setSuccessMessage("Đổi mật khẩu thành công!");
+                    // Use the form reference instead of the event
+                    if (formRef.current) {
+                        formRef.current.reset();
+                    }
+                }
             } catch (error) {
+                setErrorMessage("Đã xảy ra lỗi khi đổi mật khẩu. Vui lòng thử lại sau.");
+                console.error("Change password error:", error);
             }
         }
 
@@ -87,7 +99,19 @@ export const ChangePasswordForm = () => {
                         <h3 className="text-xl font-bold text-center">Đổi mật khẩu mới</h3>
                     </div>
 
-                    <form className="space-y-6" onSubmit={handleSubmit}>
+                    {successMessage && (
+                        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                            {successMessage}
+                        </div>
+                    )}
+
+                    {errorMessage && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                            {errorMessage}
+                        </div>
+                    )}
+
+                    <form className="space-y-6" onSubmit={handleSubmit} ref={formRef}>
                         <div>
                             <label htmlFor="oldPassword" className="block font-semibold mb-1">Nhập mật khẩu cũ</label>
                             <div className="relative">

@@ -7,10 +7,9 @@ import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import { SidebarProps } from '../../libs/interface/dashboard.interface';
 import { useTranslations } from "next-intl";
-import createApiClient from '@/services/apiClient';
+import { gatewayService } from '@/services/instance.service';
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
-  const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || "");
 
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
@@ -24,16 +23,19 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
     setLoading(true);
     try {
-      // Call API to revoke refresh token on server
-      await apiClient.post('/api/user/logout', {
+      await gatewayService.post('/api/user/logout', {
         refresh_token: session.user.refreshToken
       });
       
+/*       // Clear cookies on client side
+      document.cookie.split(';').forEach(cookie => {
+        const [name] = cookie.trim().split('=');
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      }); */
+
       // Clear client session and redirect
-      await signOut({ 
-        redirect: true,
-        callbackUrl: '/'
-      });
+      await signOut({ redirect: false });
+      window.location.href = "/"; 
     } catch (error) {
       console.error('Logout error:', error);
     } finally {

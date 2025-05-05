@@ -6,6 +6,7 @@ import { useState } from "react";
 
 /* Package Application */
 import { FilterProps } from "../lib/interface/acctable.interface";
+import { UserRole } from "../lib/enum/acctable.enum";
 
 export default function FilterBar({
     roleFilter, onRoleChange,
@@ -13,8 +14,7 @@ export default function FilterBar({
     onDateFromChange, onDateToChange,
     onReset
 }: FilterProps) {
-    //Call api để lấy ra các roles 
-    const roles = ['Khách hàng', 'Chủ sự kiện', 'Quản lý'];
+    const roles = Object.values(UserRole).map(role => role);
 
     const [showDateFilter, setShowDateFilter] = useState(false);
 

@@ -1,8 +1,13 @@
 import axios, { AxiosError, AxiosHeaders, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { getSession, signOut } from "next-auth/react";
 import axiosRetry from "axios-retry";
+import { authOptions } from "@/lib/authOptions";
+import { getServerSession } from "next-auth";
 
 let cachedSession: Awaited<ReturnType<typeof getSession>> | null = null;
+
+// Check if code is running on server or client
+const isServer = typeof window === 'undefined';
 
 const createApiClient = (baseUrl: string): AxiosInstance => {
   const apiClient = axios.create({ baseURL: baseUrl });
@@ -47,7 +52,11 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
         originalRequest._retry = true;
 
         try {
-          cachedSession = await getSession();
+          if (isServer) {
+            cachedSession = await getServerSession(authOptions);
+          } else {
+            cachedSession = await getSession();
+          }
           const refreshToken = cachedSession?.user?.refreshToken;
           if (!refreshToken) {
             throw new Error("No refresh token available");

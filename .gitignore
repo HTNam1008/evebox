@@ -10,6 +10,14 @@
 !.yarn/releases
 !.yarn/versions
 
+/be-microservices/microservices/test/node_modules/.package-lock.json
+/be-microservices/microservices/test/package-lock.json
+/be-microservices/microservices/apps/admin-svc/node_modules
+/be-microservices/microservices/apps/admin-svc/package-lock.json
+/be-microservices/microservices/apps/admin-svc/dist
+/be-microservices/microservices/apps/admin-svc/test
+
+
 # testing
 /coverage
 
@@ -38,3 +46,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# kafka
+/be-microservices/microservices/docker/kafka/data/
