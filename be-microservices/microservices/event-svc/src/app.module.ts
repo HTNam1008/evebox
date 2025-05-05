@@ -15,6 +15,7 @@ import { ShowingModule } from './modules/showing/showing.module';
 import { TicketTypeModule } from './modules/ticketType/ticketType.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
+import { AdminModule } from './modules/admin/admin.module';
 import { IORedisModule } from './infrastructure/redis/ioredis.module';
 
 @Module({
@@ -33,6 +34,7 @@ import { IORedisModule } from './infrastructure/redis/ioredis.module';
     UserModule,
     LocationModule,
     ImagesModule,
+    AdminModule,
     EventModule,
     ShowingModule,
     TicketTypeModule,
