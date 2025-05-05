@@ -17,7 +17,6 @@ export default function ProfileForm() {
     const [currentPage, setCurrentPage] = useState(1);
 
     const { updateProfile } = useProfile();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [profile, setProfile] = useState(null);
     const [form, setForm] = useState({
         name: "",
@@ -73,7 +72,6 @@ export default function ProfileForm() {
                 setDialogMessage('Cập nhật thông tin thất bại');
             }
             setDialogOpen(true);
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             setDialogMessage('Cập nhật thông tin thất bại');
             setDialogOpen(true);
