@@ -34,17 +34,21 @@ export default function EventLocationInput({
     }
   };
 
+  const [hasAutoFilled, setHasAutoFilled] = useState(false);
+
   useEffect(() => {
-    if (!selectedLocation || !createdLocations?.length) return;
+    if (!selectedLocation || !createdLocations?.length || hasAutoFilled) return;
+
     const location = createdLocations.find(loc => loc.name === selectedLocation);
     if (location) {
       setFormField("eventAddress", location.eventAddress);
       setFormField("province", location.province);
-      setFormField("district", location.district);
+      setFormField("district", location.districtName);
       setFormField("ward", location.ward);
       setFormField("street", location.street);
+      setHasAutoFilled(true);
     }
-  }, [selectedLocation, createdLocations]);
+  }, [selectedLocation, createdLocations, hasAutoFilled]);
 
   const clearSelection = () => {
     setSelectedLocation("");
@@ -109,7 +113,10 @@ export default function EventLocationInput({
                 label="Địa điểm đã từng tạo sự kiện"
                 options={createdLocations.map(loc => loc.name)}
                 value={selectedLocation}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedLocation(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                  setHasAutoFilled(false);
+                  setSelectedLocation(e.target.value);
+                }}                
               />
               {selectedLocation && (
                 <button

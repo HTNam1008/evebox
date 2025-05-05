@@ -24,10 +24,10 @@ export interface EventLocationInputProps {
         name: string;
         eventAddress: string;
         province: string;
-        district: string;
+        districtName: string;
         ward: string;
         street: string;
-    }[];
+    }[]
     // wards: string[]; 
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void;
     handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>, field: string) => void;
