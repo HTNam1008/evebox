@@ -43,6 +43,13 @@ import { FavoriteOrgController } from './queries/get-favorite-org/get-favorite-o
 import { GetFavoriteEventService } from './queries/get-favorite-events/get-favorite-event.service';
 import { GetFavoriteOrgService } from './queries/get-favorite-org/get-favorite-org.service';
 import { GetFavoriteController } from './queries/get-favorite-events/get-favorite.controller';
+import { TurnOnNotificationController } from './commands/turn-on-notification/turn-on-notification.controller';
+import { TurnOnNotificationService } from './commands/turn-on-notification/turn-on-notification.service';
+import { TurnOffNotificationForEventController } from './commands/turn-off-notification-event/turn-off-notification.controller';
+import { TurnOffNotificationForOrgController } from './commands/turn-off-notification-org/turn-off-notification.controller';
+import { TurnOffNotificationDto } from './commands/turn-off-notification-org/turn-off-notification.dto';
+import { TurnOffNotificationServiceForEvent } from './commands/turn-off-notification-event/turn-off-notification.service';
+import { TurnOffNotificationServiceForOrg } from './commands/turn-off-notification-org/turn-off-notification.service';
 
 @Module({
   imports: [
@@ -76,7 +83,10 @@ import { GetFavoriteController } from './queries/get-favorite-events/get-favorit
     UnfavoriteEventController,
     UnfavoriteOrgController,
     FavoriteOrgController,
-    GetFavoriteController
+    GetFavoriteController,
+    TurnOnNotificationController,
+    TurnOffNotificationForEventController,
+    TurnOffNotificationForOrgController
   ],
   providers: [
     RegisterUserService,
@@ -101,7 +111,10 @@ import { GetFavoriteController } from './queries/get-favorite-events/get-favorit
     UnfavoriteOrgService,
     UnfavoriteEventService,
     GetFavoriteEventService,
-    GetFavoriteOrgService
+    GetFavoriteOrgService,
+    TurnOnNotificationService,
+    TurnOffNotificationServiceForEvent,
+    TurnOffNotificationServiceForOrg
   ],
   exports: [UserRepositoryImpl],
 })

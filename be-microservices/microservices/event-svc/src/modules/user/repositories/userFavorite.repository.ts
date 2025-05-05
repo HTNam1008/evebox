@@ -145,4 +145,70 @@ export class FavoriteRepository {
       },
     });
   }
+
+  async turnOnNotification(userId: string, itemType: ItemType, itemId: string): Promise<void> {
+    const where: any = {
+      userId,
+      itemType,
+    };
+  
+    if (itemType === ItemType.EVENT) {
+      const eventId = parseInt(itemId);
+      if (isNaN(eventId)) throw new Error('Invalid event ID');
+      where.eventId = eventId;
+    } else if (itemType === ItemType.ORG) {
+      const organizer = await this.prisma.user.findUnique({
+        where: { email: itemId },
+        select: { id: true },
+      });
+      if (!organizer) throw new Error('Organizer not found');
+      where.orgId = itemId;
+    }
+  
+    const existing = await this.prisma.favorite_noti_history.findFirst({ where });
+  
+    if (!existing) throw new Error('Favorite record not found');
+  
+    await this.prisma.favorite_noti_history.update({
+      where: { id: existing.id },
+      data: { isNotified: true },
+    });
+  }
+
+  async turnOffNotificationForEvent(userId: string, eventId: string): Promise<void> {
+    const eventIdNum = parseInt(eventId);
+    if (isNaN(eventIdNum)) throw new Error('Invalid event ID');
+  
+    const existing = await this.prisma.favorite_noti_history.findFirst({
+      where: {
+        userId,
+        itemType: 'EVENT',
+        eventId: eventIdNum,
+      },
+    });
+  
+    if (!existing) throw new Error('Favorite event not found');
+  
+    await this.prisma.favorite_noti_history.update({
+      where: { id: existing.id },
+      data: { isNotified: false },
+    });
+  }
+
+  async turnOffNotificationForOrg(userId: string, orgId: string): Promise<void> { 
+    const existing = await this.prisma.favorite_noti_history.findFirst({
+      where: {
+        userId,
+        itemType: 'ORG',
+        orgId: orgId,
+      },
+    });
+  
+    if (!existing) throw new Error('Favorite org not found');
+  
+    await this.prisma.favorite_noti_history.update({
+      where: { id: existing.id },
+      data: { isNotified: false },
+    });
+  }
 }
