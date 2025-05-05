@@ -20,6 +20,19 @@ const tableData = [
   { id: "007", location: "Hà Tĩnh", events: 10, showings: 15, revenue: "400.000" },
 ]
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white border border-gray-300 px-3 py-2 rounded shadow">
+        <p className="text-sm text-gray-700 font-medium">{label}</p>
+        <p className="text-sm text-[#0C4762]">Doanh thu : {payload[0].value}</p>
+      </div>
+    )
+  }
+
+  return null;
+};
+
 export default function LocationRevenueView() {
   return (
     <div className="space-y-6">
@@ -37,7 +50,7 @@ export default function LocationRevenueView() {
                 domain={[0, 250]}
                 ticks={[0, 50, 100, 150, 200, 250]}
               />
-              <Tooltip />
+              <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="value" fill="#0C4762" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>

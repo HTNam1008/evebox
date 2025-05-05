@@ -228,7 +228,7 @@ export default function EventDetailPage() {
               <th className="py-2 px-4 text-left">Ngày bắt đầu</th>
               <th className="py-2 px-4 text-left">Ngày kết thúc</th>
               <th className="py-2 px-4 text-left">Tổng doanh thu</th>
-              <th className="py-2 px-4 text-center">Xem chi tiết</th>
+              <th className="py-2 px-4 text-left">Xem chi tiết</th>
             </tr>
           </thead>
           <tbody>

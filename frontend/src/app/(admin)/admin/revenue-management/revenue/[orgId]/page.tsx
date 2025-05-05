@@ -236,7 +236,7 @@ export default function OrganizationRevenuePage() {
                 </button>
               </div>
       
-              <div className="flex gap-4 items-center items-end">
+              <div className="flex gap-4 items-center justify-end">
                 <div className="flex border border-gray-300 rounded-md bg-white">
                   <div className="flex items-center px-4 py-2">
                     <span className="text-sm text-gray-600">Từ ngày:</span>
