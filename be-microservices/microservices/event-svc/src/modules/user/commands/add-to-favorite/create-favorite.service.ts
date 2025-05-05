@@ -14,6 +14,21 @@ export class FavoriteService {
     }
 
     try {
+      const existing = await this.favoriteRepository.findFavorite(userId, dto.itemType, dto.itemId);
+
+      if (existing) {
+        if (existing.isFavorite) {
+
+          // Already favorited, do nothing
+          return Ok(true);
+        } else {
+          // Update isFavorite to true
+          await this.favoriteRepository.updateFavoriteStatus(existing.id, true);
+          return Ok(true);
+        }
+      }
+
+      // No existing record, add new favorite
       await this.favoriteRepository.addFavorite(userId, dto.itemType, dto.itemId);
       return Ok(true);
     } catch {
