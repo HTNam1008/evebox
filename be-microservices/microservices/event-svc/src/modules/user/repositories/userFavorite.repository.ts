@@ -107,4 +107,42 @@ export class FavoriteRepository {
       data: { isFavorite },
     });
   }
+
+  async getFavoriteEvents(userId: string) {
+    return this.prisma.favorite_noti_history.findMany({
+      where: {
+        userId,
+        isFavorite: true,
+        itemType: 'EVENT',
+      },
+      select: {
+        event: {
+          select: {
+            id: true,
+            title: true,
+            Images_Events_imgLogoIdToImages: {
+              select: { id: true, imageUrl: true },
+            },
+            Images_Events_imgPosterIdToImages: {
+              select: { id: true, imageUrl: true },
+            },
+            venue: true,
+            },
+          },
+        },
+    });
+  }
+
+  async getFavoriteOrgs(userId: string) {
+    return this.prisma.favorite_noti_history.findMany({
+      where: {
+        userId,
+        isFavorite: true,
+        itemType: 'ORG',
+      },
+      select: {
+        orgId: true,
+      },
+    });
+  }
 }

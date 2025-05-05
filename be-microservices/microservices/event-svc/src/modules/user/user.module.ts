@@ -39,6 +39,10 @@ import { UnfavoriteEventController } from './commands/remove-favorite-event/unfa
 import { UnfavoriteOrgController } from './commands/remove-favorite-org/unfavorite-org.controller';
 import { UnfavoriteOrgService } from './commands/remove-favorite-org/unfavorite-org.service';
 import { UnfavoriteEventService } from './commands/remove-favorite-event/unfavorite-event.service';
+import { FavoriteOrgController } from './queries/get-favorite-org/get-favorite-org.controller';
+import { GetFavoriteEventService } from './queries/get-favorite-events/get-favorite-event.service';
+import { GetFavoriteOrgService } from './queries/get-favorite-org/get-favorite-org.service';
+import { GetFavoriteController } from './queries/get-favorite-events/get-favorite.controller';
 
 @Module({
   imports: [
@@ -70,7 +74,9 @@ import { UnfavoriteEventService } from './commands/remove-favorite-event/unfavor
 
     FavoriteController,
     UnfavoriteEventController,
-    UnfavoriteOrgController
+    UnfavoriteOrgController,
+    FavoriteOrgController,
+    GetFavoriteController
   ],
   providers: [
     RegisterUserService,
@@ -93,7 +99,9 @@ import { UnfavoriteEventService } from './commands/remove-favorite-event/unfavor
     FavoriteRepository,
     FavoriteService,
     UnfavoriteOrgService,
-    UnfavoriteEventService
+    UnfavoriteEventService,
+    GetFavoriteEventService,
+    GetFavoriteOrgService
   ],
   exports: [UserRepositoryImpl],
 })
