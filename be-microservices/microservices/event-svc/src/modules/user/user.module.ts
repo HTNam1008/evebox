@@ -32,6 +32,9 @@ import { GoogleStrategy } from 'src/shared/strategies/google.strategy';
 import { GoogleLoginService } from './commands/google-login/google-login.service';
 import { GetUserController } from './queries/get-user/get-user.controller';
 import { GetUserService } from './queries/get-user/get-user.service';
+import { FavoriteController } from './commands/add-to-favorite/create-favorite.controller';
+import { FavoriteRepository } from './repositories/userFavorite.repository';
+import { FavoriteService } from './commands/add-to-favorite/create-favorite.service';
 
 @Module({
   imports: [
@@ -60,6 +63,8 @@ import { GetUserService } from './queries/get-user/get-user.service';
     ForgotPasswordController,
     GoogleLoginController,
     GetUserController,
+
+    FavoriteController
   ],
   providers: [
     RegisterUserService,
@@ -77,7 +82,10 @@ import { GetUserService } from './queries/get-user/get-user.service';
     UserPasswordResetHandler,
     ResendOTPService,
     GoogleLoginService,
-    GetUserService
+    GetUserService,
+
+    FavoriteRepository,
+    FavoriteService
   ],
   exports: [UserRepositoryImpl],
 })
