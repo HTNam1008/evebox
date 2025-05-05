@@ -20,7 +20,7 @@ model User {
   userProvince          UserProvince[]
   role                  Role?                   @relation(fields: [role_id], references: [id])
   EventUserRelationship EventUserRelationship[]
-
+  favoriteNotiHistory     favorite_noti_history[]   @relation("UserFavoriteHistory")
   @@map("users")
 }
 
@@ -265,6 +265,7 @@ model Events {
   Showing                           Showing[]
   eventUserRelationships            EventUserRelationship[]
   UserClickHistory UserClickHistory[]
+  favoriteNotiHistory     favorite_noti_history[]   @relation("EventFavoriteHistory")
 }
 
 model Row {
@@ -464,4 +465,22 @@ model OrgPaymentInfor {
   isDeleted     Boolean  @default(false)
 
   @@map("org_payment_infor")
+}
+
+enum ItemType {
+  EVENT
+  ORG
+}
+
+model favorite_noti_history {
+  id          String   @id @default(uuid())
+  userId      String
+  itemType    ItemType
+  orgId       String?
+  eventId     Int?
+  isFavorite  Boolean
+  isNotified  Boolean
+
+  user        User       @relation("UserFavoriteHistory", fields: [userId], references: [id])
+  event       Events?     @relation("EventFavoriteHistory", fields: [eventId], references: [id])
 }
