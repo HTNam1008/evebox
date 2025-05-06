@@ -1,8 +1,7 @@
 "use client"
 
-import React from "react"
-import { useState } from "react"
-import { ChevronDown, ChevronRight } from "lucide-react"
+import { useState, Fragment } from "react"
+import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react"
 import { EventRevenueTable, type Event } from "../revenue-event-table"
 
 export type Organization = {
@@ -183,7 +182,7 @@ export function RevenueOrgTable({
   if (organizations.length === 0) return null
 
   return (
-    <div className={`${className} mt-6`}>
+    <div className={`${className}`}>
       {!propOrganizations && (
         <div className="flex justify-end mb-4">
           <button className="bg-[#0C4762] text-white px-4 py-2 rounded-md hover:bg-[#51DACF] transition-colors">
@@ -201,11 +200,12 @@ export function RevenueOrgTable({
               <th className="py-2 px-4 text-left" colSpan={2}>
                 Doanh thu thực nhận
               </th>
+              <th className="py-2 px-4 text-center">Xem chi tiết</th>
             </tr>
           </thead>
           <tbody>
             {organizations.map((org) => (
-              <React.Fragment key={`org-${appId}-${org.id}`}>
+              <Fragment key={`org-${appId}-${org.id}`}>
                 <tr className={`cursor-pointer hover:bg-[#E3FEF7]`} onClick={() => handleToggleOrganization(org.id)}>
                   <td className="py-2 px-4 border-t flex items-center">
                     {org.events.length > 0 && (
@@ -223,11 +223,22 @@ export function RevenueOrgTable({
                   <td className="py-2 px-4 border-t" colSpan={2}>
                     {formatCurrency(org.actualRevenue)}
                   </td>
+                  <td className="py-2 px-4 border-t text-center">
+                    <button
+                      className="inline-flex items-center justify-center"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        window.location.href = `/admin/revenue-management/revenue/${org.id}`
+                      }}
+                    >
+                      <ExternalLink className="w-5 h-5" />
+                    </button>
+                  </td>
                 </tr>
 
                 {org.isExpanded && org.events.length > 0 && (
                   <tr>
-                    <td colSpan={4} className="p-0">
+                    <td colSpan={5} className="p-0">
                       <div className="ml-4">
                         <EventRevenueTable
                           events={org.events}
@@ -243,7 +254,7 @@ export function RevenueOrgTable({
                     </td>
                   </tr>
                 )}
-              </React.Fragment>
+              </Fragment>
             ))}
           </tbody>
         </table>

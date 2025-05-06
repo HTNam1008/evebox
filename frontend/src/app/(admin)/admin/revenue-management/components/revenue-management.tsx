@@ -8,9 +8,13 @@ import { EventRevenueTable } from "./revenue-event-table"
 import RevenueChart from "./app/revenue-chart"
 import RevenueFilter from "./app/revenue-filter"
 import Filter from "./filter"
+import RevenueSubTabs from "./app/revenue-subtabs"
+import LocationRevenueView from "./app/location-revenue"
+import PriceRevenueView from "./app/price-revenue"
 
 export default function RevenuePage() {
   const [activeTab, setActiveTab] = useState<"app" | "organization" | "event">("app")
+  const [activeSubTab, setActiveSubTab] = useState<"day" | "location" | "price">("day")
 
   const [filter, setFilter] = useState<{
     type: "all" | "month" | "year"
@@ -37,6 +41,31 @@ export default function RevenuePage() {
     return new Intl.NumberFormat("vi-VN").format(amount)
   }
 
+  const renderAppContent = () => {
+    switch (activeSubTab) {
+      case "day":
+        return (
+          <>
+            <RevenueFilter onConfirm={handleConfirm} onReset={handleReset} />
+            <RevenueChart />
+            <RevenueAppTable />
+          </>
+        )
+      case "location":
+        return (
+          <>
+            <LocationRevenueView />
+          </>
+        )
+      case "price":
+        return (
+          <>
+            <PriceRevenueView />
+          </>
+        )
+    }
+  }
+
   return (
     <div className="container mx-auto px-4">
       <div className="space-y-2">
@@ -49,14 +78,10 @@ export default function RevenuePage() {
       </div>
 
       {activeTab === "app" && (
-        <>
-          <RevenueFilter
-            onConfirm={handleConfirm}
-            onReset={handleReset}
-          />
-          <RevenueChart />
-          <RevenueAppTable />
-        </>
+        <div className="mt-4">
+          <RevenueSubTabs activeSubTab={activeSubTab} onSubTabChange={setActiveSubTab} />
+          {renderAppContent()}
+        </div>
       )}
       {activeTab === "organization" && (
         <>

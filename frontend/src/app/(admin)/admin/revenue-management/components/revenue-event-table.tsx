@@ -1,8 +1,7 @@
 "use client"
 
-import React from "react"
-import { useState } from "react"
-import { ChevronDown, ChevronRight } from "lucide-react"
+import { useState, Fragment } from "react"
+import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react"
 
 // Định nghĩa các kiểu dữ liệu
 export type TicketRevenue = {
@@ -147,7 +146,7 @@ export function EventRevenueTable({
   if (events.length === 0) return null
 
   return (
-    <div className={`${className} mt-6`}>
+    <div className={`${className}`}>
       {!propEvents && (
         <div className="flex justify-end mb-4">
           <button className="bg-[#0C4762] text-white px-4 py-2 rounded-md hover:bg-[#51DACF] transition-colors">
@@ -165,11 +164,12 @@ export function EventRevenueTable({
               <th className="py-2 px-4 text-left">Tổng doanh thu</th>
               <th className="py-2 px-4 text-left">Phí nền tảng</th>
               <th className="py-2 px-4 text-left">Doanh thu thực nhận</th>
+              <th className="py-2 px-4 text-left">Xem chi tiết</th>
             </tr>
           </thead>
           <tbody>
             {events.map((event) => (
-              <React.Fragment key={`event-${orgId}-${event.id}`}>
+              <Fragment key={`event-${orgId}-${event.id}`}>
                 <tr
                   className={`cursor-pointer hover:bg-[#EAFDFC]`}
                   onClick={() => (propEvents ? toggleEvent(orgId, event.id) : handleToggleEvent(event.id))}
@@ -190,12 +190,23 @@ export function EventRevenueTable({
                   <td className="py-2 px-4 border-t">{formatCurrency(event.totalRevenue)}</td>
                   <td className="py-2 px-4 border-t">{event.platformFee}%</td>
                   <td className="py-2 px-4 border-t">{formatCurrency(event.actualRevenue)}</td>
+                  <td className="py-2 px-4 border-t">
+                    <button
+                      className="inline-flex items-center justify-center"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        window.location.href = `/admin/revenue-management/revenue/${orgId}/event/${event.id}`
+                      }}
+                    >
+                      <ExternalLink className="w-5 h-5" />
+                    </button>
+                  </td>
                 </tr>
 
                 {/* Bảng chi tiết sự kiện */}
                 {event.isExpanded && event.details.length > 0 && (
                   <tr>
-                    <td colSpan={5} className="p-0">
+                    <td colSpan={6} className="p-0">
                       <div className="ml-4">
                         <table className="w-full text-sm">
                           <thead>
@@ -206,11 +217,12 @@ export function EventRevenueTable({
                               <th className="py-2 px-4 text-left" colSpan={2}>
                                 Doanh thu
                               </th>
+                              <th className="py-2 px-4 text-left">Xem chi tiết</th>
                             </tr>
                           </thead>
                           <tbody>
                             {event.details.map((detail) => (
-                              <React.Fragment key={`detail-${orgId}-${event.id}-${detail.id}`}>
+                              <Fragment key={`detail-${orgId}-${event.id}-${detail.id}`}>
                                 <tr
                                   className={`cursor-pointer hover:bg-[#D2F5E3] ${
                                     detail.id === event.selectedDetailId ? "bg-[#D2F5E3]" : ""
@@ -238,12 +250,23 @@ export function EventRevenueTable({
                                   <td className="py-2 px-4 border-t" colSpan={2}>
                                     {formatCurrency(detail.revenue)}
                                   </td>
+                                  <td className="py-2 px-4 border-t">
+                                    <button
+                                      className="inline-flex items-center justify-center"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        window.location.href = `/admin/revenue-management/revenue/${orgId}/event/${event.id}/showing/${detail.id}`
+                                      }}
+                                    >
+                                      <ExternalLink className="w-5 h-5" />
+                                    </button>
+                                  </td>
                                 </tr>
 
                                 {/* Bảng doanh thu vé */}
                                 {detail.isExpanded && detail.tickets.length > 0 && (
                                   <tr>
-                                    <td colSpan={5} className="p-0">
+                                    <td colSpan={6} className="p-0">
                                       <div className="ml-4">
                                         <table className="w-full text-sm">
                                           <thead>
@@ -274,7 +297,7 @@ export function EventRevenueTable({
                                     </td>
                                   </tr>
                                 )}
-                              </React.Fragment>
+                              </Fragment>
                             ))}
                           </tbody>
                         </table>
@@ -282,7 +305,7 @@ export function EventRevenueTable({
                     </td>
                   </tr>
                 )}
-              </React.Fragment>
+              </Fragment>
             ))}
           </tbody>
         </table>
