@@ -4,6 +4,9 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from "next-intl";
+import { Bell, Heart } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useState } from 'react';
 
 /* Package Application */
 import { EventDetail } from '../libs/event.interface';
@@ -19,6 +22,28 @@ export default function EventBox({ event }: { event: EventDetail }) {
     const t = useTranslations("common");
     const { locale } = useI18n(); // Get current locale 
     const router = useRouter(); // Sử dụng useRouter
+    const [likedEvents, setLikedEvents] = useState<{ [key: string]: boolean }>({});
+    const [notifiedEvents, setNotifiedEvents] = useState<{ [key: string]: boolean }>({});
+
+    const toggleLike = (id: number) => {
+        const isLiked = !likedEvents[id.toString()];
+        setLikedEvents(prev => ({ ...prev, [id.toString()]: isLiked }));
+        toast.success(
+            isLiked
+                ? "Đã thêm vào danh sách yêu thích!"
+                : "Đã bỏ khỏi danh sách yêu thích!"
+        );
+    };
+
+    const toggleNotify = (id: number) => {
+        const isNotified = !notifiedEvents[id.toString()];
+        setNotifiedEvents(prev => ({ ...prev, [id.toString()]: isNotified }));
+        toast.success(
+            isNotified
+                ? "Bạn sẽ được nhận thông báo về sự kiện!"
+                : "Bạn đã tắt thông báo về sự kiện này!"
+        );
+    };
 
     return (
         <div className="d-flex justify-content-center px-4">
@@ -57,6 +82,31 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                     <i className="bi bi-geo-alt mr-2"></i>
                                     {t("mapRedirect") || "Fallback Text"}
                                 </p>
+                                {/* Favorite and Notification Button */}
+                                <div className="favorite-heart-btn absolute flex gap-3 z-10">
+                                    <button className="bg-white p-2 rounded-full hover:bg-red-100 transition"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            toggleLike(event.id);
+                                        }}
+                                    >
+                                        <div title='Thêm vào yêu thích'>
+                                            <Heart className={`w-5 h-5 ${likedEvents[event.id.toString()] ? "text-red-500 fill-red-500" : "text-gray-500"}`} />
+                                        </div>
+                                    </button>
+                                    <button className="bg-white p-2 rounded-full hover:bg-yellow-100 transition"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            toggleNotify(event.id);
+                                        }}
+                                    >
+                                        <div title='Nhận thông báo'>
+                                            <Bell className={`w-5 h-5 ${notifiedEvents[event.id.toString()] ? "text-yellow-500 fill-yellow-500" : "text-gray-500"}`} />
+                                        </div>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -67,7 +117,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
                                     <h5 className="card-title title-box">{t("dateTime") || "Thời gian"}</h5>
                                     <p className="card-text m-0 text-body-secondary">
                                         <i className="bi bi-calendar2-event mr-2"></i>
-                                        {new Date(event.startTime).toLocaleString( locale === "vi" ? 'vi-VN' : 'en-US', {
+                                        {new Date(event.startTime).toLocaleString(locale === "vi" ? 'vi-VN' : 'en-US', {
                                             weekday: 'long',
                                             year: 'numeric',
                                             month: 'long',
@@ -92,7 +142,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
 
                                     <div className="d-flex justify-content-center align-items-center mt-3 mb-2">
                                         <h5 className="card-title title-box text-center w-100">
-                                           {t("priceTitle") || "Fallback Text"}
+                                            {t("priceTitle") || "Fallback Text"}
                                             <span className="ml-2 text-teal-400" style={{ cursor: "pointer" }}>
                                                 {event.minTicketPrice?.toLocaleString('vi-VN')}đ
                                                 {/* 350.000đ */}
@@ -103,7 +153,7 @@ export default function EventBox({ event }: { event: EventDetail }) {
 
                                     <div className="d-flex justify-content-center">
                                         <button type="button" className="btn-buy-now" onClick={() => document.getElementById('info-ticket')?.scrollIntoView({ behavior: 'smooth' })}>
-                                           {t("bookNow") || "Fallback Text"}
+                                            {t("bookNow") || "Fallback Text"}
                                         </button>
                                     </div>
                                 </div>

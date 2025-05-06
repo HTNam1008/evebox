@@ -2,7 +2,7 @@
 
 /* Package System */
 import { useRef, useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Bell, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperClass } from 'swiper/types';
 import { Navigation } from 'swiper/modules';
@@ -10,6 +10,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 
 /* Package Application */
 import { Event } from '../../libs/interface/dashboard.interface';
@@ -37,7 +38,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
     (v, i, a) => a.findIndex((t) => t.id === v.id) === i
   );
 
-  
+
   const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(null);
   const navigation = swiperInstance?.params.navigation as NavigationOptionsTyped;
 
@@ -52,13 +53,35 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
   }, [swiperInstance, prevRef, nextRef, navigation]);
 
   const t = useTranslations("common");
-  
+  const [likedEvents, setLikedEvents] = useState<{ [key: string]: boolean }>({});
+  const [notifiedEvents, setNotifiedEvents] = useState<{ [key: string]: boolean }>({});
+
+  const toggleLike = (id: number) => {
+    const isLiked = !likedEvents[id.toString()];
+    setLikedEvents(prev => ({ ...prev, [id.toString()]: isLiked }));
+    toast.success(
+      isLiked
+        ? "Đã thêm vào danh sách yêu thích!"
+        : "Đã bỏ khỏi danh sách yêu thích!"
+    );
+  };  
+
+  const toggleNotify = (id: number) => {
+    const isNotified = !notifiedEvents[id.toString()];
+    setNotifiedEvents(prev => ({ ...prev, [id.toString()]: isNotified }));
+    toast.success(
+      isNotified
+        ? "Bạn sẽ được nhận thông báo về sự kiện!"
+        : "Bạn đã tắt thông báo về sự kiện này!"
+    );
+  };  
+
   return (
     <div className="relative">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
         <h2 className="text-xl md:text-2xl font-bold">
-          {title =="" ? '': t(`${title || ""}`)}  {subtitle && <span className="text-teal-400"> {t(`${subtitle || ""}`) ?? subtitle}</span>}
+          {title == "" ? '' : t(`${title || ""}`)}  {subtitle && <span className="text-teal-400"> {t(`${subtitle || ""}`) ?? subtitle}</span>}
         </h2>
       </div>
 
@@ -84,6 +107,32 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
             <Link href={`/event/${event.id}`}>
               <div className="bg-[#0C4762] rounded-lg overflow-hidden shadow-md transition-shadow flex flex-col h-full">
                 <div className="flex items-center justify-center p-2 w-full h-auto overflow-hidden">
+                  {/* Favorite and Notification Button */}
+                  <div className="favorite-heart-btn absolute top-2 right-2 flex gap-2 z-10">
+                    <button className="bg-white p-1 rounded-full hover:bg-red-100 transition"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleLike(event.id);
+                      }}
+                    >
+                      <div title='Thêm vào yêu thích'>
+                        <Heart className={`w-4 h-4 ${likedEvents[event.id.toString()] ? "text-red-500 fill-red-500" : "text-gray-500"}`} />
+                      </div>
+                    </button>
+                    <button className="bg-white p-1 rounded-full hover:bg-yellow-100 transition"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleNotify(event.id);
+                      }}
+                    >
+                      <div title='Nhận thông báo'>
+                        <Bell className={`w-4 h-4 ${notifiedEvents[event.id.toString()] ? "text-yellow-500 fill-yellow-500" : "text-gray-500"}`} />
+                      </div>
+                    </button>
+                  </div>
+
                   <Image
                     src={
                       event.Images_Events_imgPosterIdToImages?.imageUrl ||
@@ -111,7 +160,7 @@ const EventSlider = ({ title, subtitle, events }: EventSliderProps) => {
                         : 'Từ ' +
                         event.minTicketPrice.toLocaleString('vi-VN') +
                         'đ'} */}
-                      {event.status === 'available' ? 
+                      {event.status === 'available' ?
                         'Từ ' + event.minTicketPrice?.toLocaleString('vi-VN') + 'đ' :
                         event.status === 'event_over' ? 'Đã kết thúc' : event.status === 'sold_out' ? 'Hết vé' : 'Vé chưa mở bán'
                       }

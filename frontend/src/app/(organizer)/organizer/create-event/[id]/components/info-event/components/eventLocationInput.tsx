@@ -1,4 +1,8 @@
+/* Package System */
 import React from 'react';
+import { useState, useEffect, ChangeEvent } from "react";
+
+/* Package Application */
 import InputField from '../../common/form/inputCountField';
 import SelectField from '../../common/form/selectField';
 import { EventLocationInputProps } from '../../../libs/interface/infoevent.interface';
@@ -13,12 +17,49 @@ export default function EventLocationInput({
   errors,
   provinces,
   districts,
+  createdLocations,
   // wards, 
   handleInputChange,
   handleSelectChange,
   setEventTypeSelected,
   updateGenerationForm,
 }: EventLocationInputProps) {
+  const [selectedLocation, setSelectedLocation] = useState("");
+
+  const setFormField = (field: string, value: string) => {
+    if (["eventAddress", "ward", "street"].includes(field)) {
+      handleInputChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>, field);
+    } else {
+      handleSelectChange({ target: { value } } as React.ChangeEvent<HTMLSelectElement>, field);
+    }
+  };
+
+  const [hasAutoFilled, setHasAutoFilled] = useState(false);
+
+  useEffect(() => {
+    if (!selectedLocation || !createdLocations?.length || hasAutoFilled) return;
+
+    const location = createdLocations.find(loc => loc.name === selectedLocation);
+    if (location) {
+      setFormField("eventAddress", location.eventAddress);
+      setFormField("province", location.province);
+      setFormField("district", location.districtName);
+      setFormField("ward", location.ward);
+      setFormField("street", location.street);
+      setHasAutoFilled(true);
+    }
+  }, [selectedLocation, createdLocations, hasAutoFilled]);
+
+  const clearSelection = () => {
+    setSelectedLocation("");
+    // Optionally clear fields
+    setFormField("eventAddress", "");
+    setFormField("province", "");
+    setFormField("district", "");
+    setFormField("ward", "");
+    setFormField("street", "");
+  };
+
   return (
     <div className="mt-3 p-6 lg:p-8 rounded-lg shadow-sm w-full max-w-5xl mx-auto" style={{ backgroundColor: "rgba(158, 245, 207, 0.2)", border: "1.5px solid #9EF5CF" }}>
       <label className="block text-sm font-bold mb-2">
@@ -65,6 +106,30 @@ export default function EventLocationInput({
       {/* Chỉ hiển thị phần nhập địa chỉ khi chọn "Sự kiện offline" */}
       {eventTypeSelected === "offline" && (
         <div>
+          {/* Địa điểm đã tạo */}
+          <div className="location-created flex flex-wrap -mx-3 mb-6">
+            <div className="w-full px-3">
+              <SelectField
+                label="Địa điểm đã từng tạo sự kiện"
+                options={createdLocations.map(loc => loc.name)}
+                value={selectedLocation}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                  setHasAutoFilled(false);
+                  setSelectedLocation(e.target.value);
+                }}                
+              />
+              {selectedLocation && (
+                <button
+                  type="button"
+                  onClick={clearSelection}
+                  className="clear-address-btn inline-flex items-center justify-center mt-2 px-3 py-1 text-xs font-medium bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition"
+                >
+                  Xóa địa điểm đã chọn
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Tên địa điểm */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">

@@ -34,7 +34,7 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.1.2",
-    "@nestjs/swagger": "^8.0.5",
+    "@nestjs/swagger": "^8.1.1",
     "@nestjs/typeorm": "^10.0.2",
     "@payos/node": "^1.0.10",
     "@prisma/client": "^6.6.0",
@@ -50,7 +50,8 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pdfkit": "^0.16.0",
-    "qrcode": "^1.5.4"
+    "qrcode": "^1.5.4",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.4.9",

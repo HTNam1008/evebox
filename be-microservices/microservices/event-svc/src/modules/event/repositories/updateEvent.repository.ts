@@ -27,16 +27,16 @@ export class UpdateEventRepository {
       if (dto.orgName) updateData.orgName = dto.orgName;
       if (dto.orgDescription) updateData.orgDescription = dto.orgDescription;
       if (dto.isOnline !== undefined) {
-        updateData.isOnline = typeof dto.isOnline === 'string' ? dto.isOnline.toLowerCase() === 'true' : dto.isOnline;
+        updateData.isOnline = Boolean(
+          typeof dto.isOnline === 'string' ? dto.isOnline.toLowerCase() === 'true' : dto.isOnline
+        );
         if (updateData.isOnline) {
           updateData.locationId = null;
           updateData.venue = "";
-        }
-        else {
+        } else {
           updateData.locationId = locationId;
           updateData.venue = dto.venue;
         }
-        updateData.isOnline = dto.isOnline;
       }
       updateData.isApproved = false
 

@@ -73,6 +73,26 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         categoryIds: [],
     });
 
+    //Gán cứng địa điểm đã tạo
+    const createdLocations = [
+        {
+            name: "Nhà hát Ánh Trăng",
+            eventAddress: "Nhà hát Ánh Trăng",
+            province: "Ho Chi Minh City",
+            districtName: "1 District", 
+            ward: "Phường 6",
+            street: "123 Phổ Quang",
+        },
+        {
+            name: "Nhà văn hóa Thanh Niên",
+            eventAddress: "Nhà văn hóa Thanh Niên",
+            province: "Ho Chi Minh City",
+            districtName: "Binh Thanh District",
+            ward: "Phường Bến Nghé",
+            street: "4 Phạm Ngọc Thạch",
+        },
+    ];
+
     //Nội dung sẵn trong Thông tin sự kiện
     const [post, setPost]
         = useState(`<p><strong>Giới thiệu sự kiện:</strong></p>
@@ -165,7 +185,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                     setEventTypeSelected(eventData.isOnline ? "online" : "offline");
                     setNameOrg(eventData.orgName);
                     setInfoOrg(eventData.orgDescription);
-                    
+
                     if (eventTypeSelected === "offline" || eventTypeSelected === "Offline") {
                         setEventAddress(eventData.venue);
                         if (eventData.locations) {
@@ -432,7 +452,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
         const isOffline = eventTypeSelected === "offline" || eventTypeSelected === "Offline";
         const requiredFieldsFilled =
             eventName.trim() !== "" && nameOrg.trim() !== "" && infoOrg.trim() !== "" && post.trim() !== "" && selectedCategory !== null && background !== null && logoOrg !== null &&
-            (!isOffline || ( eventAddress.trim() !== "" && province.trim() !== "" && district.trim() !== "" && ward.trim() !== "" && street.trim() !== ""));
+            (!isOffline || (eventAddress.trim() !== "" && province.trim() !== "" && district.trim() !== "" && ward.trim() !== "" && street.trim() !== ""));
         setIsFormValid(requiredFieldsFilled);
     }, [
         eventName, nameOrg, infoOrg, post, selectedCategory, background, logoOrg, eventAddress, province, district, ward, street, eventTypeSelected
@@ -461,6 +481,7 @@ export default function FormInformationEventClient({ onNextStep, btnValidate }: 
                                 ? allProvinces.find((p) => p.name === province)?.districts.map((d) => d.name) || []
                                 : []
                         }
+                        createdLocations={createdLocations}
                         // wards={wards}
                         handleInputChange={handleInputChange}
                         handleSelectChange={handleSelectChange}

@@ -10,20 +10,28 @@ export interface OrganizationInfoFormProps {
     imageLogoErrors: { [key: string]: string };
 }
 
-export interface EventLocationInputProps { 
+export interface EventLocationInputProps {
     eventTypeSelected: string;
-    eventAddress: string; 
-    province: string; 
-    district: string; 
-    ward: string; 
-    street: string; 
-    errors: { [key: string]: boolean }; 
-    provinces: string[]; 
-    districts: string[]; 
+    eventAddress: string;
+    province: string;
+    district: string;
+    ward: string;
+    street: string;
+    errors: { [key: string]: boolean };
+    provinces: string[];
+    districts: string[];
+    createdLocations: {
+        name: string;
+        eventAddress: string;
+        province: string;
+        districtName: string;
+        ward: string;
+        street: string;
+    }[]
     // wards: string[]; 
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void; 
-    handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>, field: string) => void; 
-    setEventTypeSelected: React.Dispatch<React.SetStateAction<string>>; 
+    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void;
+    handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>, field: string) => void;
+    setEventTypeSelected: React.Dispatch<React.SetStateAction<string>>;
     updateGenerationForm: (field: keyof GenerationProps, value: string | number | boolean | number[]) => void
 }
 
