@@ -42,7 +42,7 @@ import { UnfavoriteEventService } from './commands/remove-favorite-event/unfavor
 import { FavoriteOrgController } from './queries/get-favorite-org/get-favorite-org.controller';
 import { GetFavoriteEventService } from './queries/get-favorite-events/get-favorite-event.service';
 import { GetFavoriteOrgService } from './queries/get-favorite-org/get-favorite-org.service';
-import { GetFavoriteController } from './queries/get-favorite-events/get-favorite.controller';
+import { GetFavoriteController } from './queries/get-favorite-events/get-favorite-event.controller';
 import { TurnOnNotificationController } from './commands/turn-on-notification/turn-on-notification.controller';
 import { TurnOnNotificationService } from './commands/turn-on-notification/turn-on-notification.service';
 import { TurnOffNotificationForEventController } from './commands/turn-off-notification-event/turn-off-notification.controller';
@@ -50,6 +50,8 @@ import { TurnOffNotificationForOrgController } from './commands/turn-off-notific
 import { TurnOffNotificationDto } from './commands/turn-off-notification-org/turn-off-notification.dto';
 import { TurnOffNotificationServiceForEvent } from './commands/turn-off-notification-event/turn-off-notification.service';
 import { TurnOffNotificationServiceForOrg } from './commands/turn-off-notification-org/turn-off-notification.service';
+import { SetReceiveNotiController } from './commands/set-receive-noti/set-receive-noti.controller';
+import { SetReceiveNotiService } from './commands/set-receive-noti/set-receive-noti.service';
 
 @Module({
   imports: [
@@ -86,7 +88,8 @@ import { TurnOffNotificationServiceForOrg } from './commands/turn-off-notificati
     GetFavoriteController,
     TurnOnNotificationController,
     TurnOffNotificationForEventController,
-    TurnOffNotificationForOrgController
+    TurnOffNotificationForOrgController,
+    SetReceiveNotiController
   ],
   providers: [
     RegisterUserService,
@@ -114,7 +117,8 @@ import { TurnOffNotificationServiceForOrg } from './commands/turn-off-notificati
     GetFavoriteOrgService,
     TurnOnNotificationService,
     TurnOffNotificationServiceForEvent,
-    TurnOffNotificationServiceForOrg
+    TurnOffNotificationServiceForOrg,
+    SetReceiveNotiService
   ],
   exports: [UserRepositoryImpl],
 })
