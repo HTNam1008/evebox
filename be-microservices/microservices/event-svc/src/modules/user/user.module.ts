@@ -52,6 +52,10 @@ import { TurnOffNotificationServiceForEvent } from './commands/turn-off-notifica
 import { TurnOffNotificationServiceForOrg } from './commands/turn-off-notification-org/turn-off-notification.service';
 import { SetReceiveNotiController } from './commands/set-receive-noti/set-receive-noti.controller';
 import { SetReceiveNotiService } from './commands/set-receive-noti/set-receive-noti.service';
+import { GetUsersNotifiedByEventController } from './queries/get-notified-users-event/get-notified-users-event.controller';
+import { GetUsersNotifiedByOrgController } from './queries/get-notified-users-org/get-notified-users-org.controller';
+import { GetUsersNotifiedByEventService } from './queries/get-notified-users-event/get-notified-users-event.service';
+import { GetUsersNotifiedByOrgService } from './queries/get-notified-users-org/get-notified-users-org.service';
 
 @Module({
   imports: [
@@ -89,7 +93,9 @@ import { SetReceiveNotiService } from './commands/set-receive-noti/set-receive-n
     TurnOnNotificationController,
     TurnOffNotificationForEventController,
     TurnOffNotificationForOrgController,
-    SetReceiveNotiController
+    SetReceiveNotiController,
+    GetUsersNotifiedByEventController,
+    GetUsersNotifiedByOrgController,
   ],
   providers: [
     RegisterUserService,
@@ -118,7 +124,9 @@ import { SetReceiveNotiService } from './commands/set-receive-noti/set-receive-n
     TurnOnNotificationService,
     TurnOffNotificationServiceForEvent,
     TurnOffNotificationServiceForOrg,
-    SetReceiveNotiService
+    SetReceiveNotiService,
+    GetUsersNotifiedByEventService,
+    GetUsersNotifiedByOrgService
   ],
   exports: [UserRepositoryImpl],
 })

@@ -226,4 +226,32 @@ export class FavoriteRepository {
     });
     return user?.receiveNoti ?? null;
   }
+
+  async getUsersNotifiedByEvent(eventId: number): Promise<{ userId: string }[]> {
+    return this.prisma.favorite_noti_history.findMany({
+      where: {
+        itemType: 'EVENT',
+        eventId,
+        isNotified: true,
+        isFavorite: true,
+      },
+      select: {
+        userId: true,
+      },
+    });
+  }
+
+  async getUsersNotifiedByOrganizer(orgId: string): Promise<{ userId: string }[]> {
+    return this.prisma.favorite_noti_history.findMany({
+      where: {
+        itemType: 'ORG',
+        orgId,
+        isNotified: true,
+        isFavorite: true,
+      },
+      select: {
+        userId: true,
+      },
+    });
+  }  
 }
