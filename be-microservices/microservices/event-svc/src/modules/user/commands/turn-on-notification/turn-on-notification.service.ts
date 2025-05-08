@@ -11,6 +11,11 @@ export class TurnOnNotificationService {
     const userId = await this.favoriteRepository.getUserIdByEmail(email);
     if (!userId) return Err(new Error('User not found'));
 
+    const receiveNoti = await this.favoriteRepository.getReceiveNotiByEmail(email);
+    if (!receiveNoti) {
+      return Err(new Error('You must enable notifications for user.'));
+    }
+
     try {
       await this.favoriteRepository.turnOnNotification(userId, dto.itemType, dto.itemId);
       return Ok(true);

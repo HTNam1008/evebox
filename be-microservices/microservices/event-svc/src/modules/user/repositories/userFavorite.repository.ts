@@ -218,4 +218,12 @@ export class FavoriteRepository {
       data: { receiveNoti: receive },
     });
   }
+
+  async getReceiveNotiByEmail(email: string): Promise<boolean | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      select: { receiveNoti: true },
+    });
+    return user?.receiveNoti ?? null;
+  }
 }
