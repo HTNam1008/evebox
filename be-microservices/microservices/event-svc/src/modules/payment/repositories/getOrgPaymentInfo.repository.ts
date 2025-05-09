@@ -14,4 +14,13 @@ export class GetOrgPaymentInfoRepository {
       },
     });
   }
+
+  async getOrgPaymentInfoByOrganizer(organizerId: string): Promise<any> {
+    return this.prisma.orgPaymentInfor.findFirst({
+      where: {
+        organizerId: organizerId,
+        isDeleted: false,
+      },
+    });
+  }
 }

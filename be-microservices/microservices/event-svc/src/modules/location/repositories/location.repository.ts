@@ -45,4 +45,88 @@ export class LocationRepository {
   async delete(id: number) {
     return this.prisma.locations.delete({ where: { id } });
   }
+  async findUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+      select: { role_id: true },
+    });
+  }
+
+  async getAllLocations(organizerId?: string, provinceId?: number) {
+    let locationIds: number[] | undefined;
+  
+    // Get locations from organizerId → via Events table
+    if (organizerId) {
+      const events = await this.prisma.events.findMany({
+        where: { organizerId },
+        select: { locationId: true },
+      });
+  
+      locationIds = events
+        .map(e => e.locationId)
+        .filter(id => id !== null) as number[];
+  
+      if (locationIds.length === 0) return [];
+    }
+  
+    const locations = await this.prisma.locations.findMany({
+      where: {
+        ...(locationIds
+          ? { id: { in: locationIds } }
+          : {}),
+        ...(provinceId
+          ? {
+              districts: {
+                provinceId: provinceId,
+              },
+            }
+          : {}),
+      },
+      include: {
+        districts: {
+          include: {
+            province: true,
+          },
+        },
+      },
+    });
+  
+    return locations.map(loc => ({
+      id: loc.id,
+      street: loc.street,
+      ward: loc.ward,
+      district: loc.districts.name,
+      province: loc.districts.province.name,
+    }));
+  }
+
+  async getLocationsByOrganizerEmail(email: string) {
+   const events = await this.prisma.events.findMany({
+      where: { organizerId: email },
+      select: {
+        locationId: true,
+        venue: true,
+        locations: {
+          include: {
+            districts: {
+              include: {
+                province: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return events
+      .filter(e => e.locationId && e.locations)
+      .map(e => ({
+        id: e.locations.id,
+        street: e.locations.street,
+        ward: e.locations.ward,
+        district: e.locations.districts.name,
+        province: e.locations.districts.province.name,
+        venue: e.venue || '',
+      }));
+  }
 }
