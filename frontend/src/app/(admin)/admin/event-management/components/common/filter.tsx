@@ -5,7 +5,7 @@ import { ChevronDown, Filter, RotateCcw } from "lucide-react";
 import { useState } from "react";
 
 /* Package Application */
-import { FilterProps } from "../../lib/interface/eventtable.interface";
+import { FilterProps } from "../../lib/interface/eventTable.interface";
 
 export default function FilterBar({
     categoryFilter, onCategoryChange,

@@ -1,7 +1,7 @@
 'use client'
 
 /* Package Application */
-import { PaginationProps } from "../../lib/interface/showingtable.interface";
+import { PaginationProps } from "../../lib/interface/showingTable.interface";
 
 export default function Pagination({ currentPage, totalItems, itemsPerPage, onPrevious, onNext } : PaginationProps) {
     const totalPages = Math.ceil(totalItems / itemsPerPage);

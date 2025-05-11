@@ -1,4 +1,4 @@
-import { Showing } from "../../../showing-management/lib/interface/showingtable.interface";
+import { Showing } from "../../../showing-management/lib/interface/showingTable.interface";
 
 export const sortShowingData = (
   data: Showing[],
@@ -17,9 +17,9 @@ export const sortShowingData = (
       bValue = b.eventTitle.title.toLowerCase();
     }
 
-    if (key === "numTicketType") {
-      aValue = a.numTicketType.length;
-      bValue = b.numTicketType.length;
+    if (key === "TicketType") {
+      aValue = a.TicketType.length;
+      bValue = b.TicketType.length;
     }
 
     if (typeof aValue === 'string' && typeof bValue === 'string') {

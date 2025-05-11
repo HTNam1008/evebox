@@ -6,9 +6,9 @@ import { useState } from "react";
 import { useRouter } from 'next/navigation';
 
 /* Package Application */
-import { Showing } from "../lib/interface/showingtable.interface";
+import { Showing } from "../lib/interface/showingTable.interface";
 import Pagination from "./common/pagination";
-import { ShowingTableProps } from "../lib/interface/showingtable.interface";
+import { ShowingTableProps } from "../lib/interface/showingTable.interface";
 import SortIcon from "../../account-management/components/sortIcon";
 import { sortShowings } from "../lib/function/sortShowings";
 
@@ -23,7 +23,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
             startTime: '2025-04-25T07:30:00.000Z',
             endTime: '2025-04-25T09:30:00.000Z',
             seatMapId: 0,
-            numTicketType: [
+            TicketType: [
                 { id: 1 },
                 { id: 2 }
             ]
@@ -37,7 +37,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
             startTime: '2025-03-27T20:30:00.000Z',
             endTime: '2025-03-27T17:00:00.000Z',
             seatMapId: 0,
-            numTicketType: [
+            TicketType: [
                 { id: 1 },
                 { id: 2 },
                 { id: 3 },
@@ -53,7 +53,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
             startTime: '2025-03-27T15:00:00.000Z',
             endTime: '2025-03-27T12:30:00.000Z',
             seatMapId: 12,
-            numTicketType: [
+            TicketType: [
                 { id: 1 },
                 { id: 2 }
             ]
@@ -67,7 +67,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
             startTime: '2025-03-27T10:30:00.000Z',
             endTime: '2025-03-27T12:30:00.000Z',
             seatMapId: 0,
-            numTicketType: [
+            TicketType: [
                 { id: 1 },
                 { id: 2 },
                 { id: 3 }
@@ -82,7 +82,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
             startTime: '2024-12-27T10:30:00.000Z',
             endTime: '2024-12-27T12:30:00.000Z',
             seatMapId: 256,
-            numTicketType: [
+            TicketType: [
                 { id: 1 }
             ]
         },
@@ -185,7 +185,7 @@ export default function ShowingTable({ searchKeyword, dateFrom, dateTo }: Showin
                                         {showing.seatMapId === 0 ? "Không" : "Có"}
                                     </td>
                                     <td className="px-4 py-3 border-r border-gray-200 text-center cursor-pointer">
-                                        {showing.numTicketType.length} loại vé
+                                        {showing.TicketType.length} loại vé
                                     </td>
                                     <td className="action-btn px-4 py-3 border-r border-gray-200 text-center">
                                         <div className="flex justify-center items-center gap-x-2">

@@ -9,7 +9,7 @@ import { Event } from "../lib/interface/eventSpecialTable";
 import ToggleSpecialButton from "./toggleSpecialButton";
 import ToggleOnlyOnEveButton from "./toggleOnlyOnEveButton";
 import ToggleCategoryButton from "./toggleCategoryButton";
-import { Category } from "../../event-management/lib/interface/eventtable.interface";
+import { Category } from "../../event-management/lib/interface/eventTable.interface";
 import Pagination from "./common/pagination";
 import { EventSpecialTableProps } from "../lib/interface/eventSpecialTable";
 import SortIcon from "../../account-management/components/sortIcon";

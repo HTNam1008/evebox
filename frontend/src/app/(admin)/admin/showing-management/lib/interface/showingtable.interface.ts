@@ -13,7 +13,7 @@ export interface Showing {
   startTime: string;
   endTime: string;
   seatMapId: number;
-  numTicketType: TicketType[];
+  TicketType: TicketType[];
 }
 
 export interface SortConfig<T> {
