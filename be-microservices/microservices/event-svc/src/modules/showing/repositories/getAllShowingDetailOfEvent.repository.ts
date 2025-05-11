@@ -17,6 +17,7 @@ export class GetAllShowingDetailOfEventRepository {
           id: true,
           startTime: true,
           endTime: true,
+          seatMapId: true,
           TicketType: {
             where: { deleteAt: null},
             select: {
@@ -46,6 +47,14 @@ export class GetAllShowingDetailOfEventRepository {
 
   async checkAuthor(id: number, userId: string): Promise<Result<boolean, Error>> {
     try {
+      const user = await this.prisma.user.findUnique({
+        where: { email: userId },
+      })
+
+      if (user && user.role_id === 1) {
+        return Ok(true);
+      }
+
       const event = await this.prisma.events.findUnique({
         where: { id: id >> 0 },
         select: { organizerId: true },
