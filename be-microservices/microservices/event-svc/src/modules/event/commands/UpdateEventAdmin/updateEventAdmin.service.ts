@@ -9,9 +9,9 @@ export class UpdateEventAdminService {
   constructor(
     private readonly updateEventRepository: UpdateEventAdminRepository) {}
 
-  async execute(dto: UpdateEventAdminDto, id: number): Promise<Result<EventDto, Error>> {
+  async execute(dto: UpdateEventAdminDto, id: number, email: string): Promise<Result<EventDto, Error>> {
     try {
-      const eventResult = await this.updateEventRepository.updateEvent(dto, id);
+      const eventResult = await this.updateEventRepository.updateEvent(dto, id, email);
       if (eventResult.isErr()) {
         return Err(new Error('Failed to update event'));
       }

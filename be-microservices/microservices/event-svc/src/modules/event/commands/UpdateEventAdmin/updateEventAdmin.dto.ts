@@ -15,6 +15,10 @@ export class UpdateEventAdminDto {
   @IsOptional()
   isSpecialForCategory?: boolean;
 
+  @ApiProperty({ example: true, description: 'Is this event approved?' })
+  @IsOptional()
+  isApproved?: string | boolean | null;
+
   @ApiPropertyOptional({ example: [1, 2], description: 'Array of category IDs' })
   @IsOptional()
   @IsNumber({}, { each: true })

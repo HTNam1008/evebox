@@ -12,13 +12,24 @@ export class UpdateEventAdminRepository {
   async updateEvent(
     dto: UpdateEventAdminDto,
     eventId: number,
+    email: string
   ): Promise<Result<EventDto, Error>> {
     try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      })
+
+      if (!user || user.role_id !== 1) {
+        return Err(new Error('You do not have permission to update event'));
+      }
       // Build update data dynamically based on provided fields
       const updateData: any = {};
       if (dto.isSpecial) updateData.isSpecial = dto.isSpecial;
       if (dto.isOnlyOnEve) updateData.isOnlyOnEve = dto.isOnlyOnEve;
-      updateData.isApproved = false
+      if (dto.isApproved) {
+        updateData.isApproved = Boolean(dto.isApproved);
+      }
+      else updateData.isApproved = false;
 
       const event = await this.prisma.events.update({
         where: { id: eventId >> 0 },

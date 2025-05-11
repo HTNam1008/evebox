@@ -26,7 +26,7 @@ export class UpdateEventAdminController {
     try {
       const user = req.user;
 
-      const result = await this.updateEventService.execute(updateEventAdminDto, req.params.id);
+      const result = await this.updateEventService.execute(updateEventAdminDto, req.params.id, user?.email);
 
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({
