@@ -7,9 +7,9 @@ import { EventDataDto } from "./getEvents-response.dto";
 export class GetEventsService {
   constructor(private readonly getEventsRepository: GetEventsRepository) {}
 
-  async execute(filters: any): Promise<Result<EventDataDto[], Error>> {
+  async execute(filters: any, email: string): Promise<Result<EventDataDto[], Error>> {
     try {
-      return await this.getEventsRepository.findWithFilters(filters);
+      return await this.getEventsRepository.findWithFilters(filters, email);
     } catch (error) {
       return Err(new Error('Failed to retrieve events'));
     }

@@ -7,8 +7,16 @@ import { EventDataDto } from "../queries/getEvents/getEvents-response.dto";
 export class GetEventsRepository {
   constructor(private readonly prisma: PrismaService) { }
 
-  async findWithFilters(filters: any): Promise<Result<EventDataDto[], Error>> {
+  async findWithFilters(filters: any, email: string): Promise<Result<EventDataDto[], Error>> {
     try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      })
+
+      if (!user || user.role_id !== 1) {
+        return Err(new Error('You do not have permission to get events'));
+      }
+
       const whereCond = this.buildWhereClause(filters);
 
       const page = filters.page ? Number(filters.page) : 1;
@@ -115,7 +123,7 @@ export class GetEventsRepository {
       where.isApproved = filters.isApproved === 'true';
     }
 
-    if (filters.isDeleted === 'true') {
+    if (filters.isDeleted === 'true' || filters.isDeleted === true) {
       where.deleteAt = { not: null };
     } else if (filters.isDeleted === 'false') {
       where.deleteAt = null;
@@ -133,10 +141,23 @@ export class GetEventsRepository {
       }
     }
 
+    if (filters.search) {
+      const keyword = filters.search.trim();
+
+      if (!isNaN(Number(keyword))) {
+        where.OR = [
+          { id: Number(keyword) },
+          { title: { contains: keyword, mode: 'insensitive' } },
+        ];
+      } else {
+        where.title = { contains: keyword, mode: 'insensitive' };
+      }
+    }
+
     return where;
   }
 
-  async count (filters: any): Promise<number> {
+  async count(filters: any): Promise<number> {
     try {
       const whereCond = this.buildWhereClause(filters);
       return this.prisma.events.count({
