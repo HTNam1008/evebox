@@ -46,7 +46,8 @@ export default function EventPage() {
                 activeTab={activeTab} 
                 searchKeyword={searchKeyword} 
                 categoryFilter={categoryFilter} 
-                dateFrom={dateFrom} dateTo={dateTo}/>
+                dateFrom={dateFrom} dateTo={dateTo}
+            />
         </>
     )
 }

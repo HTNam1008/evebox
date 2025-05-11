@@ -46,4 +46,8 @@ export class END_POINT_LIST {
     GET_ORDERS: "/api/org/statistics/orders",
     GET_ANALYTIC: "/api/org/statistics/analytic"
   };
+
+  static readonly ADMIN = {
+    EVENTS: "/api/admin/event",
+  }
 }
