@@ -4,63 +4,59 @@
 import { useRouter } from 'next/navigation';
 
 /* Package Application */
-import { TicketTypeProps } from "../../lib/interface/ticketTable.interface";
+import { TicketType } from '../../lib/interface/showingTable.interface';
+import { formatCurrency } from '@/utils/helpers';
 
 interface TicketTableProps {
     showingID: string;
-    ticketTypeIds: number[];
+    ticketTypes: TicketType[];
 }
 
-export default function TicketTable({ showingID, ticketTypeIds }: TicketTableProps) {
+export default function TicketTable({ showingID, ticketTypes }: TicketTableProps) {
     const router = useRouter();
 
-    //call api để fetch theo các ID vé trong mảng "ticketTypeIds"
-    const data: TicketTypeProps[] = [
-        {
-            id: ticketTypeIds[0].toString(),
-            name: "VIP",
-            startTime: "2025-04-09T16:22:12.000Z",
-            endTime: "2025-04-09T17:00:00.000Z",
-            description: "Ngồi vị trí gần khán đài",
-            price: 350000,
-            quantity: 100,
-            sold: 80,
-            status: "book_now",
-        },
-        {
-            id: ticketTypeIds[1].toString(),
-            name: "Thường",
-            startTime: "2025-04-09T16:22:12.000Z",
-            endTime: "2025-04-09T17:00:00.000Z",
-            description: "Ngồi vị trí gần khán đài",
-            price: 0,
-            quantity: 500,
-            sold: 500,
-            status: "sold_out",
-        },
-        {
-            id: ticketTypeIds[2].toString(),
-            name: "Ưu tiên",
-            startTime: "2025-04-09T16:22:12.000Z",
-            endTime: "2025-04-09T17:00:00.000Z",
-            description: "Ngồi vị trí gần khán đài",
-            price: 600000,
-            quantity: 10,
-            sold: 0,
-            status: "sale_closed",
-        },
-        {
-            id: ticketTypeIds[3].toString(),
-            name: "Hạng A",
-            startTime: "2025-04-09T16:22:12.000Z",
-            endTime: "2025-04-09T17:00:00.000Z",
-            description: "Ngồi vị trí gần khán đài",
-            price: 250000,
-            quantity: 10,
-            sold: 0,
-            status: "not_open",
+    const renderTicketStatus = (status: string) => {
+        switch (status) {
+            case "book_now":
+                return (
+                    <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#9EF5CF] text-[#0C4762] border-[#9EF5CF]">
+                        Mở bán
+                    </span>
+                );
+            case "sold_out":
+                return (
+                    <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#FFC9C9] text-[#FF0000] border-[#FFC9C9]">
+                        Hết vé
+                    </span>
+                );
+            case "sale_closed":
+                return (
+                    <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#F4EEEE] text-[#979797] border-[#F4EEEE]">
+                        Ngừng bán
+                    </span>
+                );
+            case "not_open":
+                return (
+                    <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#F4EEEE] text-[#979797] border-[#F4EEEE]">
+                        Chưa mở bán
+                    </span>
+                );
+            case "register_now":
+                return (
+                    <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#9EF5CF] text-[#0C4762] border-[#9EF5CF]">
+                        Đăng ký ngay
+                    </span>
+                );
+            case "register_closed":
+                return (
+                    <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#F4EEEE] text-[#979797] border-[#F4EEEE]">
+                        Đóng đăng ký
+                    </span>
+                );
+            default:
+                return <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#F4EEEE] text-[#979797] border-[#F4EEEE]">Không xác định</span>;
         }
-    ]
+    };
 
     return (
         <>
@@ -91,7 +87,7 @@ export default function TicketTable({ showingID, ticketTypeIds }: TicketTablePro
                             </tr>
                         </thead>
                         <tbody className="text-xs">
-                            {data.map((ticket, index) => (
+                            {ticketTypes.map((ticket, index) => (
                                 <tr key={ticket.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200"
                                     onClick={() => router.push(`/admin/showing-management/${showingID}/ticket/${ticket.id}`)}>
                                     <td className="px-4 py-3 text-center border-r border-gray-200">{ticket.id}</td>
@@ -109,7 +105,7 @@ export default function TicketTable({ showingID, ticketTypeIds }: TicketTablePro
                                         </div>
                                     </td>
                                     <td className="text-center px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
-                                        {ticket.price === 0 ? "Miễn phí" : `${ticket.price} VNĐ`}
+                                        {(ticket.price === 0 || ticket.isFree === true) ? "Miễn phí" : `${formatCurrency(ticket.price)} VNĐ`}
                                     </td>
                                     <td className="px-4 py-3 text-center border-r border-gray-200">
                                         {ticket.quantity}
@@ -118,26 +114,7 @@ export default function TicketTable({ showingID, ticketTypeIds }: TicketTablePro
                                         {ticket.sold}
                                     </td>
                                     <td className="action-btn px-4 py-3 border-r border-gray-200 text-center">
-                                        {ticket.status === "book_now" && (
-                                            <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#9EF5CF] text-[#0C4762] border-[#9EF5CF]">
-                                                Mở bán
-                                            </span>
-                                        )}
-                                        {ticket.status === "sold_out" && (
-                                            <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#FFC9C9] text-[#FF0000] border-[#FFC9C9]">
-                                                Hết vé
-                                            </span>
-                                        )}
-                                        {ticket.status === "sale_closed" && (
-                                            <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#F4EEEE] text-[#979797] border-[#F4EEEE]">
-                                                Ngừng bán
-                                            </span>
-                                        )}
-                                        {ticket.status === "not_open" && (
-                                            <span className="min-w-[100px] text-center inline-block px-4 py-1 rounded-full text-xs font-semibold border bg-[#F4EEEE] text-[#979797] border-[#F4EEEE]">
-                                                Chưa mở bán
-                                            </span>
-                                        )}
+                                        {renderTicketStatus(ticket.status)}
                                     </td>
                                 </tr>
                             ))}

@@ -4,6 +4,7 @@ import { BaseApiResponse } from "@/types/BaseApiResponse";
 import { Category, FrontDisplayResponse, Event } from "@/types/model/frontDisplay";
 import { EventAdminTable, EventDetail } from "@/app/(admin)/admin/event-management/lib/interface/eventTable.interface";
 import { Showing } from "@/app/(admin)/admin/showing-management/lib/interface/showingTable.interface";
+import { TicketOfShowing } from "@/app/(admin)/admin/showing-management/lib/interface/ticketTable.interface";
 
 export const getFrontDisplayEvents = async (): Promise<FrontDisplayResponse> => {
   const res = await eventService.get(END_POINT_LIST.EVENT.GET_FRONT_DISPLAY);
@@ -200,6 +201,14 @@ export const getShowingsManagement = async(params: {
 
 export const getShowingDetail = async (showingId: string): Promise<Showing> => {
   const response = await eventService.get<BaseApiResponse<Showing>>(`${END_POINT_LIST.ADMIN.SHOWINGS}/${showingId}`);
+
+  if (response.status !== 200) throw new Error(response.data.message);
+
+  return response.data.data;
+}
+
+export const getTicketDetailOfShowing = async (showingId: string, ticketTypeId: string): Promise<TicketOfShowing> => {
+  const response = await eventService.get<BaseApiResponse<TicketOfShowing>>(`${END_POINT_LIST.ADMIN.SHOWINGS}/${showingId}/${ticketTypeId}`);
 
   if (response.status !== 200) throw new Error(response.data.message);
 

@@ -1,3 +1,5 @@
+import { Event } from "./showingTable.interface";
+
 export interface TicketTypeProps {
     id: string;
     name: string;
@@ -22,5 +24,14 @@ export interface TicketTypeDetailProps {
     quantity:number;
     sold: number;
     status: string;
-    imgUrl: string;
+    imageUrl: string;
+}
+
+export interface TicketOfShowing {
+    id: string;
+    event: Event;
+    startTime: string;
+    endTime: string;
+    seatMapId: number;
+    ticketType: TicketTypeDetailProps;
 }
