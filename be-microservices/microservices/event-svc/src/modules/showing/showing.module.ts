@@ -35,10 +35,18 @@ import { GetAllShowingTimeOfEventRepository } from './repositories/getAllShowing
 import { GetShowingsController } from './queries/getShowings/getShowings.controller';
 import { GetShowingsService } from './queries/getShowings/getShowings.service';
 import { GetShowingsRepository } from './repositories/getShowings.repository';
+import { GetShowingAdminDetailController } from './queries/getShowingDetail/getShowingAdminDetail.controller';
+import { GetShowingAdminDetailService } from './queries/getShowingDetail/getShowingAdminDetail.service';
+import { GetShowingAdminDetailRepository } from './repositories/getShowingAdminDetail.repository';
+import { GetTicketDetailOfShowingController } from './queries/getTicketDetailOfShowing/getTicketDetailOfShowing.controller';
+import { GetTicketDetailOfShowingService } from './queries/getTicketDetailOfShowing/getTicketDetailOfShowing.service';
+import { GetTicketDetailOfShowingRepository } from './repositories/getTicketDetailOfShowing.repository';
 
 @Module({
   controllers: [
     // Admin
+    GetShowingAdminDetailController,
+    GetTicketDetailOfShowingController,
     GetShowingsController,
 
     GetAllFormsController,
@@ -84,6 +92,12 @@ import { GetShowingsRepository } from './repositories/getShowings.repository';
     GetAllShowingTimeOfEventRepository,
 
     // Admin
+    GetShowingAdminDetailService,
+    GetShowingAdminDetailRepository,
+
+    GetTicketDetailOfShowingService,
+    GetTicketDetailOfShowingRepository,
+
     GetShowingsService,
     GetShowingsRepository
   ],
