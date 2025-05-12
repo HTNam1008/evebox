@@ -4,16 +4,33 @@ export interface Event {
 }
 
 export interface TicketType {
-  id: number;
+  id: string;
+  name: string;
+  description: string;
+  isFree: boolean;
+  price: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+  quantity: number;
+  sold: number;
 }
 
 export interface Showing {
   id: string;
-  eventTitle: Event;
+  event: Event;
   startTime: string;
   endTime: string;
   seatMapId: number;
-  TicketType: TicketType[];
+  ticketTypes: TicketType[];
+}
+
+export interface ShowingDetail {
+  id: string;
+  startTime: string;
+  endTime: string;
+  seatMapId: number;
+  ticketTypes: TicketType[];
 }
 
 export interface SortConfig<T> {

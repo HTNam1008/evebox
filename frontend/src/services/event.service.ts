@@ -171,3 +171,37 @@ export const getShowingsOfEvent = async (eventId: number): Promise<Showing[]> =>
 
   return response.data.data;
 }
+
+export interface ShowingManagementApiResponse {
+  data: Showing[];
+  meta: {
+    totalCount: number;
+    currentPage: number;
+    nextPage: number | null;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export const getShowingsManagement = async(params: {
+  page: number;
+  limit: number;
+  startTime?: string;
+  endTime?: string;
+  search?: string;
+}): Promise<ShowingManagementApiResponse> => {
+  const response = await eventService.get<BaseApiResponse<ShowingManagementApiResponse>>(END_POINT_LIST.ADMIN.SHOWINGS, {
+    params
+  });
+
+  if (response.status !== 200) throw new Error(response.data.message);
+  return response.data.data;
+}
+
+export const getShowingDetail = async (showingId: string): Promise<Showing> => {
+  const response = await eventService.get<BaseApiResponse<Showing>>(`${END_POINT_LIST.ADMIN.SHOWINGS}/${showingId}`);
+
+  if (response.status !== 200) throw new Error(response.data.message);
+
+  return response.data.data;
+}
