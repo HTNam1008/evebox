@@ -17,6 +17,7 @@ export class GetAllShowingDetailOfEventRepository {
           id: true,
           startTime: true,
           endTime: true,
+          eventId: true,
           seatMapId: true,
           TicketType: {
             where: { deleteAt: null},
