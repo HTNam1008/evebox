@@ -2,7 +2,7 @@
 
 /* Package System */
 import 'tailwindcss/tailwind.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /* Package Application */
 import EventTable from './eventTable';
@@ -13,10 +13,19 @@ import FilterBar from './common/filter';
 export default function EventPage() {
     const [activeTab, setActiveTab] = useState("all");
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
 
     const [categoryFilter, setCategoryFilter] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setDebouncedSearch(searchKeyword);
+        }, 2000);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchKeyword]);
 
     const handleResetFilter = () => {
         setCategoryFilter('');
@@ -42,10 +51,10 @@ export default function EventPage() {
             </div>
 
             <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-            <EventTable 
-                activeTab={activeTab} 
-                searchKeyword={searchKeyword} 
-                categoryFilter={categoryFilter} 
+            <EventTable
+                activeTab={activeTab}
+                searchKeyword={debouncedSearch }
+                categoryFilter={categoryFilter}
                 dateFrom={dateFrom} dateTo={dateTo}
             />
         </>

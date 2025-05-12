@@ -12,14 +12,14 @@ export const sortShowingData = (
     let aValue = a[key];
     let bValue = b[key];
 
-    if (key === "eventTitle") {
-      aValue = a.eventTitle.title.toLowerCase();
-      bValue = b.eventTitle.title.toLowerCase();
+    if (key === "event") {
+      aValue = a.event.title.toLowerCase();
+      bValue = b.event.title.toLowerCase();
     }
 
-    if (key === "TicketType") {
-      aValue = a.TicketType.length;
-      bValue = b.TicketType.length;
+    if (key === "ticketTypes") {
+      aValue = a.ticketTypes.length;
+      bValue = b.ticketTypes.length;
     }
 
     if (typeof aValue === 'string' && typeof bValue === 'string') {

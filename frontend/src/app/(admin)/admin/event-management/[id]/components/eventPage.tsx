@@ -6,10 +6,10 @@ import { ArrowLeft, MapPin, House } from "lucide-react"
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 // import { Icon } from '@iconify/react';
+import { useEffect, useState } from 'react';
 
 /* Package Application */
 import ShowingTable from './showingTable';
-import { useEffect, useState } from 'react';
 import { EventDetail } from '../../lib/interface/eventTable.interface';
 import { getEventDetail } from '@/services/event.service';
 
@@ -116,13 +116,13 @@ export default function EventDetailPage({ eventId }: { eventId: number }) {
                             <p className="mt-2 flex items-center gap-1">
                                 <MapPin size={18} /> {event?.orgDescription}
                             </p>
-                            <p className="mt-2">
+                            <div className="mt-2">
                                 <span className="font-semibold">Mô tả: </span>
                                 <div
                                     className="prose prose-sm max-w-none pl-10"
                                     dangerouslySetInnerHTML={{ __html: event?.description || "" }}
                                 />
-                            </p>
+                            </div>
                             <p className="mt-2">
                                 <span className="font-semibold">ID sự kiện: </span> {event?.id}
                             </p>

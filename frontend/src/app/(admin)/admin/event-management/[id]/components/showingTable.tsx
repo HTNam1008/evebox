@@ -61,8 +61,8 @@ export default function ShowingTable({ eventId, eventTitle }: { eventId: number,
                                 <th className="px-4 py-3 cursor-pointer min-w-[64px]" onClick={() => handleSort("id")}>
                                     ID <SortIcon field="id" sortConfig={sortConfig} />
                                 </th>
-                                <th className="px-4 py-3 cursor-pointer min-w-[160px]" onClick={() => handleSort("eventTitle")}>
-                                    Tên sự kiện <SortIcon field="eventTitle" sortConfig={sortConfig} />
+                                <th className="px-4 py-3 cursor-pointer min-w-[160px]" onClick={() => handleSort("event")}>
+                                    Tên sự kiện <SortIcon field="event" sortConfig={sortConfig} />
                                 </th>
                                 <th className="px-4 py-3 cursor-pointer min-w-[100px]" onClick={() => handleSort("startTime")}>
                                     Ngày-giờ bắt đầu <SortIcon field="startTime" sortConfig={sortConfig} />
@@ -73,7 +73,7 @@ export default function ShowingTable({ eventId, eventTitle }: { eventId: number,
                                 <th className="px-4 py-3 cursor-pointer min-w-[118px]" onClick={() => handleSort("seatMapId")}>
                                     Seat map <SortIcon field="seatMapId" sortConfig={sortConfig} />
                                 </th>
-                                <th className="px-4 py-3 cursor-pointer min-w-[102px]" onClick={() => handleSort("TicketType")}>
+                                <th className="px-4 py-3 cursor-pointer min-w-[102px]" onClick={() => handleSort("ticketTypes")}>
                                     Số loại vé <SortIcon field="numTicketType" sortConfig={sortConfig} />
                                 </th>
                                 <th className="px-4 py-3 cursor-pointer min-w-[82px]">Thao tác</th>
@@ -109,7 +109,7 @@ export default function ShowingTable({ eventId, eventTitle }: { eventId: number,
                                             {showing.seatMapId === 0 ? "Không" : "Có"}
                                         </td>
                                         <td className="px-4 py-3 border-r border-gray-200 text-center cursor-pointer">
-                                            {showing.TicketType.length} loại vé
+                                            {showing.ticketTypes.length} loại vé
                                         </td>
                                         <td className="action-btn px-4 py-3 border-r border-gray-200 text-center">
                                             <div className="flex justify-center items-center gap-x-2">

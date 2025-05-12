@@ -17,6 +17,7 @@ import Pagination from "./common/pagination";
 import SortIcon from "../../account-management/components/sortIcon";
 import { sortEvents } from "../lib/function/sortEvents";
 import { getEventsManagement, updateEventAdmin } from "@/services/event.service";
+import EventTableSkeleton from "./common/eventTableSkeleton";
 
 export default function EventTable({ activeTab, searchKeyword, categoryFilter, dateFrom, dateTo }: EventTableProps) {
     const [events, setEvents] = useState<EventAdminTable[]>([]);
@@ -178,145 +179,143 @@ export default function EventTable({ activeTab, searchKeyword, categoryFilter, d
     }
 
     return (
-        <>
-            <div className="table-event-management overflow-x-auto rounded-xl shadow-md mt-6">
-                <table className="min-w-full border border-gray-200">
-                    <thead>
-                        <tr className="bg-[#0C4762] text-center text-white text-xs rounded-t-lg">
-                            <th className="px-4 py-3 cursor-pointer min-w-[64px]" onClick={() => handleSort('id')}>
-                                ID <SortIcon field="id" sortConfig={sortConfig} />
-                            </th>
-                            <th className="px-4 py-3 min-w-[85px]">Hình ảnh</th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[160px]" onClick={() => handleSort('title')}>
-                                Tên sự kiện <SortIcon field="name" sortConfig={sortConfig} />
-                            </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[100px]">
-                                Thể loại
-                            </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[140px]">
-                                Địa điểm
-                            </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[118px]" onClick={() => handleSort('organizerId')}>
-                                Người tạo <SortIcon field="organizerId" sortConfig={sortConfig} />
-                            </th>
-                            <th className="px-4 py-3 cursor-pointer min-w-[102px]" onClick={() => handleSort('createdAt')}>
-                                Ngày tạo <SortIcon field="createdAt" sortConfig={sortConfig} />
-                            </th>
-                            <th className="px-4 py-3 cursor-pointer">
-                                Trạng thái
-                            </th>
-                            {activeTab !== "deleted" && <th className="px-4 py-3 cursor-pointer min-w-[82px]">Thao tác</th>}
-                        </tr>
-                    </thead>
-                    <tbody className="text-xs">
-                        {isLoadingEvents ? (
-                            <tr>
-                                <td colSpan={9} className="text-center py-4 text-gray-500">
-                                    Đang tải dữ liệu...
-                                </td>
+        isLoadingEvents ? (
+            <EventTableSkeleton />
+        ) : (
+            <>
+                <div className="table-event-management overflow-x-auto rounded-xl shadow-md mt-6">
+                    <table className="min-w-full border border-gray-200">
+                        <thead>
+                            <tr className="bg-[#0C4762] text-center text-white text-xs rounded-t-lg">
+                                <th className="px-4 py-3 cursor-pointer min-w-[64px]" onClick={() => handleSort('id')}>
+                                    ID <SortIcon field="id" sortConfig={sortConfig} />
+                                </th>
+                                <th className="px-4 py-3 min-w-[85px]">Hình ảnh</th>
+                                <th className="px-4 py-3 cursor-pointer min-w-[160px]" onClick={() => handleSort('title')}>
+                                    Tên sự kiện <SortIcon field="name" sortConfig={sortConfig} />
+                                </th>
+                                <th className="px-4 py-3 cursor-pointer min-w-[100px]">
+                                    Thể loại
+                                </th>
+                                <th className="px-4 py-3 cursor-pointer min-w-[140px]">
+                                    Địa điểm
+                                </th>
+                                <th className="px-4 py-3 cursor-pointer min-w-[118px]" onClick={() => handleSort('organizerId')}>
+                                    Người tạo <SortIcon field="organizerId" sortConfig={sortConfig} />
+                                </th>
+                                <th className="px-4 py-3 cursor-pointer min-w-[102px]" onClick={() => handleSort('createdAt')}>
+                                    Ngày tạo <SortIcon field="createdAt" sortConfig={sortConfig} />
+                                </th>
+                                <th className="px-4 py-3 cursor-pointer">
+                                    Trạng thái
+                                </th>
+                                {activeTab !== "deleted" && <th className="px-4 py-3 cursor-pointer min-w-[82px]">Thao tác</th>}
                             </tr>
-                        ) : paginatedData.length > 0 ? (
-                            paginatedData.map((event) => (
-                                <tr key={event.id} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
-                                    <td className="px-4 py-3 text-center border-r border-gray-200">{event.id}</td>
-                                    <td className="px-4 py-3 border-r border-gray-200 text-center">
-                                        <Image
-                                            className="rounded-md object-cover transition duration-300 transform hover:scale-150"
-                                            alt="Event Poster"
-                                            src={event.Images_Events_imgPosterIdToImages?.imageUrl ||
-                                                "https://res.cloudinary.com/de66mx8mw/image/upload/v1744458011/defaultImgEvent_spjrst.png"}
-                                            width={50}
-                                            height={50}
-                                        />
-                                    </td>
-                                    <td onClick={() => router.push(`/admin/event-management/${event.id}`)} className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
-                                        <div className="line-clamp-2 leading-snug" title={event.title}>
-                                            {event.title}
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-3 border-r border-gray-200 max-w-[200px]">
-                                        <div className="line-clamp-3 leading-snug" title={event.categories.map(c => c.name).join(", ")}>
-                                            {event.categories.map(c => handleTransferCategory(c.name)).join(", ")}
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-3 border-r border-gray-200">
-                                        <div className="line-clamp-2 leading-snug" title={event.venue ?? ''}>
-                                            {event.venue}
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-3 border-r border-gray-200">{event.organizerId}</td>
-                                    <td className="px-4 py-3 text-center border-r border-gray-200">
-                                        {new Date(event.createdAt).toLocaleDateString('vi-VN')}
-                                    </td>
-                                    <td className="px-4 py-3 border-r border-gray-200 text-center">
-                                        <span className={`min-w-[90px] inline-block px-4 py-1 rounded-full text-xs font-semibold border
-                                            ${event.deleteAt
-                                                ? 'bg-gray-200 text-gray-500 border-gray-500'
-                                                : event.isApproved
-                                                    ? 'bg-teal-100 text-teal-500 border-teal-500'
-                                                    : 'bg-yellow-100 text-yellow-500 border-yellow-500'
-                                            }`}>
-                                            {event.deleteAt ? "Đã xóa" : event.isApproved ? "Đã duyệt" : "Chờ duyệt"}
-                                        </span>
-                                    </td>
-                                    {!event.deleteAt && (
+                        </thead>
+                        <tbody className="text-xs">
+                            {paginatedData.length > 0 ? (
+                                paginatedData.map((event) => (
+                                    <tr key={event.id} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
+                                        <td className="px-4 py-3 text-center border-r border-gray-200">{event.id}</td>
                                         <td className="px-4 py-3 border-r border-gray-200 text-center">
-                                            <div className="flex justify-center items-center gap-x-2">
-                                                {!event.deleteAt && !event.isApproved && (
-                                                    <Check className="p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
-                                                        onClick={() => handleApprovalClick(event)} />
-                                                )}
-
-                                                {!event.deleteAt && event.isApproved && (
-                                                    <CalendarOff className="p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"
-                                                        onClick={() => handleSupspendClick(event)} />
-                                                )}
+                                            <Image
+                                                className="rounded-md object-cover transition duration-300 transform hover:scale-150"
+                                                alt="Event Poster"
+                                                src={event.Images_Events_imgPosterIdToImages?.imageUrl ||
+                                                    "https://res.cloudinary.com/de66mx8mw/image/upload/v1744458011/defaultImgEvent_spjrst.png"}
+                                                width={50}
+                                                height={50}
+                                            />
+                                        </td>
+                                        <td onClick={() => router.push(`/admin/event-management/${event.id}`)} className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+                                            <div className="line-clamp-2 leading-snug" title={event.title}>
+                                                {event.title}
                                             </div>
                                         </td>
-                                    )}
+                                        <td className="px-4 py-3 border-r border-gray-200 max-w-[200px]">
+                                            <div className="line-clamp-3 leading-snug" title={event.categories.map(c => c.name).join(", ")}>
+                                                {event.categories.map(c => handleTransferCategory(c.name)).join(", ")}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-3 border-r border-gray-200">
+                                            <div className="line-clamp-2 leading-snug" title={event.venue ?? ''}>
+                                                {event.venue}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-3 border-r border-gray-200">{event.organizerId}</td>
+                                        <td className="px-4 py-3 text-center border-r border-gray-200">
+                                            {new Date(event.createdAt).toLocaleDateString('vi-VN')}
+                                        </td>
+                                        <td className="px-4 py-3 border-r border-gray-200 text-center">
+                                            <span className={`min-w-[90px] inline-block px-4 py-1 rounded-full text-xs font-semibold border
+                                            ${event.deleteAt
+                                                    ? 'bg-gray-200 text-gray-500 border-gray-500'
+                                                    : event.isApproved
+                                                        ? 'bg-teal-100 text-teal-500 border-teal-500'
+                                                        : 'bg-yellow-100 text-yellow-500 border-yellow-500'
+                                                }`}>
+                                                {event.deleteAt ? "Đã xóa" : event.isApproved ? "Đã duyệt" : "Chờ duyệt"}
+                                            </span>
+                                        </td>
+                                        {!event.deleteAt && (
+                                            <td className="px-4 py-3 border-r border-gray-200 text-center">
+                                                <div className="flex justify-center items-center gap-x-2">
+                                                    {!event.deleteAt && !event.isApproved && (
+                                                        <Check className="p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                            onClick={() => handleApprovalClick(event)} />
+                                                    )}
+
+                                                    {!event.deleteAt && event.isApproved && (
+                                                        <CalendarOff className="p-1 bg-yellow-400 text-white rounded w-6 h-6 cursor-pointer"
+                                                            onClick={() => handleSupspendClick(event)} />
+                                                    )}
+                                                </div>
+                                            </td>
+                                        )}
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={9} className="text-center py-4 text-gray-500">
+                                        Không có sự kiện nào khớp với tìm kiếm
+                                    </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan={9} className="text-center py-4 text-gray-500">
-                                    Không có sự kiện nào khớp với tìm kiếm
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
-            {/* Phân trang */}
-            <Pagination
-                currentPage={currentPage}
-                totalItems={totalItems}
-                itemsPerPage={itemsPerPage}
-                onPrevious={handlePrevious}
-                onNext={handleNext} />
+                {/* Phân trang */}
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={totalItems}
+                    itemsPerPage={itemsPerPage}
+                    onPrevious={handlePrevious}
+                    onNext={handleNext} />
 
-            {selectedEvent && (
-                <>
-                    <ConfirmApprovalDialog
-                        open={isApprovalDialogOpen}
-                        onClose={() => setIsApprovalDialogOpen(false)}
-                        onConfirm={handleConfirmApproval}
-                        isLoading={isLoadingEventAction}
-                    />
-                    <ConfirmSupspendDialog
-                        open={isSupspendDialogOpen}
-                        onClose={() => setIsSupspendDialogOpen(false)}
-                        onConfirm={handleConfirmSupspend}
-                        isLoading={isLoadingEventAction}
-                    />
-                    <ConfirmDeleteDialog
-                        open={isDeleteDialogOpen}
-                        onClose={() => setIsDeleteDialogOpen(false)}
-                        onConfirm={handleConfirmDelete}
-                        isLoading={isLoadingEventAction}
-                    />
-                </>
-            )}
-        </>
+                {selectedEvent && (
+                    <>
+                        <ConfirmApprovalDialog
+                            open={isApprovalDialogOpen}
+                            onClose={() => setIsApprovalDialogOpen(false)}
+                            onConfirm={handleConfirmApproval}
+                            isLoading={isLoadingEventAction}
+                        />
+                        <ConfirmSupspendDialog
+                            open={isSupspendDialogOpen}
+                            onClose={() => setIsSupspendDialogOpen(false)}
+                            onConfirm={handleConfirmSupspend}
+                            isLoading={isLoadingEventAction}
+                        />
+                        <ConfirmDeleteDialog
+                            open={isDeleteDialogOpen}
+                            onClose={() => setIsDeleteDialogOpen(false)}
+                            onConfirm={handleConfirmDelete}
+                            isLoading={isLoadingEventAction}
+                        />
+                    </>
+                )}
+            </>
+        )
     )
 }
