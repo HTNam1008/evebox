@@ -49,6 +49,7 @@ export class END_POINT_LIST {
 
   static readonly ADMIN = {
     EVENTS: "/api/admin/event",
-    SHOWINGS: "/api/admin/showing"
+    SHOWINGS: "/api/admin/showing",
+    EVENTS_SPECIAL: "api/admin/event-special"
   }
 }

@@ -3,8 +3,9 @@ import { END_POINT_LIST } from "./endpoints";
 import { BaseApiResponse } from "@/types/BaseApiResponse";
 import { Category, FrontDisplayResponse, Event } from "@/types/model/frontDisplay";
 import { EventAdminTable, EventDetail } from "@/app/(admin)/admin/event-management/lib/interface/eventTable.interface";
-import { Showing } from "@/app/(admin)/admin/showing-management/lib/interface/showingTable.interface";
+import { Showing, ShowingFromApi } from "@/app/(admin)/admin/showing-management/lib/interface/showingTable.interface";
 import { TicketOfShowing } from "@/app/(admin)/admin/showing-management/lib/interface/ticketTable.interface";
+import { EventSpecial } from "@/app/(admin)/admin/event-special-management/lib/interface/eventSpecialTable";
 
 export const getFrontDisplayEvents = async (): Promise<FrontDisplayResponse> => {
   const res = await eventService.get(END_POINT_LIST.EVENT.GET_FRONT_DISPLAY);
@@ -166,11 +167,20 @@ export const getEventDetail = async (eventId: number): Promise<EventDetail> => {
 }
 
 export const getShowingsOfEvent = async (eventId: number): Promise<Showing[]> => {
-  const response = await eventService.get<BaseApiResponse<Showing[]>>(`${END_POINT_LIST.ORG_SHOWING.SHOWING}/${eventId}`);
+  const response = await eventService.get<BaseApiResponse<ShowingFromApi[]>>(`${END_POINT_LIST.ORG_SHOWING.SHOWING}/${eventId}`);
 
   if (response.status !== 200) throw new Error(response.data.message);
 
-  return response.data.data;
+  const normalized: Showing[] = response.data.data.map((showing) => ({
+    id: showing.id,
+    event: showing.event,
+    startTime: showing.startTime,
+    endTime: showing.endTime,
+    seatMapId: showing.seatMapId,
+    ticketTypes: showing.TicketType || [],
+  }));
+
+  return normalized;
 }
 
 export interface ShowingManagementApiResponse {
@@ -212,5 +222,33 @@ export const getTicketDetailOfShowing = async (showingId: string, ticketTypeId: 
 
   if (response.status !== 200) throw new Error(response.data.message);
 
+  return response.data.data;
+}
+
+export interface EventSpecialApiResponse {
+  data: EventSpecial[]
+  meta: {
+    totalCount: number;
+    currentPage: number;
+    nextPage: number | null;
+    limit: number;
+    totalPages: number;
+  }
+}
+
+export const getEventSpecialManagement = async(params: {
+  isSpecial?: boolean;
+  isOnlyOnEve?: boolean;
+  page: number;
+  categoryId?: number;
+  limit: number;
+  search?: string;
+}): Promise<EventSpecialApiResponse> => {
+  const response = await eventService.get<BaseApiResponse<EventSpecialApiResponse>>(END_POINT_LIST.ADMIN.EVENTS_SPECIAL, {
+    params
+  });
+
+  if (response.status !== 200) throw new Error(response.data.message);
+  
   return response.data.data;
 }

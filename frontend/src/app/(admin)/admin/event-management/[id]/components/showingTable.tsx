@@ -87,7 +87,7 @@ export default function ShowingTable({ eventId, eventTitle }: { eventId: number,
                                     </td>
                                 </tr>
                             ) : (
-                                sortedData.map((showing, index) => (
+                                sortedData.length !== 0 && sortedData.map((showing, index) => (
                                     <tr key={showing.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
                                         <td className="px-4 py-3 text-center border-r border-gray-200">{showing.id}</td>
                                         <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">

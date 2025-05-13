@@ -25,6 +25,15 @@ export interface Showing {
   ticketTypes: TicketType[];
 }
 
+export interface ShowingFromApi {
+  id: string;
+  event: Event;
+  startTime: string;
+  endTime: string;
+  seatMapId: number;
+  TicketType: TicketType[];
+}
+
 export interface ShowingDetail {
   id: string;
   startTime: string;

@@ -1,6 +1,6 @@
 export interface Image {
   id: number;
-  url: string;
+  imageUrl: string;
 }
 
 export interface Category {
@@ -8,18 +8,18 @@ export interface Category {
   name: string;
 }
 
-export interface Event {
+export interface EventSpecial {
   id: number;
   title: string;
   Images_Events_imgPosterIdToImages?: Image | null;
   isOnlyOnEve: boolean;
   isSpecial: boolean;
-  categories: Category[];
+  categoryIds: Category[];
 }
 
 export interface EventSpecialTableProps {
   searchKeyword: string;
-  categoryFilter: string
+  categoryFilter: string | number
 }
 
 //Pagination
@@ -33,14 +33,14 @@ export interface PaginationProps {
 
 //Filter
 export interface FilterProps {
-  categoryFilter: string;
-  onCategoryChange: (value: string) => void;
+  categoryFilter: number | "" | "__onlyOnEve" | "__special";
+  onCategoryChange: (value: number | "" | "__onlyOnEve" | "__special") => void;
   onReset: () => void;
 }
 
 export interface OptionType {
   label: string;
-  value: string;
+  value: string | number;
   isSeparator?: boolean;
 };
 

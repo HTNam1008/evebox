@@ -2,7 +2,7 @@
 
 /* Package System */
 import 'tailwindcss/tailwind.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /* Package Application */
 import EventSpecialTable from './eventSpecialTable';
@@ -11,7 +11,16 @@ import SearchBar from './common/searchBar';
 
 export default function EventSpecialPage() {
     const [searchKeyword, setSearchKeyword] = useState('');
-    const [categoryFilter, setCategoryFilter] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState<number | '__onlyOnEve' | '__special' | ''>('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setDebouncedSearch(searchKeyword);
+        }, 2000);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchKeyword]);
 
     const handleResetFilter = () => {
         setCategoryFilter('');
@@ -31,7 +40,7 @@ export default function EventSpecialPage() {
                 />
             </div>
 
-            <EventSpecialTable searchKeyword={searchKeyword}  categoryFilter={categoryFilter}/>
+            <EventSpecialTable searchKeyword={debouncedSearch} categoryFilter={categoryFilter} />
         </>
     )
 }
