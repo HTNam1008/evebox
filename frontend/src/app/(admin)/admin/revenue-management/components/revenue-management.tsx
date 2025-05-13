@@ -94,9 +94,8 @@ export default function RevenuePage() {
           <Filter/>
           <EventRevenueTable
             formatCurrency={formatCurrency}
-            toggleEvent={(orgId, eventId) => {}}
-            toggleEventDetail={(orgId, eventId, detailId) => {}}
-          />
+            toggleEvent={() => { } }
+            toggleEventDetail={() => { } } events={[]} orgId={""}      />
         </>
       )}
     </div>

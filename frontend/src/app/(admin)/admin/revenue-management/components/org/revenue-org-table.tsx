@@ -1,26 +1,48 @@
-"use client"
+"use client";
 
-import { useState, Fragment } from "react"
-import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react"
-import { EventRevenueTable, type Event } from "../revenue-event-table"
+import { useState, Fragment } from "react";
+import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react";
+import { EventRevenueTable } from "../revenue-event-table";
+import { TicketTypeRevenueData } from "@/types/model/organizerRevenue";
 
-export type Organization = {
-  id: number
-  name: string
-  actualRevenue: number
-  events: Event[]
-  isExpanded?: boolean
-  selectedEventId?: number
+export interface ShowingRevenue {
+  showingId: string;
+  startDate: string; // Or Date if you're parsing it
+  endDate: string;   // Or Date if you're parsing it
+  revenue: number;
+  ticketTypes: TicketTypeRevenueData[];
+  isExpanded?: boolean;
 }
 
+export interface EventRevenue {
+  id: number;
+  name: string;
+  totalRevenue: number;
+  platformFee: number;
+  actualRevenue: number;
+  showings: ShowingRevenue [];
+  isExpanded?: boolean; // for toggling UI
+  selectedDetailId?: string; // to track selected showing
+}
+
+// Update id type to string
+export type Organization = {
+  id: string;
+  name: string;
+  actualRevenue: number;
+  events: EventRevenue[];
+  isExpanded?: boolean;
+  selectedEventId?: number;
+};
+
 export interface RevenueOrgTableProps {
-  organizations?: Organization[]
-  appId?: number
-  toggleOrganization?: (appId: number, orgId: number) => void
-  toggleEvent?: (appId: number, orgId: number, eventId: number) => void
-  toggleEventDetail?: (appId: number, orgId: number, eventId: number, detailId: number) => void
-  formatCurrency: (amount: number) => string
-  className?: string
+  organizations?: Organization[];
+  appId?: number;
+  toggleOrganization?: (appId: number, orgId: string) => void;
+  toggleEvent?: (appId: number, orgId: string, eventId: number) => void;
+  toggleEventDetail?: (appId: number, orgId: string, eventId: number, detailId: string) => void;
+  formatCurrency: (amount: number) => string;
+  className?: string;
 }
 
 export function RevenueOrgTable({
@@ -32,157 +54,75 @@ export function RevenueOrgTable({
   formatCurrency,
   className = "",
 }: RevenueOrgTableProps) {
+  const [localOrganizations, setLocalOrganizations] = useState<Organization[]>([]);
 
-  const [localOrganizations, setLocalOrganizations] = useState<Organization[]>([
-    {
-      id: 1,
-      name: "Evebox",
-      actualRevenue: 100000000,
-      events: [],
-    },
-    {
-      id: 2,
-      name: "Evebox",
-      actualRevenue: 100000000,
-      events: [],
-    },
-    {
-      id: 3,
-      name: "Evebox",
-      actualRevenue: 100000000,
-      isExpanded: true,
-      selectedEventId: 2,
-      events: [
-        {
-          id: 1,
-          name: "ATSH",
-          totalRevenue: 100000000,
-          platformFee: 10,
-          actualRevenue: 100000000,
-          details: [],
-        },
-        {
-          id: 2,
-          name: "ATVNCG",
-          totalRevenue: 100000000,
-          platformFee: 10,
-          actualRevenue: 100000000,
-          isExpanded: true,
-          details: [
-            {
-              id: 1,
-              startDate: "25/01/2025",
-              endDate: "25/01/2025",
-              revenue: 100000000,
-              tickets: [],
-            },
-            {
-              id: 2,
-              startDate: "03/04/2024",
-              endDate: "10/04/2025",
-              revenue: 800000000,
-              isExpanded: true,
-              tickets: [
-                {
-                  id: 1,
-                  type: "VIP",
-                  price: 1000000,
-                  quantity: 1000,
-                  revenue: 300000000,
-                },
-                {
-                  id: 2,
-                  type: "Thường",
-                  price: 500000,
-                  quantity: 1500,
-                  revenue: 500000000,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ])
+  const organizations = propOrganizations || localOrganizations;
 
-  // Sử dụng dữ liệu được truyền vào nếu có, nếu không sử dụng dữ liệu mẫu
-  const organizations = propOrganizations || localOrganizations
-
-  const handleToggleOrganization = (orgId: number) => {
+  const handleToggleOrganization = (orgId: string) => {
     if (!propOrganizations) {
       setLocalOrganizations((prev) =>
-        prev.map((org) => {
-          if (org.id === orgId) {
-            return { ...org, isExpanded: !org.isExpanded }
-          }
-          return org
-        }),
-      )
+        prev.map((org) =>
+          org.id === orgId ? { ...org, isExpanded: !org.isExpanded } : org
+        )
+      );
     } else if (propToggleOrganization) {
-      propToggleOrganization(appId, orgId)
+      propToggleOrganization(appId, orgId);
     }
-  }
+  };
 
-  const handleToggleEvent = (orgId: number, eventId: number) => {
+  const handleToggleEvent = (orgId: string, eventId: number) => {
     if (!propOrganizations) {
       setLocalOrganizations((prev) =>
-        prev.map((org) => {
-          if (org.id === orgId) {
-            return {
-              ...org,
-              selectedEventId: eventId,
-              events: org.events.map((event) => {
-                if (event.id === eventId) {
-                  return { ...event, isExpanded: !event.isExpanded }
-                }
-                return event
-              }),
-            }
-          }
-          return org
-        }),
-      )
+        prev.map((org) =>
+          org.id === orgId
+            ? {
+                ...org,
+                selectedEventId: eventId,
+                events: org.events.map((event) =>
+                  event.id === eventId ? { ...event, isExpanded: !event.isExpanded } : event
+                ),
+              }
+            : org
+        )
+      );
     } else if (propToggleEvent) {
-      propToggleEvent(appId, orgId, eventId)
+      propToggleEvent(appId, orgId, eventId);
     }
-  }
+  };
 
-  const handleToggleEventDetail = (orgId: number, eventId: number, detailId: number) => {
+  const handleToggleEventDetail = (orgId: string, eventId: number, detailId: string) => {
     if (!propOrganizations) {
       setLocalOrganizations((prev) =>
-        prev.map((org) => {
-          if (org.id === orgId) {
-            return {
-              ...org,
-              events: org.events.map((event) => {
-                if (event.id === eventId) {
-                  return {
-                    ...event,
-                    selectedDetailId: detailId,
-                    details: event.details.map((detail) => {
-                      if (detail.id === detailId) {
-                        return { ...detail, isExpanded: !detail.isExpanded }
+        prev.map((org) =>
+          org.id === orgId
+            ? {
+                ...org,
+                events: org.events.map((event) =>
+                  event.id === eventId
+                    ? {
+                        ...event,
+                        selectedDetailId: detailId,
+                        showings: event.showings.map((detail) =>
+                          detail.showingId === detailId
+                            ? { ...detail, isExpanded: !detail.isExpanded }
+                            : detail
+                        ),
                       }
-                      return detail
-                    }),
-                  }
-                }
-                return event
-              }),
-            }
-          }
-          return org
-        }),
-      )
+                    : event
+                ),
+              }
+            : org
+        )
+      );
     } else if (propToggleEventDetail) {
-      propToggleEventDetail(appId, orgId, eventId, detailId)
+      propToggleEventDetail(appId, orgId, eventId, detailId);
     }
-  }
+  };
 
-  if (organizations.length === 0) return null
+  if (organizations.length === 0) return null;
 
   return (
-    <div className={`${className}`}>
+    <div className={className}>
       {!propOrganizations && (
         <div className="flex justify-end mb-4">
           <button className="bg-[#0C4762] text-white px-4 py-2 rounded-md hover:bg-[#51DACF] transition-colors">
@@ -191,22 +131,20 @@ export function RevenueOrgTable({
         </div>
       )}
 
-      <div className={`${!propOrganizations ? "overflow-hidden rounded-lg border border-gray-200" : ""}`}>
+      <div className={!propOrganizations ? "overflow-hidden rounded-lg border border-gray-200" : ""}>
         <table className="w-full text-sm">
           <thead>
             <tr className={propOrganizations ? "bg-[#41AEA9]" : "bg-[#0C4762] text-white"}>
               <th className="py-2 px-4 text-left w-16">STT</th>
               <th className="py-2 px-4 text-left">Tên nhà tổ chức</th>
-              <th className="py-2 px-4 text-left" colSpan={2}>
-                Doanh thu thực nhận
-              </th>
+              <th className="py-2 px-4 text-left" colSpan={2}>Doanh thu thực nhận</th>
               <th className="py-2 px-4 text-center">Xem chi tiết</th>
             </tr>
           </thead>
           <tbody>
-            {organizations.map((org) => (
+            {organizations.map((org, index) => (
               <Fragment key={`org-${appId}-${org.id}`}>
-                <tr className={`cursor-pointer hover:bg-[#E3FEF7]`} onClick={() => handleToggleOrganization(org.id)}>
+                <tr className="cursor-pointer hover:bg-[#E3FEF7]" onClick={() => handleToggleOrganization(org.id)}>
                   <td className="py-2 px-4 border-t flex items-center">
                     {org.events.length > 0 && (
                       <>
@@ -217,18 +155,16 @@ export function RevenueOrgTable({
                         )}
                       </>
                     )}
-                    {org.id}
+                    {index + 1}
                   </td>
                   <td className="py-2 px-4 border-t">{org.name}</td>
-                  <td className="py-2 px-4 border-t" colSpan={2}>
-                    {formatCurrency(org.actualRevenue)}
-                  </td>
+                  <td className="py-2 px-4 border-t" colSpan={2}>{formatCurrency(org.actualRevenue)}</td>
                   <td className="py-2 px-4 border-t text-center">
                     <button
                       className="inline-flex items-center justify-center"
                       onClick={(e) => {
-                        e.stopPropagation()
-                        window.location.href = `/admin/revenue-management/revenue/${org.id}`
+                        e.stopPropagation();
+                        window.location.href = `/admin/revenue-management/revenue/${org.id}`;
                       }}
                     >
                       <ExternalLink className="w-5 h-5" />
@@ -243,12 +179,10 @@ export function RevenueOrgTable({
                         <EventRevenueTable
                           events={org.events}
                           orgId={org.id}
-                          toggleEvent={(orgId, eventId) => handleToggleEvent(orgId, eventId)}
-                          toggleEventDetail={(orgId, eventId, detailId) =>
-                            handleToggleEventDetail(orgId, eventId, detailId)
-                          }
-                          className="mt-0"
+                          toggleEvent={handleToggleEvent}
+                          toggleEventDetail={handleToggleEventDetail}
                           formatCurrency={formatCurrency}
+                          className="mt-0"
                         />
                       </div>
                     </td>
@@ -260,5 +194,5 @@ export function RevenueOrgTable({
         </table>
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,5 @@
 // src/types/model/organizerRevenue.ts
 
-import { BaseApiResponse } from "../BaseApiResponse";
 
 export interface TicketTypeRevenueData {
     ticketTypeId: string;
@@ -36,5 +35,8 @@ export interface TicketTypeRevenueData {
     events: EventRevenueData[];
   }
 
-  export type OrganizerRevenueResponse = BaseApiResponse<OrganizerRevenueData>;
-  
+  export interface OrganizerRevenueResponse {
+    statusCode: number;
+    message: string;
+    data: OrganizerRevenueData[];
+  }  

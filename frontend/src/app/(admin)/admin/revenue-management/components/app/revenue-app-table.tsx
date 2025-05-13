@@ -1,8 +1,39 @@
 "use client"
 
-import { useState, Fragment } from "react"
+import { useState, Fragment, useEffect } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
-import { RevenueOrgTable, type Organization } from "../org/revenue-org-table"
+import { RevenueOrgTable } from "../org/revenue-org-table"
+import { getOrganizerRevenue } from "@/services/admin.service"; 
+import { ShowingRevenueData, TicketTypeRevenueData } from "@/types/model/organizerRevenue";
+
+export interface ShowingRevenue {
+  showingId: string;
+  startDate: string; // Or Date if you're parsing it
+  endDate: string;   // Or Date if you're parsing it
+  revenue: number;
+  ticketTypes: TicketTypeRevenueData[];
+  isExpanded?: boolean;
+}
+
+export interface EventRevenue {
+  id: number;
+  name: string;
+  totalRevenue: number;
+  platformFee: number;
+  actualRevenue: number;
+  showings: ShowingRevenue [];
+  isExpanded?: boolean; // for toggling UI
+  selectedDetailId?: string; // to track selected showing
+}
+
+export type Organization = {
+  id: string;
+  name: string;
+  actualRevenue: number;
+  events: EventRevenue[];
+  isExpanded?: boolean;
+  selectedEventId?: number;
+};
 
 export type AppRevenue = {
   id: number
@@ -11,7 +42,7 @@ export type AppRevenue = {
   actualRevenue: number
   organizations: Organization[]
   isExpanded?: boolean
-  selectedOrgId?: number
+  selectedOrgId?: string
 }
 
 export function RevenueAppTable() {
@@ -19,88 +50,62 @@ export function RevenueAppTable() {
     return new Intl.NumberFormat("vi-VN").format(amount)
   }
 
-  // Dữ liệu mẫu
-  const [appRevenues, setAppRevenues] = useState<AppRevenue[]>([
-    {
-      id: 1,
-      totalRevenue: 100000000,
-      systemDiscount: 10,
-      actualRevenue: 100000000,
-      isExpanded: true,
-      selectedOrgId: 3,
-      organizations: [
-        {
-          id: 1,
-          name: "Evebox",
-          actualRevenue: 100000000,
-          events: [],
-        },
-        {
-          id: 2,
-          name: "Evebox",
-          actualRevenue: 100000000,
-          events: [],
-        },
-        {
-          id: 3,
-          name: "Evebox",
-          actualRevenue: 100000000,
-          isExpanded: true,
-          selectedEventId: 2,
-          events: [
-            {
-              id: 1,
-              name: "ATSH",
-              totalRevenue: 100000000,
-              platformFee: 10,
-              actualRevenue: 100000000,
-              details: [],
-            },
-            {
-              id: 2,
-              name: "ATVNCG",
-              totalRevenue: 100000000,
-              platformFee: 10,
-              actualRevenue: 100000000,
-              isExpanded: true,
-              details: [
-                {
-                  id: 1,
-                  startDate: "25/01/2025",
-                  endDate: "25/01/2025",
-                  revenue: 100000000,
-                  tickets: [],
-                },
-                {
-                  id: 2,
-                  startDate: "03/04/2024",
-                  endDate: "10/04/2025",
-                  revenue: 800000000,
-                  isExpanded: true,
-                  tickets: [
-                    {
-                      id: 1,
-                      type: "VIP",
-                      price: 1000000,
-                      quantity: 1000,
-                      revenue: 300000000,
-                    },
-                    {
-                      id: 2,
-                      type: "Thường",
-                      price: 500000,
-                      quantity: 1500,
-                      revenue: 500000000,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ])
+  const [appRevenues, setAppRevenues] = useState<AppRevenue[]>([]);
+
+
+  const mapToAppRevenue = async () => {
+    try {
+      const response = await getOrganizerRevenue();
+  
+      if (!response?.data || response.data.length === 0) {
+        setAppRevenues([]);
+        return;
+      }
+  
+      const organizations = response.data.map((org): Organization => ({
+        id: org.orgId, // If your Organization interface uses `number`, convert with: parseInt(org.orgId)
+        name: org.organizerName,
+        actualRevenue: org.actualRevenue,
+        events: org.events.map((event):EventRevenue => ({
+          id: event.eventId,
+          name: event.eventName,
+          totalRevenue: event.totalRevenue,
+          platformFee: event.platformFeePercent,
+          actualRevenue: event.actualRevenue,
+          showings: event.showings.map((show):ShowingRevenueData => ({
+            showingId: show.showingId,
+            startDate: show.startDate,
+            endDate: show.endDate,
+            revenue: show.revenue,
+            ticketTypes: show.ticketTypes.map((ticket): TicketTypeRevenueData => ({
+              ticketTypeId: ticket.ticketTypeId,
+              name: ticket.name,
+              price: ticket.price,
+              sold: ticket.sold,
+              revenue: ticket.revenue,
+            })),
+          })),
+        })),
+      }));
+  
+      const app: AppRevenue = {
+        id: 1, // static or dynamic ID
+        totalRevenue: response.data.reduce((sum, org) => sum + org.totalRevenue, 0),
+        systemDiscount: response.data[0].platformFeePercent ?? 10,
+        actualRevenue: response.data.reduce((sum, org) => sum + org.actualRevenue, 0),
+        isExpanded: true,
+        organizations,
+      };
+  
+      setAppRevenues([app]);
+    } catch (error) {
+      console.error("Failed to fetch organizer revenue", error);
+    }
+  };
+  
+  useEffect(() => {
+    mapToAppRevenue();
+  }, []);
 
   const toggleAppRevenue = (appId: number) => {
     setAppRevenues((prev) =>
@@ -113,27 +118,27 @@ export function RevenueAppTable() {
     )
   }
 
-  const toggleOrganization = (appId: number, orgId: number) => {
+  const toggleOrganization = (appId: number, orgId: string) => {
     setAppRevenues((prev) =>
-      prev.map((app) => {
+      prev.map((app): AppRevenue => {
         if (app.id === appId) {
           return {
             ...app,
             selectedOrgId: orgId,
-            organizations: app.organizations.map((org) => {
-              if (org.id === orgId) {
-                return { ...org, isExpanded: !org.isExpanded }
-              }
-              return org
-            }),
-          }
+            organizations: app.organizations.map((org) =>
+              org.id === orgId
+                ? { ...org, isExpanded: !org.isExpanded }
+                : org
+            ),
+          };
         }
-        return app
-      }),
-    )
-  }
+        return app;
+      })
+    );
+  };
+  
 
-  const toggleEvent = (appId: number, orgId: number, eventId: number) => {
+  const toggleEvent = (appId: number, orgId: string, eventId: number) => {
     setAppRevenues((prev) =>
       prev.map((app) => {
         if (app.id === appId) {
@@ -144,24 +149,28 @@ export function RevenueAppTable() {
                 return {
                   ...org,
                   selectedEventId: eventId,
-                  events: org.events.map((event) => {
-                    if (event.id === eventId) {
-                      return { ...event, isExpanded: !event.isExpanded }
-                    }
-                    return event
-                  }),
-                }
+                  events: org.events.map((ev) =>
+                    ev.id === eventId
+                      ? { ...ev, isExpanded: !ev.isExpanded }
+                      : ev
+                  ),
+                };
               }
-              return org
+              return org;
             }),
-          }
+          };
         }
-        return app
-      }),
-    )
-  }
+        return app;
+      })
+    );
+  };
 
-  const toggleEventDetail = (appId: number, orgId: number, eventId: number, detailId: number) => {
+  const toggleEventDetail = (
+    appId: number,
+    orgId: string,
+    eventId: number,
+    showingId: string
+  ) => {
     setAppRevenues((prev) =>
       prev.map((app) => {
         if (app.id === appId) {
@@ -171,31 +180,30 @@ export function RevenueAppTable() {
               if (org.id === orgId) {
                 return {
                   ...org,
-                  events: org.events.map((event) => {
-                    if (event.id === eventId) {
+                  events: org.events.map((ev) => {
+                    if (ev.id === eventId) {
                       return {
-                        ...event,
-                        selectedDetailId: detailId,
-                        details: event.details.map((detail) => {
-                          if (detail.id === detailId) {
-                            return { ...detail, isExpanded: !detail.isExpanded }
-                          }
-                          return detail
-                        }),
-                      }
+                        ...ev,
+                        selectedDetailId: showingId,
+                        showings: ev.showings.map((show) =>
+                          show.showingId === showingId
+                            ? { ...show, isExpanded: !show.isExpanded }
+                            : show
+                        ),
+                      };
                     }
-                    return event
+                    return ev;
                   }),
-                }
+                };
               }
-              return org
+              return org;
             }),
-          }
+          };
         }
-        return app
-      }),
-    )
-  }
+        return app;
+      })
+    );
+  };
 
   return (
     <div className="mt-6">
