@@ -45,17 +45,22 @@ export type AppRevenue = {
   selectedOrgId?: string
 }
 
-export function RevenueAppTable() {
+interface RevenueAppTableProps {
+  fromDate?: string;
+  toDate?: string;
+}
+
+export function RevenueAppTable({ fromDate, toDate }: RevenueAppTableProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN").format(amount)
   }
 
   const [appRevenues, setAppRevenues] = useState<AppRevenue[]>([]);
-
+  const [loading, setLoading] = useState(true);
 
   const mapToAppRevenue = async () => {
     try {
-      const response = await getOrganizerRevenue();
+      const response = await getOrganizerRevenue(fromDate, toDate);
   
       if (!response?.data || response.data.length === 0) {
         setAppRevenues([]);
@@ -101,11 +106,15 @@ export function RevenueAppTable() {
     } catch (error) {
       console.error("Failed to fetch organizer revenue", error);
     }
+    finally {
+      setLoading(false);
+    }
   };
   
-  useEffect(() => {
-    mapToAppRevenue();
-  }, []);
+  useEffect(() => {  
+      setLoading(true);
+      mapToAppRevenue();
+  } , [fromDate, toDate]);
 
   const toggleAppRevenue = (appId: number) => {
     setAppRevenues((prev) =>
@@ -204,6 +213,10 @@ export function RevenueAppTable() {
       })
     );
   };
+
+  if (loading) {
+    return <p className="text-gray-500">Đang tải dữ liệu...</p>;
+  }
 
   return (
     <div className="mt-6">

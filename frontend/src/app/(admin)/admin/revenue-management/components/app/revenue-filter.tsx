@@ -6,8 +6,8 @@ import { vi } from "date-fns/locale"
 import { format } from "date-fns"
 
 interface RevenueFilterProps {
-  onConfirm: () => void
-  onReset: () => void
+  onConfirm: (fromDate?: string, toDate?: string) => void;
+  onReset: () => void;
 }
 
 export default function RevenueFilter({ onConfirm, onReset }: RevenueFilterProps) {
@@ -16,6 +16,21 @@ export default function RevenueFilter({ onConfirm, onReset }: RevenueFilterProps
   const [toMonth, setToMonth] = useState<Date | null>(null)
   const [fromYear, setFromYear] = useState<string>("")
   const [toYear, setToYear] = useState<string>("")
+
+  const handleConfirm = () => {
+    let fromDate: string | undefined;
+    let toDate: string | undefined;
+  
+    if (filterType === "month") {
+      fromDate = fromMonth ? format(fromMonth, "yyyy-MM") : undefined;
+      toDate = toMonth ? format(toMonth, "yyyy-MM") : undefined;
+    } else if (filterType === "year") {
+      fromDate = fromYear ? `${fromYear}-01` : undefined;
+      toDate = toYear ? `${toYear}-12` : undefined;
+    }
+  
+    onConfirm(fromDate, toDate);
+  };
 
   const handleFilterTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const type = e.target.value as "all" | "month" | "year"
@@ -131,7 +146,7 @@ export default function RevenueFilter({ onConfirm, onReset }: RevenueFilterProps
 
       <div className="flex space-x-2">
         <button
-          onClick={onConfirm}
+          onClick={handleConfirm}
           className="bg-[#0C4762] text-white px-6 py-2 rounded-md hover:bg-[#0c4b78] transition-colors"
         >
           Xác nhận

@@ -15,8 +15,10 @@ import PriceRevenueView from "./app/price-revenue"
 export default function RevenuePage() {
   const [activeTab, setActiveTab] = useState<"app" | "organization" | "event">("app")
   const [activeSubTab, setActiveSubTab] = useState<"day" | "location" | "price">("day")
+  const [fromDate, setFromDate] = useState<string | undefined>();
+  const [toDate, setToDate] = useState<string | undefined>();
 
-  const [filter, setFilter] = useState<{
+  const [, setFilter] = useState<{
     type: "all" | "month" | "year"
     from: string
     to: string
@@ -26,10 +28,10 @@ export default function RevenuePage() {
     to: ""
   })
 
-  const handleConfirm = () => {
-    //console.log("Filter đã xác nhận:", filter)
-
-  }
+  const handleConfirm = (from?: string, to?: string) => {
+    setFromDate(from);
+    setToDate(to);
+  };
 
   const handleReset = () => {
     //console.log("Đặt lại bộ lọc")
@@ -48,7 +50,7 @@ export default function RevenuePage() {
           <>
             <RevenueFilter onConfirm={handleConfirm} onReset={handleReset} />
             <RevenueChart />
-            <RevenueAppTable />
+            <RevenueAppTable fromDate={fromDate} toDate={toDate} />
           </>
         )
       case "location":
