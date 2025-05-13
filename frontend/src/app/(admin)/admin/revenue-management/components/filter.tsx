@@ -3,7 +3,11 @@
 import { useState } from "react"
 import { Search } from "lucide-react"
 
-export default function Filter() {
+interface FilterProps {
+  onFilterChange: (filter: { fromDate?: string; toDate?: string; search?: string }) => void;
+}
+
+export default function Filter({ onFilterChange }: FilterProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [dateRange, setDateRange] = useState({
     fromDate: "",
@@ -11,8 +15,12 @@ export default function Filter() {
   })
 
   const handleSearch = () => {
-    console.log("Searching for:", searchQuery, dateRange)
-  }
+    onFilterChange({
+      fromDate: dateRange.fromDate || undefined,
+      toDate: dateRange.toDate || undefined,
+      search: searchQuery || undefined,
+    });
+  };
 
   return (
     <div className="w-full p-4 mt-6">
@@ -38,38 +46,34 @@ export default function Filter() {
             <div className="flex items-center px-4 py-2">
               <span className="text-sm text-gray-600">Từ ngày:</span>
             </div>
-            <div>
-              <input
-                type="date"
-                value={dateRange.fromDate}
-                onChange={(e) =>
-                  setDateRange({
-                    ...dateRange,
-                    fromDate: e.target.value,
-                    // nếu toDate hiện tại nhỏ hơn fromDate mới thì reset lại toDate
-                    toDate:
-                      dateRange.toDate && new Date(e.target.value) > new Date(dateRange.toDate)
-                        ? ""
-                        : dateRange.toDate,
-                  })
-                }
-                className="border-0 outline-none px-2 py-2"
-              />
-            </div>
+            <input
+              type="date"
+              value={dateRange.fromDate}
+              onChange={(e) => {
+                const newFromDate = e.target.value;
+                setDateRange((prev) => ({
+                  ...prev,
+                  fromDate: newFromDate,
+                  toDate:
+                    prev.toDate && new Date(newFromDate) > new Date(prev.toDate)
+                      ? ""
+                      : prev.toDate,
+                }));
+              }}
+              className="border-0 outline-none px-2 py-2"
+            />
             <div className="flex items-center px-4 py-2">
               <span className="text-sm text-gray-600">Đến ngày:</span>
             </div>
-            <div>
-              <input
-                type="date"
-                value={dateRange.toDate}
-                min={dateRange.fromDate}
-                onChange={(e) =>
-                  setDateRange({ ...dateRange, toDate: e.target.value })
-                }
-                className="border-0 outline-none px-2 py-2"
-              />
-            </div>
+            <input
+              type="date"
+              value={dateRange.toDate}
+              min={dateRange.fromDate}
+              onChange={(e) =>
+                setDateRange((prev) => ({ ...prev, toDate: e.target.value }))
+              }
+              className="border-0 outline-none px-2 py-2"
+            />
           </div>
 
           <button
@@ -81,5 +85,5 @@ export default function Filter() {
         </div>
       </div>
     </div>
-  )
+  );
 }

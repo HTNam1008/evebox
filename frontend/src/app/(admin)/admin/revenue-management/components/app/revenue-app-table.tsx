@@ -1,121 +1,30 @@
 "use client"
 
-import { useState, Fragment, useEffect } from "react"
+import { Fragment } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import { RevenueOrgTable } from "../org/revenue-org-table"
-import { getOrganizerRevenue } from "@/services/admin.service"; 
-import { ShowingRevenueData, TicketTypeRevenueData } from "@/types/model/organizerRevenue";
+import { AppRevenue } from "../revenue-management"
 
-export interface ShowingRevenue {
-  showingId: string;
-  startDate: string; // Or Date if you're parsing it
-  endDate: string;   // Or Date if you're parsing it
-  revenue: number;
-  ticketTypes: TicketTypeRevenueData[];
-  isExpanded?: boolean;
-}
-
-export interface EventRevenue {
-  id: number;
-  name: string;
-  totalRevenue: number;
-  platformFee: number;
-  actualRevenue: number;
-  showings: ShowingRevenue [];
-  isExpanded?: boolean; // for toggling UI
-  selectedDetailId?: string; // to track selected showing
-}
-
-export type Organization = {
-  id: string;
-  name: string;
-  actualRevenue: number;
-  events: EventRevenue[];
-  isExpanded?: boolean;
-  selectedEventId?: number;
-};
-
-export type AppRevenue = {
-  id: number
-  totalRevenue: number
-  systemDiscount: number
-  actualRevenue: number
-  organizations: Organization[]
-  isExpanded?: boolean
-  selectedOrgId?: string
-}
 
 interface RevenueAppTableProps {
-  fromDate?: string;
-  toDate?: string;
+  fromDate?: string
+  toDate?: string
+  appRevenues: AppRevenue[]
+  setAppRevenues: React.Dispatch<React.SetStateAction<AppRevenue[]>>
+  loading: boolean
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function RevenueAppTable({ fromDate, toDate }: RevenueAppTableProps) {
+export function RevenueAppTable({
+  appRevenues,
+  setAppRevenues,
+  loading,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setLoading,
+}: RevenueAppTableProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN").format(amount)
   }
-
-  const [appRevenues, setAppRevenues] = useState<AppRevenue[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const mapToAppRevenue = async () => {
-    try {
-      const response = await getOrganizerRevenue(fromDate, toDate);
-  
-      if (!response?.data || response.data.length === 0) {
-        setAppRevenues([]);
-        return;
-      }
-  
-      const organizations = response.data.map((org): Organization => ({
-        id: org.orgId, // If your Organization interface uses `number`, convert with: parseInt(org.orgId)
-        name: org.organizerName,
-        actualRevenue: org.actualRevenue,
-        events: org.events.map((event):EventRevenue => ({
-          id: event.eventId,
-          name: event.eventName,
-          totalRevenue: event.totalRevenue,
-          platformFee: event.platformFeePercent,
-          actualRevenue: event.actualRevenue,
-          showings: event.showings.map((show):ShowingRevenueData => ({
-            showingId: show.showingId,
-            startDate: show.startDate,
-            endDate: show.endDate,
-            revenue: show.revenue,
-            ticketTypes: show.ticketTypes.map((ticket): TicketTypeRevenueData => ({
-              ticketTypeId: ticket.ticketTypeId,
-              name: ticket.name,
-              price: ticket.price,
-              sold: ticket.sold,
-              revenue: ticket.revenue,
-            })),
-          })),
-        })),
-      }));
-  
-      const app: AppRevenue = {
-        id: 1, // static or dynamic ID
-        totalRevenue: response.data.reduce((sum, org) => sum + org.totalRevenue, 0),
-        systemDiscount: response.data[0].platformFeePercent ?? 10,
-        actualRevenue: response.data.reduce((sum, org) => sum + org.actualRevenue, 0),
-        isExpanded: true,
-        organizations,
-      };
-  
-      setAppRevenues([app]);
-    } catch (error) {
-      console.error("Failed to fetch organizer revenue", error);
-    }
-    finally {
-      setLoading(false);
-    }
-  };
-  
-  useEffect(() => {  
-      setLoading(true);
-      mapToAppRevenue();
-  } , [fromDate, toDate]);
-
   const toggleAppRevenue = (appId: number) => {
     setAppRevenues((prev) =>
       prev.map((app) => {
