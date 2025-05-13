@@ -68,6 +68,9 @@ import { GetEventRoleByIdController } from './queries/getEventRoleById/getEventR
 import { GetEventRoleByIdService } from './queries/getEventRoleById/getEventRoleById.service';
 import { GetEventFDByIdsController } from './queries/getEventFDByIds/getEventFDByIds.controller';
 import { GetEventFDByIdsService } from './queries/getEventFDByIds/getEventFDByIds.service';
+import { GetEventSpecialManagementController } from './queries/getEventSpecialManagement/getEventSpecialManagement.controller';
+import { GetEventSpecialManagementService } from './queries/getEventSpecialManagement/getEventSpecialManagement.service';
+import { GetEventSpecialManagementRepository } from './repositories/getEventSpecialManagement.repository';
 
 @Module({
   imports: [ScheduleModule.forRoot(), ImagesModule, LocationModule],
@@ -100,7 +103,8 @@ import { GetEventFDByIdsService } from './queries/getEventFDByIds/getEventFDById
     GetEventsController,
 
     GetEventRolesController,
-    GetEventRoleByIdController
+    GetEventRoleByIdController,
+    GetEventSpecialManagementController
   ],
   providers: [
     // UpdateWeeklyService, 
@@ -159,7 +163,10 @@ import { GetEventFDByIdsService } from './queries/getEventFDByIds/getEventFDById
 
     GetEventRolesService,
     GetEventRolesRepository,
-    GetEventRoleByIdService
+    GetEventRoleByIdService,
+
+    GetEventSpecialManagementRepository,
+    GetEventSpecialManagementService
   ],
 })
 export class EventModule {}
