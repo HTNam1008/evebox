@@ -46,4 +46,10 @@ export class END_POINT_LIST {
     GET_ORDERS: "/api/org/statistics/orders",
     GET_ANALYTIC: "/api/org/statistics/analytic"
   };
+
+  static readonly ADMIN_STATISTICS = {
+    GET_REVENUE: "/api/admin/revenue",
+    GET_REVENUE_BY_PROVINCE: "/api/admin/revenue-by-province",
+    GET_REVENUE_BY_TICKETPRICE: "/api/admin/revenue-by-ticket-price"
+  };
 }
