@@ -7,9 +7,9 @@ import { ShowingDataDto } from "./getShowings-response.dto";
 export class GetShowingsService {
   constructor(private readonly getShowingsRepository: GetShowingsRepository) {}
 
-  async execute(filters: any): Promise<Result<ShowingDataDto[], Error>> {
+  async execute(filters: any, email: string): Promise<Result<ShowingDataDto[], Error>> {
     try {
-      return await this.getShowingsRepository.findShowingsWithFilters(filters);
+      return await this.getShowingsRepository.findShowingsWithFilters(filters, email);
     } catch (error) {
       return Err(new Error('Failed to retrieve showings'));
     }

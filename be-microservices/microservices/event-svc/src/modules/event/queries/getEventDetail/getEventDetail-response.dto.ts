@@ -115,7 +115,7 @@ export class EventDetailResponseDto {
   startDate: Date;
 
   @ApiProperty({ example: null, nullable: true })
-  organizerId: number | null;
+  organizerId: string | null;
 
   @ApiProperty({ example: 'book_now' })
   status: string;
@@ -158,6 +158,12 @@ export class EventDetailResponseDto {
 
   @ApiProperty({ type: [CategoryDto] })
   categories: CategoryDto[];
+
+  @ApiProperty({ example: false, description: 'Is event approved?' })
+  isApproved: boolean;
+
+  @ApiProperty({ example: '2024-12-17T07:57:23.528Z' })
+  deleteAt: Date | null;
 
   @ApiProperty({ type: [ShowingDto] })
   showing: ShowingDto[];

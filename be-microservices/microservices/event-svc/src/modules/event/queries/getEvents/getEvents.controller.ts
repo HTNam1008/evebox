@@ -8,7 +8,7 @@ import { EventDataResponse } from "./getEvents-response.dto";
 @ApiTags('Admin')
 @Controller('api/admin/event')
 export class GetEventsController {
-  constructor(private readonly getEventsService: GetEventsService) {}
+  constructor(private readonly getEventsService: GetEventsService) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
@@ -37,8 +37,8 @@ export class GetEventsController {
       const result = await this.getEventsService.execute({
         ...filters,
         page,
-        limit
-      });
+        limit,
+      }, user?.email);
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({
           statusCode: HttpStatus.BAD_REQUEST,
@@ -57,14 +57,16 @@ export class GetEventsController {
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: 'Events retrieved successfully',
-        data,
-        meta: {
-          totalCount,
-          currentPage,
-          nextPage,
-          limit: filters.limit || 10,
-          totalPages,
-        },
+        data: {
+          data: data,
+          meta: {
+            totalCount,
+            currentPage,
+            nextPage,
+            limit: filters.limit || 10,
+            totalPages,
+          },
+        }
       });
     } catch (error) {
       console.error(error);

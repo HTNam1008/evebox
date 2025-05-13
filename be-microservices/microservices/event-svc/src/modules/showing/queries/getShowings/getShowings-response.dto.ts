@@ -6,6 +6,14 @@ export class TicketTypeData {
   id: string;
 }
 
+export class EventData {
+  @ApiProperty({ example: '23663', description: 'Event ID' })
+  id: number;
+
+  @ApiProperty({ example: 'SÂN KHẤU NO.1 | VỞ KỊCH | MẶT NẠ DA NGƯỜI', description: 'Event title' })
+  title: string;
+}
+
 export class ShowingDataDto {
   @ApiProperty({ example: '1041811243642', description: 'Showing time ID' })
   id: string;
@@ -27,6 +35,9 @@ export class ShowingDataDto {
 
   @ApiProperty({ example: 'SÂN KHẤU NO.1 | VỞ KỊCH | MẶT NẠ DA NGƯỜI', description: 'Event title' })
   eventTitle: string;
+
+  @ApiProperty({ type: EventData, description: 'Event data' })
+  event: EventData
 }
 
 export class ShowingResponseDto extends BaseResponse {

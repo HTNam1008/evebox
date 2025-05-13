@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { ConfirmApprovalProps } from "../../lib/interface/eventtable.interface";
+import { ConfirmApprovalProps } from "../../lib/interface/eventTable.interface";
 export default function ConfirmDeleteDialog({ open, onClose, onConfirm }: ConfirmApprovalProps) {
     return (
         <Dialog open={open} onClose={onClose}>

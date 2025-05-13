@@ -5,10 +5,18 @@ import { ShowingDataDto } from "../queries/getShowings/getShowings-response.dto"
 
 @Injectable()
 export class GetShowingsRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
-  async findShowingsWithFilters(filters: any): Promise<Result<ShowingDataDto[], Error>> {
+  async findShowingsWithFilters(filters: any, email: string): Promise<Result<ShowingDataDto[], Error>> {
     try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      })
+
+      if (!user || user.role_id !== 1) {
+        return Err(new Error('You do not have permission to get events'));
+      }
+
       const whereCond = this.buildWhereClause(filters);
 
       const page = filters.page ? Number(filters.page) : 1;
@@ -53,6 +61,10 @@ export class GetShowingsRepository {
             seatMapId: showing.seatMapId,
             eventId: showing.Events.id,
             eventTitle: showing.Events.title,
+            event: {
+              id: showing.Events.id,
+              title: showing.Events.title
+            },
             ticketTypes: showing.TicketType
           }
         ];
@@ -72,12 +84,23 @@ export class GetShowingsRepository {
       where.endTime = {};
 
       if (filters.startTime) {
-        where.startTime = new Date(filters.startTime);
+        where.startTime.gte = new Date(filters.startTime);
       }
 
       if (filters.endTime) {
-        where.endTime = new Date(filters.endTime);
+        where.endTime.lte = new Date(filters.endTime);
       }
+    }
+
+    if (filters.search) {
+      const search = filters.search;
+      const isId = !isNaN(Number(search));
+
+      where.Events = {
+        ...(isId
+          ? { id: Number(search) }
+          : { title: { contains: search, mode: 'insensitive' } })
+      };
     }
 
     return where;

@@ -1,7 +1,7 @@
 'use client'
 
 /* Package Application */
-import { PaginationProps } from "../../lib/interface/eventtable.interface";
+import { PaginationProps } from "../../lib/interface/eventTable.interface";
 
 export default function Pagination({ currentPage, totalItems, itemsPerPage, onPrevious, onNext } : PaginationProps) {
     const totalPages = Math.ceil(totalItems / itemsPerPage);

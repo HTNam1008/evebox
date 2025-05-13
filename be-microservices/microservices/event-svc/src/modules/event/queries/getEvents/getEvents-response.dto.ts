@@ -8,9 +8,6 @@ class CategoriesResponseDto {
 
   @ApiProperty( { example: 'music' , description: 'The name of the category' })
   name: string;
-
-  @ApiProperty( { example: '2021-09-01T00:00:00.000Z' , description: 'The date the category was created' })
-  createdAt: Date;
 }
 
 export class EventDataDto {
