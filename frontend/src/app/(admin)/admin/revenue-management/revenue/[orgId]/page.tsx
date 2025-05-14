@@ -45,15 +45,33 @@ type Organization = {
   events: Event[];
 };
 
+
 export default function OrganizationRevenuePage() {
   const params = useParams()
   const orgId = params.orgId as string
   const [organization, setOrganization] = useState<Organization | null>(null);
-const [searchQuery, setSearchQuery] = useState("")
-const [dateRange, setDateRange] = useState({
+  const [searchQuery, setSearchQuery] = useState("")
+  const [dateRange, setDateRange] = useState({
   fromDate: "",
   toDate: "",
 })
+
+const [orgOptions, setOrgOptions] = useState<Organization[]>([]);
+const [selectedFilter, setSelectedFilter] = useState(organization?.name ?? '');
+
+
+useEffect(() => {
+  const storedAppRevenue = localStorage.getItem("appRevenue");
+  if (storedAppRevenue) {
+    try {
+      const parsed = JSON.parse(storedAppRevenue);
+      const org = parsed.map((org: Organization) => org);
+      setOrgOptions(org);
+    } catch (e) {
+      console.error("Invalid appRevenue format", e);
+    }
+  }
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -94,7 +112,7 @@ const [dateRange, setDateRange] = useState({
       );
 
       setOrganization({
-        id: orgId,
+        id: parsedOrg.id,
         name: parsedOrg.name, // Replace with real name from user/org service if available
         email: parsedOrg.id, // Replace with real data
         location: "Địa điểm phổ biến", // Replace with real data
@@ -104,6 +122,8 @@ const [dateRange, setDateRange] = useState({
         ticketsSold,
         events,
       });
+
+      setSelectedFilter(parsedOrg.name);
     } catch (error) {
       console.error("Failed to fetch revenue by orgId", error);
     }
@@ -141,8 +161,6 @@ const [dateRange, setDateRange] = useState({
   const handleSearch = () => {
     console.log("Searching for:", searchQuery, dateRange)
   }
-  const [selectedFilter, setSelectedFilter] = useState(organization?.name ?? '');
-
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN").format(amount)
@@ -203,18 +221,28 @@ const [dateRange, setDateRange] = useState({
             <span className="text-sm">Chọn nhà tổ chức</span>
           </div>
           <div className="relative border-l">
-            <select
-              className="appearance-none bg-white px-4 py-2 pr-8 outline-none"
-              value={selectedFilter}
-              onChange={(e) => setSelectedFilter(e.target.value)}
-            >
-              <option value={organization.name}>{organization.name}</option>
-              <option value="Nhà hát lớn">Nhà hát lớn</option>
-              <option value="Sân khấu kịch">Sân khấu kịch</option>
-              <option value="Trung tâm văn hóa">Trung tâm văn hóa</option>
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 pointer-events-none" />
-          </div>
+  <select
+    className="appearance-none bg-white px-4 py-2 pr-8 outline-none"
+    value={selectedFilter}
+    onChange={(e) => {
+      const selectedName = e.target.value;
+      setSelectedFilter(selectedName);
+  
+      const selectedOrg = orgOptions.find((org) => org.name === selectedName);
+      if (selectedOrg) {
+        localStorage.setItem("selectedOrg", JSON.stringify(selectedOrg));
+        window.location.href = `/admin/revenue-management/revenue/${selectedOrg.id}`;
+      }
+    }}
+  >
+    {orgOptions.map((org) => (
+      <option key={org.id} value={org.name}>
+        {org.name}
+      </option>
+    ))}
+  </select>
+  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 pointer-events-none" />
+</div>
         </div>
 
         <button
@@ -362,6 +390,12 @@ const [dateRange, setDateRange] = useState({
                       className="inline-flex items-center justify-center"
                       onClick={(e) => {
                         e.stopPropagation()
+                        localStorage.setItem("selectedEvent", JSON.stringify({
+                          id: event.id,
+                          name: event.name,
+                          organizerId: organization.id,
+                          organizerName: organization.name
+                        }));
                         window.location.href = `/admin/revenue-management/revenue/${orgId}/event/${event.id}`
                       }}
                     >
