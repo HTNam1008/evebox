@@ -231,7 +231,6 @@ export default function EventDetailPage() {
               <th className="py-2 px-4 text-left">Ngày bắt đầu</th>
               <th className="py-2 px-4 text-left">Ngày kết thúc</th>
               <th className="py-2 px-4 text-left">Tổng doanh thu</th>
-              {/* <th className="py-2 px-4 text-left">Xem chi tiết</th> */}
             </tr>
           </thead>
           <tbody>
@@ -245,17 +244,6 @@ export default function EventDetailPage() {
                 <td className="py-2 px-4 border-t">{showing.startDate}</td>
                 <td className="py-2 px-4 border-t">{showing.endDate}</td>
                 <td className="py-2 px-4 border-t">{formatCurrency(showing.revenue)}</td>
-                {/* <td className="py-2 px-4 border-t">
-                  <button
-                    className="inline-flex items-center justify-center"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      window.location.href = `/admin/showings/${showing.id}`
-                    }}
-                  >
-                    <ExternalLink className="w-5 h-5" />
-                  </button>
-                </td> */}
               </tr>
             ))}
           </tbody>
