@@ -1,105 +1,166 @@
 "use client"
 
-import { useState, Fragment } from "react"
-import { ArrowLeft, ChevronDown, ChevronRight, ExternalLink, Filter, Search, RefreshCw } from "lucide-react"
+import { useState, Fragment, useEffect } from "react"
+import { ArrowLeft, ChevronDown, ChevronRight, ExternalLink, Search, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import { getRevenueByOrgId } from "@/services/admin.service"
+import { EventRevenueData, ShowingRevenueData, TicketTypeRevenueData } from "@/types/model/orgRevenueById"
 
 // Types
 type TicketRevenue = {
-  id: number
-  type: string
-  price: number
-  quantity: number
-  revenue: number
-}
+  id: string;
+  type: string;
+  price: number;
+  quantity: number;
+  revenue: number;
+};
 
 type EventDetail = {
-  id: number
-  startDate: string
-  endDate: string
-  revenue: number
-  tickets: TicketRevenue[]
-  isExpanded?: boolean
-}
+  id: string;
+  startDate: string;
+  endDate: string;
+  revenue: number;
+  tickets: TicketRevenue[];
+  isExpanded?: boolean;
+};
 
 type Event = {
-  id: number
-  name: string
-  actualRevenue: number
-  details: EventDetail[]
-  isExpanded?: boolean
-}
+  id: number;
+  name: string;
+  actualRevenue: number;
+  details: EventDetail[];
+  isExpanded?: boolean;
+};
 
 type Organization = {
-  id: string
-  name: string
-  email: string
-  location: string
-  totalRevenue: number
-  eventCount: number
-  showingCount: number
-  ticketsSold: number
-  events: Event[]
-}
+  id: string;
+  name: string;
+  email: string;
+  location: string;
+  totalRevenue: number;
+  eventCount: number;
+  showingCount: number;
+  ticketsSold: number;
+  events: Event[];
+};
+
 
 export default function OrganizationRevenuePage() {
   const params = useParams()
   const orgId = params.orgId as string
-
-  // Mock data for the organization
-  const [organization, setOrganization] = useState<Organization>({
-    id: orgId,
-    name: "Nhà xương rồng",
-    email: "nhaxuongrong@gmail.com",
-    location: "Nhà văn hóa sinh viên, TP Thủ Đức",
-    totalRevenue: 100000000,
-    eventCount: 10,
-    showingCount: 20,
-    ticketsSold: 500,
-    events: [
-      {
-        id: 1,
-        name: "Anh hùng",
-        actualRevenue: 1800000000,
-        details: [],
-      },
-      {
-        id: 2,
-        name: "Một nhà",
-        actualRevenue: 1800000000,
-        details: [],
-      },
-      {
-        id: 3,
-        name: "Xương rồng con",
-        actualRevenue: 1800000000,
-        isExpanded: true,
-        details: [
-          {
-            id: 1,
-            startDate: "28/05/2024",
-            endDate: "28/05/2024",
-            revenue: 100000000,
-            tickets: [],
-          },
-        ],
-      },
-    ],
-  })
-
-  const [searchTerm, setSearchTerm] = useState("")
+  const [organization, setOrganization] = useState<Organization | null>(null);
   const [searchQuery, setSearchQuery] = useState("")
   const [dateRange, setDateRange] = useState({
-    fromDate: "",
-    toDate: "",
-  })
+  fromDate: "",
+  toDate: "",
+})
+
+const [orgOptions, setOrgOptions] = useState<Organization[]>([]);
+const [selectedFilter, setSelectedFilter] = useState(organization?.name ?? '');
+
+
+useEffect(() => {
+  const storedAppRevenue = localStorage.getItem("appRevenue");
+  if (storedAppRevenue) {
+    try {
+      const parsed = JSON.parse(storedAppRevenue);
+      const org = parsed.map((org: Organization) => org);
+      setOrgOptions(org);
+    } catch (e) {
+      console.error("Invalid appRevenue format", e);
+    }
+  }
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const storedOrg = localStorage.getItem("selectedOrg");
+      let parsedOrg;
+      if (storedOrg) {
+        parsedOrg = JSON.parse(storedOrg);
+      }
+      const response = await getRevenueByOrgId(orgId);
+      const events: Event[] = response.data.map((event: EventRevenueData): Event => ({
+        id: event.eventId,
+        name: event.eventName,
+        actualRevenue: event.actualRevenue,
+        isExpanded: false,
+        details: event.showings.map((show: ShowingRevenueData): EventDetail => ({
+          id: show.showingId,
+          startDate: show.startDate,
+          endDate: show.endDate,
+          revenue: show.revenue,
+          isExpanded: false,
+          tickets: show.ticketTypes.map((t: TicketTypeRevenueData): TicketRevenue => ({
+            id: t.ticketTypeId,
+            type: t.name,
+            price: t.price,
+            quantity: t.quantitySold,
+            revenue: t.revenue,
+          })),
+        })),
+      }));
+
+      const totalRevenue = events.reduce((sum, e) => sum + e.actualRevenue, 0);
+      const showingCount = events.reduce((sum, e) => sum + e.details.length, 0);
+      const ticketsSold = events.reduce(
+        (sum, e) =>
+          sum +
+          e.details.reduce((innerSum, d) => innerSum + d.tickets.reduce((tSum, t) => tSum + t.quantity, 0), 0),
+        0
+      );
+
+      setOrganization({
+        id: parsedOrg.id,
+        name: parsedOrg.name, // Replace with real name from user/org service if available
+        email: parsedOrg.id, // Replace with real data
+        location: "Địa điểm phổ biến", // Replace with real data
+        totalRevenue,
+        eventCount: events.length,
+        showingCount,
+        ticketsSold,
+        events,
+      });
+
+      setSelectedFilter(parsedOrg.name);
+    } catch (error) {
+      console.error("Failed to fetch revenue by orgId", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [orgId]);
+
+  const filteredEvents = organization?.events.filter((event) => {
+    const matchesSearch =
+      searchQuery.trim() === ""
+        ? true
+        : event.name.toLowerCase().includes(searchQuery.toLowerCase());
+  
+    const matchesDateRange =
+      !dateRange.fromDate && !dateRange.toDate
+        ? true
+        : event.details.some((detail) => {
+            const showDate = new Date(detail.startDate);
+            const from = dateRange.fromDate ? new Date(dateRange.fromDate) : null;
+            const to = dateRange.toDate ? new Date(dateRange.toDate) : null;
+  
+            if (from && showDate < from) return false;
+            if (to && showDate > to) return false;
+  
+            return true;
+          });
+  
+    return matchesSearch && matchesDateRange;
+  });
+
+  const [] = useState("")
 
   const handleSearch = () => {
     console.log("Searching for:", searchQuery, dateRange)
   }
-  const [selectedFilter, setSelectedFilter] = useState(organization.name)
-
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN").format(amount)
@@ -107,43 +168,40 @@ export default function OrganizationRevenuePage() {
 
   // Toggle event expansion
   const toggleEvent = (eventId: number) => {
-    setOrganization((prev) => ({
-      ...prev,
-      events: prev.events.map((event) => {
-        if (event.id === eventId) {
-          return { ...event, isExpanded: !event.isExpanded }
-        }
-        return event
-      }),
-    }))
-  }
+    if (!organization) return;
+    setOrganization({
+      ...organization,
+      events: organization.events.map((event) =>
+        event.id === eventId ? { ...event, isExpanded: !event.isExpanded } : event
+      ),
+    });
+  };
 
   // Toggle event detail expansion
-  const toggleEventDetail = (eventId: number, detailId: number) => {
-    setOrganization((prev) => ({
-      ...prev,
-      events: prev.events.map((event) => {
-        if (event.id === eventId) {
-          return {
-            ...event,
-            details: event.details.map((detail) => {
-              if (detail.id === detailId) {
-                return { ...detail, isExpanded: !detail.isExpanded }
-              }
-              return detail
-            }),
-          }
-        }
-        return event
-      }),
-    }))
-  }
+  const toggleEventDetail = (eventId: number, detailId: string) => {
+    if (!organization) return;
+    setOrganization({
+      ...organization,
+      events: organization.events.map((event) =>
+        event.id === eventId
+          ? {
+              ...event,
+              details: event.details.map((detail) =>
+                detail.id === detailId ? { ...detail, isExpanded: !detail.isExpanded } : detail
+              ),
+            }
+          : event
+      ),
+    });
+  };
 
   // Reset filter
   const resetFilter = () => {
-    setSelectedFilter(organization.name)
-    setSearchTerm("")
-  }
+    setSearchQuery("");
+    setDateRange({ fromDate: "", toDate: "" });
+  };
+
+  if (!organization) return <p>Loading...</p>;
 
   return (
     <div className="container p-4">
@@ -163,18 +221,28 @@ export default function OrganizationRevenuePage() {
             <span className="text-sm">Chọn nhà tổ chức</span>
           </div>
           <div className="relative border-l">
-            <select
-              className="appearance-none bg-white px-4 py-2 pr-8 outline-none"
-              value={selectedFilter}
-              onChange={(e) => setSelectedFilter(e.target.value)}
-            >
-              <option value={organization.name}>{organization.name}</option>
-              <option value="Nhà hát lớn">Nhà hát lớn</option>
-              <option value="Sân khấu kịch">Sân khấu kịch</option>
-              <option value="Trung tâm văn hóa">Trung tâm văn hóa</option>
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 pointer-events-none" />
-          </div>
+  <select
+    className="appearance-none bg-white px-4 py-2 pr-8 outline-none"
+    value={selectedFilter}
+    onChange={(e) => {
+      const selectedName = e.target.value;
+      setSelectedFilter(selectedName);
+  
+      const selectedOrg = orgOptions.find((org) => org.name === selectedName);
+      if (selectedOrg) {
+        localStorage.setItem("selectedOrg", JSON.stringify(selectedOrg));
+        window.location.href = `/admin/revenue-management/revenue/${selectedOrg.id}`;
+      }
+    }}
+  >
+    {orgOptions.map((org) => (
+      <option key={org.id} value={org.name}>
+        {org.name}
+      </option>
+    ))}
+  </select>
+  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 pointer-events-none" />
+</div>
         </div>
 
         <button
@@ -191,11 +259,11 @@ export default function OrganizationRevenuePage() {
           <span className="font-semibold">Email:</span> {organization.email}
         </span>
       </div>
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <span className="inline-block bg-green-100 px-3 py-2 rounded-md">
           <span className="font-semibold">Địa điểm tổ chức sự kiện nhiều nhất:</span> {organization.location}
         </span>
-      </div>
+      </div> */}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -297,7 +365,7 @@ export default function OrganizationRevenuePage() {
             </tr>
           </thead>
           <tbody>
-            {organization.events.map((event) => (
+            {filteredEvents?.map((event) => (
               <Fragment key={`event-${event.id}`}>
                 <tr
                   className={`cursor-pointer hover:bg-[#EAFDFC] ${event.isExpanded ? "bg-[#EAFDFC]" : "bg-white"}`}
@@ -322,6 +390,12 @@ export default function OrganizationRevenuePage() {
                       className="inline-flex items-center justify-center"
                       onClick={(e) => {
                         e.stopPropagation()
+                        localStorage.setItem("selectedEvent", JSON.stringify({
+                          id: event.id,
+                          name: event.name,
+                          organizerId: organization.id,
+                          organizerName: organization.name
+                        }));
                         window.location.href = `/admin/revenue-management/revenue/${orgId}/event/${event.id}`
                       }}
                     >
