@@ -36,7 +36,7 @@ export class GetShowingsController {
         ...filters,
         page,
         limit
-      });
+      }, user?.email);
 
       if (result.isErr()) {
         return res.status(HttpStatus.BAD_REQUEST).json({
@@ -56,14 +56,16 @@ export class GetShowingsController {
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: 'Showings retrieve successfully',
-        data,
-        meta: {
-          totalCount,
-          currentPage,
-          nextPage,
-          limit: filters.limit || 10,
-          totalPages,
-        },
+        data: {
+          data: data,
+          meta: {
+            totalCount,
+            currentPage,
+            nextPage,
+            limit: filters.limit || 10,
+            totalPages,
+          },
+        }
       });
     } catch (error) {
       console.error(error);

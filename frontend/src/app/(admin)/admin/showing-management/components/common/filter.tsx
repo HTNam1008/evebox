@@ -5,7 +5,7 @@ import { ChevronDown, Filter, RotateCcw } from "lucide-react";
 import { useState } from "react";
 
 /* Package Application */
-import { FilterProps } from "../../lib/interface/showingtable.interface";
+import { FilterProps } from "../../lib/interface/showingTable.interface";
 
 export default function FilterBar({
     dateFrom, dateTo,

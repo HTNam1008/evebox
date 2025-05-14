@@ -12,12 +12,14 @@ export default function FilterBar({
     onReset
 }: FilterProps) {
     //Call api để lấy ra các categories
-    const categories = ['Âm nhạc', 'Sân khấu & Nghệ thuật', 'Thể thao', 'Khác'];
 
-    const fullOptions: OptionType[]  = [
+    const fullOptions: OptionType[] = [
         { label: "Chỉ trên EveBox", value: "__onlyOnEve" },
         { label: "Sự kiện đặc biệt", value: "__special" },
-        ...categories.map(cate => ({ label: cate, value: cate }))
+        { label: "Âm nhạc", value: 1 },
+        { label: "Sân khấu & Nghệ thuật", value: 2 },
+        { label: "Thể thao", value: 3 },
+        { label: "Khác", value: 4 },
     ];
 
     return (
@@ -33,7 +35,17 @@ export default function FilterBar({
                 <span className="text-black font-semibold mr-1">Loại sự kiện</span>
 
                 <select value={categoryFilter} className="border px-2 py-1 rounded-md"
-                    onChange={(e) => onCategoryChange(e.target.value)}
+                    onChange={(e) => {
+                        const rawValue = e.target.value;
+
+                        if (rawValue === "") {
+                            onCategoryChange("");
+                        } else if (rawValue === "__onlyOnEve" || rawValue === "__special") {
+                            onCategoryChange(rawValue as "__onlyOnEve" | "__special");
+                        } else {
+                            onCategoryChange(Number(rawValue)); // map string to number
+                        }
+                    }}
                 >
                     <option value="">Tất cả</option>
                     {fullOptions.map(opt => (

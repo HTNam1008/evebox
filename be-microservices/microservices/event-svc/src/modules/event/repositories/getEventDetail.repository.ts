@@ -25,6 +25,8 @@ export class GetEventDetailRepository {
             orgName: true,
             orgDescription: true,
             isOnline: true,
+            deleteAt: true,
+            isApproved: true,
             locations: {
                 select: {
                     id: true,

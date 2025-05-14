@@ -3,7 +3,7 @@
 /* Package System */
 
 /* Package Application */
-import { TabsProps } from "../../lib/interface/eventtable.interface";
+import { TabsProps } from "../../lib/interface/eventTable.interface";
 
 const tabs = [
     { id: "all", label: "Tất cả" },

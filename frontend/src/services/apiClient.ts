@@ -68,7 +68,6 @@ const createApiClient = (baseUrl: string): AxiosInstance => {
           );
 
           const { access_token, refresh_token } = refreshResponse.data.data;
-          console.log("New token:", access_token);
 
           if (cachedSession?.user) {
             cachedSession.user.accessToken = access_token;

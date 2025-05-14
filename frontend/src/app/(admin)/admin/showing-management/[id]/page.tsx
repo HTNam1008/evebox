@@ -3,8 +3,12 @@
 /* Package Application */
 import ShowingDetailPage from "./components/showingPage"
 
-export default function Page() {
+interface Props {
+    params: { id: string }
+}
+
+export default function Page({ params }: Props) {
     return (
-        <ShowingDetailPage />
+        <ShowingDetailPage showingId={params.id} />
     )
 }
