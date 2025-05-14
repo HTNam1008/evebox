@@ -1,7 +1,7 @@
 'use client';
 
-import { SortConfig } from "../interface/eventtable.interface";
-import { Category } from "../interface/eventtable.interface";
+import { SortConfig } from "../interface/eventTable.interface";
+import { Category } from "../interface/eventTable.interface";
 
 export function sortEvents<T extends { categories?: Category[] }>(data: T[], sortConfig: SortConfig<T> | null): T[] {
   if (!sortConfig) return data;

@@ -3,8 +3,12 @@
 /* Package Application */
 import EventDetailPage from "./components/eventPage"
 
-export default function Page() {
+interface Props {
+  params: { id: string }
+}
+
+export default function Page({ params }: Props) {
     return (
-        <EventDetailPage />
+        <EventDetailPage eventId={parseInt(params.id)} />
     )
 }

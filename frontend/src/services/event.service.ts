@@ -2,6 +2,10 @@ import { eventService } from "./instance.service";
 import { END_POINT_LIST } from "./endpoints";
 import { BaseApiResponse } from "@/types/BaseApiResponse";
 import { Category, FrontDisplayResponse, Event } from "@/types/model/frontDisplay";
+import { EventAdminTable, EventDetail } from "@/app/(admin)/admin/event-management/lib/interface/eventTable.interface";
+import { Showing, ShowingFromApi } from "@/app/(admin)/admin/showing-management/lib/interface/showingTable.interface";
+import { TicketOfShowing } from "@/app/(admin)/admin/showing-management/lib/interface/ticketTable.interface";
+import { EventSpecial } from "@/app/(admin)/admin/event-special-management/lib/interface/eventSpecialTable";
 
 export const getFrontDisplayEvents = async (): Promise<FrontDisplayResponse> => {
   const res = await eventService.get(END_POINT_LIST.EVENT.GET_FRONT_DISPLAY);
@@ -60,16 +64,15 @@ export const searchEvents = async (params: SearchEventsParams): Promise<BaseApiR
 }
 
 export const getFDByIds = async (eventIds: number[]): Promise<Event[]> => {
-  const allEvents: Event[] = [];
 
-    try {
-      const res = await eventService.get(END_POINT_LIST.EVENT.GET_FRONT_DISPLAY_BY_IDS, {
-        params: { ids:eventIds },
-      });
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-    }
+  try {
+    const res = await eventService.get(END_POINT_LIST.EVENT.GET_FRONT_DISPLAY_BY_IDS, {
+      params: { ids: eventIds },
+    });
+    return res.data.data;
+  } catch (error) {
+    console.error(error);
+  }
   return []
 };
 
@@ -93,3 +96,159 @@ export const postClickEvent = async (
 
   return res.data;
 };
+
+export interface EventManagementApiResponse {
+  data: EventAdminTable[];
+  meta: {
+    totalCount: number;
+    currentPage: number;
+    nextPage: number | null;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export const getEventsManagement = async (params: {
+  page: number;
+  limit: number;
+  isApproved?: boolean;
+  isDeleted?: boolean;
+  createdFrom?: string;
+  createdTo?: string;
+  categoryId?: number;
+  search?: string;
+}): Promise<EventManagementApiResponse> => {
+  const response = await eventService.get<BaseApiResponse<EventManagementApiResponse>>(END_POINT_LIST.ADMIN.EVENTS, {
+    params
+  });
+
+  if (response.status !== 200) throw new Error(response.data.message);
+
+  return response.data.data;
+}
+
+export interface UpdateEventAdminBody {
+  isSpecial?: boolean | null;
+  isOnlyOnEve?: boolean | null;
+  isSpecialForCategory?: boolean | null;
+  isApproved?: boolean | null;
+  categoryIds?: number[];
+}
+
+export const updateEventAdmin = async (eventId: number, body: UpdateEventAdminBody): Promise<boolean> => {
+  const response = await eventService.put<BaseApiResponse<boolean>>(`${END_POINT_LIST.ADMIN.EVENTS}/${eventId}`, body);
+  
+  if (response.status !== 200) throw new Error(response.data.message);
+
+  return response.data.statusCode === 200;
+}
+
+interface RawEventDetail extends Omit<EventDetail, 'categories'> {
+  EventCategories: {
+    Categories: Category;
+  }[];
+}
+
+export const getEventDetail = async (eventId: number): Promise<EventDetail> => {
+  const response = await eventService.get<BaseApiResponse<RawEventDetail>>(
+    `${END_POINT_LIST.EVENT.GET_EVENT_DETAIL}?eventId=${eventId}`
+  );
+
+  if (response.status !== 200) throw new Error(response.data.message);
+
+  // Nếu cần map EventCategories → categories
+  const raw = response.data.data;
+  const categories = raw.EventCategories?.map((e) => e.Categories) || [];
+
+  return {
+    ...raw,
+    categories
+  };
+}
+
+export const getShowingsOfEvent = async (eventId: number): Promise<Showing[]> => {
+  const response = await eventService.get<BaseApiResponse<ShowingFromApi[]>>(`${END_POINT_LIST.ORG_SHOWING.SHOWING}/${eventId}`);
+
+  if (response.status !== 200) throw new Error(response.data.message);
+
+  const normalized: Showing[] = response.data.data.map((showing) => ({
+    id: showing.id,
+    event: showing.event,
+    startTime: showing.startTime,
+    endTime: showing.endTime,
+    seatMapId: showing.seatMapId,
+    ticketTypes: showing.TicketType || [],
+  }));
+
+  return normalized;
+}
+
+export interface ShowingManagementApiResponse {
+  data: Showing[];
+  meta: {
+    totalCount: number;
+    currentPage: number;
+    nextPage: number | null;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export const getShowingsManagement = async(params: {
+  page: number;
+  limit: number;
+  startTime?: string;
+  endTime?: string;
+  search?: string;
+}): Promise<ShowingManagementApiResponse> => {
+  const response = await eventService.get<BaseApiResponse<ShowingManagementApiResponse>>(END_POINT_LIST.ADMIN.SHOWINGS, {
+    params
+  });
+
+  if (response.status !== 200) throw new Error(response.data.message);
+  return response.data.data;
+}
+
+export const getShowingDetail = async (showingId: string): Promise<Showing> => {
+  const response = await eventService.get<BaseApiResponse<Showing>>(`${END_POINT_LIST.ADMIN.SHOWINGS}/${showingId}`);
+
+  if (response.status !== 200) throw new Error(response.data.message);
+
+  return response.data.data;
+}
+
+export const getTicketDetailOfShowing = async (showingId: string, ticketTypeId: string): Promise<TicketOfShowing> => {
+  const response = await eventService.get<BaseApiResponse<TicketOfShowing>>(`${END_POINT_LIST.ADMIN.SHOWINGS}/${showingId}/${ticketTypeId}`);
+
+  if (response.status !== 200) throw new Error(response.data.message);
+
+  return response.data.data;
+}
+
+export interface EventSpecialApiResponse {
+  data: EventSpecial[]
+  meta: {
+    totalCount: number;
+    currentPage: number;
+    nextPage: number | null;
+    limit: number;
+    totalPages: number;
+  }
+}
+
+export const getEventSpecialManagement = async(params: {
+  isSpecial?: boolean;
+  isOnlyOnEve?: boolean;
+  page: number;
+  categoryId?: number;
+  limit: number;
+  search?: string;
+}): Promise<EventSpecialApiResponse> => {
+  const response = await eventService.get<BaseApiResponse<EventSpecialApiResponse>>(END_POINT_LIST.ADMIN.EVENTS_SPECIAL, {
+    params
+  });
+
+  if (response.status !== 200) throw new Error(response.data.message);
+  
+  return response.data.data;
+}

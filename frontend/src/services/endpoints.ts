@@ -52,4 +52,10 @@ export class END_POINT_LIST {
     GET_REVENUE_BY_PROVINCE: "/api/admin/revenue-by-province",
     GET_REVENUE_BY_TICKETPRICE: "/api/admin/revenue-by-ticket-price"
   };
+  
+  static readonly ADMIN = {
+    EVENTS: "/api/admin/event",
+    SHOWINGS: "/api/admin/showing",
+    EVENTS_SPECIAL: "api/admin/event-special"
+  }
 }

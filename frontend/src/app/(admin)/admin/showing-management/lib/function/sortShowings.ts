@@ -1,6 +1,6 @@
 "use client";
 
-import { SortConfig } from "../interface/showingtable.interface";
+import { SortConfig } from "../interface/showingTable.interface";
 
 export function sortShowings<T>(data: T[], sortConfig: SortConfig<T> | null): T[] {
   if (!sortConfig) return data;

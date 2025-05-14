@@ -2,7 +2,7 @@
 
 /* Package System */
 import 'tailwindcss/tailwind.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /* Package Application */
 import ShowingTable from './showingTable';
@@ -13,6 +13,15 @@ export default function ShowingPage() {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setDebouncedSearch(searchKeyword);
+        }, 2000);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchKeyword]);
 
     const handleResetFilter = () => {
         setDateFrom('');
@@ -34,7 +43,7 @@ export default function ShowingPage() {
                 />
             </div>
 
-            <ShowingTable searchKeyword={searchKeyword} dateFrom={dateFrom} dateTo={dateTo}/>
+            <ShowingTable searchKeyword={debouncedSearch} dateFrom={dateFrom} dateTo={dateTo} />
         </>
     )
 }
