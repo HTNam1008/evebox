@@ -164,6 +164,8 @@ export function RevenueOrgTable({
                       className="inline-flex items-center justify-center"
                       onClick={(e) => {
                         e.stopPropagation();
+                        localStorage.setItem("selectedOrg", JSON.stringify(org));
+                        localStorage.setItem("appRevenue", JSON.stringify(organizations));
                         window.location.href = `/admin/revenue-management/revenue/${org.id}`;
                       }}
                     >
