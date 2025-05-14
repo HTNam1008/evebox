@@ -21,7 +21,7 @@ export class GetSummaryTicketRevenueRepository {
         where: {
           id: showingId,
           deleteAt: null,
-          eventId,
+          eventId: Number(eventId),
           Events: {
             organizerId: orgId,
             deleteAt: null,

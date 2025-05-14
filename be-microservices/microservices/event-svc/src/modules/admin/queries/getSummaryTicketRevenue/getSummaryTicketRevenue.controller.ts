@@ -14,7 +14,7 @@ export class GetSummaryTicketRevenueController {
   @Get('/revenue/:orgId/:eventId/:showingId')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get admin summary for a showing' })
-  @ApiParam({ name: 'orgId', example: 'a1b2c3', description: 'Organizer ID' })
+  @ApiParam({ name: 'orgId', example: 'dattruong01082@gmail.com', description: 'The gmail stands for ID of the organizer' })
   @ApiParam({ name: 'eventId', example: 101, description: 'Event ID' })
   @ApiParam({ name: 'showingId', example: 'abc123', description: 'Showing ID' })
   @ApiResponse({ status: HttpStatus.OK, type: SummaryTicketRevenueResponseDto, description: 'Summary retrieved successfully' })

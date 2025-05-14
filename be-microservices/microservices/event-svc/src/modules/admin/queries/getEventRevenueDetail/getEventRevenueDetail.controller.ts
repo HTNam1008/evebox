@@ -14,7 +14,7 @@ export class GetEventRevenueDetailController {
   @Get('/revenue/:orgId/:eventId')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get revenue of an org' })
-  @ApiParam({ name: 'orgId', example: "72174d54-ab8f-4a83-af5f-e8df46df37ad", description: "The ID of the organizer" })
+  @ApiParam({ name: 'orgId', example: "dattruong01082@gmail.com", description: "The gmail stands for ID of the organizer" })
   @ApiParam({ name: 'eventId', example: 123123, description: "The ID of the event" })
   @ApiResponse({ status: HttpStatus.OK, description: 'Event revenue detail retrieved successfully', type: EventRevenueDetailResponseDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })
