@@ -56,7 +56,7 @@ export class EventRevenueData {
 }
 
 export class OrganizerRevenueData {
-  @ApiProperty({ example: "user_123", description: "Organizer id" })
+  @ApiProperty({ example: "dattruong01082@gmail.com", description: "Organizer id" })
   orgId: string;
 
   @ApiProperty({ example: "Anh Trai Say Hi", description: "Organizer name" })
