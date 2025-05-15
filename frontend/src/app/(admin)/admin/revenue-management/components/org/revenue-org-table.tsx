@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Fragment } from "react";
+import {Fragment } from "react";
 import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react";
 import { EventRevenueTable } from "../revenue-event-table";
 import { TicketTypeRevenueData } from "@/types/model/organizerRevenue";
@@ -33,6 +33,8 @@ export type Organization = {
   events: EventRevenue[];
   isExpanded?: boolean;
   selectedEventId?: number;
+  orgId?: string;
+  orgName?: string;
 };
 
 export interface RevenueOrgTableProps {
@@ -40,7 +42,7 @@ export interface RevenueOrgTableProps {
   appId?: number;
   toggleOrganization?: (appId: number, orgId: string) => void;
   toggleEvent?: (appId: number, orgId: string, eventId: number) => void;
-  toggleEventDetail?: (appId: number, orgId: string, eventId: number, detailId: string) => void;
+  toggleEventDetail?: (appId: number, orgId: string, eventId: number, showingId: string) => void;
   formatCurrency: (amount: number) => string;
   className?: string;
 }
@@ -54,72 +56,28 @@ export function RevenueOrgTable({
   formatCurrency,
   className = "",
 }: RevenueOrgTableProps) {
-  const [localOrganizations, setLocalOrganizations] = useState<Organization[]>([]);
 
-  const organizations = propOrganizations || localOrganizations;
+  const organizations = propOrganizations;
 
   const handleToggleOrganization = (orgId: string) => {
-    if (!propOrganizations) {
-      setLocalOrganizations((prev) =>
-        prev.map((org) =>
-          org.id === orgId ? { ...org, isExpanded: !org.isExpanded } : org
-        )
-      );
-    } else if (propToggleOrganization) {
+    if (propToggleOrganization) {
       propToggleOrganization(appId, orgId);
     }
   };
-
+  
   const handleToggleEvent = (orgId: string, eventId: number) => {
-    if (!propOrganizations) {
-      setLocalOrganizations((prev) =>
-        prev.map((org) =>
-          org.id === orgId
-            ? {
-                ...org,
-                selectedEventId: eventId,
-                events: org.events.map((event) =>
-                  event.id === eventId ? { ...event, isExpanded: !event.isExpanded } : event
-                ),
-              }
-            : org
-        )
-      );
-    } else if (propToggleEvent) {
+    if (propToggleEvent) {
       propToggleEvent(appId, orgId, eventId);
     }
   };
-
+  
   const handleToggleEventDetail = (orgId: string, eventId: number, detailId: string) => {
-    if (!propOrganizations) {
-      setLocalOrganizations((prev) =>
-        prev.map((org) =>
-          org.id === orgId
-            ? {
-                ...org,
-                events: org.events.map((event) =>
-                  event.id === eventId
-                    ? {
-                        ...event,
-                        selectedDetailId: detailId,
-                        showings: event.showings.map((detail) =>
-                          detail.showingId === detailId
-                            ? { ...detail, isExpanded: !detail.isExpanded }
-                            : detail
-                        ),
-                      }
-                    : event
-                ),
-              }
-            : org
-        )
-      );
-    } else if (propToggleEventDetail) {
+    if (propToggleEventDetail) {
       propToggleEventDetail(appId, orgId, eventId, detailId);
     }
-  };
+  }
 
-  if (organizations.length === 0) return null;
+  if (organizations?.length === 0) return null;
 
   return (
     <div className={className}>
@@ -142,7 +100,7 @@ export function RevenueOrgTable({
             </tr>
           </thead>
           <tbody>
-            {organizations.map((org, index) => (
+            {organizations?.map((org, index) => (
               <Fragment key={`org-${appId}-${org.id}`}>
                 <tr className="cursor-pointer hover:bg-[#E3FEF7]" onClick={() => handleToggleOrganization(org.id)}>
                   <td className="py-2 px-4 border-t flex items-center">

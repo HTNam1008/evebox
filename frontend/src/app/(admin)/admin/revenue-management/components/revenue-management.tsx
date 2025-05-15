@@ -13,6 +13,7 @@ import LocationRevenueView from "./app/location-revenue"
 import PriceRevenueView from "./app/price-revenue"
 import { getOrganizerRevenue } from "@/services/admin.service"; 
 import { ShowingRevenueData, TicketTypeRevenueData } from "@/types/model/organizerRevenue";
+import { useMemo } from "react";
 
 export interface ShowingRevenue {
   showingId: string;
@@ -30,8 +31,10 @@ export interface EventRevenue {
   platformFee: number;
   actualRevenue: number;
   showings: ShowingRevenue [];
-  isExpanded?: boolean; // for toggling UI
-  selectedDetailId?: string; // to track selected showing
+  isExpanded?: boolean;
+  selectedDetailId?: string;
+  orgId?: string;
+  orgName?: string;
 }
 
 export type Organization = {
@@ -63,6 +66,7 @@ export default function RevenuePage() {
 
   const [appRevenues, setAppRevenues] = useState<AppRevenue[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  
 
   useEffect(() => {
     // Reset filters when switching tabs
@@ -148,6 +152,18 @@ export default function RevenuePage() {
     setFilter({ type: "all", from: "", to: "" })
   }
 
+  const allEvents: EventRevenue[] = useMemo(() => {
+    if (!appRevenues.length) return [];
+  
+    return appRevenues[0].organizations.flatMap((org) =>
+      org.events.map((event) => ({
+        ...event,
+        orgId: org.id,
+        orgName: org.name,
+      }))
+    );
+  }, [appRevenues]);
+
   // Hàm định dạng số tiền
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN").format(amount)
@@ -206,31 +222,27 @@ export default function RevenuePage() {
     
   
     const toggleEvent = (appId: number, orgId: string, eventId: number) => {
+      if (!appId) return;
+    
       setAppRevenues((prev) =>
-        prev.map((app) => {
-          if (app.id === appId) {
-            return {
-              ...app,
-              organizations: app.organizations.map((org) => {
-                if (org.id === orgId) {
-                  return {
-                    ...org,
-                    selectedEventId: eventId,
-                    events: org.events.map((ev) =>
-                      ev.id === eventId
-                        ? { ...ev, isExpanded: !ev.isExpanded }
-                        : ev
-                    ),
-                  };
+        prev.map((app) => ({
+          ...app,
+          organizations: app.organizations.map((org) =>
+            org.id === orgId
+              ? {
+                  ...org,
+                  events: org.events.map((ev) =>
+                    ev.id === eventId
+                      ? { ...ev, isExpanded: !ev.isExpanded }
+                      : ev
+                  ),
                 }
-                return org;
-              }),
-            };
-          }
-          return app;
-        })
+              : org
+          ),
+        }))
       );
     };
+    
   
     const toggleEventDetail = (
       appId: number,
@@ -271,6 +283,19 @@ export default function RevenuePage() {
         })
       );
     };
+
+    const handleToggleEvent = (orgId: string, eventId: number) => {
+      const appId = appRevenues[0]?.id;
+      if (!appId) return;
+      toggleEvent(appId, orgId, eventId);
+    };
+    
+    const handleToggleEventDetail = (orgId: string, eventId: number, showingId: string) => {
+      const appId = appRevenues[0]?.id;
+      if (!appId) return;
+      toggleEventDetail(appId, orgId, eventId, showingId);
+    };
+
 
   return (
     <div className="container mx-auto px-4">
@@ -319,8 +344,10 @@ export default function RevenuePage() {
           }} />
           <EventRevenueTable
             formatCurrency={formatCurrency}
-            toggleEvent={() => { } }
-            toggleEventDetail={() => { } } events={[]} orgId={""}      />
+            toggleEvent={handleToggleEvent}
+            toggleEventDetail={handleToggleEventDetail}  
+            events={allEvents}
+            orgId={appRevenues[0]?.id.toString() ?? ""}      />
         </>
       )}
     </div>

@@ -28,7 +28,7 @@ export interface EventRevenueTableProps {
   events: EventRevenue[];
   orgId: string;
   toggleEvent: (orgId: string, eventId: number) => void;
-  toggleEventDetail: (orgId: string, eventId: number, detailId: string) => void;
+  toggleEventDetail: (orgId: string, eventId: number, showingId: string) => void;
   formatCurrency: (amount: number) => string;
   className?: string;
 }
@@ -41,6 +41,7 @@ export function EventRevenueTable({
   formatCurrency,
   className = "",
 }: EventRevenueTableProps) {
+  console.log(events);
   if (events.length === 0) return null;
 
   return (
