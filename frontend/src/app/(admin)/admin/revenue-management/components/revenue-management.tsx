@@ -75,6 +75,7 @@ export default function RevenuePage() {
     setSearch(undefined);
   }, [activeTab]);
 
+
   useEffect(() => {
     const mapToAppRevenue = async () => {
       try {
@@ -132,36 +133,39 @@ export default function RevenuePage() {
     mapToAppRevenue();
   }, [fromDate, toDate, search]);
 
-  const [, setFilter] = useState<{
-    type: "all" | "month" | "year"
+  const [filter, setFilter] = useState<{
+    type: "month" | "year"
     from: string
     to: string
   }>({
-    type: "all",
+    type: "month",
     from: "",
     to: ""
-  })
-
-  const handleConfirm = (from?: string, to?: string) => {
+  });
+  const handleConfirm = (from?: string, to?: string, type?:  "month" | "year") => {
     setFromDate(from);
     setToDate(to);
+    setFilter({
+      type: type ?? "month",
+      from: from ?? "",
+      to: to ?? "",
+    });
   };
 
   const handleReset = () => {
-    //console.log("Đặt lại bộ lọc")
-    setFilter({ type: "all", from: "", to: "" })
-  }
+    setFilter({ type: "month", from: "", to: "" });
+  };
 
   const allEvents: EventRevenue[] = useMemo(() => {
     if (!appRevenues.length) return [];
   
-    return appRevenues[0].organizations.flatMap((org) =>
-      org.events.map((event) => ({
-        ...event,
-        orgId: org.id,
-        orgName: org.name,
-      }))
-    );
+    return appRevenues?.[0]?.organizations?.flatMap((org) =>
+  org.events.map((event) => ({
+    ...event,
+    orgId: org.id,
+    orgName: org.name,
+  }))
+) ?? [];
   }, [appRevenues]);
 
   // Hàm định dạng số tiền
@@ -175,7 +179,7 @@ export default function RevenuePage() {
         return (
           <>
             <RevenueFilter onConfirm={handleConfirm} onReset={handleReset} />
-            <RevenueChart />
+            <RevenueChart type={filter.type} from={filter.from} to={filter.to} />
             <RevenueAppTable
   fromDate={fromDate}
   toDate={toDate}

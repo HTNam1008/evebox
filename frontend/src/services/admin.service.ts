@@ -6,6 +6,7 @@ import { EventRevenueDetailResponse } from "@/types/model/eventRevenueDetail";
 import { SummaryTicketRevenueResponse } from "@/types/model/summaryTicketRevenue";
 import { ProvinceRevenueResponse } from "@/types/model/provinceRevenue";
 import { RevenueByTicketPriceResponse } from "@/types/model/ticketPriceRevenue";
+import { RevenueSummaryResponse } from "@/types/model/RevenueSummaryResponse";
 
 export const getOrganizerRevenue = async (
   fromDate?: string,
@@ -83,4 +84,36 @@ export const getRevenueByOrgId = async (orgId: string): Promise<RevenueByIdRespo
     }
   
     return res.data;
+  };
+
+  export const getOrgRevenueChart = async (
+    fromDate?: string,
+    toDate?: string,
+    filterType: "month" | "year" = "month"
+  ): Promise<RevenueSummaryResponse> => {
+    const params = new URLSearchParams();
+    if (fromDate) params.append("fromDate", fromDate);
+    if (toDate) params.append("toDate", toDate);
+    params.append("filterType", filterType);
+  
+    try {
+      const res = await eventService.get(
+        `${END_POINT_LIST.ADMIN_STATISTICS.GET_REVENUE_CHART}?${params.toString()}`
+      );
+  
+      const rawData = res?.data?.data;
+      if (!Array.isArray(rawData)) {
+        throw new Error("Invalid chart data structure");
+      }
+  
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const labels = rawData.map((item: any) => item.period);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const values = rawData.map((item: any) => item.actualRevenue); // or item.totalRevenue
+  
+      return { labels, values };
+    } catch (error) {
+      console.error("Failed to fetch organizer revenue chart data", error);
+      throw error;
+    }
   };

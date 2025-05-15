@@ -6,12 +6,12 @@ import { vi } from "date-fns/locale"
 import { format } from "date-fns"
 
 interface RevenueFilterProps {
-  onConfirm: (fromDate?: string, toDate?: string) => void;
+  onConfirm: (fromDate?: string, toDate?: string, type?: "month" | "year") => void;
   onReset: () => void;
 }
 
 export default function RevenueFilter({ onConfirm, onReset }: RevenueFilterProps) {
-  const [filterType, setFilterType] = useState<"all" | "month" | "year">("all")
+  const [filterType, setFilterType] = useState< "month" | "year">("month")
   const [fromMonth, setFromMonth] = useState<Date | null>(null)
   const [toMonth, setToMonth] = useState<Date | null>(null)
   const [fromYear, setFromYear] = useState<string>("")
@@ -29,11 +29,11 @@ export default function RevenueFilter({ onConfirm, onReset }: RevenueFilterProps
       toDate = toYear ? `${toYear}-12` : undefined;
     }
   
-    onConfirm(fromDate, toDate);
+    onConfirm(fromDate, toDate, filterType);
   };
 
   const handleFilterTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const type = e.target.value as "all" | "month" | "year"
+    const type = e.target.value as  "month" | "year"
     setFilterType(type)
     setFromMonth(null)
     setToMonth(null)
@@ -42,7 +42,7 @@ export default function RevenueFilter({ onConfirm, onReset }: RevenueFilterProps
   }
 
   const handleReset = () => {
-    setFilterType("all")
+    setFilterType("month")
     setFromMonth(null)
     setToMonth(null)
     setFromYear("")
@@ -58,7 +58,6 @@ export default function RevenueFilter({ onConfirm, onReset }: RevenueFilterProps
           onChange={handleFilterTypeChange}
           className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="all">Tất cả</option>
           <option value="month">Tháng</option>
           <option value="year">Năm</option>
         </select>
