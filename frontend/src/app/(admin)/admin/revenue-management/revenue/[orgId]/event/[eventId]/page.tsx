@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ChevronDown, RefreshCw } from "lucide-react"
+import { ChevronDown, Loader, RefreshCw } from "lucide-react"
 import { useParams } from "next/navigation"
 
 import { OverviewCard } from "@/app/(organizer)/organizer/events/[id]/summary-revenue/components/overviewCard"
@@ -115,8 +115,12 @@ export default function EventDetailPage() {
     if (storedAppRevenue) {
       try {
         const parsed = JSON.parse(storedAppRevenue);
-        const event = parsed.events.map((event: EventOption) => event);
-        setEventOptions(event);
+      const orgId = parsed.id;
+      const eventsWithOrgId = parsed.events.map((event: EventOption) => ({
+        ...event,
+        organizerId: orgId,
+      }));
+      setEventOptions(eventsWithOrgId);
       } catch (e) {
         console.error("Invalid appRevenue format", e);
       }
@@ -133,7 +137,13 @@ export default function EventDetailPage() {
     setSelectedFilter(event?.name)
   }
 
-  if (!event) return <p>Loading...</p>;
+   if (!event) {
+        return (
+          <div className="flex items-center justify-center h-40">
+            <Loader className="w-6 h-6 animate-spin text-gray-500" />
+          </div>
+        );
+      }
 
   // // Handle row click
   const handleRowClick = (showingId: string) => {

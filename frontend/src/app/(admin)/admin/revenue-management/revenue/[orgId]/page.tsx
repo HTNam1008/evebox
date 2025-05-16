@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, Fragment, useEffect } from "react"
-import { ArrowLeft, ChevronDown, ChevronRight, ExternalLink, Search, RefreshCw } from "lucide-react"
+import { ArrowLeft, ChevronDown, ChevronRight, ExternalLink, Search, RefreshCw, Loader } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { getRevenueByOrgId } from "@/services/admin.service"
@@ -201,7 +201,13 @@ useEffect(() => {
     setDateRange({ fromDate: "", toDate: "" });
   };
 
-  if (!organization) return <p>Loading...</p>;
+  if (!organization) {
+      return (
+        <div className="flex items-center justify-center h-40">
+          <Loader className="w-6 h-6 animate-spin text-gray-500" />
+        </div>
+      );
+    }
 
   return (
     <div className="container p-4">
@@ -416,7 +422,6 @@ useEffect(() => {
                               <th className="py-2 px-4 text-left">Ngày bắt đầu</th>
                               <th className="py-2 px-4 text-left">Ngày kết thúc</th>
                               <th className="py-2 px-4 text-left">Tổng doanh thu</th>
-                              <th className="py-2 px-4 text-left">Xem chi tiết</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -443,17 +448,7 @@ useEffect(() => {
                                   <td className="py-2 px-4 border-t">{detail.startDate}</td>
                                   <td className="py-2 px-4 border-t">{detail.endDate}</td>
                                   <td className="py-2 px-4 border-t">{formatCurrency(detail.revenue)}</td>
-                                  <td className="py-2 px-4 border-t">
-                                    <button
-                                      className="inline-flex items-center justify-center"
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        window.location.href = `/admin/revenue-management/showing/${detail.id}`
-                                      }}
-                                    >
-                                      <ExternalLink className="w-5 h-5" />
-                                    </button>
-                                  </td>
+                        
                                 </tr>
 
                                 {/* Ticket Details */}

@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { getRevenueByTicketPrice } from "@/services/admin.service";
 import { RevenueByTicketPriceData } from "@/types/model/ticketPriceRevenue";
+import { Loader } from "lucide-react";
 
 export default function PriceRevenueView() {
   const [data, setData] = useState<RevenueByTicketPriceData[]>([]);
@@ -42,7 +43,11 @@ export default function PriceRevenueView() {
   }));
   
   if (loading) {
-    return <p className="text-gray-500">Đang tải dữ liệu...</p>;
+    return (
+      <div className="flex items-center justify-center h-40">
+        <Loader className="w-6 h-6 animate-spin text-gray-500" />
+      </div>
+    );
   }
 
   return (

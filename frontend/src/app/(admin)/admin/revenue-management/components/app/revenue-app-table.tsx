@@ -4,6 +4,7 @@ import { Fragment } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import { RevenueOrgTable } from "../org/revenue-org-table"
 import { AppRevenue } from "../revenue-management"
+import { Loader } from "lucide-react";
 
 
 interface RevenueAppTableProps {
@@ -124,7 +125,11 @@ export function RevenueAppTable({
   };
 
   if (loading) {
-    return <p className="text-gray-500">Đang tải dữ liệu...</p>;
+    return (
+      <div className="flex items-center justify-center h-40">
+        <Loader className="w-6 h-6 animate-spin text-gray-500" />
+      </div>
+    );
   }
 
   return (

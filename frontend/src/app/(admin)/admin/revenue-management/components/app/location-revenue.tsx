@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { getProvinceRevenue } from "@/services/admin.service";
 import { ProvinceRevenueData } from "@/types/model/provinceRevenue";
+import { Loader } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -38,7 +39,11 @@ export default function LocationRevenueView() {
   }, []);
 
   if (loading) {
-    return <p className="text-gray-500">Đang tải dữ liệu...</p>;
+    return (
+      <div className="flex items-center justify-center h-40">
+        <Loader className="w-6 h-6 animate-spin text-gray-500" />
+      </div>
+    );
   }
 
   return (
