@@ -5,12 +5,13 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { getProvinceRevenue } from "@/services/admin.service";
 import { ProvinceRevenueData } from "@/types/model/provinceRevenue";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white border border-gray-300 px-3 py-2 rounded shadow">
         <p className="text-sm text-gray-700 font-medium">{label}</p>
-        <p className="text-sm text-[#0C4762]">Doanh thu: {new Intl.NumberFormat("vi-VN").format(payload[0].value)}₫</p>
+        <p className="text-sm text-[#0C4762]">Doanh thu: {new Intl.NumberFormat("vi-VN").format(payload[0].value)}tr.đ</p>
       </div>
     );
   }
@@ -85,7 +86,7 @@ export default function LocationRevenueView() {
                 <td className="py-3 px-4">{row.provinceName}</td>
                 <td className="py-3 px-4">{row.eventCount}</td>
                 <td className="py-3 px-4">{row.showingCount}</td>
-                <td className="py-3 px-4">{new Intl.NumberFormat("vi-VN").format(row.totalRevenue)}₫</td>
+                <td className="py-3 px-4">{new Intl.NumberFormat("vi-VN").format(row.totalRevenue)}</td>
               </tr>
             ))}
           </tbody>

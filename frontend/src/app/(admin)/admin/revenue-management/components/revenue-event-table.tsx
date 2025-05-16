@@ -41,7 +41,29 @@ export function EventRevenueTable({
   formatCurrency,
   className = "",
 }: EventRevenueTableProps) {
-  console.log(events);
+
+  function formatDateRange(start: string, end: string): string {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+  
+    const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  
+    const timeFormatter = new Intl.DateTimeFormat("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
+  
+    const datePart = dateFormatter.format(startDate);
+    const startTime = timeFormatter.format(startDate);
+    const endTime = timeFormatter.format(endDate);
+  
+    return `${datePart} ${startTime} - ${endTime}`;
+  }
   if (events.length === 0) return null;
 
   return (
@@ -88,7 +110,7 @@ export function EventRevenueTable({
                       >
                         <td className="py-2 px-6 border-t"></td>
                         <td className="py-2 px-4 border-t" colSpan={2}>
-                          {showing.startDate} - {showing.endDate}
+                           {formatDateRange(showing.startDate, showing.endDate)}
                         </td>
                         <td className="py-2 px-4 border-t" colSpan={2}>
                           {formatCurrency(showing.revenue)}

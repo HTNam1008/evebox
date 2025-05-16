@@ -37,7 +37,7 @@ export default function PriceRevenueView() {
 
   const chartData = data.map((item, index) => ({
     label: `${index + 1}`,
-    revenue: item.revenue / 1_000_000, // Triệu đồng
+    revenue: item.revenue / 1_000_000,
     conversion: item.conversionRate * 100,
   }));
   
@@ -54,45 +54,56 @@ export default function PriceRevenueView() {
         </div>
 
         <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={chartData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <XAxis dataKey="label" />
-              <YAxis
-                yAxisId="left"
-                axisLine={false}
-                tickLine={false}
-                domain={[0, "auto"]}
-              />
-              <YAxis
-                yAxisId="right"
-                orientation="right"
-                axisLine={false}
-                tickLine={false}
-                domain={[0, 100]}
-                tickFormatter={(v) => `${v}%`}
-              />
-              <Tooltip />
-              <Line
-                yAxisId="left"
-                type="monotone"
-                dataKey="revenue"
-                stroke="#0EA5E9"
-                strokeWidth={3}
-                dot={false}
-              />
-              <Line
-                yAxisId="right"
-                type="monotone"
-                dataKey="conversion"
-                stroke="#8B5CF6"
-                strokeWidth={3}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
+  <LineChart
+    data={chartData}
+    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+  >
+    <XAxis dataKey="label" />
+    <YAxis
+      yAxisId="left"
+      axisLine={false}
+      tickLine={false}
+      domain={[0, "auto"]}
+    />
+    <YAxis
+      yAxisId="right"
+      orientation="right"
+      axisLine={false}
+      tickLine={false}
+      domain={[0, 100]}
+      tickFormatter={(v) => `${v}%`}
+    />
+    <Tooltip
+      formatter={(value: number, name: string) => {
+        if (name === "revenue") {
+          return [`${value.toFixed(2)} tr.₫`, "Doanh thu"];
+        }
+        if (name === "conversion") {
+          return [`${value.toFixed(1)}%`, "Tỉ lệ chuyển đổi"];
+        }
+        return [value, name];
+      }}
+    />
+    <Line
+      yAxisId="left"
+      type="monotone"
+      dataKey="revenue"
+      stroke="#0EA5E9"
+      strokeWidth={3}
+      dot={false}
+    />
+    <Line
+      yAxisId="right"
+      type="monotone"
+      dataKey="conversion"
+      stroke="#8B5CF6"
+      strokeWidth={3}
+      dot={false}
+    />
+  </LineChart>
+</ResponsiveContainer>
+
         </div>
 
         <div className="flex justify-center mt-4 space-x-8">
