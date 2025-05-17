@@ -178,6 +178,7 @@ export function RevenueAppTable({
                           toggleEvent={toggleEvent}
                           toggleEventDetail={toggleEventDetail}
                           formatCurrency={formatCurrency}
+                          loading
                         />
                       </div>
                     </td>

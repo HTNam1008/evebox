@@ -93,11 +93,7 @@ export default function RevenueChart({ type, from, to }: RevenueChartProps) {
     };
   }, [chartData, chartRef]); // Also include chartRef
   
-  
-
-  console.log("chartRef.current:", chartRef.current);
-  console.log("chartData.labels:", chartData?.labels);
-  console.log("chartData.values:", chartData?.values);  return (
+  return (
     <div>
       <div className="text-lg font-medium mt-6">Tổng doanh thu </div>
       <div className="relative border border-blue-100 rounded-lg p-4 h-[350px]">

@@ -244,18 +244,28 @@ export default function EventDetailPage() {
             </tr>
           </thead>
           <tbody>
-            {event.showings.map((showing) => (
-              <tr
-                key={`showing-${showing.id}`}
-                className={`cursor-pointer hover:bg-[#EAFDFC] ${selectedShowingId === showing.id ? "bg-[#A6F6F1]" : "bg-white"}`}
-                onClick={() => handleRowClick(showing.id)}
-              >
-                <td className="py-2 px-4 border-t">{showing.id}</td>
-                <td className="py-2 px-4 border-t">{showing.startDate}</td>
-                <td className="py-2 px-4 border-t">{showing.endDate}</td>
-                <td className="py-2 px-4 border-t">{formatCurrency(showing.revenue)}</td>
-              </tr>
-            ))}
+          {event.showings.length === 0 ? (
+  <tr>
+    <td colSpan={4} className="py-2 px-4 text-center text-gray-500 border-t">
+      Không có show nào
+    </td>
+  </tr>
+) : (
+  event.showings.map((showing) => (
+    <tr
+      key={`showing-${showing.id}`}
+      className={`cursor-pointer hover:bg-[#EAFDFC] ${
+        selectedShowingId === showing.id ? "bg-[#A6F6F1]" : "bg-white"
+      }`}
+      onClick={() => handleRowClick(showing.id)}
+    >
+      <td className="py-2 px-4 border-t">{showing.id}</td>
+      <td className="py-2 px-4 border-t">{showing.startDate}</td>
+      <td className="py-2 px-4 border-t">{showing.endDate}</td>
+      <td className="py-2 px-4 border-t">{formatCurrency(showing.revenue)}</td>
+    </tr>
+  ))
+)}
           </tbody>
         </table>
       </div>

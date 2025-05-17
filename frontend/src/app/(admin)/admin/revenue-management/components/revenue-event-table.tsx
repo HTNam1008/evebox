@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Loader } from "lucide-react";
 import { TicketTypeRevenueData } from "@/types/model/organizerRevenue";
 
 export interface ShowingRevenue {
@@ -64,7 +64,14 @@ export function EventRevenueTable({
   
     return `${datePart} ${startTime} - ${endTime}`;
   }
-  if (events.length === 0) return null;
+
+  if (events.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <Loader className="w-6 h-6 animate-spin text-gray-500" />
+      </div>
+    );
+  }
 
   return (
     <div className={`${className}`}>
