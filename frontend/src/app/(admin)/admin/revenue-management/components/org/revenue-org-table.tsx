@@ -1,7 +1,7 @@
 "use client";
 
 import {Fragment } from "react";
-import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronRight, ExternalLink, Loader } from "lucide-react";
 import { EventRevenueTable } from "../revenue-event-table";
 import { TicketTypeRevenueData } from "@/types/model/organizerRevenue";
 
@@ -77,7 +77,13 @@ export function RevenueOrgTable({
     }
   }
 
-  if (organizations?.length === 0) return null;
+  if (organizations?.length === 0 ) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <Loader className="w-6 h-6 animate-spin text-gray-500" />
+      </div>
+    );
+  }
 
   return (
     <div className={className}>

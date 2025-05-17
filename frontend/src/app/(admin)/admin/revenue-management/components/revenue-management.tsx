@@ -66,9 +66,10 @@ export default function RevenuePage() {
 
   const [appRevenues, setAppRevenues] = useState<AppRevenue[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  
+
 
   useEffect(() => {
+    console.log("Active-----",activeTab);
     // Reset filters when switching tabs
     setFromDate(undefined);
     setToDate(undefined);
@@ -156,16 +157,24 @@ export default function RevenuePage() {
     setFilter({ type: "month", from: "", to: "" });
   };
 
+  const allOrgs: Organization[] = useMemo(() => {
+    if (!appRevenues.length) return [];
+  
+    return appRevenues?.[0]?.organizations
+    ?? [];
+  }, [appRevenues]);
+
+
   const allEvents: EventRevenue[] = useMemo(() => {
     if (!appRevenues.length) return [];
   
     return appRevenues?.[0]?.organizations?.flatMap((org) =>
-  org.events.map((event) => ({
+     org.events.map((event) => ({
     ...event,
     orgId: org.id,
     orgName: org.name,
   }))
-) ?? [];
+  ) ?? [];
   }, [appRevenues]);
 
   // Hàm định dạng số tiền
@@ -319,41 +328,42 @@ export default function RevenuePage() {
         </div>
       )}
       {activeTab === "organization" && (
-        <>
-          <Filter 
+  <>
+    <Filter
             key={activeTab}
-           onFilterChange={(f) => {
+      onFilterChange={(f) => {
             setFromDate(f.fromDate);
             setToDate(f.toDate);
             setSearch(f.search);
           }} />
-          <RevenueOrgTable
-             organizations={appRevenues[0].organizations}
-                                    appId={appRevenues[0].id}
-                                    toggleOrganization={toggleOrganization}
-                                    toggleEvent={toggleEvent}
-                                    toggleEventDetail={toggleEventDetail}
-                                    formatCurrency={formatCurrency}
-                                  />
-        </>
-        )}
-      {activeTab === "event" && (
-        <>
-          <Filter 
+    <RevenueOrgTable
+      organizations={allOrgs}
+      appId={appRevenues[0]?.id ?? ""}
+      toggleOrganization={toggleOrganization}
+      toggleEvent={toggleEvent}
+      toggleEventDetail={toggleEventDetail}
+      formatCurrency={formatCurrency}
+    />
+  </>
+)}
+     {activeTab === "event" && (
+  <>
+    <Filter
            key={activeTab}
-           onFilterChange={(f) => {
+          onFilterChange={(f) => {
             setFromDate(f.fromDate);
             setToDate(f.toDate);
             setSearch(f.search);
           }} />
-          <EventRevenueTable
-            formatCurrency={formatCurrency}
-            toggleEvent={handleToggleEvent}
-            toggleEventDetail={handleToggleEventDetail}  
-            events={allEvents}
-            orgId={appRevenues[0]?.id.toString() ?? ""}      />
-        </>
-      )}
+    <EventRevenueTable
+      formatCurrency={formatCurrency}
+      toggleEvent={handleToggleEvent}
+      toggleEventDetail={handleToggleEventDetail}
+      events={allEvents}
+      orgId={appRevenues[0]?.id.toString() ?? ""}
+    />
+  </>
+)}
     </div>
   )
 }
