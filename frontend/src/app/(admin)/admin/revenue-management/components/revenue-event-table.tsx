@@ -1,181 +1,90 @@
-"use client"
+"use client";
 
-import { useState, Fragment } from "react"
-import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react"
+import { Fragment } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { TicketTypeRevenueData } from "@/types/model/organizerRevenue";
 
-// Định nghĩa các kiểu dữ liệu
-export type TicketRevenue = {
-  id: number
-  type: string
-  price: number
-  quantity: number
-  revenue: number
+export interface ShowingRevenue {
+  showingId: string;
+  startDate: string;
+  endDate: string;
+  revenue: number;
+  ticketTypes: TicketTypeRevenueData[];
+  isExpanded?: boolean;
 }
 
-export type EventDetail = {
-  id: number
-  startDate: string
-  endDate: string
-  revenue: number
-  tickets: TicketRevenue[]
-  isExpanded?: boolean
+export interface EventRevenue {
+  id: number;
+  name: string;
+  totalRevenue: number;
+  platformFee: number;
+  actualRevenue: number;
+  showings: ShowingRevenue[];
+  isExpanded?: boolean;
+  selectedDetailId?: string;
 }
 
-export type Event = {
-  id: number
-  name: string
-  totalRevenue: number
-  platformFee: number
-  actualRevenue: number
-  details: EventDetail[]
-  isExpanded?: boolean
-  selectedDetailId?: number
-}
-
-interface EventRevenueTableProps {
-  events?: Event[]
-  orgId?: number
-  toggleEvent: (orgId: number, eventId: number) => void
-  toggleEventDetail: (orgId: number, eventId: number, detailId: number) => void
-  formatCurrency: (amount: number) => string
-  className?: string
+export interface EventRevenueTableProps {
+  events: EventRevenue[];
+  orgId: string;
+  toggleEvent: (orgId: string, eventId: number) => void;
+  toggleEventDetail: (orgId: string, eventId: number, showingId: string) => void;
+  formatCurrency: (amount: number) => string;
+  className?: string;
 }
 
 export function EventRevenueTable({
-  events: propEvents,
-  orgId = 0,
+  events,
+  orgId,
   toggleEvent,
   toggleEventDetail,
   formatCurrency,
   className = "",
 }: EventRevenueTableProps) {
 
-  const [localEvents, setLocalEvents] = useState<Event[]>([
-    {
-      id: 1,
-      name: "ATSH",
-      totalRevenue: 100000000,
-      platformFee: 10,
-      actualRevenue: 100000000,
-      details: [],
-    },
-    {
-      id: 2,
-      name: "ATVNCG",
-      totalRevenue: 100000000,
-      platformFee: 10,
-      actualRevenue: 100000000,
-      isExpanded: true,
-      details: [
-        {
-          id: 1,
-          startDate: "25/01/2025",
-          endDate: "25/01/2025",
-          revenue: 100000000,
-          tickets: [],
-        },
-        {
-          id: 2,
-          startDate: "03/04/2024",
-          endDate: "10/04/2025",
-          revenue: 800000000,
-          isExpanded: true,
-          tickets: [
-            {
-              id: 1,
-              type: "VIP",
-              price: 1000000,
-              quantity: 1000,
-              revenue: 300000000,
-            },
-            {
-              id: 2,
-              type: "Thường",
-              price: 500000,
-              quantity: 1500,
-              revenue: 500000000,
-            },
-          ],
-        },
-      ],
-    },
-  ])
-
-  const events = propEvents || localEvents
-
-  const handleToggleEvent = (eventId: number) => {
-    if (!propEvents) {
-      setLocalEvents((prev) =>
-        prev.map((event) => {
-          if (event.id === eventId) {
-            return { ...event, isExpanded: !event.isExpanded }
-          }
-          return event
-        }),
-      )
-    } else {
-      toggleEvent(orgId, eventId)
-    }
+  function formatDateRange(start: string, end: string): string {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+  
+    const dateFormatter = new Intl.DateTimeFormat("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  
+    const timeFormatter = new Intl.DateTimeFormat("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
+  
+    const datePart = dateFormatter.format(startDate);
+    const startTime = timeFormatter.format(startDate);
+    const endTime = timeFormatter.format(endDate);
+  
+    return `${datePart} ${startTime} - ${endTime}`;
   }
-
-
-  const handleToggleEventDetail = (eventId: number, detailId: number) => {
-    if (!propEvents) {
-      setLocalEvents((prev) =>
-        prev.map((event) => {
-          if (event.id === eventId) {
-            return {
-              ...event,
-              selectedDetailId: detailId,
-              details: event.details.map((detail) => {
-                if (detail.id === detailId) {
-                  return { ...detail, isExpanded: !detail.isExpanded }
-                }
-                return detail
-              }),
-            }
-          }
-          return event
-        }),
-      )
-    } else {
-      toggleEventDetail(orgId, eventId, detailId)
-    }
-  }
-
-  if (events.length === 0) return null
+  if (events.length === 0) return null;
 
   return (
     <div className={`${className}`}>
-      {!propEvents && (
-        <div className="flex justify-end mb-4">
-          <button className="bg-[#0C4762] text-white px-4 py-2 rounded-md hover:bg-[#51DACF] transition-colors">
-            Xuất báo cáo
-          </button>
-        </div>
-      )}
-
-      <div className={`${!propEvents ? "overflow-hidden rounded-lg border border-gray-200" : ""}`}>
+      <div className="overflow-hidden rounded-lg border border-gray-200">
         <table className="w-full text-sm">
           <thead>
-            <tr className={propEvents ? "bg-[#A6F6F1]" : "bg-[#0C4762] text-white"}>
+            <tr className="bg-[#0C4762] text-white">
               <th className="py-2 px-4 text-left w-16">STT</th>
               <th className="py-2 px-4 text-left">Tên sự kiện</th>
               <th className="py-2 px-4 text-left">Tổng doanh thu</th>
-              <th className="py-2 px-4 text-left">Phí nền tảng</th>
+              <th className="py-2 px-4 text-left">Chiết khấu</th>
               <th className="py-2 px-4 text-left">Doanh thu thực nhận</th>
-              <th className="py-2 px-4 text-left">Xem chi tiết</th>
             </tr>
           </thead>
           <tbody>
-            {events.map((event) => (
+            {events.map((event, index) => (
               <Fragment key={`event-${orgId}-${event.id}`}>
-                <tr
-                  className={`cursor-pointer hover:bg-[#EAFDFC]`}
-                  onClick={() => (propEvents ? toggleEvent(orgId, event.id) : handleToggleEvent(event.id))}
-                >
+                <tr className="cursor-pointer hover:bg-[#E3FEF7]" onClick={() => toggleEvent(orgId, event.id)}>
                   <td className="py-2 px-4 border-t flex items-center">
-                    {event.details.length > 0 && (
+                    {event.showings.length > 0 && (
                       <>
                         {event.isExpanded ? (
                           <ChevronDown className="w-4 h-4 mr-1" />
@@ -184,132 +93,57 @@ export function EventRevenueTable({
                         )}
                       </>
                     )}
-                    {event.id}
+                    {index + 1}
                   </td>
                   <td className="py-2 px-4 border-t">{event.name}</td>
                   <td className="py-2 px-4 border-t">{formatCurrency(event.totalRevenue)}</td>
                   <td className="py-2 px-4 border-t">{event.platformFee}%</td>
                   <td className="py-2 px-4 border-t">{formatCurrency(event.actualRevenue)}</td>
-                  <td className="py-2 px-4 border-t">
-                    <button
-                      className="inline-flex items-center justify-center"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        window.location.href = `/admin/revenue-management/revenue/${orgId}/event/${event.id}`
-                      }}
-                    >
-                      <ExternalLink className="w-5 h-5" />
-                    </button>
-                  </td>
                 </tr>
 
-                {/* Bảng chi tiết sự kiện */}
-                {event.isExpanded && event.details.length > 0 && (
-                  <tr>
-                    <td colSpan={6} className="p-0">
-                      <div className="ml-4">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="bg-[#C1ECE4]">
-                              <th className="py-2 px-4 text-left w-16">STT</th>
-                              <th className="py-2 px-4 text-left">Ngày bắt đầu</th>
-                              <th className="py-2 px-4 text-left">Ngày kết thúc</th>
-                              <th className="py-2 px-4 text-left" colSpan={2}>
-                                Doanh thu
-                              </th>
-                              <th className="py-2 px-4 text-left">Xem chi tiết</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {event.details.map((detail) => (
-                              <Fragment key={`detail-${orgId}-${event.id}-${detail.id}`}>
-                                <tr
-                                  className={`cursor-pointer hover:bg-[#D2F5E3] ${
-                                    detail.id === event.selectedDetailId ? "bg-[#D2F5E3]" : ""
-                                  }`}
-                                  onClick={() =>
-                                    propEvents
-                                      ? toggleEventDetail(orgId, event.id, detail.id)
-                                      : handleToggleEventDetail(event.id, detail.id)
-                                  }
-                                >
-                                  <td className="py-2 px-4 border-t flex items-center">
-                                    {detail.tickets && detail.tickets.length > 0 && (
-                                      <>
-                                        {detail.isExpanded ? (
-                                          <ChevronDown className="w-4 h-4 mr-1" />
-                                        ) : (
-                                          <ChevronRight className="w-4 h-4 mr-1" />
-                                        )}
-                                      </>
-                                    )}
-                                    {detail.id}
-                                  </td>
-                                  <td className="py-2 px-4 border-t">{detail.startDate}</td>
-                                  <td className="py-2 px-4 border-t">{detail.endDate}</td>
-                                  <td className="py-2 px-4 border-t" colSpan={2}>
-                                    {formatCurrency(detail.revenue)}
-                                  </td>
-                                  <td className="py-2 px-4 border-t">
-                                    <button
-                                      className="inline-flex items-center justify-center"
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        window.location.href = `/admin/revenue-management/revenue/${orgId}/event/${event.id}/showing/${detail.id}`
-                                      }}
-                                    >
-                                      <ExternalLink className="w-5 h-5" />
-                                    </button>
-                                  </td>
-                                </tr>
+                {event.isExpanded &&
+                  event.showings.map((showing) => (
+                    <Fragment key={`showing-${showing.showingId}`}>
+                      <tr
+                        className="bg-gray-50 cursor-pointer hover:bg-[#f0fdfa]"
+                        onClick={() => toggleEventDetail(orgId, event.id, showing.showingId)}
+                      >
+                        <td className="py-2 px-6 border-t"></td>
+                        <td className="py-2 px-4 border-t" colSpan={2}>
+                           {formatDateRange(showing.startDate, showing.endDate)}
+                        </td>
+                        <td className="py-2 px-4 border-t" colSpan={2}>
+                          {formatCurrency(showing.revenue)}
+                        </td>
+                      </tr>
 
-                                {/* Bảng doanh thu vé */}
-                                {detail.isExpanded && detail.tickets.length > 0 && (
-                                  <tr>
-                                    <td colSpan={6} className="p-0">
-                                      <div className="ml-4">
-                                        <table className="w-full text-sm">
-                                          <thead>
-                                            <tr className="bg-[#e8f8f5]">
-                                              <th className="py-2 px-4 text-left w-16">STT</th>
-                                              <th className="py-2 px-4 text-left">Loại vé</th>
-                                              <th className="py-2 px-4 text-left">Đơn giá</th>
-                                              <th className="py-2 px-4 text-left">Số vé bán ra</th>
-                                              <th className="py-2 px-4 text-left">Doanh thu</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {detail.tickets.map((ticket) => (
-                                              <tr
-                                                key={`ticket-${orgId}-${event.id}-${detail.id}-${ticket.id}`}
-                                                className="hover:bg-[#EDFFEA]"
-                                              >
-                                                <td className="py-2 px-4 border-t">{ticket.id}</td>
-                                                <td className="py-2 px-4 border-t">{ticket.type}</td>
-                                                <td className="py-2 px-4 border-t">{formatCurrency(ticket.price)}</td>
-                                                <td className="py-2 px-4 border-t">{ticket.quantity}</td>
-                                                <td className="py-2 px-4 border-t">{formatCurrency(ticket.revenue)}</td>
-                                              </tr>
-                                            ))}
-                                          </tbody>
-                                        </table>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                )}
-                              </Fragment>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                )}
+                      {showing.isExpanded && (
+                        <>
+                          <tr className="bg-gray-100 text-sm text-gray-700">
+                            <td></td>
+                            <td className="px-6 py-1 font-medium">Loại vé</td>
+                            <td className="px-4 py-1 font-medium">Giá</td>
+                            <td className="px-4 py-1 font-medium">Số lượng</td>
+                            <td className="px-4 py-1 font-medium">Doanh thu</td>
+                          </tr>
+                          {showing.ticketTypes.map((ticket) => (
+                            <tr key={`ticket-${ticket.ticketTypeId}`} className="bg-gray-50 text-gray-800 text-sm">
+                              <td></td>
+                              <td className="px-6 py-1">{ticket.name}</td>
+                              <td className="px-4 py-1">{formatCurrency(ticket.price)}</td>
+                              <td className="px-4 py-1">{ticket.sold}</td>
+                              <td className="px-4 py-1">{formatCurrency(ticket.revenue)}</td>
+                            </tr>
+                          ))}
+                        </>
+                      )}
+                    </Fragment>
+                  ))}
               </Fragment>
             ))}
           </tbody>
         </table>
       </div>
     </div>
-  )
+  );
 }

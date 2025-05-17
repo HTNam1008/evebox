@@ -1,107 +1,31 @@
 "use client"
 
-import { useState, Fragment } from "react"
+import { Fragment } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
-import { RevenueOrgTable, type Organization } from "../org/revenue-org-table"
+import { RevenueOrgTable } from "../org/revenue-org-table"
+import { AppRevenue } from "../revenue-management"
+import { Loader } from "lucide-react";
 
-export type AppRevenue = {
-  id: number
-  totalRevenue: number
-  systemDiscount: number
-  actualRevenue: number
-  organizations: Organization[]
-  isExpanded?: boolean
-  selectedOrgId?: number
+
+interface RevenueAppTableProps {
+  fromDate?: string
+  toDate?: string
+  appRevenues: AppRevenue[]
+  setAppRevenues: React.Dispatch<React.SetStateAction<AppRevenue[]>>
+  loading: boolean
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function RevenueAppTable() {
+export function RevenueAppTable({
+  appRevenues,
+  setAppRevenues,
+  loading,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setLoading,
+}: RevenueAppTableProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN").format(amount)
   }
-
-  // Dữ liệu mẫu
-  const [appRevenues, setAppRevenues] = useState<AppRevenue[]>([
-    {
-      id: 1,
-      totalRevenue: 100000000,
-      systemDiscount: 10,
-      actualRevenue: 100000000,
-      isExpanded: true,
-      selectedOrgId: 3,
-      organizations: [
-        {
-          id: 1,
-          name: "Evebox",
-          actualRevenue: 100000000,
-          events: [],
-        },
-        {
-          id: 2,
-          name: "Evebox",
-          actualRevenue: 100000000,
-          events: [],
-        },
-        {
-          id: 3,
-          name: "Evebox",
-          actualRevenue: 100000000,
-          isExpanded: true,
-          selectedEventId: 2,
-          events: [
-            {
-              id: 1,
-              name: "ATSH",
-              totalRevenue: 100000000,
-              platformFee: 10,
-              actualRevenue: 100000000,
-              details: [],
-            },
-            {
-              id: 2,
-              name: "ATVNCG",
-              totalRevenue: 100000000,
-              platformFee: 10,
-              actualRevenue: 100000000,
-              isExpanded: true,
-              details: [
-                {
-                  id: 1,
-                  startDate: "25/01/2025",
-                  endDate: "25/01/2025",
-                  revenue: 100000000,
-                  tickets: [],
-                },
-                {
-                  id: 2,
-                  startDate: "03/04/2024",
-                  endDate: "10/04/2025",
-                  revenue: 800000000,
-                  isExpanded: true,
-                  tickets: [
-                    {
-                      id: 1,
-                      type: "VIP",
-                      price: 1000000,
-                      quantity: 1000,
-                      revenue: 300000000,
-                    },
-                    {
-                      id: 2,
-                      type: "Thường",
-                      price: 500000,
-                      quantity: 1500,
-                      revenue: 500000000,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ])
-
   const toggleAppRevenue = (appId: number) => {
     setAppRevenues((prev) =>
       prev.map((app) => {
@@ -113,27 +37,27 @@ export function RevenueAppTable() {
     )
   }
 
-  const toggleOrganization = (appId: number, orgId: number) => {
+  const toggleOrganization = (appId: number, orgId: string) => {
     setAppRevenues((prev) =>
-      prev.map((app) => {
+      prev.map((app): AppRevenue => {
         if (app.id === appId) {
           return {
             ...app,
             selectedOrgId: orgId,
-            organizations: app.organizations.map((org) => {
-              if (org.id === orgId) {
-                return { ...org, isExpanded: !org.isExpanded }
-              }
-              return org
-            }),
-          }
+            organizations: app.organizations.map((org) =>
+              org.id === orgId
+                ? { ...org, isExpanded: !org.isExpanded }
+                : org
+            ),
+          };
         }
-        return app
-      }),
-    )
-  }
+        return app;
+      })
+    );
+  };
+  
 
-  const toggleEvent = (appId: number, orgId: number, eventId: number) => {
+  const toggleEvent = (appId: number, orgId: string, eventId: number) => {
     setAppRevenues((prev) =>
       prev.map((app) => {
         if (app.id === appId) {
@@ -144,24 +68,28 @@ export function RevenueAppTable() {
                 return {
                   ...org,
                   selectedEventId: eventId,
-                  events: org.events.map((event) => {
-                    if (event.id === eventId) {
-                      return { ...event, isExpanded: !event.isExpanded }
-                    }
-                    return event
-                  }),
-                }
+                  events: org.events.map((ev) =>
+                    ev.id === eventId
+                      ? { ...ev, isExpanded: !ev.isExpanded }
+                      : ev
+                  ),
+                };
               }
-              return org
+              return org;
             }),
-          }
+          };
         }
-        return app
-      }),
-    )
-  }
+        return app;
+      })
+    );
+  };
 
-  const toggleEventDetail = (appId: number, orgId: number, eventId: number, detailId: number) => {
+  const toggleEventDetail = (
+    appId: number,
+    orgId: string,
+    eventId: number,
+    showingId: string
+  ) => {
     setAppRevenues((prev) =>
       prev.map((app) => {
         if (app.id === appId) {
@@ -171,30 +99,37 @@ export function RevenueAppTable() {
               if (org.id === orgId) {
                 return {
                   ...org,
-                  events: org.events.map((event) => {
-                    if (event.id === eventId) {
+                  events: org.events.map((ev) => {
+                    if (ev.id === eventId) {
                       return {
-                        ...event,
-                        selectedDetailId: detailId,
-                        details: event.details.map((detail) => {
-                          if (detail.id === detailId) {
-                            return { ...detail, isExpanded: !detail.isExpanded }
-                          }
-                          return detail
-                        }),
-                      }
+                        ...ev,
+                        selectedDetailId: showingId,
+                        showings: ev.showings.map((show) =>
+                          show.showingId === showingId
+                            ? { ...show, isExpanded: !show.isExpanded }
+                            : show
+                        ),
+                      };
                     }
-                    return event
+                    return ev;
                   }),
-                }
+                };
               }
-              return org
+              return org;
             }),
-          }
+          };
         }
-        return app
-      }),
-    )
+        return app;
+      })
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <Loader className="w-6 h-6 animate-spin text-gray-500" />
+      </div>
+    );
   }
 
   return (

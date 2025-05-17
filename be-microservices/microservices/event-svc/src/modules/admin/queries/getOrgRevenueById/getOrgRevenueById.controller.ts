@@ -14,7 +14,7 @@ export class GetOrgRevenueByIdController {
   @Get('/revenue/:orgId')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get revenue of an org' })
-  @ApiParam({ name: 'orgId', example: "72174d54-ab8f-4a83-af5f-e8df46df37ad", description: "The ID of the organization" })
+  @ApiParam({ name: 'orgId', example: "The gmail stands for ID of the organizer", description: "The ID of the organization" })
   @ApiResponse({ status: HttpStatus.OK, description: 'Organizer revenue retrieved successfully', type: RevenueByIdDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })
   @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Internal server error' })

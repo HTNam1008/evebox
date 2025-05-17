@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ChevronDown, ExternalLink, RefreshCw } from "lucide-react"
+import { ChevronDown, Loader, RefreshCw } from "lucide-react"
 import { useParams } from "next/navigation"
 
 import { OverviewCard } from "@/app/(organizer)/organizer/events/[id]/summary-revenue/components/overviewCard"
+import { getEventRevenueDetail } from "@/services/admin.service"
 //import { TicketTable } from "@/app/(organizer)/organizer/events/[id]/summary-revenue/components/ticketTable"
 //import type { ITicketTypeSummary, IEventSummaryData } from "@/types/model/getSummaryOrg"
 
@@ -21,7 +22,7 @@ type TicketType = {
 }
 
 type Showing = {
-  id: number
+  id: string
   startDate: string
   endDate: string
   startTime: string
@@ -34,7 +35,7 @@ type Showing = {
 }
 
 type Event = {
-  id: string
+  id: number
   name: string
   organizerId: string
   organizerName: string
@@ -43,92 +44,88 @@ type Event = {
   showings: Showing[]
 }
 
+type EventOption = { id: number; name: string; organizerId: string }
+
+
 export default function EventDetailPage() {
   const params = useParams()
   const eventId = params.eventId as string
-  const [selectedShowingId, setSelectedShowingId] = useState<number | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  // Mock data for the event
-  const [event, setEvent] = useState<Event>({
-    id: eventId,
-    name: "Một nhà",
-    organizerId: "1",
-    organizerName: "Nhà xương rồng",
-    location: "Tòa nhà Diamond Plaza",
-    address: "Đường Lê Duẩn, Quận 1",
-    showings: [
-      {
-        id: 1,
-        startDate: "28/05/2024",
-        endDate: "28/05/2024",
-        startTime: "14:00",
-        endTime: "19:00",
-        revenue: 1800000000,
-        totalTickets: 1000,
-        soldTickets: 0,
-        percentageSold: 0,
-        ticketTypes: [
-          {
-            id: 1,
-            type: "free",
-            price: 100000,
-            sold: 500,
-            locked: 3,
-            total: 1000,
-            revenue: 50000000,
-          },
-        ],
-      },
-      {
-        id: 2,
-        startDate: "30/8/2021",
-        endDate: "1/9/2021",
-        startTime: "14:00",
-        endTime: "19:00",
-        revenue: 1800000000,
-        totalTickets: 1000,
-        soldTickets: 0,
-        percentageSold: 0,
-        ticketTypes: [
-          {
-            id: 1,
-            type: "free",
-            price: 100000,
-            sold: 500,
-            locked: 3,
-            total: 1000,
-            revenue: 50000000,
-          },
-        ],
-      },
-      {
-        id: 3,
-        startDate: "20/10/2023",
-        endDate: "22/10/2023",
-        startTime: "14:00",
-        endTime: "19:00",
-        revenue: 1800000000,
-        totalTickets: 1000,
-        soldTickets: 0,
-        percentageSold: 0,
-        ticketTypes: [
-          {
-            id: 1,
-            type: "free",
-            price: 100000,
-            sold: 500,
-            locked: 3,
-            total: 1000,
-            revenue: 50000000,
-          },
-        ],
-      },
-    ],
-  })
+  const [event, setEvent] = useState<Event | null>(null);
+  const [selectedShowingId, setSelectedShowingId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedFilter, setSelectedFilter] = useState(event?.name)
 
-  const [selectedFilter, setSelectedFilter] = useState(event.name)
+
+  useEffect(() => {
+    const fetchRevenueDetail = async () => {
+      try {
+        const eventData = localStorage.getItem("selectedEvent");
+        const parsedEvent = eventData ? JSON.parse(eventData) : null;
+  
+        const response = await getEventRevenueDetail(parsedEvent.organizerId, Number(eventId));
+        const showings = response.data.map((s): Showing => ({
+          id: s.showingId,
+          startDate: new Date(s.startTime).toLocaleDateString("vi-VN"),
+          endDate: new Date(s.endTime).toLocaleDateString("vi-VN"),
+          startTime: new Date(s.startTime).toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          endTime: new Date(s.endTime).toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          revenue: s.revenue,
+          totalTickets: 0,      // Placeholder
+          soldTickets: 0,       // Placeholder
+          percentageSold: 0,    // Placeholder
+          ticketTypes: [],      // Placeholder
+        }));
+  
+        const mappedEvent: Event = {
+          id: parsedEvent.id,
+          name: parsedEvent.name,
+          organizerId: parsedEvent.organizerId,
+          organizerName: parsedEvent.organizerName,
+          location: parsedEvent.location ?? "Không rõ",
+          address: parsedEvent.address ?? "Không rõ",
+          showings,
+        };
+  
+        setEvent(mappedEvent);
+        setSelectedFilter(mappedEvent.name);
+
+      } catch (error) {
+        console.error("Failed to load event revenue detail:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchRevenueDetail();
+  }, [eventId]);
+
+  const selectedShowing = event?.showings.find((s) => s.id === selectedShowingId);
+
+  const [eventOptions, setEventOptions] = useState<EventOption[]>([]);
+
+  useEffect(() => {
+    const storedAppRevenue = localStorage.getItem("selectedOrg");
+    if (storedAppRevenue) {
+      try {
+        const parsed = JSON.parse(storedAppRevenue);
+      const orgId = parsed.id;
+      const eventsWithOrgId = parsed.events.map((event: EventOption) => ({
+        ...event,
+        organizerId: orgId,
+      }));
+      setEventOptions(eventsWithOrgId);
+      } catch (e) {
+        console.error("Invalid appRevenue format", e);
+      }
+    }
+    }, []);
 
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -137,14 +134,19 @@ export default function EventDetailPage() {
 
   // Reset filter
   const resetFilter = () => {
-    setSelectedFilter(event.name)
+    setSelectedFilter(event?.name)
   }
 
-  // Get selected showing
-  const selectedShowing = event.showings.find((showing) => showing.id === selectedShowingId)
+   if (!event) {
+        return (
+          <div className="flex items-center justify-center h-40">
+            <Loader className="w-6 h-6 animate-spin text-gray-500" />
+          </div>
+        );
+      }
 
-  // Handle row click
-  const handleRowClick = (showingId: number) => {
+  // // Handle row click
+  const handleRowClick = (showingId: string) => {
     if (selectedShowingId === showingId) {
       setSelectedShowingId(null) // Toggle off if already selected
     } else {
@@ -158,9 +160,9 @@ export default function EventDetailPage() {
   }
 
   // Handle showing change from SummaryControls
-  const handleShowingChange = (newShowingId: string) => {
-    setSelectedShowingId(Number(newShowingId))
-  }
+  // const handleShowingChange = (newShowingId: string) => {
+  //   setSelectedShowingId(Number(newShowingId))
+  // }
 
   return (
     <div className="container p-4">
@@ -188,11 +190,22 @@ export default function EventDetailPage() {
             <select
               className="appearance-none bg-white px-4 py-2 pr-8 outline-none"
               value={selectedFilter}
-              onChange={(e) => setSelectedFilter(e.target.value)}
+              onChange={(e) => {
+                const selectedName = e.target.value;
+                setSelectedFilter(selectedName);
+            
+                const selectedEvent = eventOptions.find((event) => event.name === selectedName);
+                if (selectedEvent) {
+                  localStorage.setItem("selectedEvent", JSON.stringify(selectedEvent));
+                  window.location.href = `/admin/revenue-management/revenue/${event.organizerId}/event/${selectedEvent.id}`;
+                }
+              }}
             >
-              <option value={event.name}>{event.name}</option>
-              <option value="Option 2">Option 2</option>
-              <option value="Option 3">Option 3</option>
+              {eventOptions.map((event) => (
+      <option key={event.id} value={event.name}>
+        {event.name}
+      </option>
+    ))}
             </select>
             <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 pointer-events-none" />
           </div>
@@ -228,11 +241,10 @@ export default function EventDetailPage() {
               <th className="py-2 px-4 text-left">Ngày bắt đầu</th>
               <th className="py-2 px-4 text-left">Ngày kết thúc</th>
               <th className="py-2 px-4 text-left">Tổng doanh thu</th>
-              <th className="py-2 px-4 text-left">Xem chi tiết</th>
             </tr>
           </thead>
           <tbody>
-            {event.showings.map((showing, index) => (
+            {event.showings.map((showing) => (
               <tr
                 key={`showing-${showing.id}`}
                 className={`cursor-pointer hover:bg-[#EAFDFC] ${selectedShowingId === showing.id ? "bg-[#A6F6F1]" : "bg-white"}`}
@@ -242,17 +254,6 @@ export default function EventDetailPage() {
                 <td className="py-2 px-4 border-t">{showing.startDate}</td>
                 <td className="py-2 px-4 border-t">{showing.endDate}</td>
                 <td className="py-2 px-4 border-t">{formatCurrency(showing.revenue)}</td>
-                <td className="py-2 px-4 border-t">
-                  <button
-                    className="inline-flex items-center justify-center"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      window.location.href = `/admin/showings/${showing.id}`
-                    }}
-                  >
-                    <ExternalLink className="w-5 h-5" />
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>

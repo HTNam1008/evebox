@@ -87,40 +87,47 @@ export default function ShowingTable({ eventId, eventTitle }: { eventId: number,
                                     </td>
                                 </tr>
                             ) : (
-                                sortedData.length !== 0 && sortedData.map((showing, index) => (
-                                    <tr key={showing.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
-                                        <td className="px-4 py-3 text-center border-r border-gray-200">{showing.id}</td>
-                                        <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
-                                            <div className="line-clamp-2 leading-snug" title={eventTitle}>
-                                                {eventTitle}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
-                                            <div className="line-clamp-3 leading-snug text-center">
-                                                <span>{`${new Date(showing.startTime).toLocaleDateString('vi-VN')} - ${new Date(showing.startTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false })}`}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
-                                            <div className="line-clamp-2 leading-snug text-center">
-                                                <span>{`${new Date(showing.endTime).toLocaleDateString('vi-VN')} - ${new Date(showing.endTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false })}`}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3 text-center border-r border-gray-200">
-                                            {showing.seatMapId === 0 ? "Không" : "Có"}
-                                        </td>
-                                        <td className="px-4 py-3 border-r border-gray-200 text-center cursor-pointer">
-                                            {showing.ticketTypes.length} loại vé
-                                        </td>
-                                        <td className="action-btn px-4 py-3 border-r border-gray-200 text-center">
-                                            <div className="flex justify-center items-center gap-x-2">
-                                                <div title="Xem chi tiết" onClick={() => router.push(`/admin/showing-management/${showing.id}`)}>
-                                                    <Eye className="approve-btn p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer" />
+                                sortedData && sortedData.length !== 0 ? (
+                                    sortedData.map((showing, index) => (
+                                        <tr key={showing.id ?? index} className="border-t border-gray-200 hover:bg-gray-200 transition-colors duration-200">
+                                            <td className="px-4 py-3 text-center border-r border-gray-200">{showing.id}</td>
+                                            <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+                                                <div className="line-clamp-2 leading-snug" title={eventTitle}>
+                                                    {eventTitle}
                                                 </div>
-                                            </div>
+                                            </td>
+                                            <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+                                                <div className="line-clamp-3 leading-snug text-center">
+                                                    <span>{`${new Date(showing.startTime).toLocaleDateString('vi-VN')} - ${new Date(showing.startTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false })}`}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-3 border-r border-gray-200 cursor-pointer max-w-[200px] align-middle">
+                                                <div className="line-clamp-2 leading-snug text-center">
+                                                    <span>{`${new Date(showing.endTime).toLocaleDateString('vi-VN')} - ${new Date(showing.endTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false })}`}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-3 text-center border-r border-gray-200">
+                                                {showing.seatMapId === 0 ? "Không" : "Có"}
+                                            </td>
+                                            <td className="px-4 py-3 border-r border-gray-200 text-center cursor-pointer">
+                                                {showing.ticketTypes.length} loại vé
+                                            </td>
+                                            <td className="action-btn px-4 py-3 border-r border-gray-200 text-center">
+                                                <div className="flex justify-center items-center gap-x-2">
+                                                    <div title="Xem chi tiết" onClick={() => router.push(`/admin/showing-management/${showing.id}`)}>
+                                                        <Eye className="approve-btn p-1 bg-teal-400 text-white rounded w-6 h-6 cursor-pointer" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={9} className="text-center py-4 text-gray-500">
+                                            Sự kiện này không có suất diễn
                                         </td>
                                     </tr>
-                                ))
-
+                                )
                             )}
                         </tbody>
                     </table>

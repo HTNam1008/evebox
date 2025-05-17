@@ -1,134 +1,108 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Chart from "chart.js/auto"
+import { getOrgRevenueChart } from "@/services/admin.service"
+import { RevenueSummaryResponse } from "@/types/model/RevenueSummaryResponse"
 
-export default function RevenueChart() {
+
+interface RevenueChartProps {
+  type: "month" | "year"
+  from: string
+  to: string
+}
+
+export default function RevenueChart({ type, from, to }: RevenueChartProps) {
   const chartRef = useRef<HTMLCanvasElement>(null)
   const chartInstance = useRef<Chart | null>(null)
+  const [chartData, setChartData] = useState<RevenueSummaryResponse | null>(null)
 
   useEffect(() => {
-    if (!chartRef.current) return
+    const fetchChartData = async () => {
+      try {
+        const res = await getOrgRevenueChart(from, to, type);
+        setChartData({ labels: res.labels, values: res.values });
+      } catch (error) {
+        console.error("Failed to fetch chart data", error);
+      }
+    };
+  
+    fetchChartData();
+  }, [type, from, to]);
 
+  useEffect(() => {
+    if (
+      !chartRef.current ||
+      !Array.isArray(chartData?.labels) ||
+      !Array.isArray(chartData?.values) ||
+      chartData.labels.length === 0 ||
+      chartData.values.length === 0
+    ) {
+      return;
+    }  
+    const ctx = chartRef.current.getContext("2d");
+    if (!ctx) return;
+  
+    // Destroy existing chart instance if it exists
     if (chartInstance.current) {
-      chartInstance.current.destroy()
+      chartInstance.current.destroy();
     }
-
-    const ctx = chartRef.current.getContext("2d")
-    if (!ctx) return
-
-    // Sample data for the chart
-    const labels = [
-      "Tháng 1",
-      "Tháng 2",
-      "Tháng 3",
-      "Tháng 4",
-      "Tháng 5",
-      "Tháng 6",
-      "Tháng 7",
-      "Tháng 8",
-      "Tháng 9",
-      "Tháng 10",
-    ]
-
-    const data = [15, 5, 30, 15, 35, 55, 30, 15, 10, 70, 50]
-
-    const pointBackgroundColors = Array(data.length).fill("transparent")
-    const pointBorderColors = Array(data.length).fill("transparent")
-    const pointRadiuses = Array(data.length).fill(0)
-
-    const specialPoints = [
-      { index: 5, color: "#4cd137" }, // Tháng 6, Green point
-      { index: 5, color: "#3498db" }, // Tháng 6, Blue point
-      { index: 7, color: "#3498db" }, // Tháng 8, Blue point
-    ]
-
-
-    specialPoints.forEach((point) => {
-      pointBackgroundColors[point.index] = point.color
-      pointBorderColors[point.index] = "#ffffff"
-      pointRadiuses[point.index] = 8
-    })
-
+  
+    const lastIndex = chartData.values.length - 1;
+    const pointBg = Array(chartData.values.length).fill("transparent");
+    const pointBorder = Array(chartData.values.length).fill("transparent");
+    const pointRadius = Array(chartData.values.length).fill(0);
+    if (lastIndex >= 0) {
+      pointBg[lastIndex] = "#4cd137";
+      pointBorder[lastIndex] = "#fff";
+      pointRadius[lastIndex] = 6;
+    }
+  
     chartInstance.current = new Chart(ctx, {
       type: "line",
       data: {
-        labels: labels,
-        datasets: [
-          {
-            label: "Doanh thu (Triệu đồng)",
-            data: data,
-            borderColor: "#0C4762",
-            borderWidth: 4,
-            tension: 0.4,
-            fill: false,
-            // Set point styling directly on the dataset
-            pointBackgroundColor: pointBackgroundColors,
-            pointBorderColor: pointBorderColors,
-            pointRadius: pointRadiuses,
-            pointBorderWidth: 2,
-          },
-        ],
+        labels: chartData.labels,
+        datasets: [{
+          label: "Doanh thu (Triệu đồng)",
+          data: chartData.values,
+          borderColor: "#0C4762",
+          borderWidth: 4,
+          tension: 0.4,
+          fill: false,
+          pointBackgroundColor: pointBg,
+          pointBorderColor: pointBorder,
+          pointRadius,
+          pointBorderWidth: 2
+        }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          },
-          tooltip: {
-            mode: "index",
-            intersect: false,
-          },
-        },
         scales: {
-          x: {
-            grid: {
-              color: "#e5e7eb",
-            },
-            ticks: {
-              color: "#6b7280",
-            },
-          },
-          y: {
-            grid: {
-              color: "#e5e7eb",
-            },
-            ticks: {
-              color: "#6b7280",
-              callback: (value) => value + "",
-              // Đặt stepSize trong ticks thay vì trực tiếp trong scale
-              stepSize: 20,
-            },
-            title: {
-              display: true,
-              text: "Triệu đồng",
-              color: "#6b7280",
-            },
-            min: 0,
-            max: 100,
-          },
+          y: { beginAtZero: true }
         },
-        interaction: {
-          intersect: false,
-        },
-      },
-    })
-
-    return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy()
+        plugins: {
+          legend: { display: false }
+        }
       }
-    }
-  }, [])
+    });
+  
+    // Cleanup
+    return () => {
+      chartInstance.current?.destroy();
+    };
+  }, [chartData, chartRef]); // Also include chartRef
+  
+  
 
-  return (
+  console.log("chartRef.current:", chartRef.current);
+  console.log("chartData.labels:", chartData?.labels);
+  console.log("chartData.values:", chartData?.values);  return (
     <div>
-      <div className="text-lg font-medium mt-6">Tổng doanh thu của năm 2024</div>
-      <div className="border border-blue-100 rounded-lg p-4 h-[350px]">
-        <canvas ref={chartRef}></canvas>
+      <div className="text-lg font-medium mt-6">Tổng doanh thu </div>
+      <div className="relative border border-blue-100 rounded-lg p-4 h-[350px]">
+      <canvas ref={chartRef} height={350}></canvas>
       </div>
-    </div>
+   </div>
   )
 }

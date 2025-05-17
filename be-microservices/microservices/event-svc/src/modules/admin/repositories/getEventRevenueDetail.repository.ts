@@ -17,10 +17,20 @@ export class GetEventRevenueDetailRepository {
         return Err(new Error('You do not have permission to get organizer revenue'));
       }
 
+      const event = await this.prisma.events.findUnique({
+        where: {
+          id: Number(eventId)
+        }
+      });
+
+      if (!event) {
+        return Err(new Error('No event found'));
+      }
+
       const showings = await this.prisma.showing.findMany({
         where: {
           deleteAt: null,
-          eventId,
+          eventId: Number(eventId),
           Events: {
             organizerId: orgId,
             isApproved: true,
@@ -40,6 +50,10 @@ export class GetEventRevenueDetailRepository {
           }
         }
       });
+
+      if (!showings) {
+        return Err(new Error(`No showings of event ${event.title} found`));
+      }
 
       const result: ShowingRevenueData[] = showings.map(showing => {
         const totalRevenue = showing.Ticket.reduce((sum, t) => sum + t.price, 0);

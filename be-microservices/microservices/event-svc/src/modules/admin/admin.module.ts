@@ -3,6 +3,9 @@ import { Module } from "@nestjs/common";
 import { GetOrgRevenueController } from "./queries/getOrgRevenue/getOrgRevenue.controller";
 import { GetOrgRevenueRepository } from "./repositories/getOrgRevenue.repository";
 import { GetOrgRevenueService } from "./queries/getOrgRevenue/getOrgRevenue.service";
+import { GetOrgRevenueChartController } from "./queries/getOrgRevenueChart/getOrgRevenueChart.controller";
+import { GetOrgRevenueChartRepository } from "./repositories/getOrgRevenueChart.repository";
+import { GetOrgRevenueChartService } from "./queries/getOrgRevenueChart/getOrgRevenueChart.service";
 import { GetOrgRevenueByIdController } from "./queries/getOrgRevenueById/getOrgRevenueById.controller";
 import { GetOrgRevenueByIdRepository } from "./repositories/getOrgRevenueById.repository";
 import { GetOrgRevenueByIdService } from "./queries/getOrgRevenueById/getOrgRevenueById.service";
@@ -22,6 +25,7 @@ import { GetRevenueByTicketPriceService } from "./queries/getRevenueByTicketPric
 @Module({
   controllers: [
     GetOrgRevenueController,
+    GetOrgRevenueChartController,
     GetOrgRevenueByIdController,
     GetEventRevenueDetailController,
     GetSummaryTicketRevenueController,
@@ -31,6 +35,9 @@ import { GetRevenueByTicketPriceService } from "./queries/getRevenueByTicketPric
   providers: [
     GetOrgRevenueRepository,
     GetOrgRevenueService,
+
+    GetOrgRevenueChartRepository,
+    GetOrgRevenueChartService,
 
     GetOrgRevenueByIdRepository,
     GetOrgRevenueByIdService,
