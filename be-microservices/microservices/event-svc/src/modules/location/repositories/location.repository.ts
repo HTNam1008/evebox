@@ -53,52 +53,60 @@ export class LocationRepository {
   }
 
   async getAllLocations(organizerId?: string, provinceId?: number) {
-    let locationIds: number[] | undefined;
-  
-    // Get locations from organizerId → via Events table
-    if (organizerId) {
-      const events = await this.prisma.events.findMany({
-        where: { organizerId },
-        select: { locationId: true },
-      });
-  
-      locationIds = events
-        .map(e => e.locationId)
-        .filter(id => id !== null) as number[];
-  
-      if (locationIds.length === 0) return [];
-    }
-  
-    const locations = await this.prisma.locations.findMany({
-      where: {
-        ...(locationIds
-          ? { id: { in: locationIds } }
-          : {}),
-        ...(provinceId
-          ? {
+  const events = await this.prisma.events.findMany({
+    where: {
+      ...(organizerId ? { organizerId } : {}),
+      ...(provinceId
+        ? {
+            locations: {
               districts: {
-                provinceId: provinceId,
+                provinceId,
               },
-            }
-          : {}),
-      },
-      include: {
-        districts: {
-          include: {
-            province: true,
+            },
+          }
+        : {}),
+    },
+    include: {
+      locations: {
+        include: {
+          districts: {
+            include: { province: true },
           },
         },
       },
-    });
-  
-    return locations.map(loc => ({
-      id: loc.id,
+    },
+  });
+
+  const grouped = new Map<string, { organizerId: string; id: number; venues: any[] }>();
+
+  for (const event of events) {
+    const loc = event.locations;
+    if (!loc || !loc.districts || !loc.districts.province) continue;
+
+    const key = event.organizerId!;
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        id: event.id,
+        organizerId: key,
+        venues: [],
+      });
+    }
+
+    grouped.get(key)!.venues.push({
       street: loc.street,
       ward: loc.ward,
       district: loc.districts.name,
       province: loc.districts.province.name,
-    }));
+      event: {
+        title: event.title,
+        venue: event.venue,
+        orgName: event.orgName,
+      },
+    });
   }
+
+  return Array.from(grouped.values());
+}
 
   async getLocationsByOrganizerEmail(email: string) {
    const events = await this.prisma.events.findMany({
