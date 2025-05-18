@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { FormEvent, useEffect, useState } from "react"
-import { Search, FileText, RotateCcw, Loader } from "lucide-react"
+import { Search, RotateCcw, Loader } from "lucide-react"
 import LocationTable from "./location-table"
 import FilterDropdown from "./filter"
 import { getAllDistricts, getAllLocations } from "@/services/admin.service"
@@ -29,10 +29,31 @@ export default function LocationManagementClient() {
   const [selectedOrganizer, setSelectedOrganizer] = useState<string | null>(null)
   const [selectedCity, setSelectedCity] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const organizers = ["phamvananhthu@gmail.com"]
+  const [organizers, setOrganizers] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [cityToProvinceId, setCityToProvinceId] = useState<Record<string, number>>({});
 
+  const filteredLocations = locations
+  .map((location) => {
+    const query = searchQuery.toLowerCase();
+
+    const filteredVenues = location.venues.filter((venue) =>
+      venue.name.toLowerCase().includes(query) ||
+      venue.events.some(event => event.toLowerCase().includes(query))
+    );
+
+    // Only return location if it has matching venues
+    if (filteredVenues.length > 0) {
+      return {
+        ...location,
+        venues: filteredVenues,
+      };
+    }
+
+    return null;
+  })
+  .filter((location): location is Location => location !== null); // Type guard
+  
   useEffect(() => {
   const fetchDistricts = async () => {
     try {
@@ -59,8 +80,6 @@ export default function LocationManagementClient() {
 
   fetchDistricts();
 }, []);
-
-
 
   const mapApiToClientLocations = (data: OrganizerLocationGroup[]): Location[] => {
   return data.map((group) => {
@@ -96,19 +115,23 @@ export default function LocationManagementClient() {
   })
 }
 
-  const fetchLocations = async (provinceId?: number) => {
+  const fetchLocations = async (organizerId?: string, provinceId?: number) => {
   try {
-    console.log(provinceId);
-    setLoading(true)
-    const res = await getAllLocations();
-    const mapped = mapApiToClientLocations(res.data)
-    setLocations(mapped)
+    setLoading(true);
+    const res = await getAllLocations(organizerId, provinceId);
+
+    const mapped = mapApiToClientLocations(res.data);
+    setLocations(mapped);
+
+    // Extract unique organizer IDs (emails)
+    const uniqueOrganizers = Array.from(new Set(res.data.map(loc => loc.organizerId)));
+    setOrganizers(uniqueOrganizers);
   } catch (error) {
-    console.error("Error loading locations:", error)
+    console.error("Error loading locations:", error);
   } finally {
-    setLoading(false)
+    setLoading(false);
   }
-}
+};
 
   useEffect(() => {
     // Load all on mount
@@ -125,19 +148,10 @@ export default function LocationManagementClient() {
     await fetchLocations()
   }
   const handleConfirmFilter = async () => {
-    const provinceId = selectedCity ? cityToProvinceId[selectedCity] : undefined
-    await fetchLocations(provinceId)
-  }
-  const handleExportReport = () => {
-  }
-
-   if (loading ) {
-    return (
-      <div className="flex items-center justify-center h-40">
-        <Loader className="w-6 h-6 animate-spin text-gray-500" />
-      </div>
-    );
-  }
+  const provinceId = selectedCity ? cityToProvinceId[selectedCity] : undefined;
+  const organizerId = selectedOrganizer ? selectedOrganizer : undefined;
+  await fetchLocations(organizerId,provinceId);
+};
 
   return (
     <div>
@@ -175,12 +189,12 @@ export default function LocationManagementClient() {
         <div className="flex flex-wrap justify-between items-center mb-6">
           <form onSubmit={handleSearch} className="flex w-full sm:w-auto mb-4 sm:mb-0">
             <input
-              type="text"
-              placeholder="Tìm kiếm theo tên địa điểm, ..."
-              className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-l-lg w-full sm:w-80 focus:outline-none"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+    type="text"
+    placeholder="Tìm kiếm theo tên địa điểm, ..."
+    className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg w-full sm:w-80 focus:outline-none"
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+  />
             <button
               type="submit"
               className="px-4 py-2 bg-teal-400 text-white rounded-r-lg hover:bg-teal-500 transition-colors"
@@ -189,17 +203,16 @@ export default function LocationManagementClient() {
             </button>
           </form>
 
-          <button
-            onClick={handleExportReport}
-            className="px-4 py-2 bg-[#0C4762] text-white rounded-lg hover:bg-teal transition-colors flex items-center"
-          >
-            <FileText className="w-4 h-4 mr-2" />
-            Xuất báo cáo
-          </button>
         </div>
 
         {/* Table */}
-        <LocationTable locations={locations} />
+        {loading ? (
+  <div className="flex items-center justify-center h-40">
+    <Loader className="w-6 h-6 animate-spin text-gray-500" />
+  </div>
+) : (
+  <LocationTable locations={filteredLocations} />
+)}
       </div>
     </div>
   )

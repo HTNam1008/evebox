@@ -62,5 +62,6 @@ export class END_POINT_LIST {
 
   static readonly LOCATION = {
     GET_ALL_LOCATIONS: "/api/location/all",
+    GET_ALL_DISTRICTS: "/api/all-districts"
   }
 }
