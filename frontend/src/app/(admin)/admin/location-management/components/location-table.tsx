@@ -71,10 +71,11 @@ export default function LocationTable({ locations }: LocationTableProps) {
   })
 
   return (
-    <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-100">
+  <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-100">
+    <div className="max-h-[600px] overflow-y-auto">
       <table className="min-w-full border border-gray-100 border-collapse">
-        <thead>
-          <tr className="bg-[#0C4762] text-white">
+        <thead className="sticky top-0 z-10 bg-[#0C4762] text-white">
+          <tr>
             <th className="py-3 px-4 text-left border-r border-[#0c4b78]">STT</th>
             <th className="py-3 px-4 text-left border-r border-[#0c4b78]">Email của nhà tổ chức</th>
             <th className="py-3 px-4 text-left border-r border-[#0c4b78]">Địa điểm tổ chức</th>
@@ -86,5 +87,7 @@ export default function LocationTable({ locations }: LocationTableProps) {
         <tbody>{tableRows}</tbody>
       </table>
     </div>
-  )  
+  </div>
+)
+ 
 }
