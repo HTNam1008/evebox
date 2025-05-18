@@ -59,4 +59,8 @@ export class END_POINT_LIST {
     SHOWINGS: "/api/admin/showing",
     EVENTS_SPECIAL: "api/admin/event-special"
   }
+
+  static readonly LOCATION = {
+    GET_ALL_LOCATIONS: "/api/location/all",
+  }
 }

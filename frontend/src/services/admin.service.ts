@@ -7,6 +7,7 @@ import { SummaryTicketRevenueResponse } from "@/types/model/summaryTicketRevenue
 import { ProvinceRevenueResponse } from "@/types/model/provinceRevenue";
 import { RevenueByTicketPriceResponse } from "@/types/model/ticketPriceRevenue";
 import { RevenueSummaryResponse } from "@/types/model/RevenueSummaryResponse";
+import { GetAllLocationsResponseDto } from "@/types/model/getAllLocationsResponse";
 
 export const getOrganizerRevenue = async (
   fromDate?: string,
@@ -117,3 +118,27 @@ export const getRevenueByOrgId = async (orgId: string): Promise<RevenueByIdRespo
       throw error;
     }
   };
+
+  export const getAllLocations = async (
+  organizerId?: string,
+  provinceId?: number
+): Promise<GetAllLocationsResponseDto> => {
+  const params = new URLSearchParams();
+  if (organizerId) params.append("organizerId", organizerId);
+  if (provinceId !== undefined) params.append("provinceId", provinceId.toString());
+
+  try {
+    const res = await eventService.get(
+      `${END_POINT_LIST.LOCATION.GET_ALL_LOCATIONS}?${params.toString()}`
+    );
+
+    if (!res || !res.data) {
+      throw new Error("Failed to fetch locations");
+    }
+
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    throw error;
+  }
+};
