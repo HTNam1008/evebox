@@ -41,7 +41,7 @@ export default function LocationTable({ locations }: LocationTableProps) {
           <tr key={`${location.id}-${venueIndex}-${i}`} className={currentRow % 2 === 0 ? "bg-white" : "bg-gray-50"}>
             {isFirstRowOfLocation && (
               <td className="py-3 px-4 border-t border-r border-gray-200" rowSpan={totalRows}>
-                {location.id}
+                {i+1}
               </td>
             )}
 
