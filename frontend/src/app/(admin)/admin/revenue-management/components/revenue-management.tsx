@@ -74,7 +74,7 @@ export default function RevenuePage() {
     setFromDate(undefined);
     setToDate(undefined);
     setSearch(undefined);
-  }, [activeTab]);
+   }, [activeTab]);
 
 
   useEffect(() => {

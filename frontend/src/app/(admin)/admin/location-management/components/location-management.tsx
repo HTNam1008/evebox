@@ -2,10 +2,13 @@
 
 import type React from "react"
 
-import { FormEvent, useState } from "react"
-import { Search, FileText, RotateCcw } from "lucide-react"
+import { FormEvent, useEffect, useState } from "react"
+import { Search, RotateCcw, Loader } from "lucide-react"
 import LocationTable from "./location-table"
 import FilterDropdown from "./filter"
+import { getAllDistricts, getAllLocations } from "@/services/admin.service"
+import { OrganizerLocationGroup } from "@/types/model/getAllLocationsResponse"
+import { Province } from "@/types/model/getAllDistrictsResponse"
 
 interface Venue {
   name: string
@@ -20,37 +23,135 @@ interface Location {
   venues: Venue[]
 }
 
-interface LocationManagementClientProps {
-  initialLocations: Location[]
-  districts: string[]
-  cities: string[]
+export default function LocationManagementClient() {
+  const [locations, setLocations] = useState<Location[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedOrganizer, setSelectedOrganizer] = useState<string | null>(null)
+  const [selectedCity, setSelectedCity] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [organizers, setOrganizers] = useState<string[]>([]);
+  const [cities, setCities] = useState<string[]>([]);
+  const [cityToProvinceId, setCityToProvinceId] = useState<Record<string, number>>({});
+
+  const filteredLocations = locations
+  .map((location) => {
+    const query = searchQuery.toLowerCase();
+
+    const filteredVenues = location.venues.filter((venue) =>
+      venue.name.toLowerCase().includes(query) ||
+      venue.events.some(event => event.toLowerCase().includes(query))
+    );
+
+    // Only return location if it has matching venues
+    if (filteredVenues.length > 0) {
+      return {
+        ...location,
+        venues: filteredVenues,
+      };
+    }
+
+    return null;
+  })
+  .filter((location): location is Location => location !== null); // Type guard
+  
+  useEffect(() => {
+  const fetchDistricts = async () => {
+    try {
+      const res: Province[] = await getAllDistricts();
+
+      //Debug log: See what res looks like
+      console.log("Fetched district response:", res);
+
+      // Build mapping from province name to province id
+      const provinceMap: Record<string, number> = {};
+      const citySet: Set<string> = new Set();
+
+      res.forEach((province) => {
+        provinceMap[province.name] = province.id;
+        citySet.add(province.name);
+      });
+
+      setCities(Array.from(citySet));
+      setCityToProvinceId(provinceMap);
+    } catch (err) {
+      console.error("Failed to fetch districts and provinces", err);
+    }
+  };
+
+  fetchDistricts();
+}, []);
+
+  const mapApiToClientLocations = (data: OrganizerLocationGroup[]): Location[] => {
+  return data.map((group) => {
+    const venueMap: Record<string, Venue> = {}
+
+    group.venues.forEach((v) => {
+      const fullAddress = `${v.street}, ${v.ward}, ${v.district}, ${v.province}`
+
+      if (!venueMap[fullAddress]) {
+        venueMap[fullAddress] = {
+          name: fullAddress,
+          taxLocations: [`${v.ward}, ${v.district}`],
+          events: [],
+          organizers: [],
+        }
+      }
+
+      // Avoid duplicates in arrays
+      if (v.event?.title && !venueMap[fullAddress].events.includes(v.event.title)) {
+        venueMap[fullAddress].events.push(v.event.title)
+      }
+
+      if (v.event?.orgName && !venueMap[fullAddress].organizers.includes(v.event.orgName)) {
+        venueMap[fullAddress].organizers.push(v.event.orgName)
+      }
+    })
+
+    return {
+      id: group.id,
+      email: group.organizerId, // email not present in API response
+      venues: Object.values(venueMap),
+    }
+  })
 }
 
-export default function LocationManagementClient({
-  initialLocations,
-  districts,
-  cities,
-}: LocationManagementClientProps) {
-  const [locations, setLocations] = useState<Location[]>(initialLocations)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null)
-  const [selectedCity, setSelectedCity] = useState<string | null>(null)
+  const fetchLocations = async (organizerId?: string, provinceId?: number) => {
+  try {
+    setLoading(true);
+    const res = await getAllLocations(organizerId, provinceId);
+
+    const mapped = mapApiToClientLocations(res.data);
+    setLocations(mapped);
+
+    // Extract unique organizer IDs (emails)
+    const uniqueOrganizers = Array.from(new Set(res.data.map(loc => loc.organizerId)));
+    setOrganizers(uniqueOrganizers);
+  } catch (error) {
+    console.error("Error loading locations:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  useEffect(() => {
+    // Load all on mount
+    fetchLocations()
+  }, [])
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
   }
 
-  const handleResetFilter = () => {
-    setSelectedDistrict(null)
-    setSelectedCity(null)
-    setLocations(initialLocations)
+    const handleResetFilter = async () => {
+    setSelectedOrganizer("")
+    setSelectedCity("")
+    await fetchLocations()
   }
-
-  const handleConfirmFilter = () => {
-  }
-
-  const handleExportReport = () => {
-  }
+  const handleConfirmFilter = async () => {
+  const provinceId = selectedCity ? cityToProvinceId[selectedCity] : undefined;
+  const organizerId = selectedOrganizer ? selectedOrganizer : undefined;
+  await fetchLocations(organizerId,provinceId);
+};
 
   return (
     <div>
@@ -63,9 +164,10 @@ export default function LocationManagementClient({
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4 mb-6 mt-6">
-          <FilterDropdown label="Quận" options={districts} value={selectedDistrict} onChange={setSelectedDistrict} />
-
           <FilterDropdown label="Thành phố" options={cities} value={selectedCity} onChange={setSelectedCity} />
+
+          <FilterDropdown label="Nhà tổ chức" options={organizers} value={selectedOrganizer} onChange={setSelectedOrganizer} />
+
 
           <button
             onClick={handleConfirmFilter}
@@ -87,12 +189,12 @@ export default function LocationManagementClient({
         <div className="flex flex-wrap justify-between items-center mb-6">
           <form onSubmit={handleSearch} className="flex w-full sm:w-auto mb-4 sm:mb-0">
             <input
-              type="text"
-              placeholder="Tìm kiếm theo tên địa điểm, ..."
-              className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-l-lg w-full sm:w-80 focus:outline-none"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+    type="text"
+    placeholder="Tìm kiếm theo tên địa điểm, ..."
+    className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg w-full sm:w-80 focus:outline-none"
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+  />
             <button
               type="submit"
               className="px-4 py-2 bg-teal-400 text-white rounded-r-lg hover:bg-teal-500 transition-colors"
@@ -101,17 +203,16 @@ export default function LocationManagementClient({
             </button>
           </form>
 
-          <button
-            onClick={handleExportReport}
-            className="px-4 py-2 bg-[#0C4762] text-white rounded-lg hover:bg-teal transition-colors flex items-center"
-          >
-            <FileText className="w-4 h-4 mr-2" />
-            Xuất báo cáo
-          </button>
         </div>
 
         {/* Table */}
-        <LocationTable locations={locations} />
+        {loading ? (
+  <div className="flex items-center justify-center h-40">
+    <Loader className="w-6 h-6 animate-spin text-gray-500" />
+  </div>
+) : (
+  <LocationTable locations={filteredLocations} />
+)}
       </div>
     </div>
   )
